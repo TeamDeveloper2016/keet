@@ -63,51 +63,69 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			switch(accion) {
 				case REGISTRAR:
-					pago= this.calcularPago(sesion, this.prestamosPagos.getIdAnticipo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
-					deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetMorososDto.class, this.idMoroso);
-					deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
-					deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
-					DaoFactory.getInstance().update(sesion, deudoresDto);
-					regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
-					this.toCheckIncidentes(sesion, this.prestamosPagos.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
-//					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)) {
-//						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-//						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-//					} // if
+          regresar= this.toRegistrar(sesion);
 					break;
 				case COMPLETO:
-					pago= this.prestamosPagos;
-					pago.setCambio(this.prestamosPagos.getPago());
-					for(TcKeetAnticiposDto item: (List<TcKeetAnticiposDto>) DaoFactory.getInstance().toEntitySet(sesion, TcKeetAnticiposDto.class, "TcKeetAnticiposDto", "activosByIdDeudor", ((TcKeetAnticiposDto) DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, this.prestamosPagos.getIdAnticipo())).toMap())) {
-						pago= this.calcularPago(sesion, item.getIdAnticipo(), pago.getCambio(), EEstatusPrestamos.SALDADA);
-						pago.setRegistro(LocalDateTime.now());
-						deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idMoroso);
-						deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
-						deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
-						DaoFactory.getInstance().update(sesion, deudoresDto);
-						regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
-            this.toCheckIncidentes(sesion, item.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
-						this.pagos++;
-//						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
-//							this.toLoadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-//							super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-//						} // if
-						if(pago.getCambio()== 0D)
-							break;
-					} // for
+          regresar= this.toComplemento(sesion);
 					break;
 				case ELIMINAR:
           regresar= this.toDeletePago(sesion);
           break;
 			} // switch	
 			this.cambio= pago!= null? pago.getCambio(): 0D;
-		} // try // try // try // try
+		} // try 
 		catch (Exception e) {			
 			throw new Exception(e);
 		} // catch		
 		return regresar;
 	}	// ejecutar
 	
+  public Boolean toRegistrar(Session sesion) throws Exception {
+		boolean regresar            = Boolean.FALSE;
+		TcKeetMorososDto deudoresDto= null;
+		TcKeetAnticiposPagosDto pago= null;
+		try {
+      pago= this.calcularPago(sesion, this.prestamosPagos.getIdAnticipo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
+      deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetMorososDto.class, this.idMoroso);
+      deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
+      deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
+      DaoFactory.getInstance().update(sesion, deudoresDto);
+      regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+      this.toCheckIncidentes(sesion, this.prestamosPagos.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
+		} // try 
+		catch (Exception e) {			
+			throw new Exception(e);
+		} // catch		
+		return regresar;
+  }
+  
+  public Boolean toComplemento(Session sesion) throws Exception {
+		boolean regresar            = Boolean.FALSE;
+		TcKeetMorososDto deudoresDto= null;
+		TcKeetAnticiposPagosDto pago= null;
+		try {
+      pago= this.prestamosPagos;
+      pago.setCambio(this.prestamosPagos.getPago());
+      for(TcKeetAnticiposDto item: (List<TcKeetAnticiposDto>) DaoFactory.getInstance().toEntitySet(sesion, TcKeetAnticiposDto.class, "TcKeetAnticiposDto", "activosByIdDeudor", ((TcKeetAnticiposDto) DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, this.prestamosPagos.getIdAnticipo())).toMap())) {
+        pago= this.calcularPago(sesion, item.getIdAnticipo(), pago.getCambio(), EEstatusPrestamos.SALDADA);
+        pago.setRegistro(LocalDateTime.now());
+        deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idMoroso);
+        deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
+        deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
+        DaoFactory.getInstance().update(sesion, deudoresDto);
+        regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+        this.toCheckIncidentes(sesion, item.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
+        this.pagos++;
+        if(pago.getCambio()== 0D)
+          break;
+      } // for
+		} // try 
+		catch (Exception e) {			
+			throw new Exception(e);
+		} // catch		
+		return regresar;
+  }
+  
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;

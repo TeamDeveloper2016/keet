@@ -51,17 +51,19 @@ public class TcKeetContratosDestajosContratistasDto implements IBaseDto, Seriali
   private Long idNomina;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="anticipo")
+  private Double anticipo;
 
   public TcKeetContratosDestajosContratistasDto() {
     this(new Long(-1L));
   }
 
   public TcKeetContratosDestajosContratistasDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, new Long(-1L), null, null, 0D);
     setKey(key);
   }
 
-  public TcKeetContratosDestajosContratistasDto(Long idEstacionEstatus, Double costo, Long periodo, Long idUsuario, Long semana, Long idEstacion, Double porcentaje, Long idContratoDestajoContratista, Long idContratoLoteContratista, Long idNomina) {
+  public TcKeetContratosDestajosContratistasDto(Long idEstacionEstatus, Double costo, Long periodo, Long idUsuario, Long semana, Long idEstacion, Double porcentaje, Long idContratoDestajoContratista, Long idContratoLoteContratista, Long idNomina, Double anticipo) {
     setIdEstacionEstatus(idEstacionEstatus);
     setCosto(costo);
     setPeriodo(periodo);
@@ -73,6 +75,7 @@ public class TcKeetContratosDestajosContratistasDto implements IBaseDto, Seriali
     setIdContratoLoteContratista(idContratoLoteContratista);
     setIdNomina(idNomina);
     setRegistro(LocalDateTime.now());
+    this.anticipo= anticipo;
   }
 	
   public void setIdEstacionEstatus(Long idEstacionEstatus) {
@@ -163,6 +166,14 @@ public class TcKeetContratosDestajosContratistasDto implements IBaseDto, Seriali
     return registro;
   }
 
+  public Double getAnticipo() {
+    return anticipo;
+  }
+
+  public void setAnticipo(Double anticipo) {
+    this.anticipo = anticipo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -199,6 +210,8 @@ public class TcKeetContratosDestajosContratistasDto implements IBaseDto, Seriali
 		regresar.append(getIdNomina());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAnticipo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -217,13 +230,14 @@ public class TcKeetContratosDestajosContratistasDto implements IBaseDto, Seriali
 		regresar.put("idContratoLoteContratista", getIdContratoLoteContratista());
 		regresar.put("idNomina", getIdNomina());
 		regresar.put("registro", getRegistro());
+		regresar.put("anticipo", getAnticipo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEstacionEstatus(), getCosto(), getPeriodo(), getIdUsuario(), getSemana(), getIdEstacion(), getPorcentaje(), getIdContratoDestajoContratista(), getIdContratoLoteContratista(), getIdNomina(), getRegistro()
+      getIdEstacionEstatus(), getCosto(), getPeriodo(), getIdUsuario(), getSemana(), getIdEstacion(), getPorcentaje(), getIdContratoDestajoContratista(), getIdContratoLoteContratista(), getIdNomina(), getRegistro(), getAnticipo()
     };
     return regresar;
   }

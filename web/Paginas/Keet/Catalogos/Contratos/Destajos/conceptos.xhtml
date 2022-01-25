@@ -123,6 +123,12 @@
               </f:facet>
               <h:outputText value="#{row.costo}"/>
             </p:column>		                        
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-101" sortBy="#{row.anticipo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Anticipo"/>
+              </f:facet>
+              <h:outputText value="#{row.anticipo}"/>
+            </p:column>		                        
 						<p:column class="janal-wid-col-31 janal-column-center">
               <f:facet name="header">
                 <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>

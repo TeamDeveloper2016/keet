@@ -93,8 +93,8 @@ public class Transaccion extends IBaseTnx {
 						TcKeetEstacionesDto change=list.get(index);
 						List<TcKeetEstacionesDto> allMenu=estaciones.toAllChildren(this.estacion.getEstacion().getClave(), this.estacion.getEstacion().getNivel().intValue()+1);
 						List<TcKeetEstacionesDto> allChange=estaciones.toAllChildren(change.getClave(), change.getNivel().intValue()+1);
-						updateChildren(sesion, estaciones.toKey(change.getClave(), change.getNivel().intValue()), allMenu);
-						updateChildren(sesion, estaciones.toKey(this.estacion.getEstacion().getClave(), this.estacion.getEstacion().getNivel().intValue()), allChange);
+						this.updateChildren(sesion, estaciones.toKey(change.getClave(), change.getNivel().intValue()), allMenu);
+						this.updateChildren(sesion, estaciones.toKey(this.estacion.getEstacion().getClave(), this.estacion.getEstacion().getNivel().intValue()), allChange);
 						String newKey=this.estacion.getEstacion().getClave();
 						this.estacion.getEstacion().setClave(change.getClave());
 						change.setClave(newKey);
@@ -131,16 +131,20 @@ public class Transaccion extends IBaseTnx {
     Estaciones estaciones= new Estaciones(sesion);
     try {      
       Double diferencia= 0D;
+      Double disparidad= 0D;
  			switch(accion) {
 				case AGREGAR:	
           diferencia= this.estacion.getEstacion().getCosto();
+          disparidad= this.estacion.getEstacion().getAnticipo();
           break;
 				case MODIFICAR:			
           TcKeetEstacionesDto dto= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.estacion.getEstacion().getKey());
           diferencia= Numero.toRedondearSat(this.estacion.getEstacion().getCosto()- dto.getCosto());
+          disparidad= Numero.toRedondearSat(this.estacion.getEstacion().getAnticipo()- dto.getAnticipo());
           break;
 				case ELIMINAR:			
           diferencia= this.estacion.getEstacion().getCosto()* -1L;
+          disparidad= this.estacion.getEstacion().getAnticipo()* -1L;
           break;
       } // switch
       List<TcKeetEstacionesDto> items= estaciones.toFather(this.estacion.getEstacion().getClave());
@@ -149,6 +153,7 @@ public class Transaccion extends IBaseTnx {
           items.remove(items.size()- 1);
         for (TcKeetEstacionesDto item: items) {
           item.setCosto(Numero.toRedondearSat(item.getCosto()+ diferencia));
+          item.setAnticipo(Numero.toRedondearSat(item.getAnticipo()+ disparidad));
           DaoFactory.getInstance().update(sesion, item);
         } // for
       } // if  

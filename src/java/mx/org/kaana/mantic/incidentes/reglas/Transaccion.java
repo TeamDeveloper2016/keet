@@ -181,8 +181,8 @@ public class Transaccion extends IBaseTnx {
 			dto.setConsecutivo(consecutivo.getConsecutivo());			
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
-			idEstatus= this.estatus ? (isProcesoEmpleado() ? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente(): this.incidente.getIdEmpresaPersona()) : 
-							                  (isProcesoEmpleado() ? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente(): EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
+			idEstatus= this.estatus? (isProcesoEmpleado()? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente(): this.incidente.getIdEmpresaPersona()): 
+							                 (isProcesoEmpleado()? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente(): EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
 			dto.setIdIncidenteEstatus(idEstatus);			
 			if(this.incidente.getIdDesarrollo()!= null && this.incidente.getIdDesarrollo()> 0L)
 				dto.setIdDesarrollo(this.incidente.getIdDesarrollo());

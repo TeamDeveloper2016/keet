@@ -18,6 +18,7 @@
 				'contenedorGrupos\\:descripcion'  : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:cantidad'     : {validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:costo'        : {validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:anticipo'     : {validaciones: 'requerido|mayor-igual({"cuanto":0})|menor-a({"cual":"contenedorGrupos\\\\:costo"})', mascara: 'libre'},
 				'contenedorGrupos\\:ultimo'       : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:inicio'       : {validaciones: 'requerido|fecha|fecha-menor({"cual":"contenedorGrupos\\\\:termino"})', mascara: 'fecha'},
 				'contenedorGrupos\\:termino'      : {validaciones: 'requerido|fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:inicio"})', mascara: 'fecha'},
@@ -89,6 +90,8 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="costo" value="Costo:"/>
                 <p:inputNumber id="costo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.costo}"/>
+								<p:outputLabel for="anticipo" value="Anticipo:"/>
+                <p:inputNumber id="anticipo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.anticipo}"/>
                 <p:outputLabel for="ultimo" value="Ultimo:" rendered="false"/>
                 <p:inputNumber id="ultimo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.ultimo}" rendered="false"/>
 								<p:spacer width="1px" rendered="#{keetEstacionesAccion.attrs.isEstacion}"/>

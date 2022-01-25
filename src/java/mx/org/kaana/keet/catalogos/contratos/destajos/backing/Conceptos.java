@@ -114,6 +114,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+      columns.add(new Columna("anticipo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "conceptos", params, columns);			
 			UIBackingUtilities.resetDataTable();
     } // try
@@ -260,7 +261,12 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		if(seleccionado!= null) {
 			JsfBase.setFlashAttribute("concepto", seleccionado);	
   		JsfBase.setFlashAttribute("total", seleccionado.containsKey("importe")? seleccionado.toDouble("importe"): 0L);
+  		JsfBase.setFlashAttribute("anticipo", seleccionado.containsKey("retencion")? seleccionado.toDouble("retencion"): 0L);
     } // if  
+    else {
+      JsfBase.setFlashAttribute("total", 0D);
+      JsfBase.setFlashAttribute("anticipo", 0D);
+    } // else
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 		JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			

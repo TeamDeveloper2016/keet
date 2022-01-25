@@ -3792,6 +3792,26 @@
 				  tc_mantic_incidentes.id_nomina= {idNomina}
 				  and tc_mantic_incidentes.id_incidente_estatus= 2			
 			</select>	
+      <select id="anticipos">
+			  select
+				  tc_keet_incidentes.*
+				from 
+				  tc_keet_incidentes
+				inner join
+ 				  tc_mantic_tipos_incidentes on tc_keet_incidentes.id_tipo_incidente= tc_mantic_tipos_incidentes.id_tipo_incidente 
+			  where
+				  tc_keet_incidentes.id_nomina is null
+				  and tc_keet_incidentes.id_incidente_estatus= 2
+				  and tc_keet_incidentes.id_afecta_nomina= 2
+			  union all
+ 			  select
+				  tc_keet_incidentes.*
+				from 
+				  tc_keet_incidentes
+			  where
+				  tc_keet_incidentes.id_nomina= {idNomina}
+				  and tc_keet_incidentes.id_incidente_estatus= 2			
+			</select>	
 			<select id="contratista">
         select 
 				  tc_keet_contratos_destajos_contratistas.*
@@ -6710,7 +6730,9 @@
 					tc_keet_estaciones.id_empaque_unidad_medida,
 					tc_keet_estaciones.id_estacion_estatus,
 					tc_keet_estaciones.costo,
+					tc_keet_estaciones.anticipo,
           tc_keet_estaciones.costo as importe,
+          tc_keet_estaciones.anticipo as retencion,
           ifnull(tc_keet_contratos_contratistas_archivos.codigo, ifnull(tc_keet_contratos_proveedores_archivos.codigo, '0')) as imagen,
           if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
           if(tc_keet_estaciones.entrega is null, 'NO HA INICIADO', if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.entrega), ' DIAS ANTES'), if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 'TERMINO EN TIEMPO', concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.termino, tc_keet_estaciones.entrega), ' DIAS DESPUÉS')))) as dias,
@@ -7128,7 +7150,8 @@
 					tc_keet_puntos_controles.nombre,
 					tc_keet_puntos_controles.factor,
 					tc_keet_puntos_controles.orden,
-          round((tc_keet_puntos_controles.factor* {importe})/ 100, 1) as importe  
+          round((tc_keet_puntos_controles.factor* {importe})/ 100, 1) as importe,
+          round((tc_keet_puntos_controles.factor* {anticipo})/ 100, 1) as anticipo  
 				from
 					tc_keet_puntos_paquetes
 				inner join

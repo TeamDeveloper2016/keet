@@ -69,6 +69,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto"));
       Double total= JsfBase.getFlashAttribute("total")== null? 0D: (Double)JsfBase.getFlashAttribute("total");
 			this.attrs.put("importe", total);
+			this.attrs.put("anticipo", JsfBase.getFlashAttribute("anticipo")== null? 0D: (Double)JsfBase.getFlashAttribute("anticipo"));
 			this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
 			this.loadCatalogos();
 			this.doLoad();
@@ -109,6 +110,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     try {      			
 			params= this.toPrepare();
       params.put("importe", (Double)this.attrs.get("importe"));
+      params.put("anticipo", (Double)this.attrs.get("anticipo"));
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  

@@ -18,9 +18,13 @@ import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposDto;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposPagosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetIncidentesBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetIncidentesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDesarrollosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
@@ -29,6 +33,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrestamosPagosDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
@@ -262,6 +267,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasPersonasDto.class, "nomina", params);
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosContratistasDto.class, params, "nomina");
 			DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params, "nomina");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "nomina");
 			
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasRubrosDto.class, "nomina", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasProveedoresDto.class, "nomina", params);
@@ -295,6 +301,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", idProveedor);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "persona");
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasRubrosDto.class, "proveedor", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasProveedoresDto.class, "proveedor", params);
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params, "proveedor");
@@ -582,9 +589,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
-			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params, Constantes.SQL_TODOS_REGISTROS);
-			if(incidentes!= null && !incidentes.isEmpty()) {		
-				for (TcManticIncidentesDto item: incidentes) {
+			List<TcManticIncidentesDto> prestamos= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params, Constantes.SQL_TODOS_REGISTROS);
+			if(prestamos!= null && !prestamos.isEmpty()) {		
+				for (TcManticIncidentesDto item: prestamos) {
 					item.setIdIncidenteEstatus(3L);
 					DaoFactory.getInstance().update(sesion, item);
 					TcManticIncidentesBitacoraDto estatus= new TcManticIncidentesBitacoraDto(
@@ -595,13 +602,44 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						3L // Long idIncidenteEstatus
 					);
 					DaoFactory.getInstance().insert(sesion, estatus);
-          // SE TIENE GENERAR EL ABONO PARA EL PAGO DEL PRESTAMO PORQUE YA FUE COBRADO EN LA NOMINA QUE CIERRA
+          // SE TIENE GENERAR EL ABONO PARA EL PAGO DEL ANTICIPO PORQUE YA FUE COBRADO EN LA NOMINA QUE CIERRA
           if(Objects.equals(item.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente())) {
-            this.prestamosPagos.setIdPrestamo(item.getIdPrestamo());
+            TcKeetPrestamosDto prestamo= (TcKeetPrestamosDto)DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, item.getIdPrestamo());
+            this.prestamosPagos.setIdPrestamoPago(-1L);
+            this.prestamosPagos.setIdPrestamo(prestamo.getIdPrestamo());
+            this.prestamosPagos.setConsecutivo(prestamo.getConsecutivo());
             this.prestamosPagos.setPago(item.getCosto());
             this.prestamosPagos.setIdAfectaNomina(2L);
             this.prestamosPagos.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
             super.ejecutar(sesion, EAccion.REGISTRAR);
+          } // if
+				} // for
+      } // if
+      TcKeetAnticiposPagosDto anticiposPagos= new TcKeetAnticiposPagosDto();
+      mx.org.kaana.keet.prestamos.proveedor.pagos.reglas.Transaccion pago= new mx.org.kaana.keet.prestamos.proveedor.pagos.reglas.Transaccion(anticiposPagos);
+			List<TcKeetIncidentesDto> anticipos= (List<TcKeetIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetIncidentesDto.class, "VistaNominaDto", "anticipos", params, Constantes.SQL_TODOS_REGISTROS);
+			if(anticipos!= null && !anticipos.isEmpty()) {		
+				for (TcKeetIncidentesDto item: anticipos) {
+					item.setIdIncidenteEstatus(3L);
+					DaoFactory.getInstance().update(sesion, item);
+					TcKeetIncidentesBitacoraDto estatus= new TcKeetIncidentesBitacoraDto(
+						"CAMBIO AUTOMATICO POR NOMINA", // String justificacion, 
+						item.getIdIncidente(), // Long idIncidente, 
+						-1L, // Long idIncidenteBitacora, 
+						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
+						3L // Long idIncidenteEstatus
+					);
+					DaoFactory.getInstance().insert(sesion, estatus);
+          // SE TIENE GENERAR EL ABONO PARA EL PAGO DEL PRESTAMO PORQUE YA FUE COBRADO EN LA NOMINA QUE CIERRA
+          if(Objects.equals(item.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente())) {
+            TcKeetAnticiposDto anticipo= (TcKeetAnticiposDto)DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, item.getIdAnticipo());
+            anticiposPagos.setIdAnticipoPago(-1L);
+            anticiposPagos.setConsecutivo(anticipo.getConsecutivo());
+            anticiposPagos.setIdAnticipo(item.getIdAnticipo());
+            anticiposPagos.setPago(item.getCosto());
+            anticiposPagos.setIdAfectaNomina(2L);
+            anticiposPagos.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
+            pago.toRegistrar(sesion);
           } // if
 				} // for
       } // if

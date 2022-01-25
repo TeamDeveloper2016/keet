@@ -282,6 +282,8 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 		clone.setCargo52(0D);
 		clone.setCargo53(0D);
 		clone.setCargo54(0D);
+		clone.setAnticipo(0D);
+		clone.setRetencion(0D);
 		return clone;
 	}
 	

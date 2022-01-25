@@ -511,14 +511,15 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
 							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
-								// 0       1      2     3        4         5         6				  7			  8
-								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO
+								// 0       1      2     3        4         5         6				  7			  8      9
+								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO|ANTICIPO
 								String manzana = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
 								String lote    = sheet.getCell(1, fila).getContents()!= null? new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
 								String codigo  = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								String nombre  = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								String inicio  = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 								String termino = sheet.getCell(8, fila).getContents()!= null? new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								double anticipo= Numero.getDouble(sheet.getCell(9, fila).getContents()!= null? sheet.getCell(9, fila).getContents().replaceAll("[$, \"]", ""): "0", 0D);
 								double cantidad= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, \"]", ""): "1", 0D);
 								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, \"]", ""): "0", 0D);
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -539,6 +540,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 												codigoRubro  = "";
 												rubro        = 0;
 												costo        = 0D;
+                        anticipo     = 0D;
 												partida++;
 												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
 												if(parcial!= null) {
@@ -562,6 +564,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
 									// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
 									concepto.setCosto(concepto.getCosto()+ costo);
+									concepto.setAnticipo(concepto.getAnticipo()+ anticipo);
 									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
 									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
 									estacion= concepto.clone();
@@ -569,10 +572,13 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									if(rubro== 0L) {
 										parcial= estacion;
 										parcial.setCosto(0D);
+										parcial.setAnticipo(0D);
 									}
 									else
-										if(parcial!= null)
+										if(parcial!= null) {
 											parcial.setCosto(parcial.getCosto()+ costo);
+											parcial.setAnticipo(parcial.getAnticipo()+ anticipo);
+                    } // if 
 									if(item.toLong("nivel")== 5L || (item.toLong("nivel")== 6L && cantidad> 0)) {
 										estacion.setNivel(item.toLong("nivel"));
 										estacion.setUltimo(item.toLong("ultimo"));
@@ -583,6 +589,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 										estacion.setCantidad(cantidad);
 										estacion.setCosto(costo);
+										estacion.setAnticipo(anticipo);
 										Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
 										if(Cadena.isVacio(inicio))
 											estacion.setInicio(contrato.toDate("inicio"));
@@ -691,14 +698,15 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					for(int fila= 1; raiz!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
 							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
-								// 0       1      2     3        4         5         6				  7			  8
-								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO
+								// 0       1      2     3        4         5         6				  7			  8       9
+								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO|ANTICIPO
 								String manzana = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
 								String lote    = sheet.getCell(1, fila).getContents()!= null? new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
 								String codigo  = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								String nombre  = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								String inicio  = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 								String termino = sheet.getCell(8, fila).getContents()!= null? new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+                double anticipo= Numero.getDouble(sheet.getCell(9, fila).getContents()!= null? sheet.getCell(9, fila).getContents().replaceAll("[$, \"]", ""): "0", 0D);
 								double cantidad= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, \"]", ""): "1", 0D);
 								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, \"]", ""): "0", 0D);
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -711,9 +719,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
 										double diferencia= 0D; 
+                    double disparidad= 0D;
 										concepto= this.toConcepto(sesion, estaciones.toKey(4), codigo);
 										if(concepto!= null && concepto.isValid()) {
                       diferencia= costo- concepto.getCosto();
+                      disparidad= anticipo- concepto.getAnticipo();
                     } // if
                     else {
                       // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
@@ -726,6 +736,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                         concepto.setCodigo(codigo);
                         concepto.setIdEstacionEstatus(1L);
                         diferencia= costo;
+                        disparidad= anticipo;
                       } // if
                     } // if
 										if(concepto!= null) {  
@@ -734,6 +745,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                       concepto.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
                       concepto.setCantidad(cantidad);
                       concepto.setCosto(costo);
+                      concepto.setAnticipo(anticipo);
                       if(Cadena.isVacio(inicio))
                         concepto.setInicio(contrato.toDate("inicio"));
                       else
@@ -747,7 +759,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                       if(Objects.equals(concepto.getIdEstacionEstatus(), 1L)) {
                         LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
                         // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
-                        this.toUpdateFathers(sesion, estaciones, concepto, concepto.isValid(), diferencia);
+                        this.toUpdateFathers(sesion, estaciones, concepto, concepto.isValid(), diferencia, disparidad);
                         if(concepto.isValid()) 
                           DaoFactory.getInstance().update(sesion, concepto);
                         else
@@ -765,7 +777,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                           -1L // Long idErrorEstacion
                         );
                         DaoFactory.getInstance().insert(sesion, error);
-                        LOG.error(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion()+ ", VERIFICAR PORQUE YA ESTA PAGADO");
+                        LOG.error(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ ","+ concepto.getAnticipo()+ "} "+ concepto.getDescripcion()+ ", VERIFICAR PORQUE YA ESTA PAGADO");
                       } // else  
   									} // if
 									} // if
@@ -788,6 +800,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                           estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
                           estacion.setCantidad(cantidad);
                           estacion.setCosto(0D);
+                          estacion.setAnticipo(0D);
                           Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
                           if(Cadena.isVacio(inicio))
                             estacion.setInicio(contrato.toDate("inicio"));
@@ -811,7 +824,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										sheet.getCell(0, fila).getContents(), // String codigo, 
 										-1L, // Long idMasivaDetalle, 
 										this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-										"EL CODIGO ["+ codigo+ "] CANTIDAD["+ cantidad+ "] COSTO["+ costo+ "], MANZANA["+ manzana+ "], LOTE["+ lote+ "] ESTAN EN CEROS" // String observaciones
+										"EL CODIGO ["+ codigo+ "] CANTIDAD["+ cantidad+ "] COSTO["+ costo+ "], ANTICIPO["+ anticipo+ "], MANZANA["+ manzana+ "], LOTE["+ lote+ "] ESTAN EN CEROS" // String observaciones
 									);
 									DaoFactory.getInstance().insert(sesion, detalle);
 								} // else	
@@ -2323,7 +2336,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toUpdateControles
 
-  private void toUpdateFathers(Session sesion, Estaciones estaciones, Estacion clon, Boolean clean, Double diferencia) throws Exception {
+  private void toUpdateFathers(Session sesion, Estaciones estaciones, Estacion clon, Boolean clean, Double diferencia, Double disparidad) throws Exception {
     try {      
       List<TcKeetEstacionesDto> items= estaciones.toFather(clon.getClave());
       if(items!= null && !items.isEmpty()) {
@@ -2331,6 +2344,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
           items.remove(items.size()- 1);
         for (TcKeetEstacionesDto item: items) {
           item.setCosto(Numero.toRedondearSat(item.getCosto()+ diferencia));
+          item.setAnticipo(Numero.toRedondearSat(item.getAnticipo()+ disparidad));
           item.setIdEstacionEstatus(
             Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), item.getIdEstacionEstatus())
             ? EEstacionesEstatus.EN_PROCESO.getKey(): 

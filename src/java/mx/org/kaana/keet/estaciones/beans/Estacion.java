@@ -60,7 +60,5 @@ public class Estacion extends TcKeetEstacionesDto implements Serializable {
     hash = 67 * hash + (getIdEstacion() != null ? getIdEstacion().hashCode() : 0);
     return hash;
   }	
-		
-
 	
 }
