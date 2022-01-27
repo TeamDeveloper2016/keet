@@ -71,9 +71,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idProveedor", -1L);
       this.attrs.put("idDepartamento", "-1");
       this.seleccionados= new ArrayList<>();
-      this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			this.doLoad();
-      this.loadCatalogos();
+      this.toLoadCatalogos();
+      this.doLoadDisponible();
+      this.doCalculo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,6 +102,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.seleccionados = seleccionados;
   }
   
+  public Boolean getAgregar() {
+    return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR);  
+  }
+  
   public void doLoad() {
     EAccion eaccion= null;
     try {
@@ -114,10 +119,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.prestamo= new RegistroAnticipo((Long)this.attrs.get("idAnticipo"));
-          this.doLoadDisponible();
           break;
       } // switch
-      this.doCalculo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -125,7 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
   
-	private void loadCatalogos() {
+	private void toLoadCatalogos() {
 		List<Columna>columns      = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -150,7 +153,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(columns);
 		} // finally
-	} // loadCatalogos
+	} // toLoadCatalogos
 	
 	public void doLoadDesarrollos() {
 		List<Columna> columns           = null;
@@ -245,15 +248,17 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {			
 			params.put("idMoroso", this.prestamo.getPrestamo().getIkDeudor().getKey());
 			entity= (Entity)DaoFactory.getInstance().toEntity("VistaMorososDto", "byIdDeudor", params);
-			this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
-			this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
-			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
-			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
-			this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
-      this.attrs.put("idProveedor", entity.toLong("idProveedor"));
-      this.attrs.put("idDepartamento", entity.toString("idDepartamento"));
-      this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
-			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
+      if(entity!= null && !entity.isEmpty()) {
+        this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
+        this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
+        this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
+        this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
+        this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
+        this.attrs.put("idProveedor", entity.toLong("idProveedor"));
+        this.attrs.put("idDepartamento", entity.toString("idDepartamento"));
+        this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
+      } // if  
       this.doLoadConceptos();
     } // try
     catch (Exception e) {
@@ -269,16 +274,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadConceptos() {  
     List<Columna> columns     = null;				
     Map<String, Object> params= new HashMap<>();
-    UISelectEntity contrato   = new UISelectEntity(-1L);
+    UISelectEntity contrato   = this.prestamo.getIkContrato();
     try {			
       this.seleccionados= new ArrayList<>();
       // if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
         params.put("idDepartamento", this.attrs.get("idDepartamento"));
         if((Long)this.attrs.get("idProveedor")!= -1L && this.prestamo.getPrestamo().getIdContrato()!= -1L) {
           List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-          int index= contratos.indexOf(this.prestamo.getIkContrato());
-          if(index>= 0)
-            contrato= contratos.get(index);
+          if(contratos!= null && !contratos.isEmpty()) {
+            int index= contratos.indexOf(this.prestamo.getIkContrato());
+            if(index>= 0)
+              contrato= contratos.get(index);
+          } // if  
           StringBuilder sb= new StringBuilder(Cadena.rellenar(contrato.get("idEmpresa").toString(), 3, '0', true)).
   			  append(contrato.toString("ejercicio")).
           append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
@@ -292,8 +299,17 @@ public class Accion extends IBaseAttribute implements Serializable {
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "anticipos", params, Constantes.SQL_TODOS_REGISTROS);
           if(items!= null && !items.isEmpty()) {
             double anticipo= 0D;
-            for (Entity item: items) 
-              anticipo+= item.toDouble("total");
+            for (Entity item: items) {
+              if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
+                anticipo+= item.toDouble("total");
+                this.seleccionados.add(item);
+              } // if  
+              else 
+                if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) {
+                  anticipo+= item.toDouble("total");
+                  this.seleccionados.add(item);                  
+                } // if  
+            } // for
             this.prestamo.getPrestamo().setImporte(anticipo);
             this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
             this.doCalculo();
@@ -389,7 +405,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
 
   private void toLoadLotes() {
-    if(!this.seleccionados.isEmpty()) { 
+    if(!this.seleccionados.isEmpty()) {
+      double anticipo= 0D;
       this.prestamo.getLotes().clear();
       for(Entity item: this.seleccionados) {
         this.prestamo.getLotes().add(new TcKeetAnticiposLotesDto(
@@ -402,12 +419,16 @@ public class Accion extends IBaseAttribute implements Serializable {
           item.toLong("idEstacion"), // Long idEstacion, 
           item.toLong("idAnticipoLote") // Long idAnticipoLote                
         ));
-      }  
+        anticipo+= item.toDouble("total");
+      } // for
+      this.prestamo.getPrestamo().setImporte(anticipo);
+      this.prestamo.getPrestamo().setIva(anticipo* Constantes.PORCENTAJE_IVA);
+      this.prestamo.getPrestamo().setTotal(anticipo+ this.prestamo.getPrestamo().getIva());
     } // if
   }
   
 	public String toColor(Entity row) {
-		return Objects.equals(row.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())? "": "janal-display-none";
+		return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)? (Objects.equals(row.toLong("idAnticipo"), 0L)? "": "janal-display-none"): (Objects.equals(row.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())? "": "janal-display-none");
 	} // toColor
   
 }

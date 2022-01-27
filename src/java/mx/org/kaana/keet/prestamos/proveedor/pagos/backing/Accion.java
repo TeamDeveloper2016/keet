@@ -63,7 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.pagoDto.setIdAfectaNomina(2L);
 			this.cargarDatosDeudor();
 			this.pagoDto.setIdAnticipo((Long)JsfBase.getFlashAttribute("idAnticipo"));
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

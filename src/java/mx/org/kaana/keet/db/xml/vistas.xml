@@ -71,6 +71,7 @@
 					ifnull(tc_keet_anticipos_pagos.numero_pagos, 0) as numero_pagos,
           tc_keet_anticipos.semanas,
 					tc_keet_anticipos_estatus.nombre as estatus,
+          tc_keet_anticipos.id_afecta_nomina,
 				  tc_keet_anticipos_estatus.id_anticipo_estatus
 				from
 				  tc_keet_anticipos
@@ -6105,6 +6106,7 @@
           tc_keet_estaciones.costo as importe,
           tc_keet_estaciones.anticipo as retencion,
           if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
+          ifnull(tc_keet_anticipos_lotes.id_anticipo, 0) as id_anticipo,
           ifnull(tc_keet_anticipos_lotes.id_anticipo_lote, -1) as id_anticipo_lote,
           ifnull(tc_keet_anticipos_lotes.id_pagado, 2) as id_pagado,
 					principal.*

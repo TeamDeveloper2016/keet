@@ -155,7 +155,7 @@
               <p:dataTable lazy="true" reflow="true" id="conceptos" widgetVar="tablaConceptos" var="row" value="#{keetPrestamosProveedorAccion.conceptos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="500" selection="#{keetPrestamosProveedorAccion.seleccionados}" paginator="false" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetPrestamosProveedorAccion.toColor(row)}">
                 <p:ajax event="rowUnselectCheckbox" listener="#{keetPrestamosProveedorAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
                 <p:ajax event="rowSelectCheckbox" listener="#{keetPrestamosProveedorAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
-                <p:column selectionMode="multiple" styleClass="janal-column-center" style="width:30px;"/>
+                <p:column selectionMode="multiple" styleClass="janal-column-center" style="width:30px;" visible="#{keetPrestamosProveedorAccion.agregar}"/>
                 <p:column class="janal-wid-col-31 janal-column-center">              
                   <f:facet name="header">
                     <h:outputText value="No"/>

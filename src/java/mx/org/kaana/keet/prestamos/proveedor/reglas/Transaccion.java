@@ -71,6 +71,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					} // if
           else {
             for (TcKeetAnticiposLotesDto item: this.prestamo.getLotes()) {
+              item.setIdAnticipo(this.prestamo.getPrestamo().getIdAnticipo());
               if(item.isValid())
                 DaoFactory.getInstance().update(sesion, item);
               else
