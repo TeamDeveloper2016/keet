@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -76,6 +77,31 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                 DaoFactory.getInstance().update(sesion, item);
               else
                 DaoFactory.getInstance().insert(sesion, item);
+            } // for
+          } // if
+					break;
+				case MODIFICAR:
+					deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(TcKeetMorososDto.class, this.prestamo.getPrestamo().getIdMoroso());
+          double diferencia= this.prestamo.getPrestamo().getImporte()- this.prestamo.getImporte();
+					deudoresDto.setSaldo(deudoresDto.getSaldo()+ diferencia);
+					deudoresDto.setDisponible(deudoresDto.getDisponible()- diferencia);
+					DaoFactory.getInstance().update(sesion, deudoresDto);
+					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
+					bitacoraDto= new TcKeetAnticiposBitacoraDto(this.prestamo.getPrestamo().getKey(), this.prestamo.getPrestamo().getIdAnticipoEstatus(), "SE MODIFICO EL ANTICIPO", idUsuario, -1L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
+          if(!Objects.equals(this.prestamo.getPrestamo().getIdMoroso(), this.prestamo.getIdMoroso()))
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetAnticiposLotesDto.class, this.prestamo.getPrestamo().toMap());
+					if(Objects.equals(this.prestamo.getPrestamo().getIdAfectaNomina(), 2L)) {
+            for (TcKeetAnticiposLotesDto item: this.prestamo.getLotes()) {
+              item.setIdAnticipo(this.prestamo.getPrestamo().getIdAnticipo());
+              if(!item.isValid())
+                DaoFactory.getInstance().insert(sesion, item);
+              int index= this.prestamo.getRegistros().indexOf(item.getIdAnticipoLote());
+              if(index>= 0)
+                this.prestamo.getRegistros().remove(index);
+            } // for
+            for (Long key: this.prestamo.getRegistros()) {
+              DaoFactory.getInstance().delete(sesion, TcKeetAnticiposLotesDto.class, key);
             } // for
           } // if
 					break;

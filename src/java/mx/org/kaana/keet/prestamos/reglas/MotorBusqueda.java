@@ -89,9 +89,12 @@ public class MotorBusqueda implements Serializable{
 			params.put("idAnticipo", this.idPrestamo);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> pagos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaAnticiposDto", "pagos", params);
-      if(pagos!= null && !pagos.isEmpty())
+      if(pagos!= null && !pagos.isEmpty()) {
         for (Entity pago: pagos) 
           regresar.add(pago.toDouble("costo"));  
+      }
+      else
+        regresar.add(0D);
 		} // try
 		catch (Exception e) {			
 			throw e;

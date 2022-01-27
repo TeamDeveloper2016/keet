@@ -20,6 +20,9 @@ public class RegistroAnticipo implements Serializable {
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikContrato;
 	private List<TcKeetAnticiposLotesDto> lotes;
+  private Double importe;
+  private Long idMoroso;
+  private List<Long> registros;
 
 	public RegistroAnticipo() {
 		this(-1L);
@@ -30,8 +33,11 @@ public class RegistroAnticipo implements Serializable {
 		this.documentos= new ArrayList<>();
 		this.pagos     = new ArrayList<>();
 		this.lotes     = new ArrayList<>();
+    this.importe   = 0D;
+    this.idMoroso  = -1L;
+		this.registros = new ArrayList<>();
 		this.initCollections(idAnticipo);
-	} // RegistroPrototipo
+	} // RegistroAnticipo
 	
 	public UISelectEntity getIkEmpresa() {
 		return ikEmpresa;
@@ -66,6 +72,18 @@ public class RegistroAnticipo implements Serializable {
   public List<TcKeetAnticiposLotesDto> getLotes() {
     return lotes;
   }
+
+  public Double getImporte() {
+    return importe;
+  }
+
+  public Long getIdMoroso() {
+    return idMoroso;
+  }
+
+  public List<Long> getRegistros() {
+    return registros;
+  }
   
 	private void initCollections(Long idAnticipo) {
 		MotorBusqueda motor= null;
@@ -77,6 +95,8 @@ public class RegistroAnticipo implements Serializable {
         this.setIkEmpresa(new UISelectEntity(this.prestamo.getIdEmpresa()));
         this.setIkDesarrollo(new UISelectEntity(this.prestamo.getIdDesarrollo()));
         this.setIkContrato(new UISelectEntity(this.prestamo.getIdContrato()));
+        this.importe = this.getPrestamo().getImporte();
+        this.idMoroso= this.getPrestamo().getIdMoroso();
 			} // if
       else {
 				this.prestamo= new Anticipo();

@@ -59,7 +59,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Map<String, Object>params= null;

@@ -6999,9 +6999,18 @@
 				) principal
 				inner join
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+        left join
+          tc_keet_contratos_destajos_contratistas on tc_keet_estaciones.id_estacion= tc_keet_contratos_destajos_contratistas.id_estacion
+        left join
+          tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}
+        left join
+          tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion= tc_keet_contratos_destajos_proveedores.id_estacion
+        left join
+          tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
+          and (tc_keet_contratos_lotes_proveedores.id_proveedor is not null or tc_keet_contratos_lotes_contratistas.id_empresa_persona is not null)
 				order by 
 				  tc_keet_estaciones.clave
 			</select>

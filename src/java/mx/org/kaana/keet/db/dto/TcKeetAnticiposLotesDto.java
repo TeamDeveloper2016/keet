@@ -45,6 +45,8 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_anticipo_lote")
   private Long idAnticipoLote;
+	@Column (name="pagado")
+  private Double pagado;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -53,11 +55,11 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetAnticiposLotesDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, null, null, new Long(-1L), 0D);
     setKey(key);
   }
 
-  public TcKeetAnticiposLotesDto(Double anticipo, Long idAnticipo, String codigo, Long idUsuario, Long idPagado, Long idContratoLote, Long idEstacion, Long idAnticipoLote) {
+  public TcKeetAnticiposLotesDto(Double anticipo, Long idAnticipo, String codigo, Long idUsuario, Long idPagado, Long idContratoLote, Long idEstacion, Long idAnticipoLote, Double pagado) {
     setAnticipo(anticipo);
     setIdAnticipo(idAnticipo);
     setCodigo(codigo);
@@ -66,6 +68,7 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
     setIdContratoLote(idContratoLote);
     setIdEstacion(idEstacion);
     setIdAnticipoLote(idAnticipoLote);
+    setPagado(pagado);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -133,6 +136,14 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
     return idAnticipoLote;
   }
 
+  public Double getPagado() {
+    return pagado;
+  }
+
+  public void setPagado(Double pagado) {
+    this.pagado = pagado;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -172,6 +183,8 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAnticipoLote());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPagado());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -188,14 +201,15 @@ public class TcKeetAnticiposLotesDto implements IBaseDto, Serializable {
 		regresar.put("idContratoLote", getIdContratoLote());
 		regresar.put("idEstacion", getIdEstacion());
 		regresar.put("idAnticipoLote", getIdAnticipoLote());
+		regresar.put("pagado", getPagado());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getAnticipo(), getIdAnticipo(), getCodigo(), getIdUsuario(), getIdPagado(), getIdContratoLote(), getIdEstacion(), getIdAnticipoLote(), getRegistro()
+    Object[] regresar = new Object[] {
+      getAnticipo(), getIdAnticipo(), getCodigo(), getIdUsuario(), getIdPagado(), getIdContratoLote(), getIdEstacion(), getIdAnticipoLote(), getPagado(), getRegistro()
     };
     return regresar;
   }

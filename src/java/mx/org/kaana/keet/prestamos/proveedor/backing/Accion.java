@@ -36,7 +36,6 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.cuentas.beans.Cuenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.TabChangeEvent;
@@ -103,7 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public Boolean getAgregar() {
-    return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR);  
+    return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR) || Objects.equals((EAccion)this.attrs.get("accion"), EAccion.MODIFICAR);  
   }
   
   public void doLoad() {
@@ -216,6 +215,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;
     try {			
+      this.toLoadLotes();
       if((Boolean)this.attrs.get("error")) 
         JsfBase.addMessage("Los importes de los pagos semanales no coincide con el anticipo", ETipoMensaje.ERROR);
       else 
@@ -223,7 +223,6 @@ public class Accion extends IBaseAttribute implements Serializable {
           JsfBase.addMessage("El importe de un pago semanal es cero, favor de corregir !", ETipoMensaje.ERROR);
         else {
           eaccion= (EAccion) this.attrs.get("accion");      
-          this.toLoadLotes();
           transaccion= new Transaccion(this.prestamo);
           if (transaccion.ejecutar(eaccion)) {
             JsfBase.setFlashAttribute("idAnticipoProcess", this.prestamo.getPrestamo().getIdAnticipo());
@@ -290,7 +289,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   			  append(contrato.toString("ejercicio")).
           append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
           params.put("clave", sb.toString());
-          params.put("estatus", EEstacionesEstatus.INICIAR.getKey() + "," + EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());			
+          params.put("estatus", EEstacionesEstatus.INICIAR.getKey());			
           columns= new ArrayList<>();      
           columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
           columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
@@ -300,15 +299,20 @@ public class Accion extends IBaseAttribute implements Serializable {
           if(items!= null && !items.isEmpty()) {
             double anticipo= 0D;
             for (Entity item: items) {
-              if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
-                anticipo+= item.toDouble("total");
-                this.seleccionados.add(item);
-              } // if  
-              else 
-                if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) {
+              switch((EAccion)this.attrs.get("accion")) {
+                case AGREGAR:
                   anticipo+= item.toDouble("total");
-                  this.seleccionados.add(item);                  
-                } // if  
+                  this.seleccionados.add(item);
+                  break;
+                case MODIFICAR:
+                case CONSULTAR:
+                  if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) {
+                    this.prestamo.getRegistros().add(item.toLong("idAnticipoLote"));
+                    anticipo+= item.toDouble("total");
+                    this.seleccionados.add(item);                  
+                  } // if  
+                  break;
+              } // switch
             } // for
             this.prestamo.getPrestamo().setImporte(anticipo);
             this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
@@ -394,6 +398,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         for(Entity item: this.seleccionados)					
           anticipo+= item.toDouble("total");
       } // if
+      this.prestamo.getPagos().set(0, anticipo);
       this.prestamo.getPrestamo().setImporte(anticipo);
       this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
       this.doCalculo();
@@ -417,18 +422,33 @@ public class Accion extends IBaseAttribute implements Serializable {
           item.toLong("idPagado"), // Long idPagado, 
           item.toLong("idContratoLote"), // Long idContratoLote, 
           item.toLong("idEstacion"), // Long idEstacion, 
-          item.toLong("idAnticipoLote") // Long idAnticipoLote                
+          item.toLong("idAnticipoLote"), // Long idAnticipoLote                
+          0D // Double pagado
         ));
         anticipo+= item.toDouble("total");
       } // for
+      this.prestamo.getPagos().set(0, anticipo);
       this.prestamo.getPrestamo().setImporte(anticipo);
       this.prestamo.getPrestamo().setIva(anticipo* Constantes.PORCENTAJE_IVA);
       this.prestamo.getPrestamo().setTotal(anticipo+ this.prestamo.getPrestamo().getIva());
+      this.checkCalculos();
     } // if
   }
   
 	public String toColor(Entity row) {
-		return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)? (Objects.equals(row.toLong("idAnticipo"), 0L)? "": "janal-display-none"): (Objects.equals(row.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())? "": "janal-display-none");
+    String regresar= "";
+    switch((EAccion)this.attrs.get("accion")) {
+      case AGREGAR:
+        regresar= Objects.equals(row.toLong("idAnticipo"), 0L)? "": "janal-display-none";
+        break;
+      case MODIFICAR:
+        regresar= Objects.equals(row.toLong("idAnticipo"), 0L) || Objects.equals(row.toLong("idAnticipo"), this.prestamo.getIdAnticipo())? "": "janal-display-none";
+        break;
+      case CONSULTAR:
+        regresar= Objects.equals(row.toLong("idAnticipo"), this.prestamo.getIdAnticipo())? "": "janal-display-none";
+        break;
+    } // switch
+		return regresar; 
 	} // toColor
   
 }
