@@ -87,7 +87,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Anticipos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosProveedorFiltro.doReporte('ANTICIPOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosProveedorFiltro.doReporte('RESUMEN_ANTICIPOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>

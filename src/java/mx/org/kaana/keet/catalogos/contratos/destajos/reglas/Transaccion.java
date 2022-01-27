@@ -17,6 +17,7 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArch
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.ConceptoExtra;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosContratistasArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
@@ -27,6 +28,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosLotesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
@@ -167,8 +169,15 @@ public class Transaccion extends IBaseTnx {
 					params.put("retencion", estacion.getRetencion()+ dto.getAnticipo());										
 					params.put(columna, (Double)estacion.toValue(columna)+ dto.getCosto());										
 					params.put("entrega", LocalDate.now());										
-					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
-						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getAnticipo(), dto.getSemana().toString(), true, this.revision.getIdContratoLote());											
+					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L) 
+						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getAnticipo(), dto.getSemana().toString(), true, this.revision.getIdContratoLote());
+          
+          // ACTUALIZAR EL CONCEPTO DEL PRESTAMO EN LA TABLA DE PRESTAMOS LOTES CON PAGADO= 1 Y EL ANTICIPO PAGADO
+          params.clear();
+          params.put("idEstacion", this.revision.getIdEstacion());
+          params.put("signo", "+");
+          params.put("anticipo", dto.getAnticipo());
+          DaoFactory.getInstance().updateAll(sesion, TcKeetPrestamosLotesDto.class, params);
 				} // if				
 			} // if
 		} // try
@@ -219,6 +228,13 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getAnticipo(), dto.getSemana().toString(), true, this.revision.getIdContratoLote());											
 				} // if
+        
+        // ACTUALIZAR EL CONCEPTO DEL PRESTAMO EN LA TABLA DE ANTICIPOS LOTES CON PAGADO= 1 Y EL ANTICIPO PAGADO
+        params.clear();
+        params.put("idEstacion", this.revision.getIdEstacion());
+        params.put("signo", "+");
+        params.put("anticipo", dto.getAnticipo());
+        DaoFactory.getInstance().updateAll(sesion, TcKeetAnticiposLotesDto.class, params);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -268,7 +284,14 @@ public class Transaccion extends IBaseTnx {
             params.put("entrega", LocalDate.now());
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 							regresar= this.actualizaEstacionPadre(sesion, estacion, calculo, retencion, dto.getSemana().toString(), false, this.revision.getIdContratoLote());											
-					} // if				
+					} // if			
+
+          // ACTUALIZAR EL CONCEPTO DEL PRESTAMO EN LA TABLA DE PRESTAMOS LOTES CON PAGADO= 1 Y EL ANTICIPO PAGADO
+          params.clear();
+          params.put("idEstacion", this.revision.getIdEstacion());
+          params.put("signo", "-");
+          params.put("anticipo", retencion);
+          DaoFactory.getInstance().updateAll(sesion, TcKeetPrestamosLotesDto.class, params);
 				} // if			
 			} // for			
 		} // try
@@ -316,6 +339,13 @@ public class Transaccion extends IBaseTnx {
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 							regresar= this.actualizaEstacionPadre(sesion, estacion, calculo, retencion, dto.getSemana().toString(), false, this.revision.getIdContratoLote());											
 					} // if
+          
+          // ACTUALIZAR EL CONCEPTO DEL PRESTAMO EN LA TABLA DE ANTICIPOS LOTES CON PAGADO= 1 Y EL ANTICIPO PAGADO
+          params.clear();
+          params.put("idEstacion", this.revision.getIdEstacion());
+          params.put("signo", "-");
+          params.put("anticipo", retencion);
+          DaoFactory.getInstance().updateAll(sesion, TcKeetAnticiposLotesDto.class, params);
 				} // if
 			}
 		} // try

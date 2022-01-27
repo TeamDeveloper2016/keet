@@ -7,6 +7,30 @@
   </model>
 
   <dml>
+    <unit id="TcKeetPrestamosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prestamos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_lotes
+        where      
+          id_prestamo = {idPrestamo} and id_estacion = {idEstacion}
+      </select>
+      <delete id="rows">
+        delete tc_keet_prestamos_lotes from tc_keet_prestamos_lotes where id_prestamo= {idPrestamo} and id_pagado= 2
+      </delete>
+      <update id="rows">
+        update tc_keet_prestamos_lotes set id_pagado= if((pagado{signo}{anticipo})> 0, 1, 2), pagado= (pagado{signo}{anticipo}) where id_estacion= {idEstacion}
+      </update>  
+    </unit>    
     <unit id="TcKeetAnticiposLotesDto">
       <select id="row">
         select      
@@ -28,7 +52,7 @@
         delete tc_keet_anticipos_lotes from tc_keet_anticipos_lotes where id_anticipo = {idAnticipo} and id_pagado= 2
       </delete>
       <update id="rows">
-        update tc_keet_anticipos_lotes set id_pagado= if((pagado{signo}{importe})> 0, 1, 2), pagado= (pagado{signo}{importe}) where id_estacion= {idEstacion}
+        update tc_keet_anticipos_lotes set id_pagado= if((pagado{signo}{anticipo})> 0, 1, 2), pagado= (pagado{signo}{anticipo}) where id_estacion= {idEstacion}
       </update>  
     </unit>    
     <unit id="TcKeetPrestamosDetallesDto">
