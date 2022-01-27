@@ -192,12 +192,13 @@ public class Transaccion extends IBaseTnx {
       if(dto== null) {
         dto= new TcKeetContratosDestajosProveedoresDto();
         dto.setIdUsuario(idUsuario);
-        dto.setSemana(toSemana());
-        dto.setPeriodo(toPeriodo());
+        dto.setSemana(this.toSemana());
+        dto.setPeriodo(this.toPeriodo());
         dto.setIdEstacion(this.revision.getIdEstacion());
         dto.setIdContratoLoteProveedor(this.revision.getIdFigura());
         dto.setIdNomina(null);
         dto.setCosto(0D);
+        dto.setAnticipo(0D);
         dto.setPorcentaje(0D);
         dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
         DaoFactory.getInstance().insert(sesion, dto);
@@ -205,6 +206,7 @@ public class Transaccion extends IBaseTnx {
 			if(this.processPuntosSubContratistas(sesion, idUsuario, dto.getKey())) {	
 				dto.setPorcentaje(dto.getPorcentaje()+ this.factorAcumulado);
 				dto.setCosto(dto.getCosto()+ ((estacion.getCosto()* this.factorAcumulado)/ 100));
+				dto.setAnticipo(dto.getAnticipo()+ ((estacion.getAnticipo()* this.factorAcumulado)/ 100));
 				dto.setIdEstacionEstatus(toIdEstacionEstatus());
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 					params= new HashMap<>();

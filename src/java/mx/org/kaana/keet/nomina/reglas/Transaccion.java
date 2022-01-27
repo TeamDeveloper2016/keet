@@ -466,7 +466,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							this.idNomina, // Long idNomina
               0D, // Double fondoGarantia,
               0D, // Double destajo      
-              persona.toDouble("fondoGarantia") // Double porcentajeFondo
+              persona.toDouble("fondoGarantia"), // Double porcentajeFondo
+              0D // anticipo
 						);
 						this.calculos(sesion, monitoreo, proveedor);
 					} // if
@@ -513,7 +514,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							this.idNomina, // Long idNomina
               0D, // Double fondoGarantia
               0D, // Double destajo      
-              persona.toDouble("fondoGarantia") // Double porcentajeFondo
+              persona.toDouble("fondoGarantia"), // Double porcentajeFondo
+              0D // anticipo
 						);
 						this.calculos(sesion, monitoreo, proveedor);
 					} // if

@@ -55,17 +55,27 @@ public class TcKeetAnticiposDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="orden")
   private Long orden;
+  @Column (name="iva")
+  private Double iva;
+  @Column (name="total")
+  private Double total;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="id_contrato")
+  private Long idContrato;
 
   public TcKeetAnticiposDto() {
     this(new Long(-1L));
   }
 
   public TcKeetAnticiposDto(Long key) {
-    this(new Long(-1L), 1L, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), 1L, null, null, null, null, null, null, null, null, null, null, 0D, 0D, null, null, null);
     setKey(key);
   }
 
-  public TcKeetAnticiposDto(Long idAnticipo, Long semanas, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idAnticipoEstatus, Long idAfectaNomina, Long idUsuario, Long idMoroso, String observaciones, Long orden) {
+  public TcKeetAnticiposDto(Long idAnticipo, Long semanas, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idAnticipoEstatus, Long idAfectaNomina, Long idUsuario, Long idMoroso, String observaciones, Long orden, Double iva, Double total, Long idEmpresa, Long idContrato, Long idDesarrollo) {
     setIdAnticipo(idAnticipo);
     setSemanas(semanas);
     setSaldo(saldo);
@@ -79,6 +89,11 @@ public class TcKeetAnticiposDto implements IBaseDto, Serializable {
     setIdMoroso(idMoroso);
     setObservaciones(observaciones);
     setOrden(orden);
+    setIva(iva);
+    setTotal(total);
+    setIdEmpresa(idEmpresa);
+    setIdContrato(idContrato);
+    setIdDesarrollo(idDesarrollo);
   }
 	
   public void setIdAnticipo(Long idAnticipo) {
@@ -185,6 +200,46 @@ public class TcKeetAnticiposDto implements IBaseDto, Serializable {
     return orden;
   }
 
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Double getIva() {
+    return iva;
+  }
+
+  public void setIva(Double iva) {
+    this.iva = iva;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -225,6 +280,16 @@ public class TcKeetAnticiposDto implements IBaseDto, Serializable {
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIva());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -245,13 +310,18 @@ public class TcKeetAnticiposDto implements IBaseDto, Serializable {
 		regresar.put("idMoroso", getIdMoroso());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("orden", getOrden());
+		regresar.put("iva", getIva());
+		regresar.put("total", getTotal());
+		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idContrato", getIdContrato());
+		regresar.put("idEmpresa", getIdEmpresa());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdAnticipo(), getSemanas(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdAnticipoEstatus(), getIdAfectaNomina(), getIdUsuario(), getIdMoroso(), getObservaciones(), getOrden()
+      getIdAnticipo(), getSemanas(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdAnticipoEstatus(), getIdAfectaNomina(), getIdUsuario(), getIdMoroso(), getObservaciones(), getOrden(), getIva(), getTotal(), getIdDesarrollo(), getIdContrato(), getIdEmpresa()
     };
     return regresar;
   }

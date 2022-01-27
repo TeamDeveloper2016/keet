@@ -58,15 +58,17 @@ public class Rubro extends TcKeetNominasRubrosDto implements Cloneable, Serializ
 	@Override
 	public Rubro clone() throws CloneNotSupportedException {  
 		Rubro clone= new Rubro();
-		clone.setCantidad(this.getCantidad());
 		clone.setCodigo(this.getCodigo());
 		clone.setIdNominaProveedor(this.getIdNominaProveedor());
 		clone.setIdNominaRubro(this.getIdNominaRubro());
 		clone.setIdRubro(this.getIdRubro());
-		clone.setIva(this.getIva());
 		clone.setNombre(this.getNombre());
 		clone.setSat(this.getSat());
+		clone.setCantidad(this.getCantidad());
+		clone.setDestajo(this.getDestajo());
+		clone.setAnticipo(this.getAnticipo());
 		clone.setSubtotal(this.getSubtotal());
+		clone.setIva(this.getIva());
 		clone.setTotal(this.getTotal());
 		clone.setRegistro(LocalDateTime.now());
     return clone;  

@@ -61,17 +61,19 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
   private Double destajo;
   @Column (name="porcentaje_fondo")
   private Double porcentajeFondo;
+  @Column (name="anticipo")
+  private Double anticipo;
 
   public TcKeetNominasRubrosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasRubrosDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 0D, 0D, 0.3D);
+    this(null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 0D, 0D, 0.3D, 0D);
     setKey(key);
   }
 
-  public TcKeetNominasRubrosDto(String codigo, Double total, Long idNominaProveedor, Double iva, Double subtotal, String sat, String cantidad, Long idNominaRubro, Long idRubro, String nombre, String lote, Long idContratoLote, Double fondoGarantia, Double destajo, Double porcentajeFondo) {
+  public TcKeetNominasRubrosDto(String codigo, Double total, Long idNominaProveedor, Double iva, Double subtotal, String sat, String cantidad, Long idNominaRubro, Long idRubro, String nombre, String lote, Long idContratoLote, Double fondoGarantia, Double destajo, Double porcentajeFondo, Double anticipo) {
     setCodigo(codigo);
     setTotal(total);
     setIdNominaProveedor(idNominaProveedor);
@@ -88,6 +90,7 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
     this.fondoGarantia= fondoGarantia;
     this.destajo= destajo;
     this.porcentajeFondo= porcentajeFondo;
+    this.anticipo= anticipo;
   }
 	
   public void setCodigo(String codigo) {
@@ -218,6 +221,14 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
     this.porcentajeFondo = porcentajeFondo;
   }
 
+  public Double getAnticipo() {
+    return anticipo;
+  }
+
+  public void setAnticipo(Double anticipo) {
+    this.anticipo = anticipo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -264,6 +275,8 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
 		regresar.append(getPorcentajeFondo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContratoLote());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAnticipo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -287,13 +300,14 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
 		regresar.put("destajo", getDestajo());
 		regresar.put("porcentajeFondo", getPorcentajeFondo());
 		regresar.put("registro", getRegistro());
+		regresar.put("anticipo", getAnticipo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getCodigo(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getSat(), getCantidad(), getIdNominaRubro(), getIdRubro(), getNombre(), getLote(), getIdContratoLote(), getFondoGarantia(), getDestajo(), getPorcentajeFondo(), getRegistro()
+      getCodigo(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getSat(), getCantidad(), getIdNominaRubro(), getIdRubro(), getNombre(), getLote(), getIdContratoLote(), getFondoGarantia(), getDestajo(), getPorcentajeFondo(), getRegistro(), getAnticipo()
     };
     return regresar;
   }

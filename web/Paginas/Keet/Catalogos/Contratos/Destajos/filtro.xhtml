@@ -224,6 +224,12 @@
 							</f:facet>
 							<h:outputText value="#{row['costo']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.anticipo}">
+							<f:facet name="header">
+								<h:outputText value="Anticipo"/>
+							</f:facet>
+							<h:outputText value="#{row['anticipo']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
+						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
@@ -231,7 +237,7 @@
 							<h:outputText value="#{row['registro']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>	
 						<f:facet name="footer">
-							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetCatalogosContratosDestajosFiltro.costoTotal}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetCatalogosContratosDestajosFiltro.costoTotal}]&lt;/strong&gt;&lt;/span&gt;&lt;span class='janal-color-blue'&gt;Amortización de anticipo: &lt;strong&gt;[#{keetCatalogosContratosDestajosFiltro.costoAnticipo}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
 							<p:outputLabel value="  Las filas con el fondo de color verde fueron consideradas en la nómina vigente" style="float: left;"/>
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosFiltro.lazyDestajo== null? 0: keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount}] registros"/>
 						</f:facet>

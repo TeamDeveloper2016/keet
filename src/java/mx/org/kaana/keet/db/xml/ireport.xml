@@ -402,6 +402,8 @@
 				  tc_keet_contratos_destajos_contratistas.porcentaje,
 				  tc_keet_contratos_destajos_contratistas.costo,
 				  tc_keet_contratos_destajos_contratistas.costo as total,
+				  tc_keet_contratos_destajos_contratistas.anticipo,
+				  tc_keet_contratos_destajos_contratistas.anticipo as retencion,
 				  tc_keet_contratos_destajos_contratistas.registro
 				from
 				  tc_keet_contratos_destajos_contratistas 
@@ -450,9 +452,10 @@
 				  ifnull(tc_keet_estaciones.descripcion, tc_keet_estaciones.nombre) as concepto,
 				  tc_keet_contratos_destajos_proveedores.porcentaje,
 				  tc_keet_contratos_destajos_proveedores.costo,
+				  tc_keet_contratos_destajos_proveedores.anticipo,
 				  round(tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100), 2) as garantia,
-				  round((tc_keet_contratos_destajos_proveedores.costo* (1- (tc_mantic_proveedores.fondo_garantia/100))* 0.16), 2) as iva,
-				  round((tc_keet_contratos_destajos_proveedores.costo* (1- (tc_mantic_proveedores.fondo_garantia/100)))* 1.16, 2) as total,
+				  round((tc_keet_contratos_destajos_proveedores.costo* 0.16), 2) as iva,
+				  round(((tc_keet_contratos_destajos_proveedores.costo* 1.16)- tc_keet_contratos_destajos_proveedores.anticipo- (tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100))), 2) as total,
 				  tc_keet_contratos_destajos_proveedores.registro,
 				  tc_mantic_proveedores.fondo_garantia
         from

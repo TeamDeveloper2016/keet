@@ -46,15 +46,18 @@ public class Factura implements Serializable {
 			params.put("idProveedor", proveedor.getIdProveedor());
 			List<TcKeetContratosDestajosProveedoresDto> lotes= (List<TcKeetContratosDestajosProveedoresDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosProveedoresDto.class, "VistaNominaDto", "subContratista", params);
 			if(lotes!= null && !lotes.isEmpty()) {
-				Double suma= 0D;
+				Double suma    = 0D;
+				Double anticipo= 0D;
 				for(TcKeetContratosDestajosProveedoresDto lote: lotes) {
 					lote.setIdNomina(this.nomina.getIdNomina());
 					suma+= lote.getCosto();
+					anticipo+= lote.getAnticipo();
 					DaoFactory.getInstance().update(this.sesion, lote);
 				} // for
 				proveedor.setDestajo(Numero.toRedondearSat(suma));
+				proveedor.setAnticipo(Numero.toRedondearSat(anticipo));
 				proveedor.setFondoGarantia(Numero.toRedondearSat(suma* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
-				proveedor.setSubtotal(Numero.toRedondearSat(proveedor.getDestajo()- proveedor.getFondoGarantia()));
+				proveedor.setSubtotal(Numero.toRedondearSat(proveedor.getDestajo()));
 				proveedor.setIva(Numero.toRedondearSat(proveedor.getSubtotal()* Constantes.PORCENTAJE_IVA));
 				proveedor.setTotal(Numero.toRedondearSat(proveedor.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
 				this.rubros= (List<Rubro>)DaoFactory.getInstance().toEntitySet(this.sesion, Rubro.class, "VistaNominaDto", "rubros", params);
@@ -64,7 +67,7 @@ public class Factura implements Serializable {
 					rubro.setIdNominaProveedor(proveedor.getIdNominaProveedor());
           rubro.setPorcentajeFondo(proveedor.getPorcentajeFondo());
           rubro.setFondoGarantia(Numero.toRedondearSat(rubro.getDestajo()* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
-          rubro.setSubtotal(Numero.toRedondearSat(rubro.getDestajo()- rubro.getFondoGarantia()));
+          rubro.setSubtotal(Numero.toRedondearSat(rubro.getDestajo()));
           rubro.setIva(Numero.toRedondearSat(rubro.getSubtotal()* Constantes.PORCENTAJE_IVA));
           rubro.setTotal(Numero.toRedondearSat(rubro.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
 					DaoFactory.getInstance().insert(this.sesion, rubro);

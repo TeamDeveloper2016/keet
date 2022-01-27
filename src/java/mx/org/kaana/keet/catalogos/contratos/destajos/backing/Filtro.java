@@ -57,6 +57,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	private FormatLazyModel lazyDestajo;
 	private Nomina ultima;  
   private String costoTotal;
+  private String costoAnticipo;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -82,6 +83,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     return this.costoTotal;
 	}
 
+  public String getCostoAnticipo() {
+    return costoAnticipo;
+  }
+
   @PostConstruct
   @Override
   protected void init() {		
@@ -89,7 +94,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Long idDesarrollo        = null;
     try {
 			this.initBase();
-      this.costoTotal  = "$ 0.00";
+      this.costoTotal   = "$ 0.00";
+      this.costoAnticipo= "$ 0.00";
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -552,18 +558,22 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         columns= new ArrayList<>();
         columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
         columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
         this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
         Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "costoPersona": "costoProveedor", params);
-        if(costo!= null && !costo.isEmpty())
-          this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
+        if(costo!= null && !costo.isEmpty()) {
+          this.costoTotal   = Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
+          this.costoAnticipo= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("anticipo"));
+        } // if  
         UIBackingUtilities.resetDataTable("tabla");
         this.attrs.put("destajos", true);
       } // if
       else {
         this.attrs.put("destajos", false);
-        this.lazyDestajo= null;
-        this.costoTotal = "$ 0.00";
+        this.lazyDestajo  = null;
+        this.costoTotal   = "$ 0.00";
+        this.costoAnticipo= "$ 0.00";
         JsfBase.addMessage("No se puede consultar el destajo, no hay contratista ó sub-contratista !");
       } // else
       this.attrs.put("figura", figura);

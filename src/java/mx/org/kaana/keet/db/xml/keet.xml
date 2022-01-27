@@ -7,6 +7,27 @@
   </model>
 
   <dml>
+    <unit id="TcKeetAnticiposLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_lotes
+        where      
+          id_anticipo = {idAnticipo} and id_estacion = {idEstacion}
+      </select>
+      <delete id="rows">
+        delete tc_keet_anticipos_lotes from tc_keet_anticipos_lotes where id_anticipo = {idAnticipo}
+      </delete>
+    </unit>    
     <unit id="TcKeetPrestamosDetallesDto">
       <select id="row">
         select      

@@ -11,12 +11,15 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:idDeudor': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idAfectaNomina': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:importe': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosProveedorAccion.attrs.disponible}})', mascara: 'libre'},
-				'contenedorGrupos\\:antiguedad': {validaciones: 'requerido|flotante|mayor({"cuanto":90})', mascara: 'libre'},
-				'contenedorGrupos\\:semanas': {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+				'contenedorGrupos\\:idSucursal'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idDesarrollo'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idContrato'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idDeudor'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idAfectaNomina': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:importe'       : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosProveedorAccion.attrs.disponible}})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:antiguedad'    : {validaciones: 'requerido|flotante|mayor({"cuanto":90})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:semanas'       : {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
 			};
 
 			$(document).ready(function () {
@@ -37,11 +40,52 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetPrestamosProveedorAccion.doTabChange}" process="@this" update="pagos contenedorGrupos:tabla contenedorGrupos:importe contenedorGrupos:pagos"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+								<p:selectOneMenu id="idSucursal" value="#{keetPrestamosProveedorAccion.prestamo.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" listener="#{keetPrestamosProveedorAccion.doLoadDesarrollos}" update="@(.todos) idDesarrollo idContrato" oncomplete="reloadDesarrollo(); reloadContrato();"/>
+									<f:selectItems value="#{keetPrestamosProveedorAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{keetPrestamosProveedorAccion.prestamo.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" process="@this" listener="#{keetPrestamosProveedorAccion.doLoadContratos}" update="@(.todos) idContrato" oncomplete="reloadContrato();"/>
+									<f:selectItems value="#{keetPrestamosProveedorAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>   
+								</p:selectOneMenu>
+                <p:outputLabel for="idContrato" value="Contrato:"/>
+                <p:selectOneMenu id="idContrato" value="#{keetPrestamosProveedorAccion.prestamo.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="contenedorGrupos:conceptos" listener="#{keetPrestamosProveedorAccion.doLoadConceptos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetPrestamosProveedorAccion.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                  <p:column headerText="Clave" styleClass="janal-wid-10">
+										<p:outputLabel value="#{list.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<p:outputLabel value="#{list.nombre}"/>
+									</p:column>   
+									<p:column headerText="Etapa" styleClass="janal-wid-10">
+										<p:outputLabel value="#{list.etapa}"/>
+									</p:column>   
+									<p:column styleClass="janal-wid-15 janal-column-right" headerText="No. viviendas">
+										<p:outputLabel value="#{list.noViviendas}"/>
+									</p:column>   
+								</p:selectOneMenu>																						
+								<p:separator/>
 								<p:outputLabel for="deudor" value="Subcontratista:"/>
 								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosProveedorAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<p:ajax event="itemSelect" listener="#{keetPrestamosProveedorAccion.doLoadDisponible}" process="@this" update="informacionDeudor semanas pagos"/>
+									<p:ajax event="itemSelect" listener="#{keetPrestamosProveedorAccion.doLoadDisponible}" process="@this" update="informacionDeudor semanas pagos contenedorGrupos:conceptos"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 											<h:outputText value="Nombre:" />
@@ -62,31 +106,33 @@
 									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.attrs.disponible}" readonly="true"/>																								
 									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.attrs.antiguedad}" style="display: none"/>
 								</p:panelGrid>
-                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
-  								<p:outputLabel for="importe" value="Importe del anticipo:"/>
-  								<p:outputLabel value="Pago(s):"/>
-	  							<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.importe}">	
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+                  <p:outputLabel for="importe" value="Importe del anticipo:"/>
+                  <p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.importe}" readonly="true">	
                     <p:ajax event="blur" process="@this" update="pagos" listener="#{keetPrestamosProveedorAccion.doCalculo}"/>
                   </p:inputText>  
-                  <p:inputText id="pagos" styleClass="janal-wid-100-txt janal-color-orange" value="#{keetPrestamosProveedorAccion.attrs.calculo}" readonly="true"/>	
+  								<p:outputLabel value="Pago(s):" styleClass="janal-display-none"/>
+                  <p:inputText id="pagos" styleClass="janal-wid-100-txt janal-color-orange janal-display-none" value="#{keetPrestamosProveedorAccion.attrs.calculo}" readonly="true"/>	
                 </p:panelGrid>  
-                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
-                  <p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
-                  <p:outputLabel for="semanas" value="Semanas:"/>
-                  <p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
+                  <p:outputLabel for="idAfectaNomina" value="Pago segmentado:" styleClass="janal-display-none"/>
+                  <p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-display-none janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
                     <p:ajax event="change" process="@this" update="semanas pagos contenedorGrupos:tabla" listener="#{keetPrestamosProveedorAccion.doCalculo}"/>
-                    <f:selectItem itemValue="1" itemLabel="SI"/>
                     <f:selectItem itemValue="2" itemLabel="NO"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
                   </p:selectOneMenu>				
-                  <p:inputText id="semanas" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.semanas}" disabled="#{keetPrestamosProveedorAccion.prestamo.prestamo.idAfectaNomina eq 2}">
+                  <p:outputLabel for="semanas" value="Semanas:" styleClass="janal-display-none"/>
+                  <p:inputText id="semanas" styleClass="janal-display-none janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.semanas}" disabled="#{keetPrestamosProveedorAccion.prestamo.prestamo.idAfectaNomina eq 2}">
                     <p:ajax event="change" process="@this" update="pagos contenedorGrupos:tabla" listener="#{keetPrestamosProveedorAccion.doCalculo}"/>
                   </p:inputText>  
                 </p:panelGrid>  
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.observaciones}" />
               </p:panelGrid>
+              <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
 						</p:tab>										
-            <p:tab title="Pagos">			
+            <p:tab title="Pagos" rendered="false">			
               <p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosProveedorAccion.prestamo.pagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" rowIndexVar="index" paginatorPosition="bottom">
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-5">
                   <f:facet name="header">
@@ -104,6 +150,58 @@
                 </p:column>														
               </p:dataTable> 
               <p:outputLabel value="La suma de los pagos semanales no coincide con el anticipo (diferencia: #{keetPrestamosProveedorAccion.attrs.diferencia})" styleClass="error janal-font-bold janal-color-orange" style="display: #{keetPrestamosProveedorAccion.attrs.error? '': 'none'}"/>
+						</p:tab>										
+						<p:tab title="Conceptos">
+              <p:dataTable lazy="true" reflow="true" id="conceptos" widgetVar="tablaConceptos" var="row" value="#{keetPrestamosProveedorAccion.conceptos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="500" selection="#{keetPrestamosProveedorAccion.seleccionados}" paginator="false" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetPrestamosProveedorAccion.toColor(row)}">
+                <p:ajax event="rowUnselectCheckbox" listener="#{keetPrestamosProveedorAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
+                <p:ajax event="rowSelectCheckbox" listener="#{keetPrestamosProveedorAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
+                <p:column selectionMode="multiple" styleClass="janal-column-center" style="width:30px;"/>
+                <p:column class="janal-wid-col-31 janal-column-center">              
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+1}.-"/>
+                </p:column>		
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-col-61">
+                  <f:facet name="header">
+                    <h:outputText value="Lote"/>
+                  </f:facet>
+                  <h:outputText value="#{row.lote}"/>
+                </p:column>		                        
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-col-61">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row.codigo}"/>
+                </p:column>		                        
+                <p:column class="janal-column-left MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Concepto(s) del lote"/>
+                  </f:facet>
+                  <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold"/>
+                </p:column>		                        
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-col-101" rendered="#{not kajoolUtilAplicacion.isMobile}">
+                  <f:facet name="header">
+                    <h:outputText value="Costo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.costo}"/>
+                </p:column>		                        
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-col-101" rendered="#{not kajoolUtilAplicacion.isMobile}">
+                  <f:facet name="header">
+                    <h:outputText value="Anticipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.anticipo}"/>
+                </p:column>		                        
+                <p:column class="janal-wid-col-31 janal-column-center">
+                  <f:facet name="header">
+                    <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>
+                  </f:facet>
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3'? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetPrestamosProveedorAccion.conceptos== null? 0: keetPrestamosProveedorAccion.conceptos.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>               
 						</p:tab>										
 					</p:tabView>
 				</div>

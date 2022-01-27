@@ -119,6 +119,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		if(this.ikTipoComprobante!= null)
 		  this.ingreso.setIdTipoComprobante(this.ikTipoComprobante.getKey());
 	}
+  
 	public UISelectEntity getIkEmpresa() {
 		return ikEmpresa;
 	}
@@ -179,8 +180,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   @Override
   protected void init() {		
     try {
-//			if(JsfBase.getFlashAttribute("accion")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			if(JsfBase.getFlashAttribute("accion")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Facturas/filtro": JsfBase.getFlashAttribute("retorno"));

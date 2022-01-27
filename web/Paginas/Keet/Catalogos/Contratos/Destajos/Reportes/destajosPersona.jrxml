@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosPersona" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="1551"/>
+	<property name="ireport.y" value="419"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -76,20 +76,28 @@
 	<field name="PROTOTIPO" class="java.lang.String"/>
 	<field name="CONTRATO" class="java.lang.String"/>
 	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="ANTICIPO" class="java.math.BigDecimal"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
-	<variable name="TOTAL_DESTAJOS" class="java.lang.Long" calculation="Sum">
+	<variable name="COSTO_DESTAJOS" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="DESARROLLO_TOTAL" class="java.lang.Long" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
+	<variable name="DESARROLLO_COSTO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
 		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
+	</variable>
+	<variable name="DESARROLLO_ANTICIPO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
+		<variableExpression><![CDATA[$F{ANTICIPO}]]></variableExpression>
+	</variable>
+	<variable name="ANTICIPO_DESTAJOS" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{ANTICIPO}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<group name="DESARROLLO">
 		<groupExpression><![CDATA[$F{DESARROLLO}]]></groupExpression>
 		<groupHeader>
-			<band height="32">
+			<band height="33">
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement mode="Opaque" x="0" y="1" width="752" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="96bd2f95-7f1a-4651-8d4d-022ebc5abde8"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -141,18 +149,25 @@
 						<text><![CDATA[Concepto]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="572" y="0" width="90" height="15" forecolor="#FFFFFF" uuid="ac4e14ab-c11f-449b-8d65-ac94b2e3615b"/>
+						<reportElement x="572" y="0" width="52" height="15" forecolor="#FFFFFF" uuid="ac4e14ab-c11f-449b-8d65-ac94b2e3615b"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Porcentaje]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="662" y="0" width="90" height="15" forecolor="#FFFFFF" uuid="bc867714-5664-4d77-bc0f-8c2a57461a11"/>
+						<reportElement x="624" y="0" width="75" height="15" forecolor="#FFFFFF" uuid="bc867714-5664-4d77-bc0f-8c2a57461a11"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Costo]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="699" y="0" width="53" height="15" forecolor="#FFFFFF" uuid="a2c38aea-e9bc-45d5-9386-9e23072039c9"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="10" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Anticipo]]></text>
 					</staticText>
 				</frame>
 			</band>
@@ -162,21 +177,28 @@
 				<frame>
 					<reportElement mode="Opaque" x="0" y="5" width="752" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="a9e6f51d-624c-4760-8f13-618f755c251d"/>
 					<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="662" y="0" width="90" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="5b0e44ff-c02d-4880-b84a-fb6be7fbead3"/>
+						<reportElement mode="Opaque" x="624" y="0" width="75" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="5b0e44ff-c02d-4880-b84a-fb6be7fbead3"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$V{DESARROLLO_TOTAL}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$V{DESARROLLO_COSTO}]]></textFieldExpression>
+					</textField>
+					<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00" isBlankWhenNull="true">
+						<reportElement mode="Opaque" x="699" y="0" width="52" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="f4aa792a-50a0-4b60-84da-0698e7320c03"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$V{DESARROLLO_ANTICIPO}]]></textFieldExpression>
 					</textField>
 				</frame>
 				<line>
-					<reportElement x="662" y="0" width="90" height="1" uuid="ab79495c-22a8-4c32-b565-a98a5740b3dc"/>
+					<reportElement x="624" y="0" width="128" height="1" uuid="ab79495c-22a8-4c32-b565-a98a5740b3dc"/>
 					<graphicElement>
 						<pen lineWidth="1.75" lineStyle="Solid"/>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement x="662" y="3" width="90" height="1" uuid="4198cecf-fdf9-49de-9c9c-2dfe7d336785"/>
+					<reportElement x="624" y="3" width="128" height="1" uuid="4198cecf-fdf9-49de-9c9c-2dfe7d336785"/>
 					<graphicElement>
 						<pen lineWidth="1.75" lineStyle="Solid"/>
 					</graphicElement>
@@ -373,18 +395,25 @@
 				</graphicElement>
 			</line>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="572" y="0" width="90" height="14" uuid="f6a2d84c-10bb-4ad7-9421-67504f4b0697"/>
+				<reportElement x="572" y="0" width="52" height="14" uuid="f6a2d84c-10bb-4ad7-9421-67504f4b0697"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PORCENTAJE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="662" y="0" width="90" height="14" uuid="8b8f518e-b420-403e-8f19-cf2c6f8d6d6f"/>
+				<reportElement x="624" y="0" width="75" height="14" uuid="8b8f518e-b420-403e-8f19-cf2c6f8d6d6f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="699" y="0" width="53" height="14" uuid="9a51a2e2-bc4b-4762-beef-544d52f8418b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ANTICIPO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -435,19 +464,26 @@
 				</graphicElement>
 			</line>
 			<textField evaluationTime="Report" pattern="¤ #,##0.00">
-				<reportElement x="662" y="4" width="90" height="15" uuid="c956cf12-330d-49b2-9922-cc5380b7d93d"/>
+				<reportElement x="624" y="4" width="75" height="15" uuid="c956cf12-330d-49b2-9922-cc5380b7d93d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{TOTAL_DESTAJOS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{COSTO_DESTAJOS}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="553" y="4" width="108" height="15" forecolor="#000000" uuid="4043065d-d9be-48cf-909f-a9a6f5762375"/>
+				<reportElement x="553" y="4" width="71" height="15" forecolor="#000000" uuid="4043065d-d9be-48cf-909f-a9a6f5762375"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
+			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+				<reportElement x="699" y="4" width="53" height="15" uuid="00689f2c-2765-48de-824e-749fbf564a87"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ANTICIPO_DESTAJOS}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

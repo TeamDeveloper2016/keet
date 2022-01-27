@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetAnticiposBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposLotesDto;
 import mx.org.kaana.keet.prestamos.proveedor.beans.Documento;
 import mx.org.kaana.keet.db.dto.TcKeetMorososDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
@@ -68,6 +69,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   						super.ejecutar(sesion, EAccion.COMPLEMENTAR);
             } // if
 					} // if
+          else {
+            for (TcKeetAnticiposLotesDto item: this.prestamo.getLotes()) {
+              if(item.isValid())
+                DaoFactory.getInstance().update(sesion, item);
+              else
+                DaoFactory.getInstance().insert(sesion, item);
+            } // for
+          } // if
 					break;
 				case DESACTIVAR:
 					this.prestamo.getPrestamo().setIdAnticipoEstatus(EEstatusPrestamos.CANCELADA.getIdEstatusPrestamo()); // CANCELADA
@@ -78,6 +87,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
 					bitacoraDto= new TcKeetAnticiposBitacoraDto(this.prestamo.getPrestamo().getKey(), this.prestamo.getPrestamo().getIdAnticipoEstatus(), "", idUsuario, -1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
+          // ELIMINAR TODOS LOS ANTICIPOS DE PAGOS DE LOS LOTES QUE FUERON SELECCIONADOS 
+          DaoFactory.getInstance().deleteAll(sesion, TcKeetAnticiposLotesDto.class, this.prestamo.getPrestamo().toMap());
           // IR A LOS INCIDENTES DE NOMINA QUE NO SE HAN COBRADO Y CANCELARLOS
 					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)) {
 						List<Incidente> incidentes= this.toLoadPrestamosIncidente(sesion);
