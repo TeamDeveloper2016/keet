@@ -72,7 +72,8 @@
           tc_keet_anticipos.semanas,
 					tc_keet_anticipos_estatus.nombre as estatus,
           tc_keet_anticipos.id_afecta_nomina,
-				  tc_keet_anticipos_estatus.id_anticipo_estatus
+				  tc_keet_anticipos_estatus.id_anticipo_estatus,
+          sum(if(tc_keet_anticipos_lotes.id_pagado= 1, 1, 0)) as pagados
 				from
 				  tc_keet_anticipos
 				inner join 
@@ -83,8 +84,12 @@
 				  (select count(*) numero_pagos, id_anticipo from tc_keet_anticipos_pagos group by id_anticipo) tc_keet_anticipos_pagos on tc_keet_anticipos.id_anticipo= tc_keet_anticipos_pagos.id_anticipo
 				inner join 
 				  tc_keet_anticipos_estatus on tc_keet_anticipos.id_anticipo_estatus= tc_keet_anticipos_estatus.id_anticipo_estatus
+				left join
+				  tc_keet_anticipos_lotes on tc_keet_anticipos.id_anticipo= tc_keet_anticipos_lotes.id_anticipo
 				where
 				  {condicion}	
+				group by
+				  tc_keet_anticipos.id_anticipo
         {sortOrder}	
 			</select>
 			<select id="byIdAnticipo">
