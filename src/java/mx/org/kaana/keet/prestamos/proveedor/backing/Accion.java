@@ -36,6 +36,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.TabChangeEvent;
@@ -267,7 +268,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
   } // doLoadDisponible
   
   public void doLoadConceptos() {  
@@ -276,50 +277,48 @@ public class Accion extends IBaseAttribute implements Serializable {
     UISelectEntity contrato   = this.prestamo.getIkContrato();
     try {			
       this.seleccionados= new ArrayList<>();
-      // if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
-        params.put("idDepartamento", this.attrs.get("idDepartamento"));
-        if((Long)this.attrs.get("idProveedor")!= -1L && this.prestamo.getPrestamo().getIdContrato()!= -1L) {
-          List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-          if(contratos!= null && !contratos.isEmpty()) {
-            int index= contratos.indexOf(this.prestamo.getIkContrato());
-            if(index>= 0)
-              contrato= contratos.get(index);
-          } // if  
-          StringBuilder sb= new StringBuilder(Cadena.rellenar(contrato.get("idEmpresa").toString(), 3, '0', true)).
-  			  append(contrato.toString("ejercicio")).
-          append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
-          params.put("clave", sb.toString());
-          params.put("estatus", EEstacionesEstatus.INICIAR.getKey());			
-          columns= new ArrayList<>();      
-          columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
-          columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
-          columns.add(new Columna("anticipo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
-          this.conceptos= new FormatLazyModel("VistaCapturaDestajosDto", "anticipos", params, columns);                
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "anticipos", params, Constantes.SQL_TODOS_REGISTROS);
-          if(items!= null && !items.isEmpty()) {
-            double anticipo= 0D;
-            for (Entity item: items) {
-              switch((EAccion)this.attrs.get("accion")) {
-                case AGREGAR:
-                  anticipo+= item.toDouble("total");
-                  this.seleccionados.add(item);
-                  break;
-                case MODIFICAR:
-                case CONSULTAR:
-                  if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) {
-                    this.prestamo.getRegistros().add(item.toLong("idAnticipoLote"));
-                    anticipo+= item.toDouble("total");
-                    this.seleccionados.add(item);                  
-                  } // if  
-                  break;
-              } // switch
-            } // for
-            this.prestamo.getPrestamo().setImporte(anticipo);
-            this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
-            this.doCalculo();
-          } // if  
+      params.put("idDepartamento", this.attrs.get("idDepartamento"));
+      if((Long)this.attrs.get("idProveedor")!= -1L && this.prestamo.getPrestamo().getIdContrato()!= -1L) {
+        List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+        if(contratos!= null && !contratos.isEmpty()) {
+          int index= contratos.indexOf(this.prestamo.getIkContrato());
+          if(index>= 0)
+            contrato= contratos.get(index);
         } // if  
-      // } // if  
+        StringBuilder sb= new StringBuilder(Cadena.rellenar(contrato.get("idEmpresa").toString(), 3, '0', true)).
+        append(contrato.toString("ejercicio")).
+        append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
+        params.put("clave", sb.toString());
+        params.put("estatus", EEstacionesEstatus.INICIAR.getKey());			
+        columns= new ArrayList<>();      
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
+        columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+        columns.add(new Columna("anticipo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+        this.conceptos= new FormatLazyModel("VistaCapturaDestajosDto", "anticiposProveedor", params, columns);                
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "anticiposProveedor", params, Constantes.SQL_TODOS_REGISTROS);
+        if(items!= null && !items.isEmpty()) {
+          double anticipo= 0D;
+          for (Entity item: items) {
+            switch((EAccion)this.attrs.get("accion")) {
+              case AGREGAR:
+                anticipo+= item.toDouble("total");
+                this.seleccionados.add(item);
+                break;
+              case MODIFICAR:
+              case CONSULTAR:
+                if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) {
+                  this.prestamo.getRegistros().add(item.toLong("idAnticipoLote"));
+                  anticipo+= item.toDouble("total");
+                  this.seleccionados.add(item);                  
+                } // if  
+                break;
+            } // switch
+          } // for
+          this.prestamo.getPrestamo().setImporte(anticipo);
+          this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
+          this.doCalculo();
+        } // if  
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -409,7 +408,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     LOG.info(this.conceptos.getRowCount());
   }
 
-  private void toLoadLotes() {
+  private void toLoadLotes() throws Exception {
     if(!this.seleccionados.isEmpty()) {
       double anticipo= 0D;
       this.prestamo.getLotes().clear();
@@ -427,10 +426,16 @@ public class Accion extends IBaseAttribute implements Serializable {
         ));
         anticipo+= item.toDouble("total");
       } // for
+      TcManticProveedoresDto proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, (Long)this.attrs.get("idProveedor"));
+      double fondoGarantia= Constantes.FONDO_DE_GARANTIA;
+      if(proveedor!= null)
+        fondoGarantia= Numero.toRedondearSat(proveedor.getFondoGarantia()/ 100);
       this.prestamo.getPagos().set(0, anticipo);
       this.prestamo.getPrestamo().setImporte(anticipo);
-      this.prestamo.getPrestamo().setIva(anticipo* Constantes.PORCENTAJE_IVA);
-      this.prestamo.getPrestamo().setTotal(anticipo+ this.prestamo.getPrestamo().getIva());
+      this.prestamo.getPrestamo().setFondoGarantia(Numero.toRedondearSat(anticipo* fondoGarantia));
+      this.prestamo.getPrestamo().setSubtotal(Numero.toRedondearSat(anticipo- this.prestamo.getPrestamo().getFondoGarantia()));
+      this.prestamo.getPrestamo().setIva(Numero.toRedondearSat(this.prestamo.getPrestamo().getSubtotal()* Constantes.PORCENTAJE_IVA));
+      this.prestamo.getPrestamo().setTotal(Numero.toRedondearSat(this.prestamo.getPrestamo().getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
       this.checkCalculos();
     } // if
   }

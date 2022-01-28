@@ -145,7 +145,8 @@ public final class Constantes {
   public static final String PASSWORD_ZIP = "oX561r#Yn2%4wp$v";
   public static final int MAX_OPCIONES_ULTIMO_NIVEL= 12;
   
-  public static final double PORCENTAJE_IVA  = 0.16;
+  public static final double PORCENTAJE_IVA   = 0.16;
+  public static final double FONDO_DE_GARANTIA= 0.03;
 
 	public static double PORCENTAJE_MENUDEO= 1.5;
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;

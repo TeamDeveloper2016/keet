@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,16 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosLotesDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -30,14 +36,20 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.TabChangeEvent;
 
 
 @Named(value = "keetPrestamosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
-
+  
+  private static final Log LOG = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private RegistroPrestamo prestamo;
+  private FormatLazyModel conceptos;
+  private List<Entity> seleccionados;
 
 	public RegistroPrestamo getPrestamo() {
 		return prestamo;
@@ -62,9 +74,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("limite", 0);
       this.attrs.put("calculo", 500D);
       this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, LocalDate.now()));      
-      this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.loadCatalogos();
+      this.attrs.put("error", Boolean.FALSE);
+      this.attrs.put("idEmpresaPersona", -1L);
+      this.attrs.put("idDepartamento", "-1");
+      this.seleccionados= new ArrayList<>();
 			this.doLoad();
+      this.toLoadCatalogos();
+      this.doLoadDisponible();
+      this.doCalculo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -72,23 +89,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos() {
-		List<Columna>campos= null;
-		try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
-			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      //this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(campos);
-		} // finally
-	} // loadCatalogos
-	
+  public FormatLazyModel getConceptos() {
+    return conceptos;
+  }
+
+  public List<Entity> getSeleccionados() {
+    return seleccionados;
+  }
+
+  public void setSeleccionados(List<Entity> seleccionados) {
+    this.seleccionados = seleccionados;
+  }
+  
+  public Boolean getAgregar() {
+    return Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR) || Objects.equals((EAccion)this.attrs.get("accion"), EAccion.MODIFICAR);  
+  }
+  
   public void doLoad() {
     EAccion eaccion= null;
     try {
@@ -102,7 +118,6 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.prestamo= new RegistroPrestamo((Long)this.attrs.get("idPrestamo"));
-          this.toLoadDisponible();
           break;
       } // switch
     } // try
@@ -111,12 +126,96 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doLoad
+  
+	private void toLoadCatalogos() {
+		List<Columna>columns      = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idEmpresa", this.prestamo.getIkEmpresa().getKey());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+ 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(!empresas.isEmpty()) {
+				if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
+  				this.prestamo.setIkEmpresa(empresas.get(0));
+			  else 
+				  this.prestamo.setIkEmpresa(empresas.get(empresas.indexOf(this.prestamo.getIkEmpresa())));
+			} // if	
+      this.doLoadDesarrollos();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(columns);
+		} // finally
+  } // toLoadCatalogos
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns           = null;
+    Map<String, Object> params      = null;		
+		List<UISelectEntity> desarrollos= null;
+    try {
+			params= new HashMap<>();					
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + this.prestamo.getIkEmpresa().getKey());
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
+  		this.attrs.put("desarrollos", desarrollos);			
+			if(!desarrollos.isEmpty()) {
+				if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) 
+          this.prestamo.setIkDesarrollo(desarrollos.get(0));
+        else
+				  this.prestamo.setIkDesarrollo(desarrollos.get(desarrollos.indexOf(this.prestamo.getIkDesarrollo())));
+			} // if
+      else {
+				this.attrs.put("desarrollos", new ArrayList<>());
+				this.prestamo.setIkDesarrollo(new UISelectEntity(-1L));
+			} // else
+			this.doLoadContratos();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos
+  
+	public void doLoadContratos() {
+		List<UISelectEntity> contratos= null;
+		Map<String, Object>params     = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.prestamo.getIkDesarrollo());
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+			this.attrs.put("contratos", contratos);
+      if(!contratos.isEmpty()) 
+        if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
+          this.prestamo.setIkContrato(contratos.get(0));
+        else  
+          this.prestamo.setIkContrato(contratos.get(contratos.indexOf(this.prestamo.getIkContrato())));
+		} // try // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadContratos
+  
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
 		EAccion eaccion        = null;
     try {			
+      this.toLoadLotes();
       if((Boolean)this.attrs.get("error")) 
         JsfBase.addMessage("Los importes de los pagos semanales no coincide con el prestamo", ETipoMensaje.ERROR);
       else 
@@ -141,25 +240,95 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 	
-  private void toLoadDisponible() {  
-		Entity entity = null;
+  public void doLoadDisponible() {  
+		Entity entity             = null;
+    List<Columna> columns     = null;				
+    Map<String, Object> params= new HashMap<>();
     try {			
-			this.attrs.put("idDeudor", this.prestamo.getPrestamo().getIkDeudor().getKey());
-			entity= (Entity)DaoFactory.getInstance().toEntity("VistaDeudoresDto", "byIdDeudor", this.attrs);
-			this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
-			this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
-			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
-			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
-			this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
-      this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
-			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
+			params.put("idDeudor", this.prestamo.getPrestamo().getIkDeudor().getKey());
+			entity= (Entity)DaoFactory.getInstance().toEntity("VistaDeudoresDto", "byIdDeudor", params);
+      if(entity!= null && !entity.isEmpty()) {
+        this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
+        this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
+        this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
+        this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
+        this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
+        this.attrs.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
+        this.attrs.put("idDepartamento", entity.toString("idDepartamento"));
+        this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
+      } // if  
+      this.doLoadConceptos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
   } // doLoadDisponible
 
+  public void doLoadConceptos() {  
+    List<Columna> columns     = null;				
+    Map<String, Object> params= new HashMap<>();
+    UISelectEntity contrato   = this.prestamo.getIkContrato();
+    try {			
+      this.seleccionados= new ArrayList<>();
+      params.put("idDepartamento", this.attrs.get("idDepartamento"));
+      if((Long)this.attrs.get("idEmpresaPersona")!= -1L && this.prestamo.getPrestamo().getIdContrato()!= -1L) {
+        List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+        if(contratos!= null && !contratos.isEmpty()) {
+          int index= contratos.indexOf(this.prestamo.getIkContrato());
+          if(index>= 0)
+            contrato= contratos.get(index);
+        } // if  
+        StringBuilder sb= new StringBuilder(Cadena.rellenar(contrato.get("idEmpresa").toString(), 3, '0', true)).
+        append(contrato.toString("ejercicio")).
+        append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
+        params.put("clave", sb.toString());
+        params.put("estatus", EEstacionesEstatus.INICIAR.getKey());			
+        columns= new ArrayList<>();      
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
+        columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+        columns.add(new Columna("anticipo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+        this.conceptos= new FormatLazyModel("VistaCapturaDestajosDto", "anticiposContratista", params, columns);                
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "anticiposContratista", params, Constantes.SQL_TODOS_REGISTROS);
+        if(items!= null && !items.isEmpty()) {
+          double anticipo= 0D;
+          for (Entity item: items) {
+            switch((EAccion)this.attrs.get("accion")) {
+              case AGREGAR:
+                anticipo+= item.toDouble("total");
+                this.seleccionados.add(item);
+                break;
+              case MODIFICAR:
+              case CONSULTAR:
+                if(Objects.equals(item.toLong("idPrestamo"), this.prestamo.getPrestamo().getIdPrestamo())) {
+                  this.prestamo.getRegistros().add(item.toLong("idPrestamoLote"));
+                  anticipo+= item.toDouble("total");
+                  this.seleccionados.add(item);                  
+                } // if  
+                break;
+            } // switch
+          } // for
+          this.prestamo.getPrestamo().setImporte(anticipo);
+          this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
+          this.doCalculo();
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+  } // doLoadDisponible
+  
   public String doCancelar() {   
 		JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());
     return (String) this.attrs.get("retorno");
@@ -173,7 +342,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
-			empresa = this.attrs.get("idEmpresa")==null? null:(UISelectEntity)this.attrs.get("idEmpresa");
+			empresa = this.attrs.get("idEmpresa")== null? null:(UISelectEntity)this.attrs.get("idEmpresa");
 			if(empresa!= null && empresa.getKey()> 0L) 
 			  params.put("sucursales", empresa.getKey());
 			else
@@ -219,5 +388,63 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.attrs.put("diferencia", (this.getPrestamo().getPrestamo().getImporte()- suma));  
     this.attrs.put("error", suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
   }
+  
+  public void doTabChange(TabChangeEvent event) {
+    Double anticipo= 0D;
+		if(event.getTab().getTitle().equals("General")) {
+      if(!this.seleccionados.isEmpty()) { 
+        for(Entity item: this.seleccionados)					
+          anticipo+= item.toDouble("total");
+      } // if
+      this.prestamo.getPagos().set(0, anticipo);
+      this.prestamo.getPrestamo().setImporte(anticipo);
+      this.attrs.put("anticipo", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(anticipo)));
+      this.doCalculo();
+    } // if
+  } 
+  
+  public void doRowSeleccionado() {
+    LOG.info(this.conceptos.getRowCount());
+  }
+
+  private void toLoadLotes() {
+    if(!this.seleccionados.isEmpty()) {
+      double anticipo= 0D;
+      this.prestamo.getLotes().clear();
+      for(Entity item: this.seleccionados) {
+        this.prestamo.getLotes().add(new TcKeetPrestamosLotesDto(
+          item.toDouble("total"), // Double anticipo, 
+          item.toLong("idPrestamoLote"), // Long idPrestamoLote  
+          item.toString("codigo"), // String codigo, 
+          this.prestamo.getIdPrestamo(), // Long idPrestamo, 
+          0D, // Double pagado
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          item.toLong("idPagado"), // Long idPagado, 
+          item.toLong("idContratoLote"), // Long idContratoLote, 
+          item.toLong("idEstacion") // Long idEstacion, 
+        ));
+        anticipo+= item.toDouble("total");
+      } // for
+      this.prestamo.getPagos().set(0, anticipo);
+      this.prestamo.getPrestamo().setImporte(anticipo);
+      this.checkCalculos();
+    } // if
+  }
+  
+	public String toColor(Entity row) {
+    String regresar= "";
+    switch((EAccion)this.attrs.get("accion")) {
+      case AGREGAR:
+        regresar= Objects.equals(row.toLong("idPrestamo"), 0L)? "": "janal-display-none";
+        break;
+      case MODIFICAR:
+        regresar= Objects.equals(row.toLong("idPrestamo"), 0L) || Objects.equals(row.toLong("idPrestamo"), this.prestamo.getIdPrestamo())? "": "janal-display-none";
+        break;
+      case CONSULTAR:
+        regresar= Objects.equals(row.toLong("idPrestamo"), this.prestamo.getIdPrestamo())? "": "janal-display-none";
+        break;
+    } // switch
+		return regresar; 
+	} // toColor
   
 }

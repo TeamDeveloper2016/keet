@@ -2215,6 +2215,42 @@
 			</select>
 		</unit>
 		<unit id="VistaNominaConsultasDto">
+			<select id="anticiposContratistas">				
+        select
+          tc_keet_prestamos_lotes.id_prestamo,
+          sum(tc_keet_contratos_destajos_contratistas.anticipo) as anticipo
+        from
+          tc_keet_contratos_destajos_contratistas
+        inner join
+          tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista= tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        left join
+          tc_keet_prestamos_lotes on tc_keet_contratos_destajos_contratistas.id_estacion= tc_keet_prestamos_lotes.id_estacion and tc_keet_prestamos_lotes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        where
+          tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina}
+          and tc_keet_prestamos_lotes.id_prestamo is not null
+        group by
+          tc_keet_prestamos_lotes.id_prestamo        
+      </select>  
+			<select id="anticiposProveedores">
+        select
+          tc_keet_anticipos_lotes.id_anticipo,
+          sum(tc_keet_contratos_destajos_proveedores.anticipo) as anticipo 
+        from
+          tc_keet_contratos_destajos_proveedores
+        inner join
+          tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        left join
+          tc_keet_anticipos_lotes on tc_keet_contratos_destajos_proveedores.id_estacion= tc_keet_anticipos_lotes.id_estacion and tc_keet_anticipos_lotes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        where
+          tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}
+          and tc_keet_anticipos_lotes.id_anticipo is not null
+        group by
+          tc_keet_anticipos_lotes.id_anticipo        
+      </select>  
 			<select id="residentesTipoContacto">				
 				select      
 					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
@@ -2923,6 +2959,7 @@
 				  tc_keet_contratos_destajos_contratistas.costo,
 				  tc_keet_contratos_destajos_contratistas.anticipo,
           0 as garantia,
+          0 as subtotal,
           0 as iva,
 				  (tc_keet_contratos_destajos_contratistas.costo- tc_keet_contratos_destajos_contratistas.anticipo) as total,
           tc_keet_prototipos.nombre as prototipo,
@@ -2983,9 +3020,10 @@
 				  tc_keet_contratos_destajos_proveedores.porcentaje,
 				  tc_keet_contratos_destajos_proveedores.costo,
           tc_keet_contratos_destajos_proveedores.anticipo,
-				  round(tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100), 2) as garantia,
-				  round((tc_keet_contratos_destajos_proveedores.costo* 0.16), 2) as iva,
-				  round(((tc_keet_contratos_destajos_proveedores.costo* 1.16)- tc_keet_contratos_destajos_proveedores.anticipo- (tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100)), 2) as total,
+				  round((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100), 2) as garantia,
+          round((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)), 2) as subtotal,
+				  round((((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)))* 0.16), 2) as iva,
+				  round((((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)))* 1.16), 2) as total,
           tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_contratos_destajos_proveedores.registro,
 				  tc_mantic_proveedores.fondo_garantia          
@@ -3241,9 +3279,10 @@
 				  tc_keet_contratos_destajos_proveedores.porcentaje,
 				  tc_keet_contratos_destajos_proveedores.costo,
 				  tc_keet_contratos_destajos_proveedores.anticipo,
-				  round(tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100), 2) as garantia,
-				  round((tc_keet_contratos_destajos_proveedores.costo* 0.16), 2) as iva,
-				  round(((tc_keet_contratos_destajos_proveedores.costo* 1.16)- tc_keet_contratos_destajos_proveedores.anticipo- (tc_keet_contratos_destajos_proveedores.costo* (tc_mantic_proveedores.fondo_garantia/100)), 2) as total,
+				  round((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100), 2) as garantia,
+          round((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)), 2) as subtotal,
+				  round((((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)))* 0.16), 2) as iva,
+				  round((((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)- ((tc_keet_contratos_destajos_proveedores.costo- tc_keet_contratos_destajos_proveedores.anticipo)* (tc_mantic_proveedores.fondo_garantia/100)))* 1.16), 2) as total,
           tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_contratos_destajos_proveedores.registro,
 				  tc_mantic_proveedores.fondo_garantia          
@@ -5878,7 +5917,8 @@
 					ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) as numero_pagos,
           tc_keet_prestamos.semanas,
 					tc_keet_prestamos_estatus.nombre estatus,
-				  tc_keet_prestamos_estatus.id_prestamo_estatus
+				  tc_keet_prestamos_estatus.id_prestamo_estatus,
+          sum(if(tc_keet_prestamos_lotes.id_pagado= 1, 1, 0)) as pagados
 				from
 				  tc_keet_prestamos
 				inner join 
@@ -5891,8 +5931,12 @@
 				  (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
 				inner join 
 				  tc_keet_prestamos_estatus on tc_keet_prestamos.id_prestamo_estatus= tc_keet_prestamos_estatus.id_prestamo_estatus
+				left join
+				  tc_keet_prestamos_lotes on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_lotes.id_prestamo
 				where
 				  {condicion}	
+				group by
+				  tc_keet_prestamos.id_prestamo
         {sortOrder}	
 			</select>
 			<select id="importados">
@@ -6097,7 +6141,68 @@
 			</select>
 		</unit>	
 		<unit id="VistaCapturaDestajosDto">
-			<select id="anticipos">
+			<select id="anticiposContratista">
+        select
+					tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.id_estacion,
+					tc_keet_contratos_lotes.id_contrato_lote,
+					tc_keet_estaciones.clave,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+					tc_keet_estaciones.id_estacion_estatus,
+					tc_keet_estaciones.costo,
+					tc_keet_estaciones.anticipo,
+					tc_keet_estaciones.anticipo as total,
+          tc_keet_estaciones.costo as importe,
+          tc_keet_estaciones.anticipo as retencion,
+          if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
+          ifnull(tc_keet_prestamos_lotes.id_prestamo, 0) as id_prestamo,
+          ifnull(tc_keet_prestamos_lotes.id_prestamo_lote, -1) as id_prestamo_lote,
+          ifnull(tc_keet_prestamos_lotes.id_pagado, 2) as id_pagado,
+					principal.*
+				from(  
+				select
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre
+				from 
+					tc_keet_puntos_paquetes
+				inner join 
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				where
+					tc_keet_puntos_grupos.id_departamento in ({idDepartamento})
+          and tc_keet_puntos_grupos.id_extra=2
+				group by
+					tc_keet_puntos_paquetes.id_punto_grupo,   
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros.codigo
+				) principal
+				inner join
+					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+        inner join
+          tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
+        left join
+          tc_keet_prestamos_lotes on tc_keet_estaciones.id_estacion = tc_keet_prestamos_lotes.id_estacion and tc_keet_prestamos_lotes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        left join
+          tc_keet_contratos_destajos_contratistas on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_contratistas.id_estacion
+        left join
+          tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_proveedores.id_estacion         
+				where
+					tc_keet_estaciones.clave like '{clave}%'
+				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
+          and tc_keet_estaciones.anticipo&gt; 0
+        group by
+           tc_keet_estaciones.id_estacion
+        order by 
+				  tc_keet_estaciones.clave        
+      </select>  
+			<select id="anticiposProveedor">
         select
 					tc_keet_estaciones.id_estacion as id_key,
 					tc_keet_estaciones.id_estacion,

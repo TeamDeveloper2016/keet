@@ -56,8 +56,9 @@ public class Factura implements Serializable {
 				} // for
 				proveedor.setDestajo(Numero.toRedondearSat(suma));
 				proveedor.setAnticipo(Numero.toRedondearSat(anticipo));
-				proveedor.setFondoGarantia(Numero.toRedondearSat(suma* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
-				proveedor.setSubtotal(Numero.toRedondearSat(proveedor.getDestajo()));
+        double importe= Numero.toRedondearSat(proveedor.getDestajo()- proveedor.getAnticipo());
+				proveedor.setFondoGarantia(Numero.toRedondearSat(importe* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
+				proveedor.setSubtotal(Numero.toRedondearSat(importe- proveedor.getFondoGarantia()));
 				proveedor.setIva(Numero.toRedondearSat(proveedor.getSubtotal()* Constantes.PORCENTAJE_IVA));
 				proveedor.setTotal(Numero.toRedondearSat(proveedor.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
 				this.rubros= (List<Rubro>)DaoFactory.getInstance().toEntitySet(this.sesion, Rubro.class, "VistaNominaDto", "rubros", params);

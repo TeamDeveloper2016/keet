@@ -82,14 +82,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
   public Boolean toRegistrar(Session sesion) throws Exception {
 		boolean regresar            = Boolean.FALSE;
-		TcKeetMorososDto deudoresDto= null;
+		TcKeetMorososDto morosos    = null;
 		TcKeetAnticiposPagosDto pago= null;
 		try {
       pago= this.calcularPago(sesion, this.prestamosPagos.getIdAnticipo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
-      deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetMorososDto.class, this.idMoroso);
-      deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
-      deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
-      DaoFactory.getInstance().update(sesion, deudoresDto);
+      morosos= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetMorososDto.class, this.idMoroso);
+      morosos.setSaldo(morosos.getSaldo()- pago.getAbono());
+      morosos.setDisponible(morosos.getDisponible()+ pago.getAbono());
+      DaoFactory.getInstance().update(sesion, morosos);
       regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
       this.toCheckIncidentes(sesion, this.prestamosPagos.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
 		} // try 

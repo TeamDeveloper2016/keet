@@ -55,17 +55,23 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   private Long semanas;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="id_contrato")
+  private Long idContrato;
 
   public TcKeetPrestamosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetPrestamosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, 1L);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, 1L, null, null, null);
     setKey(key);
   }
 
-  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idAfectaNomina, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio, Long semanas) {
+  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idAfectaNomina, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio, Long semanas, Long idEmpresa, Long idContrato, Long idDesarrollo) {
     setConsecutivo(consecutivo);
     setIdPrestamo(idPrestamo);
     setIdUsuario(idUsuario);
@@ -79,6 +85,9 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
     this.semanas= semanas;
+    setIdEmpresa(idEmpresa);
+    setIdContrato(idContrato);
+    setIdDesarrollo(idDesarrollo);
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -185,6 +194,30 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
     this.semanas = semanas;
   }
 
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+  
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+  
   @Transient
   @Override
   public Long getKey() {
@@ -225,6 +258,12 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSemanas());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -245,13 +284,16 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("semanas", getSemanas());
+		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idContrato", getIdContrato());
+		regresar.put("idEmpresa", getIdEmpresa());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdAfectaNomina(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getSemanas()
+    Object[] regresar = new Object[] {
+      getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdAfectaNomina(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getSemanas(), getIdDesarrollo(), getIdContrato(), getIdEmpresa()
     };
     return regresar;
   }

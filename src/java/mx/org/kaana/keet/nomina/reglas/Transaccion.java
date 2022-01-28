@@ -194,6 +194,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
             this.closeIncidentes(sesion);	
 						this.toOpenNewNomina(sesion);
+            
+            // REGISTAR EL ABONO DE LOS ANTICIPO DE LOS CONTRATISAS Y SUBCONTRATISTAS
+            this.toAddPagoAnticipo(sesion);
+                    
 						// FALTA HACER EL PROCESO DE MOVER LOS SALDOS A LA NUEVA SEMANA (DE QUE NO RECUERDO)
             
             // QUITAR LOS SOBRE SUELDOS DE LOS EMPLEADOS
@@ -613,7 +617,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             this.prestamosPagos.setPago(item.getCosto());
             this.prestamosPagos.setIdAfectaNomina(2L);
             this.prestamosPagos.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
-            super.ejecutar(sesion, EAccion.REGISTRAR);
+            super.toRegistrar(sesion);
           } // if
 				} // for
       } // if
@@ -1229,5 +1233,47 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       Methods.clean(params);
     } // finally
   }  
-  
+
+  private void toAddPagoAnticipo(Session sesion) throws Exception {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idNomina", this.idNomina);
+      List<Entity> contratistas= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "anticiposContratistas", params);
+      if(contratistas!= null && !contratistas.isEmpty()) {
+        for (Entity item: contratistas) {
+          TcKeetPrestamosDto anticipo= (TcKeetPrestamosDto)DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, item.toLong("idPrestamo"));
+          this.prestamosPagos.setIdPrestamoPago(-1L);
+          this.prestamosPagos.setConsecutivo(anticipo.getConsecutivo());
+          this.prestamosPagos.setIdPrestamo(anticipo.getIdPrestamo());
+          this.prestamosPagos.setPago(item.toDouble("anticipo"));
+          this.prestamosPagos.setIdAfectaNomina(2L);
+          this.prestamosPagos.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
+          super.toRegistrar(sesion);
+        } // for
+      } // if
+      List<Entity> proveedores= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "anticiposProveedores", params);
+      if(proveedores!= null && !proveedores.isEmpty()) {
+        TcKeetAnticiposPagosDto pago= new TcKeetAnticiposPagosDto();
+        mx.org.kaana.keet.prestamos.proveedor.pagos.reglas.Transaccion transaccion= new mx.org.kaana.keet.prestamos.proveedor.pagos.reglas.Transaccion(pago);
+        for (Entity item: proveedores) {
+          TcKeetAnticiposDto anticipo= (TcKeetAnticiposDto)DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, item.toLong("idAnticipo"));
+          pago.setIdAnticipoPago(-1L);
+          pago.setConsecutivo(anticipo.getConsecutivo());
+          pago.setIdAnticipo(anticipo.getIdAnticipo());
+          pago.setPago(item.toDouble("anticipo"));
+          pago.setIdAfectaNomina(2L);
+          pago.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
+          transaccion.toRegistrar(sesion);
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+
 }

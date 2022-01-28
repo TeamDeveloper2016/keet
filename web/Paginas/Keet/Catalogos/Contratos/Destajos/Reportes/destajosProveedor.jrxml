@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosProveedor" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="1551"/>
-	<property name="ireport.y" value="459"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -81,6 +81,7 @@
 	<field name="FONDO_GARANTIA" class="java.lang.Double"/>
 	<field name="TOTAL" class="java.lang.Double"/>
 	<field name="ANTICIPO" class="java.lang.Double"/>
+	<field name="SUBTOTAL" class="java.lang.Double"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -89,7 +90,7 @@
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="DESARROLLO_SUBTOTAL" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
-		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
+		<variableExpression><![CDATA[$F{SUBTOTAL}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="DESARROLLO_IVA" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
@@ -113,7 +114,7 @@
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="SUBTOTAL_REPORTE" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
+		<variableExpression><![CDATA[$F{SUBTOTAL}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="TOTAL_REPORTE" class="java.lang.Double" calculation="Sum">
@@ -500,7 +501,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{COSTO}-$F{GARANTIA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{SUBTOTAL}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="654" y="0" width="42" height="14" uuid="1d8c29ad-b41f-474c-8686-e70c1ef2b711"/>

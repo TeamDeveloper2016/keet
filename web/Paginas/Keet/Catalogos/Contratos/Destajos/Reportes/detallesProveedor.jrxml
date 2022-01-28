@@ -82,7 +82,8 @@
 	<field name="IVA" class="java.lang.Double"/>
 	<field name="FONDO_GARANTIA" class="java.lang.Double"/>
 	<field name="TOTAL" class="java.lang.Double"/>
-	<field name="ANTICIPO" class="java.math.BigDecimal"/>
+	<field name="ANTICIPO" class="java.lang.Double"/>
+	<field name="SUBTOTAL" class="java.lang.Double"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -103,7 +104,7 @@
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="DESARROLLO_SUBTOTAL" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
-		<variableExpression><![CDATA[$F{COSTO}-$F{GARANTIA}]]></variableExpression>
+		<variableExpression><![CDATA[$F{SUBTOTAL}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="DESARROLLO_COSTO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
@@ -243,7 +244,7 @@
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$V{DESARROLLO_COSTO}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$V{DESARROLLO_SUBTOTAL}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00" isBlankWhenNull="true">
 						<reportElement mode="Opaque" x="553" y="0" width="44" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="55c40234-01dd-4655-849a-d2c188094c06"/>
@@ -517,7 +518,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{SUBTOTAL}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="553" y="0" width="44" height="14" uuid="4f0d10d7-c3ee-4d5d-b35f-97cb6a97506d"/>

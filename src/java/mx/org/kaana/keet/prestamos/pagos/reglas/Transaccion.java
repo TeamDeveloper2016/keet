@@ -62,18 +62,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			switch(accion){
 				case REGISTRAR:
-					pago= this.calcularPago(sesion, this.prestamosPagos.getIdPrestamo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
-					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
-					deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
-					deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
-					DaoFactory.getInstance().update(sesion, deudoresDto);
-					regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
-          this.toCheckIncidentes(sesion, this.prestamosPagos.getIdPrestamo(), pago.getIdPrestamoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
-					this.pagos= 1;
-//					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)) {
-//						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-//						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-//					} // if
+          regresar= this.toRegistrar(sesion);
 					break;
 				case COMPLETO:
 					pago= this.prestamosPagos;
@@ -108,6 +97,25 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	}	// ejecutar
 	
+  public Boolean toRegistrar(Session sesion) throws Exception {
+		boolean regresar            = Boolean.FALSE;
+		TcKeetDeudoresDto deudores  = null;
+		TcKeetPrestamosPagosDto pago= null;
+		try {
+      pago= this.calcularPago(sesion, this.prestamosPagos.getIdPrestamo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
+      deudores= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
+      deudores.setSaldo(deudores.getSaldo()- pago.getAbono());
+      deudores.setDisponible(deudores.getDisponible()+ pago.getAbono());
+      DaoFactory.getInstance().update(sesion, deudores);
+      regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+      this.toCheckIncidentes(sesion, this.prestamosPagos.getIdPrestamo(), pago.getIdPrestamoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
+		} // try 
+		catch (Exception e) {			
+			throw new Exception(e);
+		} // catch		
+		return regresar;
+  }
+  
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;

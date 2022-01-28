@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -12,6 +13,7 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.prestamos.beans.Documento;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrestamosBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosLotesDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.enums.EEstatusPrestamos;
@@ -69,6 +71,31 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
             } // if
 					} // if
 					break;
+				case MODIFICAR:
+					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIdDeudor());
+          double diferencia= this.prestamo.getPrestamo().getImporte()- this.prestamo.getImporte();
+					deudoresDto.setSaldo(deudoresDto.getSaldo()+ diferencia);
+					deudoresDto.setDisponible(deudoresDto.getDisponible()- diferencia);
+					DaoFactory.getInstance().update(sesion, deudoresDto);
+					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
+					bitacoraDto= new TcKeetPrestamosBitacoraDto("SE MODIFICO EL ANTICIPO", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
+          if(!Objects.equals(this.prestamo.getPrestamo().getIdDeudor(), this.prestamo.getIdDeudor()))
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetPrestamosLotesDto.class, this.prestamo.getPrestamo().toMap());
+					if(Objects.equals(this.prestamo.getPrestamo().getIdAfectaNomina(), 2L)) {
+            for (TcKeetPrestamosLotesDto item: this.prestamo.getLotes()) {
+              item.setIdPrestamo(this.prestamo.getPrestamo().getIdPrestamo());
+              if(!item.isValid())
+                DaoFactory.getInstance().insert(sesion, item);
+              int index= this.prestamo.getRegistros().indexOf(item.getIdPrestamoLote());
+              if(index>= 0)
+                this.prestamo.getRegistros().remove(index);
+            } // for
+            for (Long key: this.prestamo.getRegistros()) {
+              DaoFactory.getInstance().delete(sesion, TcKeetPrestamosLotesDto.class, key);
+            } // for
+          } // if
+					break;          
 				case DESACTIVAR:
 					this.prestamo.getPrestamo().setIdPrestamoEstatus(EEstatusPrestamos.CANCELADA.getIdEstatusPrestamo());// CANCELADA
 					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIdDeudor());
