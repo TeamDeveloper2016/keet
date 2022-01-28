@@ -66,9 +66,10 @@ public class Factura implements Serializable {
 				// ALMACENAR EL DETALLE DE CALCULO DE LA NOMINA DEL PROVEEDOR
 				for (Rubro rubro: this.rubros) {
 					rubro.setIdNominaProveedor(proveedor.getIdNominaProveedor());
+          importe= Numero.toRedondearSat(rubro.getDestajo()- rubro.getAnticipo());
           rubro.setPorcentajeFondo(proveedor.getPorcentajeFondo());
-          rubro.setFondoGarantia(Numero.toRedondearSat(rubro.getDestajo()* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
-          rubro.setSubtotal(Numero.toRedondearSat(rubro.getDestajo()));
+          rubro.setFondoGarantia(Numero.toRedondearSat(importe* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
+          rubro.setSubtotal(Numero.toRedondearSat(importe- rubro.getFondoGarantia()));
           rubro.setIva(Numero.toRedondearSat(rubro.getSubtotal()* Constantes.PORCENTAJE_IVA));
           rubro.setTotal(Numero.toRedondearSat(rubro.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
 					DaoFactory.getInstance().insert(this.sesion, rubro);
