@@ -3872,7 +3872,7 @@
 			  where
 				  tc_keet_incidentes.id_nomina is null
 				  and tc_keet_incidentes.id_incidente_estatus= 2
-				  and tc_keet_incidentes.id_afecta_nomina= 2
+				  and tc_mantic_tipos_incidentes.id_afecta_nomina= 2
 			  union all
  			  select
 				  tc_keet_incidentes.*
