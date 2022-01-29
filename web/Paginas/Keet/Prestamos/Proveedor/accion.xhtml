@@ -83,8 +83,8 @@
 									</p:column>   
 								</p:selectOneMenu>																						
 								<p:separator/>
-								<p:outputLabel for="deudor" value="Subcontratista:"/>
-								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosProveedorAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:outputLabel for="idDeudor" value="Subcontratista:"/>
+								<p:autoComplete id="idDeudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosProveedorAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<p:ajax event="itemSelect" listener="#{keetPrestamosProveedorAccion.doLoadDisponible}" process="@this" update="informacionDeudor semanas pagos contenedorGrupos:conceptos"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

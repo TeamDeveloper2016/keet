@@ -366,7 +366,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     if(this.getPrestamo().getPrestamo().getSemanas()<= 0)
       this.getPrestamo().getPrestamo().setSemanas(1L);
     if(this.getPrestamo().getPrestamo().getImporte()<= 0)
-      this.getPrestamo().getPrestamo().setImporte(1D);
+      this.getPrestamo().getPrestamo().setImporte(0D);
     double calculo= Numero.toRedondear(this.getPrestamo().getPrestamo().getImporte()/ this.getPrestamo().getPrestamo().getSemanas());
     this.attrs.put("calculo", calculo); 
     if(Objects.equals((EAccion) this.attrs.get("accion"), EAccion.AGREGAR)) {
@@ -387,7 +387,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put("ceros", Boolean.TRUE);  
     } // if  
     this.attrs.put("diferencia", (this.getPrestamo().getPrestamo().getImporte()- suma));  
-    this.attrs.put("error", suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
+    this.attrs.put("error", this.getPrestamo().getPrestamo().getImporte()== 0D || suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
   }
 
   public void doTabChange(TabChangeEvent event) {

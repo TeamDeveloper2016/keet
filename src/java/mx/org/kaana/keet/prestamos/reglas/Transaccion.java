@@ -49,7 +49,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			idUsuario= JsfBase.getIdUsuario();
 			switch(accion){
 				case AGREGAR:
-					siguiente= toSiguiente(sesion);
+					siguiente= this.toSiguiente(sesion);
 					this.prestamo.getPrestamo().setConsecutivo(siguiente.getConsecutivo());
 					this.prestamo.getPrestamo().setOrden(siguiente.getOrden());
 					this.prestamo.getPrestamo().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));

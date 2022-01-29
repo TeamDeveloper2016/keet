@@ -10,7 +10,7 @@ public class Prestamo extends TcKeetPrestamosDto {
 
 	public Prestamo() {
 		this(new UISelectEntity(-1L));
-		this.setImporte(500D);
+		this.setImporte(0D);
 	}
 
 	public Prestamo(UISelectEntity ikDeudor) {

@@ -82,8 +82,8 @@
 									</p:column>   
 								</p:selectOneMenu>																						
 								<p:separator/>
-                <p:outputLabel for="deudor" value="Empleado(a):"/>
-								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <p:outputLabel for="idDeudor" value="Empleado(a):"/>
+								<p:autoComplete id="idDeudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="informacionDeudor semanas pagos"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -150,7 +150,7 @@
               </p:dataTable> 
               <p:outputLabel value="La suma de los pagos semanales no coincide con el prestamo (diferencia: #{keetPrestamosAccion.attrs.diferencia})" styleClass="error janal-font-bold janal-color-orange" style="display: #{keetPrestamosAccion.attrs.error? '': 'none'}"/>
 						</p:tab>										
-						<p:tab title="Conceptos">
+						<p:tab title="Conceptos" rendered="false">
               <p:dataTable lazy="true" reflow="true" id="conceptos" widgetVar="tablaConceptos" var="row" value="#{keetPrestamosAccion.conceptos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="500" selection="#{keetPrestamosAccion.seleccionados}" paginator="false" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetPrestamosAccion.toColor(row)}">
                 <p:ajax event="rowUnselectCheckbox" listener="#{keetPrestamosAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
                 <p:ajax event="rowSelectCheckbox" listener="#{keetPrestamosAccion.doRowSeleccionado}" process="@this conceptos" update="contenedorGrupos:importe" oncomplete="PF('tablaConceptos').writeSelections()" skipChildren="false"/>
