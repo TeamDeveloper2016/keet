@@ -4383,6 +4383,8 @@
           tc_keet_partidas.orden 
         from
           tc_keet_partidas
+        where
+          tc_keet_partidas.id_destajo= 1          
         order by
          tc_keet_partidas.orden        
       </select>  

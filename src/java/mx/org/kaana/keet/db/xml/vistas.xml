@@ -5917,6 +5917,7 @@
           tc_keet_contratos.id_contrato,
           tc_keet_contratos.ejercicio,
           tc_keet_contratos.orden,
+          tc_keet_contratos.no_viviendas,
           tc_keet_prototipos.id_prototipo,
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_clientes.razon_social as cliente,

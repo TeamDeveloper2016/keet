@@ -131,7 +131,7 @@ public class Dias extends IBaseAttribute implements Serializable {
   private Boolean checkDias() {
     Boolean regresar= Boolean.TRUE;
     for (Partida item: this.partidas) {
-      if(item.getDias()<= 0D) {
+      if(item.getDias()< 0D) {
         regresar= Boolean.FALSE;
         break;
       } // if  

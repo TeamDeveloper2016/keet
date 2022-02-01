@@ -109,8 +109,15 @@ public class Costos extends IBaseAttribute implements Serializable {
       params.put("codigo", this.attrs.get("codigo"));      
 			this.estaciones= (List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaEstacionesDto", "costos", params, Constantes.SQL_TODOS_REGISTROS);
 	    if(this.estaciones!= null && !this.estaciones.isEmpty()) {
-        for (Partida item: this.estaciones) {
-          item.setAccion(ESql.SELECT);
+        int count= 0;
+        while(count< this.estaciones.size()) {
+          Partida item= this.estaciones.get(count);
+          if(item.isCostoEditable()) {
+            item.setAccion(ESql.SELECT);
+            count++;
+          } //   
+          else
+            this.estaciones.remove(count);
         } // for
       } // if  
 		} // try
@@ -173,14 +180,14 @@ public class Costos extends IBaseAttribute implements Serializable {
  
   public void doReplicarCosto(Partida row) {
     for (Partida item : this.estaciones) {
-      if(!Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
+      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
         item.setCosto(row.getCosto()); 
     } // for
   }
   
   public void doReplicarAnticipo(Partida row) {
     for (Partida item : this.estaciones) {
-      if(!Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
+      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
         item.setAnticipo(row.getAnticipo()); 
     } // for
   }
