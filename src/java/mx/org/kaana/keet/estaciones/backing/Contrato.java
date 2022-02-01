@@ -227,6 +227,45 @@ public class Contrato extends Filtro implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+
+  public String doCheckDates(Entity row) {
+    String regresar= null;
+    try {      
+      JsfBase.setFlashAttribute("idEstacion", row.toLong("idEstacion"));
+      JsfBase.setFlashAttribute("idContrato", row.toLong("idContrato"));
+      JsfBase.setFlashAttribute("idContratoLote", row.toLong("idContratoLote"));
+      JsfBase.setFlashAttribute("siguiente", row.toString("siguiente"));
+      JsfBase.setFlashAttribute("estacionProcess", this.current);
+      JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+      regresar= "fechas".concat(Constantes.REDIRECIONAR);
+    } // try
+    catch (Exception e) {
+			JsfBase.addMessageError(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }  
+  
+  public String doCheckCostos(Entity row) {
+    String regresar= null;
+    try {      
+      JsfBase.setFlashAttribute("idEstacion", row.toLong("idEstacion"));
+      JsfBase.setFlashAttribute("idContrato", row.toLong("idContrato"));
+      JsfBase.setFlashAttribute("idContratoLote", row.toLong("idContratoLote"));
+      JsfBase.setFlashAttribute("siguiente", row.toString("siguiente"));
+      JsfBase.setFlashAttribute("codigo", row.toString("codigo"));
+      JsfBase.setFlashAttribute("estacionProcess", this.current);
+      JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+      regresar= "costos".concat(Constantes.REDIRECIONAR);
+    } // try
+    catch (Exception e) {
+			JsfBase.addMessageError(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }  
   
 }
 

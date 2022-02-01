@@ -43,6 +43,8 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="nivel")
   private Long nivel;
+  @Column (name="dias")
+  private Long dias;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -51,11 +53,11 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPartidasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, 5L);
     setKey(key);
   }
 
-  public TcKeetPartidasDto(String descripcion, String codigo, Long idUsuario, Long idPartida, Long orden, String nombre, Long nivel) {
+  public TcKeetPartidasDto(String descripcion, String codigo, Long idUsuario, Long idPartida, Long orden, String nombre, Long nivel, Long dias) {
     setDescripcion(descripcion);
     setCodigo(codigo);
     setIdUsuario(idUsuario);
@@ -63,6 +65,7 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
     setOrden(orden);
     setNombre(nombre);
     setNivel(nivel);
+    setDias(dias);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -122,6 +125,14 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
     return nivel;
   }
 
+  public Long getDias() {
+    return dias;
+  }
+
+  public void setDias(Long dias) {
+    this.dias = dias;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -159,6 +170,8 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNivel());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDias());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -174,14 +187,15 @@ public class TcKeetPartidasDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("nombre", getNombre());
 		regresar.put("nivel", getNivel());
+		regresar.put("dias", getDias());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getDescripcion(), getCodigo(), getIdUsuario(), getIdPartida(), getOrden(), getNombre(), getNivel(), getRegistro()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getCodigo(), getIdUsuario(), getIdPartida(), getOrden(), getNombre(), getNivel(), getDias(), getRegistro()
     };
     return regresar;
   }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Ajustar los días de las estaciones por prototipo" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:dias': {multiple: '$', validaciones: 'requerido|entero', mascara: 'libre'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetCatalogosPrototiposDias.attrs.nombreAccion}');
+			});
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="Días por estación">
+    					<p:dataTable lazy="false" id="partidas" widgetVar="kajoolPartidas" var="row" value="#{keetCatalogosPrototiposDias.partidas}" rowKey="#{row.idPartida}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_TOPE_PAGINA}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">							
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasXls', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasXls', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	
+                <p:column styleClass="MarAuto Responsive janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>								
+                <p:column styleClass="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Prototipo"/>
+                  </f:facet>
+                  <h:outputText value="#{keetCatalogosPrototiposDias.attrs.prototipo}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-30">
+                  <f:facet name="header">
+                    <h:outputText value="Cliente"/>
+                  </f:facet>
+                  <h:outputText value="#{keetCatalogosPrototiposDias.attrs.cliente}" style="white-space: nowrap;"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Estación"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-15">
+                  <f:facet name="header">
+                    <h:outputText value="Días"/>
+                  </f:facet>
+                  <p:inputNumber id="dias" value="#{row['dias']}" styleClass="dias" inputStyleClass="janal-wid-70" converter="javax.faces.Long" decimalPlaces="0" minValue="0"/>
+                  <p:commandButton icon="fa fa-copy" process="@this @(.dias)" update="@(.dias)" action="#{keetCatalogosPrototiposDias.doReplicarDias(row)}" title="Replicar días" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-float-right"/>
+                </p:column>														
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetCatalogosPrototiposDias.partidas== null? 0: keetCatalogosPrototiposDias.partidas.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+						</p:tab>
+					</p:tabView>
+          <h:commandLink id="datasPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:partidas" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="datasXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:partidas" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>	              
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosPrototiposDias.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosPrototiposDias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosPrototiposDias.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosPrototiposDias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

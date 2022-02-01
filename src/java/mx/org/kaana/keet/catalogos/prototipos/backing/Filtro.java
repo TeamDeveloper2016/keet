@@ -145,6 +145,13 @@ public class Filtro extends IBaseFilter implements Serializable {
           else 
             JsfBase.addMessage("Prototipo", "No se tiene asignado una plantilla de estaciones / conceptos");
 					break;
+				case MOVIMIENTOS:
+          JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);      
+          JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(EAccion.MODIFICAR.getName().toUpperCase()));           
+          JsfBase.setFlashAttribute("prototipo", ((Entity)this.attrs.get("seleccionado")).toString("nombre"));
+          JsfBase.setFlashAttribute("cliente", ((Entity)this.attrs.get("seleccionado")).toString("razonSocial"));
+				  regresar= "dias".concat(Constantes.REDIRECIONAR);	
+				  break;
         default:  
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
           break;

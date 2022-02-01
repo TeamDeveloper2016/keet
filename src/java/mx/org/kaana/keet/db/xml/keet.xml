@@ -2468,6 +2468,26 @@
 				where
 	        clave like '{clave}%'
 			</update>
+			<update id="periodo">
+				update
+				  tc_keet_estaciones
+				set
+				  inicio= date_format('{inicio}', '%Y%m%d'),
+          termino= date_format('{termino}', '%Y%m%d')
+				where
+	        clave= '{clave}'
+          and nivel= 4
+			</update>
+			<update id="fechas">
+				update
+				  tc_keet_estaciones
+				set
+				  inicio= date_format('{inicio}', '%Y%m%d'),
+          termino= date_format('{termino}', '%Y%m%d')
+				where
+	        clave like '{clave}%'
+          and (nivel= 5 or nivel= 6)
+			</update>
     </unit>		
     <unit id="TcKeetEspecialidadesDto">
       <select id="row">
@@ -3371,9 +3391,9 @@
         from      
           tc_keet_prototipos_dias
         where      
-          id_prototipo_dia = {idPrototipoDia} and id_nombre_dia = {idNombreDia} and id_prototipo = {idPrototipo}
+          id_partida = {idPartida} and id_prototipo = {idPrototipo}
       </select>
-			<delete id="byIdPrototipo">
+			<delete id="igual">
 				delete from tc_keet_prototipos_dias where id_prototipo= {idPrototipo}
 			</delete>
     </unit>
@@ -4349,6 +4369,23 @@
         where      
           codigo = '{codigo}' and id_partida = {idPartida}
       </select>
+      <select id="partidas">
+        select
+          tc_keet_partidas.id_partida as id_key,
+          -1 as id_estacion,
+          tc_keet_partidas.codigo,
+          tc_keet_partidas.nombre,
+          tc_keet_partidas.dias as anterior,
+          {idPrototipo} as id_prototipo,
+          tc_keet_partidas.id_partida,  
+          {idUsuario} as id_usuario,
+          tc_keet_partidas.dias,
+          tc_keet_partidas.orden 
+        from
+          tc_keet_partidas
+        order by
+         tc_keet_partidas.orden        
+      </select>  
     </unit>
 		<unit id="TcKeetValesArchivosDto">
       <select id="row">

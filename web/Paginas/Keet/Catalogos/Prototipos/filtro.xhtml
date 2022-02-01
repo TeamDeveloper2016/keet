@@ -126,31 +126,31 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetCatalogosPrototiposFiltro.doUpload()}" onstart="return janal.bloquear()"/>
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}" rendered="false">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Descripcion" />
               </f:facet>
               <h:outputText value="#{row['descripcion']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.metros2}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.metros2}">
               <f:facet name="header">
                 <h:outputText value="Metros cuadrados" />
               </f:facet>
@@ -164,13 +164,15 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{keetCatalogosPrototiposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem value="Consultar" action="#{keetCatalogosPrototiposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:menuitem value="Modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem value="Eliminar" icon="fa fa-close" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
-            <p:menuitem id="importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="estaciones" action="#{keetCatalogosPrototiposFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem value="Importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem value="Estaciones" action="#{keetCatalogosPrototiposFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+            <p:menuitem value="Días" action="#{keetCatalogosPrototiposFiltro.doAccion('MOVIMIENTOS')}" icon="fa fa-calendar-alt" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
           <p:spacer height="3px"/>
         </div>

@@ -123,77 +123,72 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-col-31" exportable="false">
+            <p:column styleClass="MarAuto Responsive janal-wid-col-31" exportable="false">
 							<f:facet name="header">
 								<h:outputText value="No"/>
 							</f:facet>
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-8">
+						<p:column styleClass="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Clave"/>
 							</f:facet>
 							<h:outputText value="#{row['numero']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-13">
+						<p:column styleClass="MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
 							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-8">
+						<p:column styleClass="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
               <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-8">
+						<p:column styleClass="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
 							<h:outputText value="#{row['codigo']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive">
+						<p:column styleClass="MarAuto Responsive">
 							<f:facet name="header">
 								<h:outputText value="#{keetEstacionesContrato.titulo}"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{row['inicio']}"/>
 						</p:column>	      
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Termino"/>
 							</f:facet>
 							<h:outputText value="#{row['termino']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
-								<h:outputText value="Cantidad"/>
+								<h:outputText value="Costo"/>
 							</f:facet>
-							<h:outputText value="#{row['cantidad']}" title="Costo: $#{row['costo']}"/>
+							<h:outputText value="#{row['costo']}" title="Estatus: $#{row['estatus']}"/>
 						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-31" exportable="false">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
+							<f:facet name="header">
+                <h:outputText value="#{row.nivel eq '4'? 'Fechas': row.nivel eq '6'? 'Costos': ''}"/>
+							</f:facet>
+              <p:commandButton icon="fa fa-calendar-alt" process="@this" action="#{keetEstacionesContrato.doCheckDates(row)}" title="Ajustar fechas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idEstacionEstatus lt '3' and row.nivel eq '4'}"/>
+              <p:commandButton icon="fa fa-dollar" process="@this" action="#{keetEstacionesContrato.doCheckCostos(row)}" title="Ajustar costos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.nivel eq '6'}"/>
+						</p:column>
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-col-31" exportable="false">
 							<f:facet name="header">
                 <h:outputText value="Estatus" styleClass="xs-pantalla"/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': 'CANCELADO'))}"/>
-						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" style="display: none">
-							<f:facet name="header">
-								<h:outputText value="Estatus"/>
-							</f:facet>
-							<h:outputText value="#{row['estatus']}"/>
-						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" style="display: none">
-							<f:facet name="header">
-								<h:outputText value="costo"/>
-							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
 						</p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetEstacionesContrato.children== null? 0: keetEstacionesContrato.children.size()}] registros"/>

@@ -91,7 +91,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("saldoTotal", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("limite", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));

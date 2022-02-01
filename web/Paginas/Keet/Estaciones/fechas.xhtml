@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Ajustar el periodo de las estaciones y conceptos del lote #{keetEstacionesFechas.contrato.lote}" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:inicio'     : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:idPrototipo': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:dias': {multiple: '$', validaciones: 'requerido|entero', mascara: 'libre'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetEstacionesFechas.attrs.nombreAccion}');
+			});
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="Prototipo">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-8, janal-wid-92">		
+                <p:outputLabel for="desarrollo" value="Desarrollo:"/>
+                <p:inputText id="desarrollo" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.desarrollo}" readonly="true"/>
+                <p:outputLabel for="cliente" value="Cliente:"/>
+                <p:inputText id="cliente" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.cliente}" readonly="true"/>
+                <p:outputLabel for="contrato" value="Contrato:"/>
+                <p:inputText id="contrato" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.contrato}" readonly="true"/>
+                <p:outputLabel for="etapa" value="Etapa:"/>
+                <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.etapa}" readonly="true"/>
+                <p:outputLabel for="lote" value="Lote:"/>
+                <p:inputText id="lote" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstacionesFechas.contrato.lote}" readonly="true"/>
+                <p:outputLabel for="inicio" value="Inicio:"/>
+                <p:inputText id="inicio" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.inicio}" readonly="true"/>
+                <p:outputLabel for="termino" value="Termino:"/>
+                <p:inputText id="termino" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.termino}" readonly="true"/>
+                <p:outputLabel for="prototipo" value="Prototipo:"/>
+                <p:inputText id="prototipo" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstacionesFechas.contrato.prototipo}" readonly="true"/>
+                <p:outputLabel for="diasConstruccion" value="Días de construccion:"/>
+                <p:inputText id="diasConstruccion" styleClass="janal-wid-100-txt" value="#{keetEstacionesFechas.contrato.diasConstruccion}" readonly="true"/>
+              </p:panelGrid>
+						</p:tab>
+            <p:tab title="Estaciones">
+    					<p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFechas.estaciones}" rowKey="#{row.idPartida}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_TOPE_PAGINA}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">							
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataxPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataxXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataxPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataxXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	
+                <p:column styleClass="MarAuto Responsive janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Lote"/>
+                  </f:facet>
+                  <h:outputText value="#{row['lote']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Estación"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Días"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row['dias']}"/>
+                </p:column>														
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Inicio"/>
+                  </f:facet>
+                  <h:outputText value="#{row['inicio$']}&lt;br/&gt;&lt;span class='janal-color-blue' style='font-size:12px'&gt;(#{row['diaInicio']})&lt;/span&gt;" escape="false"/>
+                </p:column>														
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Termino"/>
+                  </f:facet>
+                  <h:outputText value="#{row['termino$']}&lt;br/&gt;&lt;span class='janal-color-blue' style='font-size:12px'&gt;(#{row['diaTermino']})&lt;/span&gt;" escape="false"/>
+                </p:column>														
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetEstacionesFechas.estaciones== null? 0: keetEstacionesFechas.estaciones.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+            </p:tab>  
+            <p:tab title="Dias">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-90">
+                <p:outputLabel for="pivote" value="Fecha de arranque:"/>
+                <p:calendar id="pivote" inputStyleClass="janal-wid-95" styleClass="janal-wid-100" value="#{keetEstacionesFechas.pivote}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+                  <p:ajax event="dateSelect" listener="#{keetEstacionesFechas.doProcessDates}" process="@this" update="partidas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                </p:calendar>  
+              </p:panelGrid>  
+    					<p:dataTable lazy="false" id="partidas" widgetVar="kajoolPartidas" var="row" value="#{keetEstacionesFechas.partidas}" rowKey="#{row.idPartida}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_TOPE_PAGINA}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">							
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasXls', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasXls', 'contenedorGrupos\\:partidas')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	
+                <p:column styleClass="MarAuto Responsive janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>								
+                <p:column styleClass="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Lote"/>
+                  </f:facet>
+                  <h:outputText value="#{row['lote']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Estación"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Días"/>
+                  </f:facet>
+                  <p:inputNumber id="dias" value="#{row['dias']}" styleClass="janal-wid-99" converter="javax.faces.Long" decimalPlaces="0" minValue="0">
+                    <p:ajax event="change" listener="#{keetEstacionesFechas.doProcessDates}" process="@this" update="partidas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:inputNumber>  
+                </p:column>														
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Inicio"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row['inicio$']}&lt;br/&gt;&lt;span class='janal-color-blue' style='font-size:12px'&gt;(#{row['diaInicio']})&lt;/span&gt;" escape="false"/>
+                </p:column>														
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Termino"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row['termino$']}&lt;br/&gt;&lt;span class='janal-color-blue' style='font-size:12px'&gt;(#{row['diaTermino']})&lt;/span&gt;" escape="false"/>
+                </p:column>														
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetEstacionesFechas.partidas== null? 0: keetEstacionesFechas.partidas.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+						</p:tab>
+					</p:tabView>
+          <h:commandLink id="dataxPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="dataxXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>	              
+          <h:commandLink id="datasPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:partidas" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="datasXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:partidas" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>	              
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetEstacionesFechas.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetEstacionesFechas.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEstacionesFechas.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEstacionesFechas.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

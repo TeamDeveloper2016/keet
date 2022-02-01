@@ -33,10 +33,14 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
   private Long idPrototipoDia;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_nombre_dia")
-  private Long idNombreDia;
+  @Column (name="id_partida")
+  private Long idPartida;
+  @Column (name="dias")
+  private Long dias;
   @Column (name="id_prototipo")
   private Long idPrototipo;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -45,15 +49,17 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDiasDto(Long key) {
-    this(new Long(-1L), null, null, null);
+    this(new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetPrototiposDiasDto(Long idPrototipoDia, Long idUsuario, Long idNombreDia, Long idPrototipo) {
+  public TcKeetPrototiposDiasDto(Long idPrototipoDia, Long idUsuario, Long idPartida, Long dias, Long idPrototipo, Long orden) {
     setIdPrototipoDia(idPrototipoDia);
     setIdUsuario(idUsuario);
-    setIdNombreDia(idNombreDia);
+    setIdPartida(idPartida);
+    setDias(dias);
     setIdPrototipo(idPrototipo);
+    setOrden(orden);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -73,12 +79,20 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdNombreDia(Long idNombreDia) {
-    this.idNombreDia = idNombreDia;
+  public void setIdPartida(Long idPartida) {
+    this.idPartida = idPartida;
   }
 
-  public Long getIdNombreDia() {
-    return idNombreDia;
+  public Long getIdPartida() {
+    return idPartida;
+  }
+
+  public void setDias(Long dias) {
+    this.dias = dias;
+  }
+
+  public Long getDias() {
+    return dias;
   }
 
   public void setIdPrototipo(Long idPrototipo) {
@@ -87,6 +101,14 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
 
   public Long getIdPrototipo() {
     return idPrototipo;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -116,9 +138,13 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNombreDia());
+		regresar.append(getIdPartida());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDias());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrototipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -130,8 +156,10 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idPrototipoDia", getIdPrototipoDia());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idNombreDia", getIdNombreDia());
+		regresar.put("idPartida", getIdPartida());
+		regresar.put("dias", getDias());
 		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("orden", getOrden());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -139,7 +167,7 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPrototipoDia(), getIdUsuario(), getIdNombreDia(), getIdPrototipo(), getRegistro()
+    getIdPrototipoDia(), getIdUsuario(), getIdPartida(), getDias(), getIdPrototipo(), getOrden(), getRegistro()
     };
     return regresar;
   }
@@ -197,4 +225,7 @@ public class TcKeetPrototiposDiasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPrototipoDia() != null ? getIdPrototipoDia().hashCode() : 0);
     return hash;
   }
+
 }
+
+

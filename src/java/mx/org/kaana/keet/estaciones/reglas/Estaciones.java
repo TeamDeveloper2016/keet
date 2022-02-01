@@ -106,6 +106,7 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       params.put("idContrato", idContrato);
       params.put("nivel", level+child+aumentarNivel);
       params.put("clave", value);

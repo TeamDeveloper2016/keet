@@ -101,7 +101,7 @@
             </p:column>														
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldoTotal}" rendered="false">
               <f:facet name="header">
-                <h:outputText value="Saldo total"/>
+                <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="#{row['saldoTotal']}"/>
             </p:column>	
@@ -115,7 +115,13 @@
               <f:facet name="header">
                 <h:outputText value="Anticipo"/>
               </f:facet>
-              <h:outputText value="#{row['importe']}"/>
+              <h:outputText value="#{row['importe']}" title="Subtotal: #{row['subtotal']}, IVA: #{row['iva']}, Total: #{row['total']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.fondoGarantia}">
+              <f:facet name="header">
+                <h:outputText value="Fondo Garantía" />
+              </f:facet>
+              <h:outputText value="#{row['fondoGarantia']}" title="Subtotal: #{row['subtotal']}, IVA: #{row['iva']}, Total: #{row['total']}"/>
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
               <f:facet name="header">
@@ -128,12 +134,6 @@
                 <h:outputText value="Pagos" />
               </f:facet>
               <h:outputText value="#{row['numeroPagos']}"/>
-            </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.semanas}">
-              <f:facet name="header">
-                <h:outputText value="Semanas" />
-              </f:facet>
-              <h:outputText value="#{row['semanas']}"/>
             </p:column>
             <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.estatus}">
               <f:facet name="header">

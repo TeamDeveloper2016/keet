@@ -50,4 +50,5 @@ public enum EDiasSemana {
 	public static EDiasSemana fromName(String name) {
     return lookupName.get(name);
   } // fromIdEstatusEgreso	
+  
 }

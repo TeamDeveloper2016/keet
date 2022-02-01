@@ -61,8 +61,8 @@ public final class Constantes {
   public static final String SQL_CONDICION     = "condicion";
   public static final String SQL_VERDADERO     = "1=1";
   public static final String SQL_FALSO         = "1!=1";
-  public static final long SQL_MAXIMO_REGISTROS= 250L;
-  public static final long SQL_TOPE_REGISTROS  = 2000L;
+  public static final long SQL_MAXIMO_REGISTROS = 250L;
+  public static final long SQL_TOPE_REGISTROS   = 2000L;
   public static final long SQL_TODOS_REGISTROS = -1L;
   public static final int SQL_PRIMER_REGISTRO  = 1;
   public static final int SI                   = 1;
@@ -167,6 +167,10 @@ public final class Constantes {
 
   public Integer getREGISTROS_MAX_PAGINA() {
     return Constantes.REGISTROS_MAX_PAGINA;
+  }
+
+  public Long getREGISTROS_TOPE_PAGINA() {
+    return Constantes.SQL_MAXIMO_REGISTROS;
   }
 
   public Integer getREGISTROS_POR_LOTE() {

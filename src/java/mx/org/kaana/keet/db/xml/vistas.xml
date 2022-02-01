@@ -63,6 +63,10 @@
 				  tc_keet_anticipos.id_moroso,
 					tc_keet_anticipos.consecutivo as folio,
 					tc_keet_anticipos.importe,
+					tc_keet_anticipos.fondo_garantia,
+					tc_keet_anticipos.subtotal,
+					tc_keet_anticipos.iva,
+					tc_keet_anticipos.total,
 					tc_keet_anticipos.saldo,
 					tc_keet_morosos.saldo as saldo_total,
 					tc_keet_morosos.limite,
@@ -4593,6 +4597,7 @@
         select
           tc_keet_estaciones.id_estacion as id_key,
           tc_keet_contratos_lotes.id_contrato_lote,
+          tc_keet_contratos_lotes.orden as siguiente,
           tc_keet_estaciones.id_estacion,
           tc_keet_estaciones.clave,
           tc_keet_contratos.id_contrato,
@@ -4607,6 +4612,7 @@
           tc_keet_estaciones.termino,
           tc_keet_estaciones.cantidad,
           tc_keet_estaciones.costo,
+          tc_keet_estaciones.nivel,
           tc_keet_estaciones.ultimo,
           tc_keet_estaciones.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus
@@ -5818,6 +5824,126 @@
 			</select>
 		</unit>		
 		<unit id="VistaEstacionesDto">
+			<select id="costos">
+        select
+          tc_keet_estaciones.id_estacion as id_key,
+          tc_keet_estaciones.id_estacion,
+          tc_keet_estaciones.id_estacion_estatus,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_estaciones.clave,
+          tc_keet_estaciones.codigo,
+          tc_keet_estaciones.nombre,
+          tc_keet_estaciones.inicio,
+          tc_keet_estaciones.termino,
+          tc_keet_estaciones.costo,
+          tc_keet_estaciones.anticipo,
+          tc_keet_estaciones.costo as costo_anterior,
+          tc_keet_estaciones.anticipo as anticipo_anterior,
+          timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.termino)+ 1 as dias,
+          {idPrototipo} as id_prototipo,
+          -1 as id_partida,  
+          {idUsuario} as id_usuario,
+          timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.termino)+ 1 as anterior,
+          0 as orden 
+        from
+          tc_keet_estaciones
+        inner join
+          tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
+        where
+          tc_keet_estaciones.nivel= 6
+          and tc_keet_estaciones.clave like '{clave}%'
+          and tc_keet_estaciones.codigo= '{codigo}'
+        order by
+          tc_keet_estaciones.clave        
+			</select>
+			<select id="estaciones">
+        select
+          tc_keet_estaciones.id_estacion as id_key,
+          tc_keet_estaciones.id_estacion,
+          tc_keet_estaciones.id_estacion_estatus,
+          tc_keet_estaciones.clave,
+          tc_keet_estaciones.codigo,
+          tc_keet_estaciones.nombre,
+          tc_keet_estaciones.inicio,
+          tc_keet_estaciones.termino,
+          tc_keet_estaciones.costo,
+          tc_keet_estaciones.anticipo,
+          tc_keet_estaciones.costo as costo_anterior,
+          tc_keet_estaciones.anticipo as anticipo_anterior,
+          timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.termino)+ 1 as dias,
+          {idPrototipo} as id_prototipo,
+          tc_keet_partidas.id_partida,  
+          {idUsuario} as id_usuario,
+          tc_keet_partidas.dias as anterior,
+          tc_keet_partidas.orden 
+        from
+          tc_keet_estaciones
+        inner join
+          tc_keet_partidas on tc_keet_estaciones.codigo= tc_keet_partidas.codigo
+        where
+          tc_keet_estaciones.nivel= 5
+          and tc_keet_estaciones.clave like '{clave}%'
+        order by
+          tc_keet_partidas.orden        
+			</select>
+			<select id="partidas">
+        select
+          tc_keet_partidas.id_partida as id_key,
+          -1 as id_estacion,
+          -1 as id_estacion_estatus,
+          tc_keet_partidas.codigo,
+          tc_keet_partidas.nombre,
+          0 as costo,
+          0 as anticipo,
+          0 as costo_anterior,
+          0 as anticipo_anterior,
+          tc_keet_partidas.dias as anterior,
+          tc_keet_prototipos_dias.*
+        from
+          tc_keet_prototipos_dias
+        left join 
+          tc_keet_partidas on tc_keet_prototipos_dias.id_partida= tc_keet_partidas.id_partida
+        where
+          tc_keet_prototipos_dias.id_prototipo= {idPrototipo}
+        order by
+         tc_keet_partidas.orden        
+			</select>
+			<select id="lote">
+        select
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.ejercicio,
+          tc_keet_contratos.orden,
+          tc_keet_prototipos.id_prototipo,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_mantic_clientes.razon_social as cliente,
+          tc_keet_contratos.nombre as contrato,
+          tc_keet_contratos.etapa,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_contratos_lotes.inicio,
+          tc_keet_contratos_lotes.termino,
+          tc_keet_prototipos.nombre as prototipo,
+          tc_keet_prototipos.dias_construccion
+        from 
+          tc_keet_contratos_lotes
+        inner join
+          tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join
+          tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+        where
+          tc_keet_contratos_lotes.id_contrato_lote= {idContratoLote}
+        order by
+          tc_keet_contratos.id_contrato
+      </select>
 			<select id="rubros">
         select
           tc_keet_rubros.id_rubro as id_key,
