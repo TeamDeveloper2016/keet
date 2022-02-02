@@ -5863,6 +5863,7 @@
           tc_keet_estaciones.id_estacion as id_key,
           tc_keet_estaciones.id_estacion,
           tc_keet_estaciones.id_estacion_estatus,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
           tc_keet_estaciones.clave,
           tc_keet_estaciones.codigo,
           tc_keet_estaciones.nombre,
@@ -5880,6 +5881,10 @@
           tc_keet_partidas.orden 
         from
           tc_keet_estaciones
+        inner join
+          tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
         inner join
           tc_keet_partidas on tc_keet_estaciones.codigo= tc_keet_partidas.codigo
         where

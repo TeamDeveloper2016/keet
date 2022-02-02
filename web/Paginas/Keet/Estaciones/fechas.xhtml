@@ -157,9 +157,10 @@
                   <f:facet name="header">
                     <h:outputText value="Días"/>
                   </f:facet>
-                  <p:inputNumber id="dias" value="#{row['dias']}" styleClass="janal-wid-99" converter="javax.faces.Long" decimalPlaces="0" minValue="0">
+                  <p:inputNumber id="dias" value="#{row['dias']}" styleClass="dias" inputStyleClass="janal-wid-70" converter="javax.faces.Long" decimalPlaces="0" minValue="0">
                     <p:ajax event="change" listener="#{keetEstacionesFechas.doProcessDates}" process="@this" update="partidas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   </p:inputNumber>  
+                  <p:commandButton icon="fa fa-copy" process="@this @(.dias)" update="@(.dias)" action="#{keetEstacionesFechas.doReplicarDias(row)}" title="Replicar días" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-float-right"/>
                 </p:column>														
                 <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
                   <f:facet name="header">

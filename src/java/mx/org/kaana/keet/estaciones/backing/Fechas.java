@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -255,5 +256,15 @@ public class Fechas extends IBaseAttribute implements Serializable {
 		JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar	
+
+  public void doReplicarDias(Partida row) {
+    Boolean update= Boolean.FALSE;
+    for (Partida item : this.partidas) {
+      if(!update && Objects.equals(item.getCodigo(), row.getCodigo()))
+        update= Boolean.TRUE;
+      if(update)      
+        item.setDias(row.getDias()); 
+    } // for
+  }
 
 }
