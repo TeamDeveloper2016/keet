@@ -161,7 +161,7 @@
 						<p:separator style="display: #{keetPrestamosProveedorFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>
             <p:menuitem value="Importar" action="#{keetPrestamosProveedorFiltro.doAccion('SUBIR')}" icon="fa fa-cloud-upload" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosProveedorFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>					
             <p:separator/>
-            <p:menuitem icon="fa fa-file-pdf-o" value="Reporte pagos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosProveedorFiltro.doReporte('PRESTAMOS_PAGOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem icon="fa fa-file-pdf-o" value="Reporte pagos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosProveedorFiltro.doReporte('ANTICIPOS_PAGOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
           </p:contextMenu>
         </div>
       </div>

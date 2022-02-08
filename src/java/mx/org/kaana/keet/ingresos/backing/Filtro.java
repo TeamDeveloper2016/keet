@@ -251,8 +251,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1")) {
-			  contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
-        clientes = UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			  contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+        clientes = UIEntity.seleccione("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS, "razonSocial");
       } // if  
       else {
         contratos= UIEntity.seleccione("VistaContratosDto", "byEmpresa", params, "clave");

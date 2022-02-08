@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -59,6 +60,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       this.lazyModel = new FormatCustomLazy("VistaDesarrollosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

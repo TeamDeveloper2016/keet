@@ -98,6 +98,7 @@
 					tc_keet_anticipos_pagos.abono as total_abonos,
 					tc_keet_anticipos_pagos.cambio,
           tc_keet_anticipos_pagos.observaciones as observaciones_pago,
+          tc_keet_anticipos_pagos.registro,
 					tc_keet_anticipos_pagos.registro as fecha_pago
 				from
 					tc_keet_anticipos
@@ -163,6 +164,7 @@
 					tc_keet_prestamos_pagos.abono as total_abonos,
 					tc_keet_prestamos_pagos.cambio,
           tc_keet_prestamos_pagos.observaciones observaciones_pago,
+          tc_keet_prestamos_pagos.registro,
 					tc_keet_prestamos_pagos.registro fecha_pago
 				from
 					tc_keet_prestamos

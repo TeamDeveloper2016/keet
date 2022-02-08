@@ -301,7 +301,8 @@ public class Accion extends IBaseAttribute implements Serializable {
           for (Entity item: items) {
             switch((EAccion)this.attrs.get("accion")) {
               case AGREGAR:
-                anticipo+= item.toDouble("total");
+                if(Objects.equals(item.toLong("idAnticipo"), 0L))
+                  anticipo+= item.toDouble("total");
                 this.seleccionados.add(item);
                 break;
               case MODIFICAR:
@@ -394,8 +395,18 @@ public class Accion extends IBaseAttribute implements Serializable {
     Double anticipo= 0D;
 		if(event.getTab().getTitle().equals("General")) {
       if(!this.seleccionados.isEmpty()) { 
-        for(Entity item: this.seleccionados)					
-          anticipo+= item.toDouble("total");
+        for(Entity item: this.seleccionados)
+          switch((EAccion)this.attrs.get("accion")) {
+            case AGREGAR:
+              if(Objects.equals(item.toLong("idAnticipo"), 0L))
+                anticipo+= item.toDouble("total");
+              break;
+            case MODIFICAR:
+            case CONSULTAR:
+              if(Objects.equals(item.toLong("idAnticipo"), this.prestamo.getPrestamo().getIdAnticipo())) 
+                anticipo+= item.toDouble("total");
+              break;
+          } // switch
       } // if
       this.prestamo.getPagos().set(0, anticipo);
       this.prestamo.getPrestamo().setImporte(anticipo);

@@ -85,7 +85,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns    = null;
 		Map<String, Object>params= null;
     try {
-      params= this.toPrepare();	
+      params= this.toPrepare(Boolean.FALSE);	
 			params.put("sortOrder", "order by tc_keet_anticipos.consecutivo desc");
       columns= new ArrayList<>();
       columns.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
@@ -181,21 +181,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.doAccion(EAccion.DESACTIVAR.name()); // cancelar anticipo
   } // doEliminar
 	
-	private Map<String, Object> toPrepare() {
+	private Map<String, Object> toPrepare(boolean isReporte) {
 	  Map<String, Object> regresar  = new HashMap<>();	
 		StringBuilder sb              = new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
-			sb.append("(tc_mantic_proveedores.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+      if(isReporte)
+			  sb.append("(tc_keet_anticipos.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+      else
+			  sb.append("(tc_mantic_proveedores.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
-			sb.append("(tc_mantic_proveedores.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+      if(isReporte)
+  			sb.append("(tc_keet_anticipos.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+      else
+  			sb.append("(tc_mantic_proveedores.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(!Cadena.isVacio(this.attrs.get("deudor")) && ((UISelectEntity)this.attrs.get("deudor")).getKey()>= 1L)				
 			sb.append("tc_keet_anticipos.id_moroso=").append(this.attrs.get("deudor")).append(" and ");
 		if(this.attrs.get("idAnticipoProcess")!= null && !Cadena.isVacio(this.attrs.get("idAnticipoProcess")))
 			sb.append("tc_keet_anticipos.id_anticipo=").append(this.attrs.get("idAnticipoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
 			sb.append("(tc_keet_anticipos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
-		sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+    if(isReporte) {
+		  sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		  sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+    } // if
+    else {
+		  sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		  sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+    } // else  
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_anticipos.id_anticipo_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(sb.length()== 0)
@@ -209,7 +221,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			this.loadEmpresas();
 			this.loadEstatus();
-			inicio = LocalDate.of(Fecha.getAnioActual(),1, 1);
+			inicio = LocalDate.of(Fecha.getAnioActual()- 1, 1, 1);
       termino= LocalDate.now();
 		} // try
 		catch (Exception e) {
@@ -270,7 +282,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Parametros comunes           = null;
 		try {		  
       reporteSeleccion= EReportes.valueOf(nombre);
-      params= this.toPrepare();
+      params= this.toPrepare(Boolean.TRUE);
       if(reporteSeleccion.equals(EReportes.ANTICIPOS_PAGOS)) 
         params.put(Constantes.SQL_CONDICION,"tc_keet_anticipos_pagos.id_anticipo=".concat(((Entity) this.attrs.get("seleccionado")).getKey().toString()));
       params.put("sortOrder", "order by tc_keet_anticipos.consecutivo desc");

@@ -184,37 +184,37 @@
 					<textField evaluationTime="Group" evaluationGroup="PRESTAMO" pattern="" isBlankWhenNull="true">
 						<reportElement x="100" y="1" width="100" height="14" forecolor="#FFFFFF" backcolor="#666666" uuid="402e27ff-9de5-4ecf-8e56-02f4e306b30f"/>
 						<textElement textAlignment="Left" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{PRESTAMO}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="PRESTAMO" pattern="###0.00" isBlankWhenNull="true">
 						<reportElement x="450" y="1" width="150" height="14" forecolor="#FFFFFF" backcolor="#666666" uuid="fc5f4c0c-c6b5-4a74-bc84-9e289a394cd2"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{IMPORTE_PRESTAMO}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="PRESTAMO" pattern="###0.00" isBlankWhenNull="true">
 						<reportElement x="602" y="1" width="150" height="14" forecolor="#FFFFFF" backcolor="#666666" uuid="2136b2fb-3b32-4d50-85fe-5fc6247c6f1a"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{SALDO_PRESTAMO}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="PRESTAMO" pattern="" isBlankWhenNull="true">
 						<reportElement x="275" y="1" width="161" height="14" forecolor="#FFFFFF" backcolor="#666666" uuid="257e2c85-4c47-4911-ab6e-04df007bc7cb"/>
 						<textElement textAlignment="Left" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{FECHA_PRESTAMO}]]></textFieldExpression>
 					</textField>
 					<staticText>
 						<reportElement x="3" y="1" width="90" height="13" forecolor="#FFFFFF" uuid="80d7345f-8bea-4460-979f-b877aff6f13c"/>
 						<textElement textAlignment="Left" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="10" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[PRÉSTAMO]]></text>
+						<text><![CDATA[ANTICIPOS]]></text>
 					</staticText>
 				</frame>
 				<staticText>

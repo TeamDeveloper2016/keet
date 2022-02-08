@@ -5926,6 +5926,7 @@
           tc_keet_prototipos.id_prototipo,
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_clientes.razon_social as cliente,
+          tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
           tc_keet_contratos.etapa,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
