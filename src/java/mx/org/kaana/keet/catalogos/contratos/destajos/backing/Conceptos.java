@@ -25,12 +25,15 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Named(value = "keetCatalogosContratosDestajosConceptos")
 @ViewScoped
 public class Conceptos extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 2847354766000406350L;  
+  private static final Log LOG = LogFactory.getLog(Conceptos.class);
 	private FormatLazyModel lazyModelExtras;
 
 	public FormatLazyModel getLazyModelExtras() {
@@ -133,7 +136,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
   public void doLoadExtras() {
 		Map<String, Object>params= null;
     List<Columna> columns    = null;				
-    UISelectEntity figura  = (UISelectEntity)this.attrs.get("figura");
+    UISelectEntity figura    = (UISelectEntity)this.attrs.get("figura");
     try {      			
 			params= this.toPrepare();
       columns= new ArrayList<>();      
@@ -142,10 +145,13 @@ public class Conceptos extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
       params.put("idProveedor", -1L);
       params.put("idEmpresaPersona", -1L);
-      if(Objects.equals(figura.toLong("tipo"), 1L))
-        params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+      if(figura!= null)
+        if(Objects.equals(figura.toLong("tipo"), 1L))
+          params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+        else
+          params.put("idProveedor", figura.getKey().toString().substring(4));
       else
-        params.put("idProveedor", figura.getKey().toString().substring(4));
+        JsfBase.addMessage("Figura", "No se tiene un contratista o subcontratita seleccionado");
 	    this.lazyModelExtras= new FormatLazyModel("VistaCapturaDestajosDto", "conceptosExtras", params, columns);			
 			UIBackingUtilities.resetDataTable("tablaExtras");
     } // try

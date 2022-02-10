@@ -925,8 +925,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
                 emails.append(email.toString("valor")).append(", ");
             } // for
           emails.append(sb.toString());
-          if(emails.length()> 0) 
-            this.toSendMail(sesion, jasper, emails.toString(), item);
+          if(emails.length()> 0) {
+            String contacto= emails.toString().trim();
+            if(contacto.endsWith(","))
+              contacto= contacto.substring(0, contacto.length()- 1);
+            this.toSendMail(sesion, jasper, contacto, item);
+          } // if  
         } // for
       } // if  
     } // try

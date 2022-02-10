@@ -110,7 +110,7 @@ public class IBaseMail implements Serializable {
 	
 	private Address[] toPrepare(String emails) throws AddressException {
     StringTokenizer tokens= new StringTokenizer(emails, ",");     
-		Address[] regresar= new InternetAddress[tokens.countTokens()];
+		Address[] regresar    = new InternetAddress[tokens.countTokens()];
 		int count= 0;
 		while(tokens.hasMoreTokens()) {
 			String email= tokens.nextToken();
@@ -159,7 +159,7 @@ public class IBaseMail implements Serializable {
       properties.put("mail.smtp.port", "26");			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
-      LOG.warn("alias: ".concat(this.alias).concat("; from: ").concat(this.from).concat("; to: ").concat(this.to));
+      LOG.error("alias: ".concat(this.alias).concat("> from: ").concat(this.from).concat("> to: ").concat(this.to));
 			if(Cadena.isVacio(this.alias))
         message.setFrom(new InternetAddress(this.from));
 			else
@@ -204,6 +204,9 @@ public class IBaseMail implements Serializable {
       Transport.send(message);
 			LOG.info("Correo enviado al buzon de: "+ this.to);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       if(properties!= null)
         properties = null;
