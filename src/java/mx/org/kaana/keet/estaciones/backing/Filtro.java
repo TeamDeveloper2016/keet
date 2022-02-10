@@ -102,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String nodo                  = "";
 		TcKeetPrototiposDto prototipo= null;
     try {
-			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
+			if(this.attrs.get("idPrototipo")!= null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()> 0L) {
 				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
         this.attrs.put("seleccionado", null);
 				this.current= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, prototipo.getIdEstacion());
@@ -201,7 +201,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 					this.visitados= this.estaciones.toFather(this.current.getClave());
 				} // if	
 			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
-        this.children= this.estaciones.toEntity(Numero.getLong(this.estaciones.toValueKey(this.current.getClave(), 3)), incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
+        Long idContrato= this.attrs.get("idContrato")== null? 0L: ((UISelectEntity)this.attrs.get("idContrato")).getKey();
+        this.children= this.estaciones.toEntity(idContrato, incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
 			} // if
 		} // try // try
 		catch (Exception e) {
