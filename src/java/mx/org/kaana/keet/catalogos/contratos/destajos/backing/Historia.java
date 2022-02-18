@@ -31,12 +31,12 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "keetCatalogosContratosDestajosControl")
+@Named(value = "keetCatalogosContratosDestajosHistoria")
 @ViewScoped
-public class Control extends IBaseReporteDestajos implements Serializable {
+public class Historia extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
-  private static final Log LOG = LogFactory.getLog(Control.class);
+  private static final Log LOG = LogFactory.getLog(Historia.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
   private List<Concepto> model;
@@ -58,7 +58,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     return fields;
   }
   
-  public Boolean getIsConcepto(Concepto row) {
+  public Boolean isConcepto(Concepto row) {
     return !row.getCodigo().startsWith("#");
   }
 
@@ -71,10 +71,10 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       this.model  = new ArrayList<>();
 			this.initBase();
       this.fields = new ArrayList<>();
-			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			// opcion      = EOpcionesResidente.CONTROL;
-		  // idDesarrollo= 2L;			
+			//opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			//idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			opcion      = EOpcionesResidente.HISTORIAL;
+		  idDesarrollo= 2L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -201,7 +201,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
           int index= this.model.indexOf(new Concepto(item.toString("codigo")));
           if(index>= 0) {
             Concepto concepto= this.model.get(index);
-            concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
+            concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
             if(!Objects.equal(lote, anterior)) {
               this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
               anterior= lote;

@@ -56,6 +56,19 @@ public class Criterio implements Serializable {
     this.toControl();
   }
 
+  public Criterio(String lote, LocalDate inicio, LocalDate termino, Long idEstacionEstatus, String estatus, Long idNomina, String semana, Long actual) {
+    this.lote   = lote; 
+    this.inicio = inicio;
+    this.termino= termino;
+    this.hoy    = LocalDate.now();
+    this.idEstacionEstatus= idEstacionEstatus;
+    this.estatus= estatus;
+    this.idNomina= idNomina;
+    this.semana = semana;
+    this.actual = actual;
+    this.toHistorial();
+  }
+
   public String getLote() {
     return lote;
   }
@@ -229,6 +242,25 @@ public class Criterio implements Serializable {
       case 4: // ES UNA ESTACION
         this.semaforo= "";
         this.titulo  = "";
+        break;
+    } // switch
+  }   
+  
+  private void toHistorial() {
+    this.titulo = this.semana;
+    this.estatus= "["+ this.idEstacionEstatus+ "]";
+    switch(this.idEstacionEstatus.intValue()) {
+      case 1: // SIN INICIAR
+        this.semaforo= "circulo-rojo.png";
+        break;
+      case 2: // EN PROCESO
+        this.semaforo= "circulo-amarillo.png";
+        break;
+      case 3: // TERMINADO
+        this.semaforo= "circulo-verde.png";
+        break;
+      case 4: // CANCELADO
+        this.semaforo= "circulo-cafe.png";
         break;
     } // switch
   }   

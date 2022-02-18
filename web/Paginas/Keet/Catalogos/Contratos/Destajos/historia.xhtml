@@ -33,20 +33,20 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
 					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
-						<p:tab title="Desarrollo [ #{keetCatalogosContratosDestajosControl.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosDestajosControl.registroDesarrollo.desarrollo.nombres}">
+						<p:tab title="Desarrollo [ #{keetCatalogosContratosDestajosHistoria.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosDestajosHistoria.registroDesarrollo.desarrollo.nombres}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
                 <p:outputLabel value="Descripcion:" rendered="false"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosControl.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosHistoria.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
                 <p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosControl.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosHistoria.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 							</p:panelGrid>										
 						</p:tab>					
 						<p:tab title="Busqueda">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                 <p:outputLabel for="contratos" value="Contratos:"/>
-                <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosControl.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{keetCatalogosContratosDestajosControl.doLoad}" process="@this" update="tabla detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                  <f:selectItems value="#{keetCatalogosContratosDestajosControl.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosHistoria.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{keetCatalogosContratosDestajosHistoria.doLoad}" process="@this" update="tabla detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{keetCatalogosContratosDestajosHistoria.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -58,7 +58,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosControl.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosControl.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosControl.doColor(row)}">
+          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistoria.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistoria.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosHistoria.doColor(row)}">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Resumen de conceptos por lotes" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -72,7 +72,7 @@
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
-              <p:commandLink process="@this" update="detalle" title="#{row['nombre']}" actionListener="#{keetCatalogosContratosDestajosControl.doDetalle(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage('#detalle')" rendered="#{keetCatalogosContratosDestajosControl.isConcepto(row)}">
+              <p:commandLink process="@this" update="detalle" title="#{row['nombre']}" actionListener="#{keetCatalogosContratosDestajosHistoria.doDetalle(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage('#detalle')" rendered="#{keetCatalogosContratosDestajosHistoria.isConcepto(row)}">
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
               </p:commandLink>
 						</p:column>		
@@ -88,19 +88,20 @@
 							</f:facet>
               <h:outputText value="#{row.nombre}" title="#{row.nombre}" style="white-space: nowrap;"/>
             </p:column>  
-            <p:columns value="#{keetCatalogosContratosDestajosControl.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
+            <p:columns value="#{keetCatalogosContratosDestajosHistoria.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
-              <h:outputText value="#{row[column.field]['titulo']}" styleClass="janal-display-none"/>
-              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}"/>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" styleClass="janal-float-left" rendered="#{keetCatalogosContratosDestajosHistoria.isConcepto(row)}"/>
+              <h:outputText value="#{row[column.field]['estatus']}" styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosHistoria.isConcepto(row)}"/>
+              <h:outputText value="#{row[column.field]['titulo']}" styleClass=""/>
             </p:columns>            
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosControl.model== null? 0: keetCatalogosContratosDestajosControl.model.size()}] registros"/>
+							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosHistoria.model== null? 0: keetCatalogosContratosDestajosHistoria.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>		
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" reflow="true" value="#{keetCatalogosContratosDestajosControl.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosControl.lazyModel.rowCount gt keetCatalogosContratosDestajosControl.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCatalogosContratosDestajosControl.attrs.detalle? '': 'none'}" rowStyleClass="#{keetCatalogosContratosDestajosControl.doColorNomina(row)}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistoria.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistoria.lazyModel.rowCount gt keetCatalogosContratosDestajosHistoria.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCatalogosContratosDestajosHistoria.attrs.detalle? '': 'none'}" rowStyleClass="#{keetCatalogosContratosDestajosHistoria.doColorNomina(row)}">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Destajistas que realizarón el trabajo" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -189,7 +190,7 @@
 							<h:outputText value="#{row['registro']}"/>
 						</p:column>	
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosControl.lazyModel== null? 0: keetCatalogosContratosDestajosControl.lazyModel.rowCount}] registros"/>
+							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosHistoria.lazyModel== null? 0: keetCatalogosContratosDestajosHistoria.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>	  
           <h:commandLink id="datasPdf">
@@ -205,18 +206,18 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosControl.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosControl.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar correo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoCorreos" prependId="false">
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
-					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetCatalogosContratosDestajosControl.correos}" selection="#{keetCatalogosContratosDestajosControl.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetCatalogosContratosDestajosHistoria.correos}" selection="#{keetCatalogosContratosDestajosHistoria.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
 						<p:column headerText="Correos disponibles del empleado">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
@@ -228,15 +229,15 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{keetCatalogosContratosDestajosControl.doAgregarCorreo}">
-								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosControl.correo}" />
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{keetCatalogosContratosDestajosHistoria.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosHistoria.correo}" />
 							</p:commandButton>
 						</p:column>
 					</p:dataTable>		
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetCatalogosContratosDestajosControl.doSendMail('DESARROLLO')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetCatalogosContratosDestajosHistoria.doSendMail('DESARROLLO')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
