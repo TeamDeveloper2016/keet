@@ -248,13 +248,14 @@ public class Criterio implements Serializable {
   
   private void toHistorial() {
     this.titulo = this.semana;
-    this.estatus= "["+ this.idEstacionEstatus+ "]";
     switch(this.idEstacionEstatus.intValue()) {
       case 1: // SIN INICIAR
         this.semaforo= "circulo-rojo.png";
+        this.estatus= "[-]";
         break;
       case 2: // EN PROCESO
         this.semaforo= "circulo-amarillo.png";
+        this.estatus= "[*]";
         break;
       case 3: // TERMINADO
         this.semaforo= "circulo-verde.png";
