@@ -71,15 +71,13 @@ public class Importar extends IBaseImportar implements Serializable {
   @Override
   protected void init() {		
     EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
-			this.attrs.put("idDesarrollo", idDesarrollo);
+			this.attrs.put("idDesarrollo", (Long) JsfBase.getFlashAttribute("idDesarrollo"));
 			this.attrs.put("figura", JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));
@@ -97,6 +95,9 @@ public class Importar extends IBaseImportar implements Serializable {
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.pathImage= this.pathImage.substring(0, this.pathImage.indexOf(JsfBase.getContext())).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
       this.attrs.put("idContratoArchivo", -1L);
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.loadCatalogos();	
 			this.doLoad();
     } // try
@@ -235,11 +236,11 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 	} // doFileUpload		
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
+			regresar.append(Cadena.rellenar(String.valueOf(((Entity)this.attrs.get("seleccionadoPivote")).toLong("idEmpresa")), 3, '0', true));
 			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
@@ -386,6 +387,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));			
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

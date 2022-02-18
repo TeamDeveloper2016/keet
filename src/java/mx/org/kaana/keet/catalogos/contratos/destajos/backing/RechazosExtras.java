@@ -58,4 +58,5 @@ public class RechazosExtras extends Rechazos implements Serializable {
 		} // catch		
 		return regresar;
 	} // toPuntos
+  
 }

@@ -48,26 +48,18 @@ public class Conceptos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
-		Entity figura            = null;
-		Entity seleccionado      = null;
-		Long idDepartamento      = null;
     try {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
-			figura= (Entity) JsfBase.getFlashAttribute("figura");	
-			seleccionado= (Entity) JsfBase.getFlashAttribute("seleccionado");	
-			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
 			this.attrs.put("opcionResidente", opcion);
-			this.attrs.put("figura", figura);      
+			this.attrs.put("figura", (Entity)JsfBase.getFlashAttribute("figura"));      
 			this.attrs.put("casa", JsfBase.getFlashAttribute("casa"));      
-			this.attrs.put("seleccionadoPivote", seleccionado);      			
-			this.attrs.put("idDesarrollo", idDesarrollo);      
-			this.attrs.put("idDepartamento", idDepartamento);      			
+			this.attrs.put("seleccionadoPivote", (Entity)JsfBase.getFlashAttribute("seleccionado"));
+			this.attrs.put("idDesarrollo", (Long)JsfBase.getFlashAttribute("idDesarrollo"));      
+			this.attrs.put("idDepartamento", (Long)JsfBase.getFlashAttribute("idDepartamento"));
 			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto")!= null? JsfBase.getFlashAttribute("nombreConcepto"): "");      			
 			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
       this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
@@ -187,7 +179,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
+			regresar.append(Cadena.rellenar(String.valueOf(((Entity)this.attrs.get("seleccionadoPivote")).toLong("idEmpresa")), 3, '0', true));
       if(this.attrs.get("seleccionadoPivote")!= null && !((Entity)this.attrs.get("seleccionadoPivote")).isEmpty()) {
 			  regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			  regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));

@@ -61,7 +61,10 @@ public class Extra extends IBaseAttribute implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("descripcionEstacion", "");      			
-			this.attrs.put("importeEstacion", 0L);      			
+			this.attrs.put("importeEstacion", 0L);      
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.loadCatalogos();						
 			this.doLoad();			
     } // try // try
@@ -79,7 +82,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
-			this.attrs.put("contrato", contrato);
+			this.attrs.put("contratos", contrato);
 			params.clear();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote="+ ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
@@ -208,6 +211,9 @@ public class Extra extends IBaseAttribute implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

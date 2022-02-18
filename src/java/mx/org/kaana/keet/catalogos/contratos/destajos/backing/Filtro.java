@@ -432,6 +432,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	private Entity toLoteDefault() {
 		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
 		regresar.put("clave", new Value("clave", "EVIDENCIAS"));
+		regresar.put("idEmpresa", new Value("idEmpresa", 0L));
 		regresar.put("manzana", new Value("manzana", "00N"));
 		regresar.put("lote", new Value("lote", "N"));
 		regresar.put("inicio", new Value("inicio", "-"));
@@ -469,6 +470,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 					mzaLote.put("iconEstatus", new Value("iconEstatus", ""));
 			} // for
 		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
 		finally {
 			Methods.clean(params);
 		} // finally		
@@ -478,8 +482,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(String.valueOf(lote.toLong("idEmpresa")), 3, '0', true));
+			regresar.append(lote.toString("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
 		} // try

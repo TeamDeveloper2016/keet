@@ -64,12 +64,10 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosDestajosGaleria.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" style="display: none"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosDestajosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-close" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" process="@this" action="#{keetCatalogosContratosDestajosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosGaleria.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" style="display: none"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosDestajosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-close" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" process="@this" action="#{keetCatalogosContratosDestajosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">

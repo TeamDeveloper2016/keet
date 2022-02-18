@@ -28,18 +28,18 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:accordionPanel activeIndex="2" multiple="true">																			
-						<p:tab title="[ #{keetCatalogosContratosDestajosRechazos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.lote}">
+						<p:tab title="[ #{keetCatalogosContratosDestajosRechazos.attrs.contratos.clave} ] #{keetCatalogosContratosDestajosRechazos.attrs.contratos.etapa} M#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contratos.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contratos.claveProyecto}] #{keetCatalogosContratosDestajosRechazos.attrs.contratos.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contratos.claveDesarrollo}] #{keetCatalogosContratosDestajosRechazos.attrs.contratos.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contratos.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contratos.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
 						<p:tab title="Empleado">

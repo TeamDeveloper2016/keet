@@ -71,6 +71,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("importe", total);
 			this.attrs.put("anticipo", JsfBase.getFlashAttribute("anticipo")== null? 0D: (Double)JsfBase.getFlashAttribute("anticipo"));
 			this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.loadCatalogos();
 			this.doLoad();
     } // try // try
@@ -222,6 +225,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
