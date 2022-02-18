@@ -177,7 +177,7 @@
 							</f:facet>
 							<h:outputText value="#{row['nomina']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.desarrollo}">
+						<p:column class="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.desarrollo}">
 							<f:facet name="header">
 								<h:outputText value="Desarrollo"/>
 							</f:facet>
@@ -194,6 +194,12 @@
 								<h:outputText value="Puesto"/>
 							</f:facet>
 							<h:outputText value="#{row.puesto}" styleClass="janal-wid-100-txt" title="Departamento o contratista: #{row.contratista}"/>							
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.clave}">
+							<f:facet name="header">
+								<h:outputText value="Clave"/>
+							</f:facet>
+							<h:outputText value="#{row.clave}" styleClass="janal-wid-100-txt"/>							
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreCompleto}">
 							<f:facet name="header">

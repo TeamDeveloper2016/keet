@@ -69,6 +69,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto")!= null? JsfBase.getFlashAttribute("nombreConcepto"): "");      			
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.loadCatalogos();						
 			this.doLoad();
 			if(JsfBase.isAdminEncuestaOrAdmin())
@@ -90,13 +93,13 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			  params= new HashMap<>();
 			  params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= ".concat(seleccion.toString("idContrato")));
 			  contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
-			  this.attrs.put("contrato", contrato);
+			  this.attrs.put("contratos", contrato);
 			  params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote= "+ seleccion.getKey());
 			  contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			  this.attrs.put("contratoLote", contratoLote);
       } // if
       else {
-			  this.attrs.put("contrato", new Entity());
+			  this.attrs.put("contratos", new Entity());
         this.attrs.put("contratoLote", new Entity());
       } // if
 		} // try
@@ -299,6 +302,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

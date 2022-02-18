@@ -956,5 +956,5 @@ div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .keet-chart-panel { width:100%; height: 290px; display:block; padding-top: 20px;}
 .keet-item-hide { display: none; }
 .keet-chart-content { text-align: center; }
-     
+.janal-bottom-button { position: fixed !important; right: 20px; bottom: 20px; box-shadow: 0 0 15px 1px #808080; }     
      

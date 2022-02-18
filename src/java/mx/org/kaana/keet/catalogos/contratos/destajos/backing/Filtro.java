@@ -102,6 +102,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
       this.attrs.put("destajos", false);				
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
@@ -134,9 +137,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       List<UISelectEntity> semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "ultima", params, columns);
       this.attrs.put("semanas", semanas);
       if(semanas!= null && !semanas.isEmpty()) {
-        UISelectEntity semana= semanas.get(0);
-        this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
-        this.attrs.put("semana", semanas.get(0));
+        if(Cadena.isVacio(this.attrs.get("semana"))) {
+          UISelectEntity semana= semanas.get(0);
+          this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
+          this.attrs.put("semana", semanas.get(0));
+        } // if  
       } // if  
       else {
         this.attrs.put("semana", new UISelectEntity(-1L));
@@ -158,7 +163,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
-			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      if(Cadena.isVacio(this.attrs.get("contrato"))) 
+  			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       this.toLoadManzanas();
     } // try
     catch (Exception e) {
@@ -181,7 +187,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
 			this.attrs.put("manzanas", manzanas);
-			this.attrs.put("manzana", UIBackingUtilities.toFirstKeySelectEntity(manzanas));
+      if(Cadena.isVacio(this.attrs.get("manzana"))) 
+  			this.attrs.put("manzana", UIBackingUtilities.toFirstKeySelectEntity(manzanas));
       this.toLoadEspecialidades();
     } // try
     catch (Exception e) {
@@ -316,7 +323,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		UISelectEntity lote    = (UISelectEntity)this.attrs.get("casa");
     if(contrato!= null && contrato.getKey()> 0L)
 		  regresar.append("tc_keet_contratos.id_contrato= ").append(contrato.getKey()).append(" and ");
-    if(manzana!= null && manzana.getKey()> 0L) {
+    if(manzana!= null && manzana.getKey()> 0L && this.attrs.get("manzanas")!= null) {
 			List<UISelectEntity> manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");
       int index= manzanas.indexOf(manzana);
       if(index>= 0)
@@ -502,6 +509,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");			
 			JsfBase.setFlashAttribute("nombreConcepto", "");			
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
 				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
 			else

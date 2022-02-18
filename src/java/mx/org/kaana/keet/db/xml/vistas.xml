@@ -6997,7 +6997,8 @@
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
 				  and {condicion}
         order by
-          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)
+          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
+          convert(tc_keet_contratos_lotes.lote, unsigned integer)
 			</select>
 			<select id="lotesSubContratistas">
 				select 
@@ -7026,7 +7027,8 @@
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
 				  and {condicion}
         order by
-          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)
+          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
+          convert(tc_keet_contratos_lotes.lote, unsigned integer)
 			</select>
 			<select id="lotesResidentes">
 				select 

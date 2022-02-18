@@ -44,6 +44,9 @@ public class Galeria extends IBaseFilter implements Serializable {
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));									
 			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("images").concat("/"));						
+			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -99,6 +102,9 @@ public class Galeria extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));												
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
+			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
