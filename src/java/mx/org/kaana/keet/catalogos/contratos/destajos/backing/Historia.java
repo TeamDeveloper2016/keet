@@ -71,10 +71,10 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
       this.model  = new ArrayList<>();
 			this.initBase();
       this.fields = new ArrayList<>();
-			//opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-			//idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			opcion      = EOpcionesResidente.HISTORIAL;
-		  idDesarrollo= 2L;			
+			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			// opcion      = EOpcionesResidente.HISTORIAL;
+		  // idDesarrollo= 2L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
