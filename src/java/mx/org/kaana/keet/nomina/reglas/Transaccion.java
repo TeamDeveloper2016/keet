@@ -1139,6 +1139,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             residentes.put("Luis Cesar Lopez Manzur", "4494644591");
             residentes.put("Jordi Alfonso Fariña Quiroz", "4495827455");
             break;
+          case "triana":
+            residentes.put("Jesús Fernando Villalpando Cisneros", "4491866932");
+            residentes.put("José Refugio Villalpando Vargas", "4498906033");
+            break;
         } // swtich
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
         notificar.setDesarrollo(desarrollo);
@@ -1162,8 +1166,17 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   public void grupo(Session sesion) throws Exception {
     try {
       String group= Cafu.IMOX_GROUP_GYLVI;
-      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
-        group= Cafu.IMOX_GROUP_CAFU;
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          group= Cafu.IMOX_GROUP_CAFU;
+          break;
+        case "gylvi":
+          group= Cafu.IMOX_GROUP_GYLVI;
+          break;
+        case "triana":
+          group= Cafu.IMOX_GROUP_TRIANA;
+          break;
+      } // switch
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
       Cafu notificar= new Cafu("compañero(s)", group, this.texto, 
@@ -1184,8 +1197,17 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   public void cierre(Session sesion) throws Exception {
     try {
       String group= Cafu.IMOX_GROUP_GYLVI;
-      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
-        group= Cafu.IMOX_GROUP_CAFU;
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          group= Cafu.IMOX_GROUP_CAFU;
+          break;
+        case "gylvi":
+          group= Cafu.IMOX_GROUP_GYLVI;
+          break;
+        case "triana":
+          group= Cafu.IMOX_GROUP_TRIANA;
+          break;
+      } // switch
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
       Cafu notificar= new Cafu("compañero(s)", group, "", 

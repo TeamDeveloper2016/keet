@@ -97,6 +97,7 @@
               <h:outputText value="#{row[column.field]['titulo']}" styleClass=""/>
             </p:columns>            
 						<f:facet name="footer">
+              <p:outputLabel value="[-] Es sin iniciar, [*] Pago parcial" styleClass="janal-color-black janal-font-bold janal-float-left"/>
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosHistoria.model== null? 0: keetCatalogosContratosDestajosHistoria.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>		

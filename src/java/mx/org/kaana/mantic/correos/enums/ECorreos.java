@@ -81,6 +81,27 @@ public enum ECorreos {
     empresas.put("gylvi.destajos.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("gylvi.pagos.email", "administracion@gylvi.com");  
     empresas.put("gylvi.pagos.backup", "imox.soluciones.web@gmail.com");     
+    
+    empresas.put("triana.facturacion.email", "facturas@trianamx.com");  
+    empresas.put("triana.facturacion.backup", "");  
+    empresas.put("triana.cotizaciones.email", "ventas@trianamx.com");  
+    empresas.put("triana.cotizaciones.backup", "compras2@trianamx.com");  
+    empresas.put("triana.ordenes_compra.email", "compras@trianamx.com");  
+    empresas.put("triana.ordenes_compra.backup", "compras2@trianamx.com");  
+    empresas.put("triana.cuentas.email", "ventas@trianamx.com");  
+    empresas.put("triana.cuentas.backup", "");  
+    empresas.put("triana.ventas.email", "ventas@trianamx.com");  
+    empresas.put("triana.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("triana.compras.email", "compras@trianamx.com");  
+    empresas.put("triana.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("triana.administracion.email", "administracion@trianamx.com");  
+    empresas.put("triana.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("triana.residentes.email", "administracion@trianamx.com");  
+    empresas.put("triana.residentes.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("triana.destajos.email", "administracion@trianamx.com");  
+    empresas.put("triana.destajos.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("triana.pagos.email", "administracion@trianamx.com");  
+    empresas.put("triana.pagos.backup", "imox.soluciones.web@gmail.com");     
   }
 
 	private ECorreos(String template, String images, String user, String password, String alias) {

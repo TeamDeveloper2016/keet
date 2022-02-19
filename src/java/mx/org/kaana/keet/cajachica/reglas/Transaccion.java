@@ -835,6 +835,9 @@ public class Transaccion extends IBaseTnx {
             administradores.put("Luis Cesar Lopez Manzur", "4494644591");
             administradores.put("Jordi Alfonso Fariña Quiroz", "4495827455");
             break;
+          case "triana":
+            administradores.put("Jesús Fernando Villalpando Cisneros", "4491866932");
+            administradores.put("José Refugio Villalpando Vargas", "4498906033");
         } // swtich
         notificar= new Cafu("", "", nombre, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
         for (String administrador: administradores.keySet()) {
