@@ -29,7 +29,7 @@ public class DonutModel extends PieModel implements Serializable {
 	private List<Graphic> graphic;
 	
 	public DonutModel(String name) {
-		this(name, "40%", "60%", new Title("CGOR", "subtitulo"));
+		this(name, "40%", "60%", new Title("KAJOOL", "subtitulo"));
 	}
 
 	public DonutModel(String name, String radius, String inside, Title title) {

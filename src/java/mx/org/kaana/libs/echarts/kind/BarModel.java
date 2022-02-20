@@ -37,7 +37,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	private List<String> sequence;
 
 	public BarModel() {
-		this(new Title("CGOR", "Subtitulo"), EBarOritentation.VERTICAL);
+		this(new Title("KAJOOL", "Subtitulo"), EBarOritentation.VERTICAL);
 	}
 	
 	public BarModel(Title title) {

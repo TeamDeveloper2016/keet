@@ -28,7 +28,7 @@ public class Serie implements Serializable {
 	private List<Data> data;
 
 	public Serie() {
-		this("CGOR");
+		this("KAJOOL");
 	}
 
 	public Serie(String name) {

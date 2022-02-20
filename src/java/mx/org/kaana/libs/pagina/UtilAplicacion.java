@@ -87,6 +87,22 @@ public class UtilAplicacion {
     return Configuracion.getInstance().getEmpresa("icon");
   }
 
+  public String getLogoWidth() {
+    String regresar= "width: 88px !important;";
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        regresar= "width: 88px !important;";
+        break;
+      case "gylvi":
+        regresar= "width: 105px !important;";
+        break;
+      case "triana":
+        regresar= "width: 157px !important;";
+        break;
+    } // switch
+    return regresar;
+  }
+  
   public String getIngresoCurp() {
     return Configuracion.getInstance().getPropiedad("sistema.ingreso.curp");
   }

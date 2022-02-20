@@ -24,7 +24,7 @@ public class DonutDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      PieModel model= new DonutModel("serie", "55%", "40%", new Title("CGOR", null));
+      PieModel model= new DonutModel("serie", "55%", "40%", new Title("KAJOOL", null));
 			((DonutModel)model).toCustomDisplay("1,234", "56.12 %", "1,234");
 //			((DonutModel)model).toCustomDonut("1,234");
 //			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");

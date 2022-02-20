@@ -40,6 +40,7 @@ import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
@@ -1129,19 +1130,20 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
-        residentes.put("Alejandro Jiménez García", "4492090586");
+        Encriptar encriptar= new Encriptar();
+        residentes.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
         switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
           case "cafu":
-            residentes.put("Carlos Alberto Calderon Solano", "4491813810");
-            residentes.put("Irma de Lourdes Hernandez Romo", "4491285890");
+            residentes.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
+            residentes.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
             break;
           case "gylvi":
-            residentes.put("Luis Cesar Lopez Manzur", "4494644591");
-            residentes.put("Jordi Alfonso Fariña Quiroz", "4495827455");
+            residentes.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
+            residentes.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
             break;
           case "triana":
-            residentes.put("Jesús Fernando Villalpando Cisneros", "4491866932");
-            residentes.put("José Refugio Villalpando Vargas", "4498906033");
+            residentes.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
+            residentes.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
             break;
         } // swtich
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);

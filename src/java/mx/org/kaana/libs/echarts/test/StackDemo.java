@@ -21,7 +21,7 @@ public class StackDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+      StackModel model= new StackModel(new Title("KAJOOL", null), EBarOritentation.VERTICAL);
 //			model.addLine(new CustomLine("Hola", 150D, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.toCustomFontSize(13);
 //			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");

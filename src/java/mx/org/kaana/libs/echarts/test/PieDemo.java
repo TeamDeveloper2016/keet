@@ -23,7 +23,7 @@ public class PieDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      PieModel model= new PieModel("serie", "55%", new Title("CGOR", null));
+      PieModel model= new PieModel("serie", "55%", new Title("KAJOOL", null));
 			LOG.info(model.toJson());
 			
 			Datas datas       = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));

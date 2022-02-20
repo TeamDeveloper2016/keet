@@ -35,7 +35,7 @@ public class PieModel extends ChartModel implements Serializable {
 	private transient String radius;
 
 	public PieModel(String name) {
-		this(name, "55%", new Title("CGOR", "subtitulo"));
+		this(name, "55%", new Title("KAJOOL", "subtitulo"));
 	}
 
 	public PieModel(String name, String radius, Title title) {
@@ -50,7 +50,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 	
 	public PieModel(String name, String radius, IDataSet data) {
-		this(name, radius, new Title("CGOR", "subtitulo"), data);
+		this(name, radius, new Title("KAJOOL", "subtitulo"), data);
 	}
 	
 	public PieModel(String name, String radius, Title title, IDataSet data) {

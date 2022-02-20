@@ -170,7 +170,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	public void doRefreshEChartWith(ItemSelected itemSelected) {
 		LOG.info(itemSelected);
 		try {
-      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+      BarModel model= new BarModel(new Title("KAJOOL", null), EBarOritentation.VERTICAL);
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
@@ -186,7 +186,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	public void doRefreshEChartSingle(String id, String group) {
 		LOG.info(id);
 		try {
-      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+      BarModel model= new BarModel(new Title("KAJOOL", null), EBarOritentation.VERTICAL);
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			//model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
 			//model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));

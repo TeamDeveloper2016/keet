@@ -42,7 +42,7 @@ public class PicModel extends ChartModel implements Serializable {
 	private transient EBarOritentation orientation;
 	
 	public PicModel() {
-		this(new Title("CGOR", "Sub titulo"), new ArrayList<Serie>(Arrays.asList(new Serie())));
+		this(new Title("KAJOOL", "Sub titulo"), new ArrayList<Serie>(Arrays.asList(new Serie())));
 	};
 
 	public PicModel(Title title, IDataSet data) {

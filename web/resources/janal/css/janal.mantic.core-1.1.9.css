@@ -319,9 +319,9 @@ div.ui-panelgrid-content {
   font-size: 14px;
   position: relative;
 }
-.janal-header-sedesol {   
+.janal-header-logo {   
   height: 54px;
-  background-image:url("#{resource['janal:img/sistema/logo-sedesol.png']}");
+  background-image:url("#{resource['janal:img/sistema/sin-foto.png']}");
   transition:all ease-in .2s;
   background-repeat: no-repeat;
   background-position: left;
@@ -448,7 +448,7 @@ div.ui-panelgrid-content {
     width: 100%;
   }
   .ui-tabs .ui-tabs-panel {padding: initial;}
-  .janal-header-sedesol {
+  .janal-header-logo {
     width: 100%;
     background-repeat: no-repeat;
     background-size: 0%;
@@ -589,7 +589,7 @@ div.ui-panelgrid-content {
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
   .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
   .margin-fecha {padding-left: 0px;}
-  .janal-header-sedesol {
+  .janal-header-logo {
     width: 100%;
     background-repeat: no-repeat;
     background-size: 90%;
@@ -709,7 +709,7 @@ div.ui-panelgrid-content {
 
 /* tablets (portrait) ----------- */
 @media   (min-width : 768px) and (max-width : 1024px) {
-   .janal-header-sedesol {
+   .janal-header-logo {
      background-repeat: no-repeat;
      background-size: 80%
    }

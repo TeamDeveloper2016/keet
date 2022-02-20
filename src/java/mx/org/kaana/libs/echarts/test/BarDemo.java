@@ -25,7 +25,7 @@ public class BarDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+      BarModel model= new BarModel(new Title("KAJOOL", null), EBarOritentation.VERTICAL);
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Hola", 180D, Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Hola", 120D, Colors.COLOR_BLUE, ETypeLine.DOTTED));
