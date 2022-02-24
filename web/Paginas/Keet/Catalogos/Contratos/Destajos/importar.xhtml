@@ -102,16 +102,16 @@
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" disabled="true"/>								
                 <p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Contrato:"/>
-								<p:inputText value="[ #{keetCatalogosContratosDestajosImportar.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosImportar.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.lote}" styleClass="janal-wid-100-txt" disabled="true"/>
+								<p:inputText value="[ #{keetCatalogosContratosDestajosImportar.attrs.clave} ] #{keetCatalogosContratosDestajosImportar.attrs.contratos.etapa} M#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosImportar.contrato.attrs.contratoLote.lote}" styleClass="janal-wid-100-txt" disabled="true"/>
 								<p:outputLabel value="Proyecto:" rendered="false"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosImportar.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contratos.claveProyecto}] #{keetCatalogosContratosDestajosImportar.attrs.contratos.etapaProyecto}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
 								<p:outputLabel value="Desarrollo:"/>																		
-								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosImportar.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" disabled="true"/>								
+								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contratos.claveDesarrollo}] #{keetCatalogosContratosDestajosImportar.attrs.contratos.nombreDesarrollo}" styleClass="janal-wid-100-txt" disabled="true"/>								
                 <p:spacer width="1px" rendered="false"/><p:separator rendered="false"/>
                 <p:outputLabel value="Domicilio:" rendered="false"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contratos.domicilio}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
 								<p:outputLabel value="Cliente:" rendered="false"/>																		
-								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>								
+								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contratos.razonSocial}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>								
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Empleado:"/>
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" disabled="true"/>

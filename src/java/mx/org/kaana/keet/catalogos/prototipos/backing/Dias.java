@@ -66,7 +66,7 @@ public class Dias extends IBaseAttribute implements Serializable {
       params = new HashMap<>();      
       params.put("idPrototipo", this.attrs.get("idPrototipo"));      
       params.put("idUsuario", JsfBase.getIdUsuario());      
-			this.partidas= (List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaEstacionesDto", "partidas", params, Constantes.SQL_TODOS_REGISTROS);
+			this.partidas= (List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaEstacionesDto", "prototipo", params, Constantes.SQL_TODOS_REGISTROS);
 	    if(this.partidas!= null && !this.partidas.isEmpty()) {
         for (Partida item: this.partidas) {
           if(item.getIdPrototipoDia()== null) {

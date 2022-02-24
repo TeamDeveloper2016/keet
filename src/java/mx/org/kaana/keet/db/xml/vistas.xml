@@ -5893,7 +5893,7 @@
         order by
           tc_keet_partidas.orden        
 			</select>
-			<select id="partidas">
+			<select id="prototipo">
         select
           tc_keet_partidas.id_partida as id_key,
           -1 as id_estacion,
