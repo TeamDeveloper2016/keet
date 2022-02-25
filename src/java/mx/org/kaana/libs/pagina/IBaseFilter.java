@@ -1,11 +1,20 @@
 package mx.org.kaana.libs.pagina;
 
+import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
+import mx.org.kaana.libs.reflection.Methods;
 
 /**
  * @company KAANA
@@ -43,5 +52,26 @@ public abstract class IBaseFilter extends IBaseAttribute implements Serializable
 		} // if
 		return regresar;
 	}
+
+  protected String toLookForEmpresaLogo(Long idEmpresa) {
+    String regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresa", idEmpresa);      
+      Value value = DaoFactory.getInstance().toField("TcManticEmpresasDto", "logo", params, "imagen");
+      if(value!= null && value.getData()!= null)
+        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(value.toString());
+      else
+        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
   
 }

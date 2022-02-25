@@ -77,7 +77,7 @@ public class Generar extends BaseReportes implements Serializable {
 		Monitoreo monitoreo=null;
 		InputStream input=null;
 		try {
-			loadResourceFileJasper(this.ireporte.getParametros());
+			this.loadResourceFileJasper(this.ireporte.getParametros());
 			nombreArchivo=Archivo.toFormatNameFile(this.ireporte.getNombre());
 			source=JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper"));
 			input=SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));

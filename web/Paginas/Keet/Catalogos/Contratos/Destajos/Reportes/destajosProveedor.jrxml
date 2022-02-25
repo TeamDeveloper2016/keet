@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosProveedor" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="333"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -61,6 +61,7 @@
 	<parameter name="REPORTE_FIGURA" class="java.lang.String"/>
 	<parameter name="REPORTE_DEPARTAMENTO" class="java.lang.String"/>
 	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_LOGO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -82,6 +83,7 @@
 	<field name="TOTAL" class="java.lang.Double"/>
 	<field name="ANTICIPO" class="java.lang.Double"/>
 	<field name="SUBTOTAL" class="java.lang.Double"/>
+	<field name="IMAGEN" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -307,7 +309,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_ICON}+ $F{IMAGEN}]]></imageExpression>
 			</image>
 			<line>
 				<reportElement x="138" y="30" width="419" height="1" uuid="4ba53e67-1473-45f6-854a-53d60c271162"/>
