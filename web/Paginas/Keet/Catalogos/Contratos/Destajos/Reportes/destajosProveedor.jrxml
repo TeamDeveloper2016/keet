@@ -135,8 +135,8 @@
 		<variableExpression><![CDATA[$F{ANTICIPO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<group name="DESARROLLO">
-		<groupExpression><![CDATA[$F{DESARROLLO}]]></groupExpression>
+	<group name="DESARROLLO" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{DESARROLLO}+ $F{CLAVE}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
 				<textField pattern="" isBlankWhenNull="true">

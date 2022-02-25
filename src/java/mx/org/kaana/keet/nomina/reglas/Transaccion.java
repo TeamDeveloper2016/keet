@@ -1008,7 +1008,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       params.put("loNuevo", "");
       params.put("idNomina", this.idNomina);
@@ -1304,4 +1305,25 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // finally
   }  
 
+  protected String toLookForEmpresaLogo(Long idEmpresa) {
+    String regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresa", idEmpresa);      
+      Value value = DaoFactory.getInstance().toField("TcManticEmpresasDto", "logo", params, "imagen");
+      if(value!= null && value.getData()!= null)
+        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(value.toString());
+      else
+        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
+  
 }
