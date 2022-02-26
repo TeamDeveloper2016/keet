@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosProveedor" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="333"/>
+	<property name="ireport.y" value="192"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -144,7 +144,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["   DESTAJOS  : DESARROLLO "+$F{DESARROLLO} + "[ "+ $F{CLAVE}+ " ]"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["   DESTAJOS  : DESARROLLO "+$F{DESARROLLO} + "   [ "+ $F{CLAVE}+ " ]"]]></textFieldExpression>
 				</textField>
 				<frame>
 					<reportElement mode="Opaque" x="0" y="16" width="752" height="15" forecolor="#000000" backcolor="#000000" uuid="1555a9c4-e832-4553-b5b0-1080fc4dfa01"/>
