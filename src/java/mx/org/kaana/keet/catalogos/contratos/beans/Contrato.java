@@ -124,18 +124,18 @@ public class Contrato extends TcKeetContratosDto {
 		return regresar;
 	} // addLote
 	
-	public boolean doRemoveLote() throws Exception{
-		boolean regresar= false;
+	public boolean doRemoveLote() throws Exception {
+		boolean regresar= Boolean.FALSE;
 		try {
-		  if (this.lotes.contains(loteSeleccion)){
-				if( (this.lotes.get(this.lotes.indexOf(loteSeleccion)).getAccion().equals(ESql.UPDATE)))
+		  if (this.lotes.contains(loteSeleccion)) {
+				if((this.lotes.get(this.lotes.indexOf(loteSeleccion)).getAccion().equals(ESql.UPDATE)))
 				  this.lotes.get(this.lotes.indexOf(loteSeleccion)).setAccion(ESql.DELETE);
 				else
 					this.lotes.remove(this.lotes.indexOf(loteSeleccion));
-				regresar= true;
+				regresar= Boolean.TRUE;
 			} // if
 		} // try
-		catch(Exception e){
+		catch(Exception e) {
 			throw e;
 		} // catch
 		return regresar;
@@ -148,10 +148,10 @@ public class Contrato extends TcKeetContratosDto {
 	public boolean validaPrototipos(List<UISelectItem> lista) throws Exception{
 		boolean regresar= true;
 		try {
-		  for(Lote item: this.lotes){
+		  for(Lote item: this.lotes) {
 				if(!lista.contains(new UISelectItem(item.getIdPrototipo()))){
 					this.loteSeleccion= item;
-					doRemoveLote();
+					this.doRemoveLote();
 					regresar= false;
 				} // if
 			} // for
@@ -205,4 +205,5 @@ public class Contrato extends TcKeetContratosDto {
 	public Boolean getPaginator() {
 		return this.lotes.size() > 10;
 	}	
+  
 }	

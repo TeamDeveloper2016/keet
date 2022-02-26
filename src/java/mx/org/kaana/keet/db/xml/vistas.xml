@@ -4580,11 +4580,14 @@
 					tc_keet_contratos_estatus.nombre as estatus,
 					tc_keet_contratos_estatus.estatus_asociados,
 					tc_keet_contratos.registro,
-				  tc_keet_proyectos.clave proyecto
+				  tc_keet_proyectos.clave proyecto,
+          tc_keet_desarrollos.nombres as desarrollo
         from 
           tc_keet_contratos
         inner join 
 					tc_keet_proyectos on tc_keet_proyectos.id_proyecto= tc_keet_contratos.id_proyecto
+        inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         inner join 
 					tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
         inner join

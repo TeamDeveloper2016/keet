@@ -40,7 +40,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.PointSelectEvent;
 import org.primefaces.model.map.LatLng;
 
-
 @Named(value = "keetCatalogosContratosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
@@ -820,6 +819,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
+  }
+ 
+  public String toColor(Lote row) {
+    return row.isMostar()? "": "janal-display-none";
   }
   
 }

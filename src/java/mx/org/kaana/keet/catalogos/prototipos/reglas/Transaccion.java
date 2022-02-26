@@ -3,22 +3,17 @@ package mx.org.kaana.keet.catalogos.prototipos.reglas;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposDiasDto;
-// import mx.org.kaana.keet.enums.EDiasSemana;
 import mx.org.kaana.keet.estaciones.beans.Partida;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
-import mx.org.kaana.keet.prestamos.proveedor.beans.Anticipo;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -56,31 +51,28 @@ public class Transaccion extends IBaseTnx {
 					this.prototipo.getPrototipo().setIdUsuario(idUsuario);
 					this.prototipo.getPrototipo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					regresar= DaoFactory.getInstance().insert(sesion, this.prototipo.getPrototipo())>= 1L;
-					this.registrarDias(sesion);
 					for(SistemaConstructivo item: this.prototipo.getConstructivos()){
 						item.setIdUsuario(idUsuario);
 						item.setIdPrototipo(this.prototipo.getPrototipo().getIdPrototipo());
-						actualizarConstructivo(sesion, item);
+						this.actualizarConstructivo(sesion, item);
 					} // for
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.prototipo.getPrototipo())>= 1L;
-					registrarDias(sesion);
 					for(SistemaConstructivo item: this.prototipo.getConstructivos()){
 						item.setIdPrototipo(this.prototipo.getPrototipo().getIdPrototipo());
-						actualizarConstructivo(sesion, item);
+						this.actualizarConstructivo(sesion, item);
 					} // for
 					break;				
 				case ELIMINAR:
 					for(SistemaConstructivo item: this.prototipo.getConstructivos())
 						DaoFactory.getInstance().delete(sesion, item);
-					deleteDias(sesion);
 					DaoFactory.getInstance().delete(sesion, this.prototipo.getPrototipo());
 					break;
 				case SUBIR:
 					for(Documento item: this.prototipo.getDocumentos()){						
 						if(DaoFactory.getInstance().insert(sesion, item)>=1L)
-							toSaveFile(item.getIdArchivo());
+							this.toSaveFile(item.getIdArchivo());
 					} // for
 					break;
 				case DEPURAR:
@@ -121,42 +113,7 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(e);
 		} // catch		
 	} // actualizarConstructivo
-	
-	private void registrarDias(Session sesion) throws Exception{		
-		TcKeetPrototiposDiasDto prototipoDia= null;
-		try {			
-			if(this.deleteDias(sesion)) {
-				for(String dia: this.prototipo.getDiasSeleccionados()){
-					prototipoDia= new TcKeetPrototiposDiasDto();
-					prototipoDia.setIdPrototipo(this.prototipo.getPrototipo().getIdPrototipo());
-					prototipoDia.setIdUsuario(JsfBase.getIdUsuario());
-					// prototipoDia.setIdNombreDia(EDiasSemana.fromName(dia).getKey());
-					DaoFactory.getInstance().insert(sesion, prototipoDia);
-				} // for
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // registrarDias
-	
-	private boolean deleteDias(Session sesion) throws Exception {
-		boolean regresar         = false;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("idPrototipo", this.prototipo.getPrototipo().getIdPrototipo());
-			regresar= DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetPrototiposDiasDto", "igual", params)>= 0L;
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	} // deleteDias
- 
+
   private Boolean toApplyDates(Session sesion) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= null;

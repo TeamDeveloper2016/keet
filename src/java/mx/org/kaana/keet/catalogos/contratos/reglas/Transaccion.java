@@ -24,14 +24,12 @@ import mx.org.kaana.keet.catalogos.contratos.beans.Presupuesto;
 import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.enums.EArchivosContratos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import org.hibernate.Session;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 
 public class Transaccion extends IBaseTnx {
 
@@ -156,13 +154,12 @@ public class Transaccion extends IBaseTnx {
 	} // toSiguiente
 	
 	private void actualizarLote(Session sesion, Lote item) throws Exception {
-		Value orden   = null;
 		Entity entity = null;
 		try {
 			//setea el nuevo orden, debido al ordenamiento por fecha
 			// orden= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesDto", "siguiente", item.toMap(), "maxOrden");
 			// item.setOrden(orden.toLong(1L));
-			switch(item.getAccion()){
+			switch(item.getAccion()) {
 				case INSERT:
           item.setIdContratoLote(-1L);
           item.setIdContratoLoteEstatus(1L);//ver estatus

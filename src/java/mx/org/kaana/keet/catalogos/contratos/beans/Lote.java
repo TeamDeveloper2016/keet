@@ -1,4 +1,3 @@
-
 package mx.org.kaana.keet.catalogos.contratos.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
