@@ -7,6 +7,31 @@
   </model>
 
   <dml>
+    <unit id="TcKeetPrototiposHabilesDto">
+      <select id="row">
+        select      
+          tc_keet_prototipos_habiles.id_prototipo_habil as id_key,
+					tc_keet_prototipos_habiles.*
+        from      
+          tc_keet_prototipos_habiles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos_habiles
+        where      
+          id_nombre_dia = {idNombreDia} and id_prototipo = {idPrototipo}
+      </select>
+			<delete id="igual">
+				delete from 
+          tc_keet_prototipos_habiles 
+        where 
+          id_prototipo= {idPrototipo}
+			</delete>
+    </unit>    
     <unit id="TcKeetPrestamosLotesDto">
       <select id="row">
         select      

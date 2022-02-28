@@ -5387,7 +5387,7 @@
 				  join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_prototipos.id_cliente
         where
           {condicion}
-				  {sortOrder}
+				{sortOrder}
 			</select>	
 			<select id="constructivosById">
 				select      
@@ -5460,9 +5460,9 @@
 					id_prototipo_dia id_key,
 					nombre 
 				 from
-					 tc_keet_prototipos_dias
+					 tc_keet_prototipos_habiles
 				 inner join 
-           tc_keet_nombres_dias on tc_keet_nombres_dias.id_nombre_dia= tc_keet_prototipos_dias.id_nombre_dia
+           tc_keet_nombres_dias on tc_keet_nombres_dias.id_nombre_dia= tc_keet_prototipos_habiles.id_nombre_dia
 				where
 				  id_prototipo= {idPrototipo}
 			</select>		
@@ -5622,7 +5622,7 @@
         from      
           tc_keet_nombres_dias
 				inner join 
-					tc_keet_prototipos_dias on tc_keet_nombres_dias.id_nombre_dia = tc_keet_prototipos_dias.id_nombre_dia
+					tc_keet_prototipos_habiles on tc_keet_nombres_dias.id_nombre_dia = tc_keet_prototipos_habiles.id_nombre_dia
         where 
           {condicion} 
 			</select>

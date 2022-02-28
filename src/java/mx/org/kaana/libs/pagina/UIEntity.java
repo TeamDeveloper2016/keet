@@ -329,12 +329,20 @@ public final class UIEntity {
     return regresar;
   }
 	
+	public static List<UISelectEntity> todos(String proceso, String id, Map params, List<Columna> formato, String name, Long registros) {
+		return todos(proceso, id, params, formato, registros, name);
+	}
+	
 	public static List<UISelectEntity> todos(String proceso, String id, Map params, List<Columna> formato, String name) {
-		return todos(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS,name);
+		return todos(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS, name);
+	}
+	
+	public static List<UISelectEntity> seleccione(String proceso, String id, Map params, List<Columna> formato, String name, Long registros) {
+		return seleccione(proceso, id, params, formato, registros, name);
 	}
 	
 	public static List<UISelectEntity> seleccione(String proceso, String id, Map params, List<Columna> formato, String name) {
-		return seleccione(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS,name);
+		return seleccione(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS, name);
 	}
 	
   public static List<UISelectEntity> todos(String proceso, String id, Map<String, Object> params, String name) {

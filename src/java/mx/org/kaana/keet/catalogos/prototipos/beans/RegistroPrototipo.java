@@ -65,9 +65,9 @@ public class RegistroPrototipo implements Serializable {
 			this.constructivos    = motor.toConstructivos(); 
 			this.loadAllDefault();
 			this.dias= new ArrayList<>();
-			//for(TcKeetNombresDiasDto dia: motor.toDias())
-			//	this.dias.add(dia.getNombre());			
-			//this.diasSeleccionados= this.dias.toArray(new String[0]);
+			for(TcKeetNombresDiasDto dia: motor.toDias())
+				this.dias.add(dia.getNombre());			
+			this.diasSeleccionados= this.dias.toArray(new String[0]);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);			
