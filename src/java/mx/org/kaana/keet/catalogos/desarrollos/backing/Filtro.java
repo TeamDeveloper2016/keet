@@ -37,7 +37,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){
 				this.attrs.put("idDesarrolloProcess", JsfBase.getFlashAttribute("idDesarrolloProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idDesarrolloProcess", null);
 			} // if
     } // try
@@ -61,7 +61,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-      this.lazyModel = new FormatCustomLazy("VistaDesarrollosDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaDesarrollosDto", "desarrollos", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

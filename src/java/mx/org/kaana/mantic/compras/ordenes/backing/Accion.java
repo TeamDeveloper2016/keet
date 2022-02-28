@@ -967,8 +967,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(!almacenistas.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(0));
-        else  
-          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(almacenistas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacenista())));
+        else { 
+          int index= almacenistas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacenista());
+          if(index>= 0)
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(index));
+          else
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(0));
+        } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;

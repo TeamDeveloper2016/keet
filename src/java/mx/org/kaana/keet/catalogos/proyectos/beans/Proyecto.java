@@ -146,7 +146,7 @@ public class Proyecto extends TcKeetProyectosDto {
 				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
 				  lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
 				else{
-					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
+					diasHabiles= new ArrayList<>(); // (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
 					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
 				//lote.getFechaInicio().
@@ -173,7 +173,7 @@ public class Proyecto extends TcKeetProyectosDto {
 				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
 				  lote.setFechaTermino(lote.getFechaInicio().plusDays(lote.getDiasConstruccion().intValue()));
 				else{
-					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
+					diasHabiles= new ArrayList<>(); // (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
 					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
 				//lote.getFechaInicio().
