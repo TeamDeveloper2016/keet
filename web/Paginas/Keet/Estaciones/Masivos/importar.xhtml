@@ -75,7 +75,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:poll widgetVar="etiqueta" interval="5" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true" oncomplete="reloadProgress();"/>
+		<p:poll widgetVar="etiqueta" interval="3" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true" oncomplete="reloadProgress();"/>
 		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{keetEstacionesMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
     <p:remoteCommand name="reloadProveedores" onstart="return janal.bloquear();" process="@this" update="@(.involucrados)" oncomplete="janal.desbloquear();"/>
@@ -163,7 +163,6 @@
 									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" />
 								</p:panelGrid>
               </p:panelGrid>
-              <p:remoteCommand name="reloadLotes" process="@this" update="idContratoLote" oncomplete="janal.resize();"/>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-90, janal-wid-10">	
 								<p:outputLabel for="idPlantilla" value="Prototipos:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}" styleClass="involucrados"/>
 								<p:outputLabel for="idEliminar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}" styleClass="involucrados"/>

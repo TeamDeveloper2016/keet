@@ -2122,6 +2122,7 @@
 			<select id="byId">
         select      
 				  tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.clave as nombre,
           tc_keet_proyectos.*
         from      
           tc_keet_proyectos

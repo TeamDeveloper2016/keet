@@ -104,4 +104,5 @@ public class RegistroProyecto implements Serializable {
 			throw e;
 		} // catch		
 	} // addDeleteList
+  
 }
