@@ -70,7 +70,7 @@
 									<f:selectItem itemValue="2" itemLabel="HABILES"/>
 								</p:selectOneMenu>	
 								<p:outputLabel for="dias" value="Dias:" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}" styleClass="diasSemana"/>
-								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-99 diasSemana" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}">
+								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-100-txt diasSemana" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="janal-wid-99" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}">
 									<f:selectItems value="#{keetCatalogosPrototiposAccion.prototipo.diasDefault}"/>
 								</p:selectCheckboxMenu>
               </p:panelGrid>

@@ -2155,6 +2155,8 @@
           tc_keet_proyectos_lotes
         where 
           id_proyecto= {idProyecto} 
+        order by
+          id_proyecto_lote
       </select>
       <select id="getOrden">
         select      
@@ -3756,7 +3758,8 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  inicio, manzana, convert(lote, unsigned integer)
+         convert(manzana, unsigned integer),
+         convert(lote, unsigned integer)
       </select>
 			<select id="byContratoContratistas">
         select      

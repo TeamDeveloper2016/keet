@@ -46,8 +46,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idProyecto", JsfBase.getFlashAttribute("idProyecto"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      loadCombos();
-			doLoad();
+      this.loadCombos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -55,7 +55,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 	
-	private void loadCombos(){
+	private void loadCombos() {
 		try {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
@@ -71,7 +71,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doLoadPrototipos(){
 		try {
-			loadPrototipos();
+			this.loadPrototipos();
 			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
     } // try
     catch (Exception e) {
@@ -105,8 +105,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));
-					loadPrototipos();
-          for(Lote item:this.proyecto.getProyecto().getLotes()){
+					this.loadPrototipos();
+          for(Lote item:this.proyecto.getProyecto().getLotes()) {
 			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));
 			      item.setIkFachada(((List<UISelectEntity>)this.attrs.get("fachadas")).get(((List<UISelectEntity>)this.attrs.get("fachadas")).indexOf(new UISelectEntity(new Entity(item.getIdTipoFachada())))));
 			    } // for					

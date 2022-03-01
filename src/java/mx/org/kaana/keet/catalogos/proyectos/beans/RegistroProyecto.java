@@ -39,7 +39,7 @@ public class RegistroProyecto implements Serializable {
 		this.documentos  = new ArrayList<>();
 		this.presupuestos= new ArrayList<>();
 		this.generadores = new ArrayList<>();
-		initCollections(idProyecto);
+		this.initCollections(idProyecto);
 	}
 
 	public Long getIdProyecto() {
