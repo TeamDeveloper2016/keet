@@ -12,6 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:noViviendas': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:etapa': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idCliente': {validaciones: 'requerido', mascara: 'libre'},
@@ -38,6 +39,8 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
                 <p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.clave}" />											
+                <p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.nombre}" />											
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>

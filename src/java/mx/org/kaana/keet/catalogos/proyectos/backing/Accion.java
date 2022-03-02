@@ -104,7 +104,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
         case SUBIR:					
-          this.proyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));
+          this.proyecto= new RegistroProyecto((Long)this.attrs.get("idProyecto"));
 					this.loadPrototipos();
           for(Lote item:this.proyecto.getProyecto().getLotes()) {
 			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));

@@ -2166,7 +2166,6 @@
 			<select id="byId">
         select      
 				  tc_keet_proyectos.id_proyecto id_key,
-          tc_keet_proyectos.clave as nombre,
           tc_keet_proyectos.*
         from      
           tc_keet_proyectos
@@ -2203,9 +2202,9 @@
         order by
           id_proyecto_lote
       </select>
-      <select id="getOrden">
+      <select id="siguiente">
         select      
-				  max(orden)+ 1 max_orden
+				  max(orden)+ 1 as siguiente
         from      
           tc_keet_proyectos_lotes
         where 
@@ -2217,7 +2216,7 @@
         from      
           tc_keet_proyectos_lotes
         where      
-          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = {lote} 
+          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = '{lote}'
       </select>
     </unit>
 		<unit id="TcKeetPrototiposDto">

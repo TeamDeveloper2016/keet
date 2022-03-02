@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
@@ -113,7 +114,7 @@ public class Proyecto extends TcKeetProyectosDto {
 	} // removeLote	
 	
 	public void doAddLote() throws Exception {
-		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)* (-1L)));
+		this.addLote(new Lote(ESql.INSERT, (new Random().nextLong())* -1L));
 	}
 	
 	public boolean validaPrototipos(List<UISelectEntity> uISelectEntitys) throws Exception{
@@ -122,18 +123,18 @@ public class Proyecto extends TcKeetProyectosDto {
 		  for(Lote item: this.lotes){
 				if(!uISelectEntitys.contains(new UISelectEntity(new Entity(item.getIdPrototipo())))){
 					this.loteSeleccion= item;
-					doRemoveLote();
+					this.doRemoveLote();
 					regresar= false;
 				} // if
 			} // for
 		} // try
-		catch(Exception e){
+		catch(Exception e) {
 			throw e;
 		} // catch
 		return regresar;
 	} // removeLote	
 	
-	public void doCalculateFecha(Lote lote){
+	public void doCalculateFecha(Lote lote) {
 		TcKeetPrototiposDto tcKeetPrototiposDto= null;
 		List<DiaHabil> diasHabiles             = null;
 		Map<String, Object>params= null;
@@ -149,7 +150,6 @@ public class Proyecto extends TcKeetProyectosDto {
 					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
 					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
-				//lote.getFechaInicio().
 			} // if
     } // try
     catch (Exception e) {

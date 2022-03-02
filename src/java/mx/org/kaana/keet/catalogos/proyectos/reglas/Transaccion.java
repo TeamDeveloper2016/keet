@@ -78,7 +78,6 @@ public class Transaccion extends IBaseTnx {
             item.setOrden(new Long(count++));
 						this.actualizarLote(sesion, item);
           } // for
-					//crearContrato(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
@@ -163,15 +162,15 @@ public class Transaccion extends IBaseTnx {
           item.setIdProyectoLote(-1L);
 					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-          if(item.getOrden()== null || Objects.equals(item.getOrden(), -1L)) {
-					  orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden");
+          if(item.getOrden()== null || item.getOrden()< 0L) {
+					  orden= DaoFactory.getInstance().toField(sesion, "TcKeetProyectosLotesDto", "siguiente", item.toMap(), "siguiente");
             if(orden!= null && orden.getData()!= null)
 					    item.setOrden(orden.toLong());
             else
               item.setOrden(1L);
           } // if  
 					DaoFactory.getInstance().insert(sesion, item);
-					this.cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class, "TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
+					this.cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetProyectosArchivosDto.class, "TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
           sesion.flush();
 					break;
 				case UPDATE:
@@ -225,7 +224,7 @@ public class Transaccion extends IBaseTnx {
 	private void crearContrato(Session sesion) throws Exception {
 		TcKeetContratosDto contratosDto    = null;
 		try{
-			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class,"TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
+			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class, "TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
 			contratosDto.setIdUsuario(JsfBase.getIdUsuario());
 			contratosDto.setIdContratoEstatus(1L);//cambiar estatus por el inicial
 			DaoFactory.getInstance().insert(sesion, contratosDto);
