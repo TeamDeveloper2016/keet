@@ -3113,6 +3113,16 @@
 				where 
 				  id_empresa_persona= {idEmpresaPersona}
 			</update>
+			<update id="persona">
+				update 
+				  tr_mantic_empresa_personal 
+        inner join
+          tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				set 
+				  tr_mantic_empresa_personal.id_contratista= null 
+				where 
+				  tc_mantic_personas.id_persona= {idPersona}
+			</update>
 			<update id="sueldo">
 				update 
 				  tr_mantic_empresa_personal 

@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetContratistasDepartamentosDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPersonalDto;
 import mx.org.kaana.keet.db.dto.TcKeetDepartamentosDto;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBancosDto;
@@ -199,7 +200,9 @@ public class Transaccion extends IBaseTnx {
               if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBeneficiariosDto.class, params) > -1L) {
                 if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaTipoContactoDto.class, params) > -1L) {
                   if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBancosDto.class, params) > -1L) {
+                    DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosPersonalDto.class, "persona", params);
                     DaoFactory.getInstance().deleteAll(sesion, TcKeetContratistasDepartamentosDto.class, params);
+                    DaoFactory.getInstance().updateAll(sesion, TrManticEmpresaPersonalDto.class, params, "persona");
                     if (DaoFactory.getInstance().deleteAll(sesion, TrManticEmpresaPersonalDto.class, params) > -1L) {
                       regresar = DaoFactory.getInstance().delete(sesion, TcManticPersonasDto.class, this.persona.getIdPersona()) >= 1L;
                     } // if

@@ -3616,15 +3616,30 @@
         from      
           tc_keet_contratos_personal
 			</select>
+			<select id="numeroRegistros">
+				select 
+          count(*) as total 
+        from 
+          tc_keet_contratos_personal 
+        where 
+          id_empresa_persona= {idEmpresaPersona}
+			</select>
 			<delete id="contrato">
 				delete from tc_keet_contratos_personal where id_desarrollo= {idDesarrollo}
 			</delete>
 			<delete id="contratoPersona">
 				delete from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
 			</delete>
-			<select id="numeroRegistros">
-				select count(*) total from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
-			</select>
+      <delete id="persona">
+				delete 
+          tc_keet_contratos_personal 
+        from 
+          tc_keet_contratos_personal 
+        inner join  
+          tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        where 
+          tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
     </unit>
 		<unit id="TcKeetContratosDto">
       <select id="row">
