@@ -149,7 +149,6 @@
 										<h:outputText value="#{item.titulo}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer height="2px" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:separator rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
@@ -160,13 +159,13 @@
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>	
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                <p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idDepartamento}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}"/>
-								</p:selectOneMenu>								
+                <p:selectCheckboxMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.departamentos}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
+                  <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}" var="two" itemValue="#{two.key}" itemLabel="#{two.nombre}"/>                
+                </p:selectCheckboxMenu> 
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{manticCatalogosPersonasAccion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.puesto or element.puesto eq ''? '': '|'} #{element.nombres}"/>

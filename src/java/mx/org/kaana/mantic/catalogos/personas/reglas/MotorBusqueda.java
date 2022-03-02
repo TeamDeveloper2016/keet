@@ -1,7 +1,7 @@
-
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,7 @@ import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
@@ -242,4 +243,24 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toClientesTipoContacto	
+  
+	public List<Especialidad> toPersonaDepartamentos(Long idEmpresaPersona) throws Exception{
+		List<Especialidad> regresar= null;
+		Map<String, Object>params  = new HashMap<>();
+		try {
+			params.put("idEmpresaPersona", idEmpresaPersona);
+			regresar= (List<Especialidad>) DaoFactory.getInstance().toEntitySet(Especialidad.class, "TcKeetContratistasDepartamentosDto", "departamentos", params);	
+			if(regresar== null)
+        regresar= new ArrayList<>();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPersonaDepartamentos
+	
+  
 }

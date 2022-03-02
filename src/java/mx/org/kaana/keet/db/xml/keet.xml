@@ -7,6 +7,50 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratistasDepartamentosDto">
+      <select id="row">
+        select      
+          tc_keet_contratistas_departamentos.id_contratista_departamento as id_key,
+          tc_keet_contratistas_departamentos.*
+        from      
+          tc_keet_contratistas_departamentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratistas_departamentos
+        where      
+          id_departamento = {idDepartamento} and id_empresa_persona = {idEmpresaPersona}
+      </select>
+      <select id="departamentos">
+        select      
+          tc_keet_contratistas_departamentos.id_departamento as id_key,
+          tc_keet_contratistas_departamentos.*
+        from      
+          tc_keet_contratistas_departamentos
+        where      
+          id_empresa_persona = {idEmpresaPersona}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_contratista_departamento) as maximo
+        from      
+          tc_keet_contratistas_departamentos
+			</select>
+			<delete id="rows">
+				delete 
+				  tc_keet_contratistas_departamentos 
+				from
+          tc_keet_contratistas_departamentos
+        inner join
+          tr_mantic_empresa_personal on tc_keet_contratistas_departamentos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        where
+          tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
+    </unit>    
     <unit id="TcKeetPrototiposHabilesDto">
       <select id="row">
         select      
@@ -3994,11 +4038,11 @@
         from      
           tc_keet_proveedores_departamentos
         where      
-          id_proveedor_departamento = {idProveedorDepartamento} and id_proveedor = {idProveedor} and id_departamento = {idDepartamento}
+          id_proveedor = {idProveedor} and id_departamento = {idDepartamento}
       </select>
 			<select id="maximo">
 				select      
-          max(id_proveedor_departamento) maximo
+          max(id_proveedor_departamento) as maximo
         from      
           tc_keet_proveedores_departamentos
 			</select>

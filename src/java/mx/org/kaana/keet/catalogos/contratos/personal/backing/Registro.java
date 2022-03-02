@@ -167,11 +167,16 @@ public class Registro extends IBaseAttribute implements Serializable {
 		String condicion                 = null;
     try {			
 			motorBusqueda= new MotorBusqueda((Long)this.attrs.get("idDesarrollo"));
-			condicion= this.toPrepare();
-			disponibles= motorBusqueda.toPersonasDisponibles(condicion);
-			sDisponibles= toListSelectionIten(disponibles);
-			asignados= motorBusqueda.toPersonasAsignadas(condicion);
-			sAsignados= toListSelectionIten(asignados);
+			condicion   = this.toPrepare();
+      String departamento= null;
+      if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
+			  departamento= "tc_keet_departamentos.id_departamento="+ this.attrs.get("idDepartamento");
+		  else			
+			  departamento= "tc_keet_departamentos.id_oficina in (2,3) ";      
+			disponibles = motorBusqueda.toPersonasDisponibles(condicion, departamento);
+			sDisponibles= this.toListSelectionIten(disponibles);
+			asignados   = motorBusqueda.toPersonasAsignadas(condicion, departamento);
+			sAsignados  = this.toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
 			this.loadAllEmpleados(sAsignados, sDisponibles);								
@@ -227,10 +232,6 @@ public class Registro extends IBaseAttribute implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");		
-		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
-		else			
-			sb.append("tc_keet_departamentos.id_oficina in (2,3) and ");
 		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
       if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
 			  sb.append("tr_mantic_empresa_personal.id_contratista is null and ");

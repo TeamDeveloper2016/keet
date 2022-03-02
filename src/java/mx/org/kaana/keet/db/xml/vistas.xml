@@ -4724,9 +4724,9 @@
 				from(
 				select      
 					{campoLlave} as id_key,									
-					tc_keet_departamentos.nombre departamento,
+					tc_keet_departamentos.nombre as departamento,
 					tc_keet_departamentos.id_departamento,
-					tc_mantic_puestos.nombre puesto,
+					tc_mantic_puestos.nombre as puesto,
 					tc_mantic_puestos.id_puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
@@ -4748,8 +4748,10 @@
 					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join 
-					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+  			inner join 
+ 			    tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
+  			inner join 
+				  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
         where 
@@ -4762,9 +4764,71 @@
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
 				) completo			  
+        group by
+          id_empresa_persona 
 				order by 					
 					descripcion
 			</select>
+			<select id="personalRegistrado">
+				select
+					completo.*
+				from(
+				select
+				  principal.*,
+				  concat('[', if(principal.id_contratista is null, principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, ''))), '] [', puesto, '] ', nombre_completo) descripcion
+				from(
+				select      
+					{campoLlave} as id_key,									
+					(select
+            group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ')
+           from 
+						tc_keet_contratistas_departamentos
+  				 inner join 
+						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento and {departamento}
+					 where
+						tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
+          ) as departamento, 
+					tc_mantic_puestos.nombre as puesto,
+					tc_mantic_puestos.id_puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
+					tr_mantic_empresa_personal.nss,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo,
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,					
+          tc_keet_contratos_personal.*,
+					(select count(*) total from tc_mantic_incidentes where tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona) total_incidencias,
+					tr_mantic_empresa_personal.id_persona,
+					tr_mantic_empresa_personal.id_contratista
+        from      
+          tc_keet_contratos_personal
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
+				) principal
+        left join
+			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
+			  left join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
+				) completo			  
+        where 
+          departamento is not null       
+        group by
+          id_empresa_persona 
+				order by 					
+					descripcion
+			</select>      
 			<select id="personalDisponible">
 				select
 					completo.*
@@ -4776,8 +4840,15 @@
 				select      
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,			
 					tr_mantic_empresa_personal.id_empresa_persona,
-					tc_keet_departamentos.nombre departamento,
-					tc_keet_departamentos.id_departamento,
+					(select
+            group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ')
+           from 
+						tc_keet_contratistas_departamentos
+  				 inner join 
+						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento and {departamento}
+					 where
+						tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
+          ) as departamento, 
 					tc_mantic_puestos.nombre puesto,
 					tc_mantic_puestos.id_puesto,
 					tr_mantic_empresa_personal.id_activo,
@@ -4795,8 +4866,6 @@
 					tr_mantic_empresa_personal
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join 
-					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
         where 
@@ -4811,6 +4880,10 @@
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
 				) completo			  
+        where 
+          departamento is not null       
+        group by
+          id_empresa_persona 
 				order by 					
 					descripcion				
 			</select>
@@ -6954,9 +7027,11 @@
 					inner join 
 						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 					inner join 
+						tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona
+					inner join 
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 					inner join 
-						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
 					where 
 						tc_keet_proyectos.id_desarrollo={idDesarrollo} 
             and tc_keet_departamentos.id_departamento={idDepartamento}

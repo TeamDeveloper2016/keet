@@ -30,6 +30,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.MotorBusqueda;
@@ -127,8 +128,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-			departamentos= UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			departamentos= UIEntity.build("TcKeetDepartamentosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("departamentos", departamentos);
+      if(!EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion"))) {       
+        this.registroPersona.setDepartamentos(new Object[this.registroPersona.getEspecialidades().size()]);
+        int count= 0;
+        for (Especialidad item: this.registroPersona.getEspecialidades()) {
+          int index= departamentos.indexOf(new UISelectEntity(item.getIdDepartamento()));
+          if(index>= 0)
+            this.registroPersona.getDepartamentos()[count++]= departamentos.get(index);
+        } // for
+      } // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

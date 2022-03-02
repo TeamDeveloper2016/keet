@@ -43,6 +43,8 @@ public class RegistroPersona implements Serializable {
 	private Long idContratista;
 	private Long idEmpresa;
 	private boolean activo;
+  private Object[] departamentos;
+  private List<Especialidad> especialidades;
 	
 	public RegistroPersona() {
 		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>(), new TrManticEmpresaPersonalDto(), new PersonaBeneficiario(), new PersonaBeneficiario(), new TcKeetDeudoresDto());
@@ -253,6 +255,18 @@ public class RegistroPersona implements Serializable {
 	public void setDeudor(TcKeetDeudoresDto deudor) {
 		this.deudor = deudor;
 	}	
+
+  public Object[] getDepartamentos() {
+    return departamentos;
+  }
+
+  public void setDepartamentos(Object[] departamentos) {
+    this.departamentos = departamentos;
+  }
+
+  public List<Especialidad> getEspecialidades() {
+    return especialidades;
+  }
 	
 	private void init() {
 		int countDomicilio   = 0;
@@ -260,9 +274,9 @@ public class RegistroPersona implements Serializable {
 		MotorBusqueda motor  = null;
 		try {
 			motor= new MotorBusqueda(this.idPersona);
-			this.persona= motor.toPersona();									
-			this.empresaPersona= motor.toDetallePersona();
-			this.deudor= motor.toDeudor(this.empresaPersona.getIdEmpresaPersona());
+			this.persona          = motor.toPersona();									
+			this.empresaPersona   = motor.toDetallePersona();
+			this.deudor           = motor.toDeudor(this.empresaPersona.getIdEmpresaPersona());
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
 			for(PersonaDomicilio personaDomicilio: this.personasDomicilio) {
 				countDomicilio++;
@@ -278,6 +292,9 @@ public class RegistroPersona implements Serializable {
 			this.idPuesto= motor.toPuestoPersona();
       this.idContratista= motor.toContratistaPersona();
 			this.idEmpresa= motor.toEmpresaPersona();
+      this.especialidades= motor.toPersonaDepartamentos(this.empresaPersona.getIdEmpresaPersona());
+      if(this.especialidades== null || this.especialidades.isEmpty()) 
+        this.departamentos= new Object[] {};
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

@@ -73,14 +73,14 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	} // toLotes
 	
 	public List<ContratoPersonal> toPersonas() throws Exception {
-		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal", Constantes.SQL_VERDADERO);
+		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal", Constantes.SQL_VERDADERO, Constantes.SQL_VERDADERO);
 	} // toPersonas
 	
-	public List<ContratoPersonal> toPersonasAsignadas(String condicion) throws Exception {
-		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona", condicion);
+	public List<ContratoPersonal> toPersonasAsignadas(String condicion, String departamento) throws Exception {
+		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona", condicion, departamento);
 	} // toPersonasAsignadas
 	
-	private List<ContratoPersonal> toPersonasCondicion(String campoLlave, String condicion) throws Exception {
+	private List<ContratoPersonal> toPersonasCondicion(String campoLlave, String condicion, String departamento) throws Exception {
 		List<ContratoPersonal> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -88,7 +88,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params.put("campoLlave", campoLlave);			
 			params.put("idDesarrollo", this.idPivote);			
 			params.put(Constantes.SQL_CONDICION, condicion);			
-			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalAsignado", params);      
+			params.put("departamento", departamento);			
+			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalRegistrado", params);      
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -100,16 +101,17 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	} // toPersonasAsignadas
 	
 	public List<ContratoPersonal> toPersonasDisponibles() throws Exception {
-		return toPersonasDisponibles(Constantes.SQL_VERDADERO);
+		return toPersonasDisponibles(Constantes.SQL_VERDADERO, Constantes.SQL_VERDADERO);
 	} // toPersonasDisponibles
 	
-	public List<ContratoPersonal> toPersonasDisponibles(String condicion) throws Exception {
+	public List<ContratoPersonal> toPersonasDisponibles(String condicion, String departamento) throws Exception {
 		List<ContratoPersonal> regresar= null;
 		Map<String, Object>params      = null;
 		try {
 		  params= new HashMap<>();
 			params.put("idDesarrollo", this.idPivote);			
 			params.put("condicion", condicion);
+			params.put("departamento", departamento);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalDisponible", params);      
 		} // try
