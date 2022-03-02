@@ -245,4 +245,5 @@ public class Empleados extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }

@@ -4943,7 +4943,7 @@
 				select 
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
 					concat(nombres, ' ', paterno, ' ', materno) as nombres,  
-					tc_keet_departamentos.nombre,
+					group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ') as nombre,
 				  tc_mantic_puestos.nombre as puesto
 				from 
 					tc_mantic_personas 
@@ -4951,13 +4951,15 @@
 					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
   			inner join 
 					tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona
-				inner join 
-					tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+  		  inner join 
+				  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
 				inner join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				where 
 					tc_mantic_puestos.nombre= 'CONTRATISTA'
 				  and tr_mantic_empresa_personal.id_activo= 1
+				group by  
+				  tr_mantic_empresa_personal.id_empresa_persona
 			  order by
 				  tc_mantic_puestos.nombre
 			</select>

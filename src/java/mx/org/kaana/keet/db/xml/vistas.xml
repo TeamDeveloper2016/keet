@@ -4724,8 +4724,15 @@
 				from(
 				select      
 					{campoLlave} as id_key,									
-					tc_keet_departamentos.nombre as departamento,
-					tc_keet_departamentos.id_departamento,
+					(select
+            group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ')
+           from 
+						tc_keet_contratistas_departamentos
+  				 inner join 
+						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+					 where
+						tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
+          ) as departamento, 
 					tc_mantic_puestos.nombre as puesto,
 					tc_mantic_puestos.id_puesto,
 					tr_mantic_empresa_personal.id_activo,
@@ -4739,7 +4746,7 @@
 					tc_mantic_personas.rfc,					
 					tc_mantic_personas.curp,					
           tc_keet_contratos_personal.*,
-					(select count(*) total from tc_mantic_incidentes where tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona) total_incidencias,
+					(select count(*) total from tc_mantic_incidentes where tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona) as total_incidencias,
 					tr_mantic_empresa_personal.id_persona,
 					tr_mantic_empresa_personal.id_contratista
         from      
@@ -4748,10 +4755,6 @@
 					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-  			inner join 
- 			    tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
-  			inner join 
-				  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
         where 
@@ -4801,7 +4804,6 @@
 					tc_mantic_personas.rfc,					
 					tc_mantic_personas.curp,					
           tc_keet_contratos_personal.*,
-					(select count(*) total from tc_mantic_incidentes where tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona) total_incidencias,
 					tr_mantic_empresa_personal.id_persona,
 					tr_mantic_empresa_personal.id_contratista
         from      
