@@ -232,7 +232,8 @@ public class Transaccion extends IBaseTnx {
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo");
-			this.persona.getEmpresaPersona().setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
+      if(this.persona.getDepartamentos()!= null)
+			  this.persona.getEmpresaPersona().setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
 			if(idEmpresaPersona>= 1L) {
 				if(this.registrarIncidencia(sesion, idEmpresaPersona)){
@@ -338,7 +339,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private boolean actualizaPuestoPersona(Session sesion, Long idPersona) throws Exception{
+	private boolean actualizaPuestoPersona(Session sesion, Long idPersona) throws Exception {
 		boolean regresar                          = false;
 		TrManticEmpresaPersonalDto empresaPersonal= null;
 		TrManticEmpresaPersonalDto oldData        = null;
@@ -360,7 +361,10 @@ public class Transaccion extends IBaseTnx {
 				empresaPersonal.setSueldoImss(this.persona.getEmpresaPersona().getSueldoImss());
 				empresaPersonal.setInfonavit(this.persona.getEmpresaPersona().getInfonavit());
 				empresaPersonal.setFactorInfonavit(this.persona.getEmpresaPersona().getFactorInfonavit());
-				empresaPersonal.setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
+        if(this.persona.getDepartamentos()!= null)
+				  empresaPersonal.setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
+        else
+				  empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdContratista(this.persona.getEmpresaPersona().getIdContratista());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
@@ -817,19 +821,21 @@ public class Transaccion extends IBaseTnx {
   private void toRegistrarDepartamentos(Session sesion, Long idEmpresaPersona) throws Exception {
     Map<String, Object> params= new HashMap<>();
     try {      
-      for (Object item: this.persona.getDepartamentos()) {
-        int index= this.persona.getEspecialidades().indexOf(new Especialidad(((UISelectEntity)item).getKey()));
-        if(index>= 0)
-          this.persona.getEspecialidades().remove(index);
-        else {
-          TcKeetDepartamentosDto departamento= (TcKeetDepartamentosDto)DaoFactory.getInstance().findById(sesion, TcKeetDepartamentosDto.class, ((UISelectEntity)item).getKey());
-          if(departamento!= null)
-            DaoFactory.getInstance().insert(sesion, new TcKeetContratistasDepartamentosDto(departamento.getIdDepartamento(), JsfBase.getIdUsuario(), idEmpresaPersona, -1L));
-        } // if  
-      } // for
-      for (Especialidad item: this.persona.getEspecialidades()) {
-        DaoFactory.getInstance().delete(sesion, item);
-      } // for
+      if(this.persona.getDepartamentos()!= null) {
+        for (Object item: this.persona.getDepartamentos()) {
+          int index= this.persona.getEspecialidades().indexOf(new Especialidad(((UISelectEntity)item).getKey()));
+          if(index>= 0)
+            this.persona.getEspecialidades().remove(index);
+          else {
+            TcKeetDepartamentosDto departamento= (TcKeetDepartamentosDto)DaoFactory.getInstance().findById(sesion, TcKeetDepartamentosDto.class, ((UISelectEntity)item).getKey());
+            if(departamento!= null)
+              DaoFactory.getInstance().insert(sesion, new TcKeetContratistasDepartamentosDto(departamento.getIdDepartamento(), JsfBase.getIdUsuario(), idEmpresaPersona, -1L));
+          } // if  
+        } // for
+        for (Especialidad item: this.persona.getEspecialidades()) {
+          DaoFactory.getInstance().delete(sesion, item);
+        } // for
+      } // if  
     } // try
     catch (Exception e) {
       throw e;
