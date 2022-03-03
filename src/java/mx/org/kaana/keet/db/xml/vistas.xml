@@ -2360,8 +2360,8 @@
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
 				inner join 
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
-        left join 
-          tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona
+        left join
+          tc_keet_nominas_desarrollos on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina and tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_desarrollos.id_empresa_persona
 				where
 					{condicion}
 				) principal

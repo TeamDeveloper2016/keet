@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -83,7 +84,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idTipoFiguraCorreo", 1L);			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
-			this.loadCatalogs();
+			this.toLoadCatalogs();
 			this.attrs.put("nomina", false);
 			this.attrs.put("destajos", false);
       this.attrs.put("totalDestajoContratista", 0D);
@@ -137,7 +138,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
     } // finally		
   } // doLoad
 
-	private void loadEmpresas() {
+	private void toLoadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
@@ -156,7 +157,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
     finally{
 			Methods.clean(params);
 		}	// finally	
-	} // loadEmpresas
+	} // toLoadEmpresas
 
   public String doAccion() {
 		String regresar           = null;
@@ -191,7 +192,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)				
-			sb.append("(tc_keet_contratos_personal.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
+			sb.append("(tc_keet_nominas_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
@@ -246,10 +247,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		return regresar;		
 	} // toPrepare
 
-	private void loadCatalogs() {
+	private void toLoadCatalogs() {
 		Map<String, Object>params= null;
 		try {
-			this.loadEmpresas();
+			this.toLoadEmpresas();
 			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
@@ -261,7 +262,6 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			Catalogos.toLoadDepartamentos(this.attrs);
 			Catalogos.toLoadPuestos(this.attrs);
 			Catalogos.toLoadContratistas(this.attrs);
-      
       this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "clave"));
       this.attrs.put("idDesarrollo", new UISelectEntity(-1L));
       List<UISelectEntity> semaforos= new ArrayList<>();
@@ -301,6 +301,33 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		}	// finally
 	} // loadCatalogs
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+		UISelectEntity empresa    = null;
+    try {
+			params= new HashMap<>();			
+			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+			if(empresa.getKey()>= 1L)
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
+      columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos	
+  
   public String doExportar() {
 		String regresar           = null;
 		Map<String, Object> params= null;

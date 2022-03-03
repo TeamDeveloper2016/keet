@@ -27,6 +27,7 @@ import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
@@ -137,6 +138,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      // this.doLoadDesarrollos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -147,6 +149,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 		}	// finally	
 	} // loadEmpresas
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+		UISelectEntity empresa    = null;
+    try {
+			params= new HashMap<>();			
+			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+			if(empresa.getKey()>= 1L)
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
+      columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos	  
+  
   public String doAccion(String accion) {
     String regresar= null;
 		EAccion eaccion= null;
@@ -200,6 +229,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_nominas.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+//		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !((UISelectEntity)this.attrs.get("idDesarrollo")).getKey().equals(-1L))
+//		  sb.append("(tc_mantic_requisiciones.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");		
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

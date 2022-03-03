@@ -31,7 +31,7 @@ public class RandomCuenta {
     this.apellidoMaterno= apellidoMaterno;
     this.idEmpleado     = idEmpleado;
     this.cuentaGenerada = "";
-    randomize();
+    this.randomize();
   }
 
   public String getCuentaGenerada() {
@@ -67,7 +67,7 @@ public class RandomCuenta {
   }
 
   private void randomize() {
-    format();
+    this.format();
     String[] nombreSeparado = this.nombres.split(" ");
     if (this.apellidoPaterno != null) {
       this.cuentaGenerada = concatPointAccount(getStartName(nombreSeparado), this.apellidoPaterno);
@@ -189,32 +189,34 @@ public class RandomCuenta {
   }
 
   private boolean isExcludeWord(String nombre) {
-    boolean regresar = false;
+    return this.isExcludeWord(nombre, Boolean.TRUE);
+  }
+  
+  private boolean isExcludeWord(String nombre, Boolean unaSolaLetra) {
+    boolean regresar= false;
     try {
-      if (nombre.length() > 2) {
-        for (String excluida : PALABRAS_EXCLUIDAS) {
+      if (nombre.length()> 2) {
+        for (String excluida: PALABRAS_EXCLUIDAS) {
           if (excluida.equals(nombre)) {
             regresar = excluida.equals(nombre);
             break;
           } // false
         } // for
       }
-      else {
-        regresar = true;
-      }
+      else 
+        regresar= unaSolaLetra;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
-
     return regresar;
   }
 
   private String getStartName(String[] nombres) {
     String regresar = null;
     try {
-      for (String nombre : nombres) {
-        if (!isExcludeWord(nombre)) {
+      for (String nombre: nombres) {
+        if (!isExcludeWord(nombre, nombres.length!= 1)) {
           regresar = nombre;
           break;
         } // if

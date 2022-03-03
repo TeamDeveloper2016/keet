@@ -62,7 +62,7 @@ public class RegistroPersona implements Serializable {
 		this.domicilioPivote    = new Domicilio();
 		this.beneficiarioPivote = new PersonaBeneficiario();
 		this.personaBeneficiario= new PersonaBeneficiario();
-		init();		
+		this.init();		
 	}
 	
 	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios, TrManticEmpresaPersonalDto empresaPersona, PersonaBeneficiario beneficiarioPivote, PersonaBeneficiario personaBeneficiario, TcKeetDeudoresDto deudor) {
@@ -85,6 +85,8 @@ public class RegistroPersona implements Serializable {
 		this.personaBeneficiario  = personaBeneficiario;
 		this.activo               = true;
 		this.deudor               = deudor;
+    this.especialidades       = new ArrayList<>();
+    this.departamentos        = new Object[] {};
 	}
 
 	public Long getIdPersona() {

@@ -232,13 +232,13 @@ public class Transaccion extends IBaseTnx {
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo");
-      if(this.persona.getDepartamentos()!= null)
+      if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0)
 			  this.persona.getEmpresaPersona().setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
 			if(idEmpresaPersona>= 1L) {
 				if(this.registrarIncidencia(sesion, idEmpresaPersona)){
 					if(this.registrarIncidencia(sesion, idEmpresaPersona, this.persona.getEmpresaPersona().getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), this.persona.getEmpresaPersona().getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO"))	
-						regresar= registraDeudor(sesion, idEmpresaPersona);
+						regresar= this.registraDeudor(sesion, idEmpresaPersona);
 				} // if
         this.toRegistrarDepartamentos(sesion, idEmpresaPersona);
 			} // if
@@ -255,10 +255,14 @@ public class Transaccion extends IBaseTnx {
 		try {
 			if(this.persona.getDeudor()!= null && this.persona.getDeudor().isValid()){
 				deudor= (TcKeetDeudoresDto) DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.persona.getDeudor().getIdDeudor());
-				deudor.setLimite(this.persona.getDeudor().getLimite());
-				regresar= DaoFactory.getInstance().update(sesion, deudor)>= 1L;
+        if(deudor!= null) {
+				  deudor.setLimite(this.persona.getDeudor().getLimite());
+				  regresar= DaoFactory.getInstance().update(sesion, deudor)>= 1L;
+        } // if
+        else 
+  				regresar= DaoFactory.getInstance().update(sesion, this.persona.getDeudor())>= 1L;
 			} // if
-			else{
+      else {
 				this.persona.getDeudor().setDisponible(this.persona.getDeudor().getLimite());
 				this.persona.getDeudor().setSaldo(0D);
 				this.persona.getDeudor().setIdEmpresaPersona(idEmpresaPersona);
@@ -295,7 +299,7 @@ public class Transaccion extends IBaseTnx {
 			incidencia.setInicio(LocalDate.now());
 			incidencia.setTermino(LocalDate.now());
 			if(DaoFactory.getInstance().insert(sesion, incidencia)>= 1L)
-				regresar= registrarBitacora(sesion, incidencia.getIdIncidente(), EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente(), observaciones);
+				regresar= this.registrarBitacora(sesion, incidencia.getIdIncidente(), EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente(), observaciones);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -361,7 +365,7 @@ public class Transaccion extends IBaseTnx {
 				empresaPersonal.setSueldoImss(this.persona.getEmpresaPersona().getSueldoImss());
 				empresaPersonal.setInfonavit(this.persona.getEmpresaPersona().getInfonavit());
 				empresaPersonal.setFactorInfonavit(this.persona.getEmpresaPersona().getFactorInfonavit());
-        if(this.persona.getDepartamentos()!= null)
+        if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0)
 				  empresaPersonal.setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
         else
 				  empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
@@ -821,7 +825,7 @@ public class Transaccion extends IBaseTnx {
   private void toRegistrarDepartamentos(Session sesion, Long idEmpresaPersona) throws Exception {
     Map<String, Object> params= new HashMap<>();
     try {      
-      if(this.persona.getDepartamentos()!= null) {
+      if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0) {
         for (Object item: this.persona.getDepartamentos()) {
           int index= this.persona.getEspecialidades().indexOf(new Especialidad(((UISelectEntity)item).getKey()));
           if(index>= 0)
