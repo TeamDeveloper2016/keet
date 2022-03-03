@@ -435,7 +435,9 @@
           inner join
             tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
           inner join
-            tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+            tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+          inner join
+            tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
           left join
             tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
           left join
@@ -532,7 +534,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -573,7 +577,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -2375,6 +2381,67 @@
           tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         {sortOrder}
 			</select>
+			<select id="calculada">
+				select
+				  principal.*,
+          tc_keet_desarrollos.nombres as desarrollo,
+				  concat(if(principal.id_contratista is null, principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')))) as contratista
+				from(
+				select
+					tc_keet_nominas_personas.id_nomina_persona as id_key,
+					tc_keet_nominas.id_nomina,
+					tr_mantic_empresa_personal.id_empresa_persona,
+				  tc_keet_nominas_personas.id_nomina_persona,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_keet_departamentos.nombre as departamento,
+					tc_mantic_puestos.id_puesto,
+					tc_mantic_puestos.nombre as puesto,
+					tr_mantic_empresa_personal.clave,
+					tr_mantic_empresa_personal.id_activo,
+					tr_mantic_empresa_personal.id_nomina as id_pago,
+					tr_mantic_empresa_personal.id_seguro,
+					tr_mantic_empresa_personal.nss,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
+					tc_mantic_personas.apodo,
+					tc_mantic_personas.id_persona,
+					tc_keet_nominas_personas.percepciones,
+					tc_keet_nominas_personas.deducciones,
+					tc_keet_nominas_personas.neto as pago,
+					tc_keet_nominas_personas.neto,
+					tr_mantic_empresa_personal.id_contratista,
+          tc_keet_contratos_personal.id_desarrollo     
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+				inner join 
+					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+        left join
+          tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona
+				where
+					{condicion}
+				) principal
+        left join
+			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
+			  left join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
+        left join
+          tc_keet_contratos_personal on principal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona and principal.id_desarrollo= tc_keet_contratos_personal.id_desarrollo        
+        left join
+          tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo        
+        {sortOrder}
+			</select>
 			<select id="proveedores">
 				select
 					tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
@@ -2425,7 +2492,8 @@
 					tc_keet_nominas_periodos.ejercicio,
 					tc_keet_nominas_periodos.orden as semana,
 					tc_keet_nominas_periodos.inicio,
-					tc_keet_nominas_periodos.termino
+					tc_keet_nominas_periodos.termino,
+          tc_keet_nominas.id_nomina_estatus
 				from
 					tc_keet_nominas
 				inner join 
@@ -2540,8 +2608,10 @@
 				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
 				inner join
 					tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
-				inner join
-					tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+        inner join
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
 				where 
 				  tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina}
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}	
@@ -2617,7 +2687,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -2668,7 +2740,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -2800,7 +2874,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -2895,7 +2971,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -2994,7 +3072,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -3088,7 +3168,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -3144,7 +3226,9 @@
         inner join
           tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
         inner join
-          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
         left join
           tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     
         left join
@@ -3410,7 +3494,9 @@
           inner join
             tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
           inner join
-            tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento
+            tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona         
+          inner join
+            tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tc_keet_contratistas_departamentos.id_departamento         
           where 
             tc_keet_contratos_destajos_contratistas.id_nomina is null
             and tc_keet_contratos_destajos_contratistas.id_estacion_estatus in (2, 3)

@@ -683,6 +683,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
           this.attrs.put("semana", semanas.get(index));
         } // if  
       } // if  
+      else
+        this.ultima= new Nomina();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

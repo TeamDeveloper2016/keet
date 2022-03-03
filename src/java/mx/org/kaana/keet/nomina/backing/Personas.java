@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -23,6 +24,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.comun.Catalogos;
+import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
@@ -123,7 +125,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "personas", params, columns);
+      Long idNominaEstatus= ((UISelectEntity)this.attrs.get("idNomina")).toLong("idNominaEstatus");
+      if(Objects.equals(idNominaEstatus, -1L) || Objects.equals(idNominaEstatus, ENominaEstatus.TERMINADA))
+        this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "personas", params, columns);
+      else
+        this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "calculada", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("nomina", false);
 			this.attrs.put("destajo", false);
@@ -191,8 +197,23 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			sb.append("(tc_keet_nominas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
-		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)				
-			sb.append("(tc_keet_nominas_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
+    Long idNominaEstatus= -1L;
+    List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
+    if(nominas!= null && !nominas.isEmpty()) {
+      int index= nominas.indexOf((UISelectEntity)this.attrs.get("idNomina"));
+      if(index>= 0) {
+        this.attrs.put("idNomina", nominas.get(index));
+        idNominaEstatus= nominas.get(index).toLong("idNominaEstatus");
+      } // if  
+      else
+        this.attrs.put("idNomina", nominas.get(0));
+    } // if
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)	{			
+      if(Objects.equals(idNominaEstatus, -1L) || Objects.equals(idNominaEstatus, ENominaEstatus.TERMINADA))      
+			  sb.append("(tc_keet_nominas_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
+      else
+        sb.append("(tc_keet_contratos_personal.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and "); 
+    } // if  
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
