@@ -235,6 +235,21 @@ public final class Catalogos {
 			Methods.clean(params);
 		} // finally
 	}
+  
+	public static void toLoadDesarrollosEmpresa(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = null;
+    try {
+      params = new HashMap<>();
+      params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
+  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      attrs.put("desarrollos", desarrollos);
+      attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 
 	public static void toLoadContratos(Long idDesarrollos, Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>contratos= null;

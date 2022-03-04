@@ -5124,15 +5124,11 @@
 			</select>
 			<select id="getEstacionPatron">
 				select 
-					concat(lpad(tc_mantic_clientes.id_empresa, 3, '0') ,tc_keet_contratos.ejercicio ,lpad(tc_keet_contratos.orden, 3, '0')) patron
+					concat(lpad(tc_keet_contratos.id_empresa, 3, '0') ,tc_keet_contratos.ejercicio ,lpad(tc_keet_contratos.orden, 3, '0')) as patron
 				from
 					tc_keet_contratos
-				inner join
-					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-				inner join
-					tc_mantic_clientes on tc_keet_proyectos.id_cliente=tc_mantic_clientes.id_cliente
 				where
-					tc_keet_contratos.id_contrato = {idContrato}
+					tc_keet_contratos.id_contrato= {idContrato}
 			</select>
 			<select id="contratistasAsignado">
 				select contratistas.* from (

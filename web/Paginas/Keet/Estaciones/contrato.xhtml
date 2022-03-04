@@ -28,9 +28,9 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false and #{keetEstacionesContrato.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesContrato.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false and #{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato idLote" oncomplete="reloadDesarrollos(); reloadContratos();"/>
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesContrato.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesContrato.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato idLote" oncomplete="reloadDesarrollos(); reloadContratos(); reloadLotes();"/>
 								<f:selectItems value="#{keetEstacionesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -41,8 +41,8 @@
 							</p:selectOneMenu>
               <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{keetEstacionesContrato.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos(); reloadLotes();"/>
                 <f:selectItems value="#{keetEstacionesContrato.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
-                <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column> 
@@ -52,8 +52,8 @@
               </p:selectOneMenu>	
 							<p:outputLabel for="idContrato" value="Contrato:"/>
 							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                 <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadLotes}" process="@this" update="idLote" oncomplete="reloadLotes();"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -80,9 +80,9 @@
               <p:outputLabel for="descripcion" value="Partida o concepto:" rendered="false"/>
               <p:inputText id="descripcion" value="#{keetEstacionesContrato.attrs.descripcion}" styleClass="janal-wid-100-txt" rendered="false"/>  
             </p:panelGrid>
-	          <p:remoteCommand name="reloadDesarrollos" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
-	          <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
-	          <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="idLote" oncomplete="janal.desbloquear();"/>
+	          <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
+	          <p:remoteCommand name="reloadContratos" process="@this" update="idContrato"/>
+	          <p:remoteCommand name="reloadLotes" process="@this" update="idLote"/>
 	  				<p:separator/>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetEstacionesContrato.doLoad}" update="tabla seguimiento"/>

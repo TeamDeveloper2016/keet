@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.estaciones.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
@@ -79,8 +82,16 @@ public class Contrato extends Filtro implements Serializable {
           this.actualizarChildren(1);
         } // else if
         else 
-          if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
-            nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+          if(this.attrs.get("idDesarrollo")!=null && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()> 0L) {
+            nodo= String.valueOf(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+            List<UISelectEntity> desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
+            if(desarrollos!= null && !desarrollos.isEmpty()) {
+              int index= desarrollos.indexOf((UISelectEntity)this.attrs.get("idDesarrollo"));
+              if(index>= 0) {
+                this.attrs.put("idDesarrollo", desarrollos.get(index));
+                nodo= String.valueOf(((UISelectEntity)this.attrs.get("idDesarrollo")).toLong("idEmpresa"));
+              } // if  
+            } // if
             this.attrs.put("seleccionado", null);
             this.current= new TcKeetEstacionesDto();
             this.current.setClave(estaciones.toCode(nodo));
@@ -89,7 +100,17 @@ public class Contrato extends Filtro implements Serializable {
             this.current.setNivel(3L);
           } // else if
           else
-            this.doInicio();
+            if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
+              nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+              this.attrs.put("seleccionado", null);
+              this.current= new TcKeetEstacionesDto();
+              this.current.setClave(estaciones.toCode(nodo));
+              this.current.setNivel(1L);
+              this.actualizarChildren(1,2);
+              this.current.setNivel(3L);
+            } // else if
+            else
+              this.doInicio();
       this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
@@ -110,6 +131,30 @@ public class Contrato extends Filtro implements Serializable {
     } // catch		
 	} // loadCombos
 	
+	@Override
+	protected void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			params= new HashMap<>();
+			columns= new ArrayList<>();		
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally				
+	} // loadEmpresas
+  
 	public void doLoadLotes() {
 		UISelectEntity contrato = null;
 	  try {
@@ -200,7 +245,7 @@ public class Contrato extends Filtro implements Serializable {
 
   public void doLoadDesarrollos() {
     try {
-     Catalogos.toLoadDesarrollos(this.attrs);
+     Catalogos.toLoadDesarrollosEmpresa(this.attrs);
      this.doLoadContratos();
 		} // try
 		catch (Exception e) {

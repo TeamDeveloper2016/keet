@@ -2816,6 +2816,18 @@
         where 
           id_desarrollo= {idDesarrollo} 
       </select>
+      <select id="empresa">
+        select      
+          tc_keet_desarrollos.id_desarrollo as id_key,
+          tc_mantic_clientes.id_empresa,
+				  tc_keet_desarrollos.*
+        from      
+          tc_keet_desarrollos
+        inner join
+          tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa= {idEmpresa} 
+      </select>
       <select id="identically">
         select      
           *
