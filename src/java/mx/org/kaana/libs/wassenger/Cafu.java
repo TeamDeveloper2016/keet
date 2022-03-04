@@ -41,6 +41,7 @@ public final class Cafu implements Serializable {
   private static final String BODY_MESSAGE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de {empresa}, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot_).\"";
   private static final String BODY_DESTAJO    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
   private static final String BODY_RESIDENTE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\n{empresa}\"";
+  private static final String BODY_SUPERVISOR = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el *resumen* de todos los reportes de los destajos de los *contratistas* o *subcontratistas* para su revisión, del corte *preliminar* de nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes y *revisar los importes*.\\n\\n{empresa}\"";
   private static final String BODY_GASTO_CHICA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n{empresa}\"";
   private static final String BODY_CAJA_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n{empresa}\"";
   private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *12:30 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina (_soy un chatbot_).\\n\\n{empresa}\"";
@@ -601,11 +602,17 @@ public final class Cafu implements Serializable {
         params= new HashMap<>();        
         int count= 1;
         for (String key: this.contratistas.keySet()) {
-          params.put("numero", count++);
-          params.put("contratista", key);
-          params.put("reporte", this.contratistas.get(key));
-          params.put("url", this.url);
-          archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
+          if(key.startsWith("Desarrollo"))  {
+            archivos.append("\\nDesarrollo: ".concat((String)this.contratistas.get(key)));
+            count= 1;
+          } // if  
+          else {
+            params.put("numero", count++);
+            params.put("contratista", key);
+            params.put("reporte", this.contratistas.get(key));
+            params.put("url", this.url);
+            archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
+          } // else  
         } // for
       } // try
       catch (Exception e) {
@@ -906,6 +913,66 @@ public final class Cafu implements Serializable {
     else 
       LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendOrdenCompra
+  
+  public void doSendSupervisor(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("nomina", this.nomina);
+        params.put("periodo", this.periodo);
+        params.put("desarrollo", this.desarrollo);
+        params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
+        params.put("url", this.url);
+        params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendGerente] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.SUPERVISOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // if  
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
+  }
   
   public static void main(String ... args) {
 //    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Irma de Lourdes Hernandez Romo"};
