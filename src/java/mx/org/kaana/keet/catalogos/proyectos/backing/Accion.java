@@ -1,14 +1,19 @@
 package mx.org.kaana.keet.catalogos.proyectos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -17,9 +22,11 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
+import mx.org.kaana.keet.comun.Catalogos;
+import static mx.org.kaana.libs.formato.Error.mensaje;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-
+import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCatalogosProyectosAccion")
 @ViewScoped
@@ -46,7 +53,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idProyecto", JsfBase.getFlashAttribute("idProyecto"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.loadCombos();
+      this.toLoadCatalogos();
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -55,43 +62,94 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 	
-	private void loadCombos() {
-		try {
-			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombres"));
-      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
-      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
+	private void toLoadCatalogos() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
+      this.toLoadEmpresas();
+      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", params, "tipoObra"));
+      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", params, "nombre"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // loadCombos
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // toLoadCatalogos
 	
-	public void doLoadPrototipos(){
+	protected void toLoadEmpresas() {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = null;
 		try {
-			this.loadPrototipos();
-			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-	} // doLoadPrototipos
-	
-	private void loadPrototipos(){
-	  try {
-			this.attrs.put("idCliente", this.proyecto.getProyecto().getIdCliente());
-      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
-			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-	} // doLoadPrototipos
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			columns= new ArrayList<>();		
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
+      if(this.proyecto!= null)
+        this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
+      this.doLoadClientes();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally				
+	} // toLoadEmpresas
 
+  public void doLoadClientes() {
+    try {
+      if(this.proyecto!= null)
+        this.attrs.put("idEmpresa", this.proyecto.getProyecto().getIkEmpresa());
+      Catalogos.toLoadClientesEmpresa(this.attrs);
+      if(this.proyecto!= null)
+        this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
+      this.doLoadDesarrollos();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mensaje(e);			
+		} // catch		
+  }
+  
+  public void doLoadDesarrollos() {
+    try {
+      if(this.proyecto!= null)
+        this.attrs.put("idCliente", this.proyecto.getProyecto().getIkCliente());
+      Catalogos.toLoadDesarrollosCliente(this.attrs);
+      if(this.proyecto!= null)
+        this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
+      this.toLoadPrototipos();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mensaje(e);			
+		} // catch		
+  }
+  
+	private void toLoadPrototipos() {
+		Map<String, Object>params= new HashMap<>();
+    try {
+      params.put("idCliente", ((UISelectEntity)attrs.get("idCliente")).getKey());
+      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", params, "nombre"));
+			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally				
+	} // toLoadPrototipos
+	
   public void doLoad() {
     EAccion eaccion= null;
     try {
@@ -100,12 +158,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.proyecto= new RegistroProyecto();
+          this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
+          this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
+          this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto((Long)this.attrs.get("idProyecto"));
-					this.loadPrototipos();
+					this.toLoadPrototipos();
           for(Lote item:this.proyecto.getProyecto().getLotes()) {
 			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));
 			      item.setIkFachada(((List<UISelectEntity>)this.attrs.get("fachadas")).get(((List<UISelectEntity>)this.attrs.get("fachadas")).indexOf(new UISelectEntity(new Entity(item.getIdTipoFachada())))));
@@ -146,8 +207,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 		JsfBase.setFlashAttribute("idProyectoProcess", this.proyecto.getProyecto().getIdProyecto());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
-	
-	
-
 	
 }

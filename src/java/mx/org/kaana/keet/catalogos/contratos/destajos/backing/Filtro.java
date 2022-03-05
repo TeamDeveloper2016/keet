@@ -142,6 +142,16 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
           this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
           this.attrs.put("semana", semanas.get(0));
         } // if  
+        else {
+          int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+          if(index>= 0) {
+            UISelectEntity semana= semanas.get(index);
+            this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
+            this.attrs.put("semana", semanas.get(0));
+          } // if
+          else 
+            this.ultima= new Nomina();
+        } // if
       } // if  
       else {
         this.attrs.put("semana", new UISelectEntity(-1L));
@@ -682,6 +692,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
           this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), new Long(index));			
           this.attrs.put("semana", semanas.get(index));
         } // if  
+        else
+          this.ultima= new Nomina();
       } // if  
       else
         this.ultima= new Nomina();

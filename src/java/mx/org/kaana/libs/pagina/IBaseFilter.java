@@ -40,19 +40,6 @@ public abstract class IBaseFilter extends IBaseAttribute implements Serializable
    */
 	public abstract void doLoad();	
 	
-	protected UISelectEntity toDefaultSucursal(List<UISelectEntity> sucursales) {
-		UISelectEntity regresar= sucursales== null || sucursales.isEmpty()? new UISelectEntity(new Entity(-1L, "SELECCIONE")): sucursales.get(0);
-    if(regresar.getKey()> 0L) {
-			String sucursal= TcConfiguraciones.getInstance().getPropiedad("sucursal."+ JsfBase.getAutentifica().getCredenciales().getCuenta());
-			if(!Cadena.isVacio(sucursal)) {
-				int index= sucursales.indexOf(new UISelectEntity(sucursal));
-				if(index>= 0)
-					regresar= sucursales.get(index);
-			} // if
-		} // if
-		return regresar;
-	}
-
   protected String toLookForEmpresaLogo(Long idEmpresa) {
     String regresar           = null;
     Map<String, Object> params= new HashMap<>();

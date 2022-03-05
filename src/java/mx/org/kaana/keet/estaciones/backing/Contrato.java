@@ -153,7 +153,7 @@ public class Contrato extends Filtro implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally				
-	} // loadEmpresas
+	} // toLoadEmpresas
   
 	public void doLoadLotes() {
 		UISelectEntity contrato = null;

@@ -28,6 +28,7 @@ public class MotorBusqueda implements Serializable{
 			params.put("idProyecto", this.idProyecto);
 			regresar= (Proyecto) DaoFactory.getInstance().toEntity(Proyecto.class, "TcKeetProyectosDto", "byId", params);
 			if(regresar!= null && regresar.isValid()){
+				regresar.setIkEmpresa(new UISelectEntity(regresar.getIdEmpresa()));
 				regresar.setIkCliente(new UISelectEntity(regresar.getIdCliente()));
 				regresar.setIkDesarrollo(new UISelectEntity(regresar.getIdDesarrollo()));
 				regresar.setIkTipoObra(new UISelectEntity(regresar.getIdTipoObra()));

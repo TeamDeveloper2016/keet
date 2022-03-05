@@ -6,11 +6,15 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
@@ -169,4 +173,17 @@ public abstract class IBaseAttribute implements Serializable {
 		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha.toDate());
 	}
 
+	protected UISelectEntity toDefaultSucursal(List<UISelectEntity> sucursales) {
+		UISelectEntity regresar= sucursales== null || sucursales.isEmpty()? new UISelectEntity(new Entity(-1L, "SELECCIONE")): sucursales.get(0);
+    if(regresar.getKey()> 0L) {
+			String sucursal= TcConfiguraciones.getInstance().getPropiedad("sucursal."+ JsfBase.getAutentifica().getCredenciales().getCuenta());
+			if(!Cadena.isVacio(sucursal)) {
+				int index= sucursales.indexOf(new UISelectEntity(sucursal));
+				if(index>= 0)
+					regresar= sucursales.get(index);
+			} // if
+		} // if
+		return regresar;
+	}
+  
 }

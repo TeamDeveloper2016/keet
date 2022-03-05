@@ -251,6 +251,21 @@ public final class Catalogos {
 		} // finally
 	}
 
+	public static void toLoadDesarrollosCliente(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = null;
+    try {
+      params = new HashMap<>();
+      params.put("idCliente", ((UISelectEntity)attrs.get("idCliente")).getKey());
+  		desarrollos= UIEntity.build("TcKeetDesarrollosDto", "cliente", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+      attrs.put("desarrollos", desarrollos);
+      attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
 	public static void toLoadContratos(Long idDesarrollos, Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>contratos= null;
     Map<String, Object> params   = null;
@@ -266,4 +281,19 @@ public final class Catalogos {
 		} // finally
 	}
 
+	public static void toLoadClientesEmpresa(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>clientes= null;
+    Map<String, Object> params  = null;
+    try {
+      params = new HashMap<>();
+      params.put("sucursales", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
+  		clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+      attrs.put("clientes", clientes);
+      attrs.put("idCliente", clientes!= null? UIBackingUtilities.toFirstKeySelectEntity(clientes): new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+  
 }

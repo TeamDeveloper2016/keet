@@ -2807,6 +2807,14 @@
         where 
           {condicion} 
       </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_desarrollos
+        where      
+          clave = '{clave}' and nombres = '{nombres}'
+      </select>
       <select id="byId">
         select      
           tc_keet_desarrollos.id_desarrollo as id_key,
@@ -2828,13 +2836,14 @@
         where 
           tc_mantic_clientes.id_empresa= {idEmpresa} 
       </select>
-      <select id="identically">
+      <select id="cliente">
         select      
-          *
+          tc_keet_desarrollos.id_desarrollo as id_key,
+				  tc_keet_desarrollos.*
         from      
           tc_keet_desarrollos
-        where      
-          clave = '{clave}' and nombres = '{nombres}'
+        where 
+          tc_keet_desarrollos.id_cliente= {idCliente} 
       </select>
     </unit>	
     <unit id="TcKeetNominasDto">

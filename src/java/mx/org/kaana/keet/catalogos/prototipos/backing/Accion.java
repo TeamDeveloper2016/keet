@@ -119,4 +119,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 		JsfBase.setFlashAttribute("idPrototipoProcess", this.prototipo.getPrototipo().getIdPrototipo());
     return (String) this.attrs.get("retorno");
   } // doCancelar	
+  
 }

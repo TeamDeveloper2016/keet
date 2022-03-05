@@ -20,6 +20,7 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Proyecto extends TcKeetProyectosDto {
 
 	private static final long serialVersionUID = -2978341734389180932L;	
+	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikTipoObra;
@@ -46,6 +47,16 @@ public class Proyecto extends TcKeetProyectosDto {
     this.ikCliente = ikCliente;
 		if(this.ikCliente!= null)
 			this.setIdCliente(this.ikCliente.getKey());
+  } 
+
+	public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  } 
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+		if(this.ikEmpresa!= null)
+			this.setIdEmpresa(this.ikEmpresa.getKey());
   } 
 
 	public UISelectEntity getIkDesarrollo() {
@@ -96,10 +107,10 @@ public class Proyecto extends TcKeetProyectosDto {
 		return regresar;
 	} // addLote
 	
-	public boolean doRemoveLote() throws Exception{
+	public boolean doRemoveLote() throws Exception {
 		boolean regresar= false;
-		try {
-		  if (this.lotes.contains(loteSeleccion)){
+		try { 
+		  if (this.lotes.contains(loteSeleccion)) {
 				if( (this.lotes.get(this.lotes.indexOf(loteSeleccion)).getAccion().equals(ESql.UPDATE)))
 				  this.lotes.get(this.lotes.indexOf(loteSeleccion)).setAccion(ESql.DELETE);
 				else
