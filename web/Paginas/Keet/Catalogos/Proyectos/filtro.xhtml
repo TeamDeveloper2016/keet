@@ -158,7 +158,7 @@
               </f:facet>
               <h:outputText value="#{row['noViviendas']}"/>
             </p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus" />
               </f:facet>
@@ -176,8 +176,8 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetCatalogosProyectosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetCatalogosProyectosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}" />					            
+						<p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}" />
+            <p:menuitem id="modificar" action="#{keetCatalogosProyectosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}" />
 						<p:separator/>
             <p:menuitem id="importar" action="#{keetCatalogosProyectosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="generadores" action="#{keetCatalogosProyectosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					

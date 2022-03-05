@@ -53,7 +53,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idProyecto", JsfBase.getFlashAttribute("idProyecto"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.toLoadCatalogos();
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -89,9 +88,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
-      if(this.proyecto!= null)
-        this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
+      this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
+      this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
       this.doLoadClientes();
 		} // try
 		catch (Exception e) {
@@ -106,11 +104,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoadClientes() {
     try {
-      if(this.proyecto!= null)
-        this.attrs.put("idEmpresa", this.proyecto.getProyecto().getIkEmpresa());
+      this.attrs.put("idEmpresa", this.proyecto.getProyecto().getIkEmpresa());
       Catalogos.toLoadClientesEmpresa(this.attrs);
-      if(this.proyecto!= null)
-        this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
+      this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
       this.doLoadDesarrollos();
 		} // try
 		catch (Exception e) {
@@ -121,11 +117,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doLoadDesarrollos() {
     try {
-      if(this.proyecto!= null)
-        this.attrs.put("idCliente", this.proyecto.getProyecto().getIkCliente());
+      this.attrs.put("idCliente", this.proyecto.getProyecto().getIkCliente());
       Catalogos.toLoadDesarrollosCliente(this.attrs);
-      if(this.proyecto!= null)
-        this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
+      this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
       this.toLoadPrototipos();
 		} // try
 		catch (Exception e) {
@@ -139,7 +133,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       params.put("idCliente", ((UISelectEntity)attrs.get("idCliente")).getKey());
       this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", params, "nombre"));
-			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
+      if((Boolean)this.attrs.get("validar"))
+			  this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -158,19 +153,26 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.proyecto= new RegistroProyecto();
-          this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
-          this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
-          this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
+          this.proyecto.getProyecto().setIkEmpresa(new UISelectEntity(-1L));
+          this.proyecto.getProyecto().setIkCliente(new UISelectEntity(-1L));
+          this.proyecto.getProyecto().setIkDesarrollo(new UISelectEntity(-1L));
+          this.toLoadCatalogos();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto((Long)this.attrs.get("idProyecto"));
-					this.toLoadPrototipos();
+          this.attrs.put("validar", Boolean.FALSE);
+          this.toLoadCatalogos();
+          this.attrs.put("idEmpresa", this.proyecto.getProyecto().getIkEmpresa()); 
+          this.attrs.put("idCliente", this.proyecto.getProyecto().getIkCliente()); 
+          this.attrs.put("idDesarrollo", this.proyecto.getProyecto().getIkDesarrollo()); 
+          this.toLoadPrototipos();
           for(Lote item:this.proyecto.getProyecto().getLotes()) {
 			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));
 			      item.setIkFachada(((List<UISelectEntity>)this.attrs.get("fachadas")).get(((List<UISelectEntity>)this.attrs.get("fachadas")).indexOf(new UISelectEntity(new Entity(item.getIdTipoFachada())))));
 			    } // for					
+          this.attrs.put("validar", Boolean.TRUE);
           break;
       } // switch
     } // try
