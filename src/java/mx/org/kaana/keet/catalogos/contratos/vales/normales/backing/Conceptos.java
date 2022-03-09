@@ -366,13 +366,14 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
       if(this.attrs.get("seleccionadoPivote")!= null && !((Entity)this.attrs.get("seleccionadoPivote")).isEmpty()) {
+        regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("idEmpresa"), 3, '0', true));
 			  regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			  regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
 			  regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
       } // if  
       else {
+  			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
 			  regresar.append(Fecha.getAnioActual());
 			  regresar.append(Cadena.rellenar("9", 6, '9', true));
       } // else 

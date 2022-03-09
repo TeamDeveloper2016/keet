@@ -1369,22 +1369,22 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Cafu notificar                = null;
     Map<String, Object> residentes= new HashMap<>();
 		try {
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "cafu":
-          residentes.put("grupo CAFU", Cafu.IMOX_GROUP_CAFU);
-          break;
-        case "gylvi":
-          residentes.put("grupo GYLVI", Cafu.IMOX_GROUP_GYLVI);
-          break;
-        case "triana":
-          residentes.put("grupo TRIANA", Cafu.IMOX_GROUP_TRIANA);
-          break;
-        default:
-          residentes.put("grupo CAFU", Cafu.IMOX_GROUP_CAFU);
-          break;
-      } // switch
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       Encriptar encriptar= new Encriptar();
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          residentes.put("Grupo CAFU", Cafu.IMOX_GROUP_CAFU);
+          break;
+        case "gylvi":
+          residentes.put("Grupo GYLVI", Cafu.IMOX_GROUP_GYLVI);
+          break;
+        case "triana":
+          residentes.put("Grupo TRIANA", Cafu.IMOX_GROUP_TRIANA);
+          break;
+        default:
+          residentes.put("Grupo CAFU", Cafu.IMOX_GROUP_CAFU);
+          break;
+      } // switch
       residentes.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":

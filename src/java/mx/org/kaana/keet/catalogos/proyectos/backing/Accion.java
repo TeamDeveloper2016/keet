@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -162,15 +161,27 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto((Long)this.attrs.get("idProyecto"));
+          UISelectEntity idEmpresa   = this.proyecto.getProyecto().getIkEmpresa(); 
+          UISelectEntity idCliente   = this.proyecto.getProyecto().getIkCliente(); 
+          UISelectEntity idDesarrollo= this.proyecto.getProyecto().getIkDesarrollo(); 
+          UISelectEntity idTipoObra  = this.proyecto.getProyecto().getIkTipoObra(); 
           this.attrs.put("validar", Boolean.FALSE);
           this.toLoadCatalogos();
-          this.attrs.put("idEmpresa", this.proyecto.getProyecto().getIkEmpresa()); 
-          this.attrs.put("idCliente", this.proyecto.getProyecto().getIkCliente()); 
-          this.attrs.put("idDesarrollo", this.proyecto.getProyecto().getIkDesarrollo()); 
+          this.attrs.put("idEmpresa", idEmpresa); this.proyecto.getProyecto().setIkEmpresa(idEmpresa); 
+          this.attrs.put("idCliente", idCliente); this.proyecto.getProyecto().setIkCliente(idCliente); 
+          this.attrs.put("idDesarrollo", idDesarrollo); this.proyecto.getProyecto().setIkDesarrollo(idDesarrollo); 
+          this.attrs.put("idTipoObra", idTipoObra); this.proyecto.getProyecto().setIkTipoObra(idTipoObra); 
           this.toLoadPrototipos();
+          List<UISelectEntity> prototipos= (List<UISelectEntity>)this.attrs.get("prototipos");
+          List<UISelectEntity> fachadas  = (List<UISelectEntity>)this.attrs.get("fachadas");
+          int index= 0;
           for(Lote item:this.proyecto.getProyecto().getLotes()) {
-			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));
-			      item.setIkFachada(((List<UISelectEntity>)this.attrs.get("fachadas")).get(((List<UISelectEntity>)this.attrs.get("fachadas")).indexOf(new UISelectEntity(new Entity(item.getIdTipoFachada())))));
+            index= prototipos.indexOf(new UISelectEntity(item.getIdPrototipo()));
+            if(index>= 0)
+			        item.setIkPrototipo(prototipos.get(index));
+            index= fachadas.indexOf(new UISelectEntity(item.getIdTipoFachada()));
+            if(index>= 0)
+			        item.setIkFachada(fachadas.get(index));
 			    } // for					
           this.attrs.put("validar", Boolean.TRUE);
           break;
