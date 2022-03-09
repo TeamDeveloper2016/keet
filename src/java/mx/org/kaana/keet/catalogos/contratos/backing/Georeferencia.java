@@ -194,7 +194,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(String.valueOf(lote.toLong("idEmpresa")), 3, '0', true));
+			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
 			regresar.append(Fecha.getAnioActual());
 			regresar.append(Cadena.rellenar(lote.toString("contrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));

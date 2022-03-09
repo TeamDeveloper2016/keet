@@ -117,11 +117,11 @@ public class Resumen extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad	  					
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
+			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("idEmpresa"), 3, '0', true));
 			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));

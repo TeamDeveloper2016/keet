@@ -117,7 +117,7 @@ public class Resumen extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad	  					
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();

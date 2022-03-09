@@ -492,7 +492,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(String.valueOf(lote.toLong("idEmpresa")), 3, '0', true));
+			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
 			regresar.append(lote.toString("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
