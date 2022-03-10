@@ -35,7 +35,6 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
-
 @Named(value = "keetCatalogosContratosGeoreferencia")
 @ViewScoped
 public class Georeferencia extends IBaseFilter implements Serializable {
@@ -209,7 +208,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		try {
 			if(event.getTab().getTitle().equals("Ubicación")) {
 				this.attrs.put("mostrarDetalle", true);				
-				doLoad();
+				this.doLoad();
 			} // if
 		} // try
 		catch (Exception e) {
@@ -224,10 +223,10 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 			marker= (Marker) event.getOverlay();
 			this.attrs.put("mostrarDetalle", false);
 			this.attrs.put("index", 1);				
-			loadEvidencias((Entity) marker.getData());
-			loadResidentes();
-			loadContratistas((Entity) marker.getData());
-			loadAvances((Entity) marker.getData());
+			this.loadEvidencias((Entity) marker.getData());
+			this.loadResidentes();
+			this.loadContratistas((Entity) marker.getData());
+			this.loadAvances((Entity) marker.getData());
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
