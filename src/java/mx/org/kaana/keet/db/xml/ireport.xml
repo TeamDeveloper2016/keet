@@ -308,7 +308,7 @@
           id_nomina,
           nomina,
           nombre_empresa,  
-          puesto puesto_departamento,
+          departamento as puesto_departamento,
           clave,
           nombre_completo,
           percepciones as percepciones_subtotal,
@@ -321,7 +321,7 @@
               tc_keet_nominas.id_nomina,
               concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
               tc_mantic_empresas.nombre as nombre_empresa,  
-              tc_mantic_puestos.nombre as puesto,
+              departamentos.departamento,
               tr_mantic_empresa_personal.clave,
               concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
               tc_keet_nominas_personas.percepciones,
@@ -340,12 +340,22 @@
               tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
             inner join 
               tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
-            inner join 
-              tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+            inner join ( 
+              select 
+                tc_keet_contratistas_departamentos.id_empresa_persona,
+                concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+                group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+              from
+                tc_keet_contratistas_departamentos
+              inner join
+                tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+              group by
+                tc_keet_contratistas_departamentos.id_empresa_persona				  
+            ) as departamentos on tr_mantic_empresa_personal.id_empresa_persona= departamentos.id_empresa_persona
             inner join 
               tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
             where
-            {condicion}	
+              {condicion}	
             union all
             select
               tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
@@ -382,8 +392,10 @@
             inner join 
               tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
             where
-              {condicion}) ppal
-        order by	tipo_nomina, nombre_empresa, nomina desc, puesto,nombre_completo asc	
+              {condicion}) as ppal
+        order by	
+          tipo_nomina, nombre_empresa, nomina desc, 
+          departamento, nombre_completo asc	
       </select>
     </unit>
     <unit id="VistaNominaConsultasReportesDto">

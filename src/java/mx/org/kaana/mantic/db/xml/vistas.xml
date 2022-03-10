@@ -144,6 +144,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join
 					tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        inner join
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
 				inner join 
 					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
 				where
@@ -5040,11 +5042,15 @@
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				left join 
-					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+          tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+        left join
+          tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
 				left join 
 					tc_keet_tipos_gastos on tc_keet_departamentos.id_tipo_gasto= tc_keet_tipos_gastos.id_tipo_gasto
 				where 
-					{condicion}									
+					{condicion}			
+        group by
+          tr_mantic_empresa_personal.id_persona  						
 				order by
           tc_mantic_personas.rfc
       </select>  
@@ -5054,7 +5060,7 @@
 				  tc_mantic_personas.nombres,
 				  tc_mantic_personas.paterno,
 				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
 				  tc_mantic_personas.rfc,
 				  tc_mantic_personas.curp,
 				  tc_mantic_personas.fecha_nacimiento,
@@ -5063,8 +5069,8 @@
 		 		  tc_janal_tipos_sexos.nombre as sexo,
 				  tc_janal_tipos_sexos.nombre,
 				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre sucursal,
-					tc_mantic_puestos.nombre puesto,
+					tc_mantic_empresas.nombre as sucursal,
+					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_persona_tipo_contacto.valor contacto,
 					tr_mantic_empresa_personal.id_activo,
 				  if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
@@ -5072,8 +5078,8 @@
 					tr_mantic_empresa_personal.clave,
 					tr_mantic_empresa_personal.id_nomina,
 					tr_mantic_empresa_personal.id_seguro,
-					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
-					tc_keet_departamentos.nombre departamento
+					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) as nss,		
+					tc_keet_departamentos.nombre as departamento
 				from 
 					tc_mantic_personas
 				inner join
@@ -5212,13 +5218,13 @@
 						tc_mantic_personas.fecha_nacimiento as "fecha nacimiento",
 						tc_mantic_empresas.nombre as sucursal,
 						tc_mantic_puestos.nombre as puesto,
-						tr_mantic_persona_tipo_contacto.valor contacto,
+						tr_mantic_persona_tipo_contacto.valor as contacto,
 						tr_mantic_empresa_personal.id_activo,
 						if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
 						if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
 						tr_mantic_empresa_personal.clave as "codigo nomina",
 						tr_mantic_empresa_personal.id_nomina,
-						if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
+						if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) as nss,		
 						tc_keet_departamentos.nombre as departamento,
 						tr_mantic_empresa_personal.ingreso,
 						tr_mantic_empresa_personal.baja,
@@ -5241,12 +5247,14 @@
 						tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 					left join 
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
-					left join 
-						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+          left join 
+            tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+          left join
+            tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
 					where 
 						{condicion}									
 					{sortOrder}  
-				) principal
+				) as principal
 			  left join
 			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
 			  left join

@@ -114,7 +114,7 @@ public class Accesos extends IBaseFilter implements Serializable {
 			String allDepartametos= "";
 			for(String departamento: departamentos)
 				allDepartametos= allDepartametos.concat(departamento).concat(",");
-			sb.append("tr_mantic_empresa_personal.id_departamento in (").append(allDepartametos.substring(0, allDepartametos.length()-1)).append(") and ");
+			sb.append("tc_keet_contratistas_departamentos.id_departamento in (").append(allDepartametos.substring(0, allDepartametos.length()-1)).append(") and ");
 		} // if		
 		if(puestos.length > 0) {
 			String allPuestos= "";
