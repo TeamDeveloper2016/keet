@@ -41,8 +41,11 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		  params= new HashMap<>();
 			params.put("idContrato", this.idPivote);
 			regresar= (Contrato) DaoFactory.getInstance().toEntity(Contrato.class, "TcKeetContratosDto", "byId", params);
-			if(regresar!= null && regresar.isValid())
+			if(regresar!= null && regresar.isValid()) {
+				regresar.setIkTipoMedioPago(new UISelectEntity(regresar.getIdTipoMedioPago()));			
+				regresar.setIkBanco(new UISelectEntity(regresar.getIdBanco()));			
 				regresar.setIkProyecto(new UISelectEntity(regresar.getIdProyecto()));			
+      }  
 		} // try
 		catch (Exception e) {			
 			throw e;

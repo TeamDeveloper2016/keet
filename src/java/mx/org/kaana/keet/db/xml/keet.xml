@@ -3126,6 +3126,18 @@
 				  id_nomina= {idNomina} 
 				  and id_empresa_persona= {idEmpresaPersona}
 			</delete>
+			<delete id="eliminar">
+				delete
+				  tc_keet_nominas_personas 
+				from 
+				  tc_keet_nominas_personas 
+			  inner join
+				  tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+			  inner join
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where 
+				  tc_mantic_personas.id_persona= {idPersona}
+			</delete>      
     </unit>		
     <unit id="TcKeetNominasDetallesDto">
       <select id="row">
@@ -3168,6 +3180,20 @@
 				where 
 				  tc_keet_nominas.id_nomina= {idNomina}
 				  and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
+			</delete>
+			<delete id="eliminar">
+				delete
+				  tc_keet_nominas_detalles 
+				from 
+				  tc_keet_nominas_detalles 
+			  inner join
+				  tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona= tc_keet_nominas_personas.id_nomina_persona
+			  inner join
+				  tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+			  inner join
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where 
+				  tc_mantic_personas.id_persona= {idPersona}
 			</delete>
     </unit>
     <unit id="TcKeetNominasProveedoresDto">
@@ -3908,25 +3934,6 @@
           tc_keet_contratos_presupuestos
         where      
           id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}' and id_contrato_presupuesto = {idContratoPresupuesto}
-      </select>
-    </unit>
-	    <unit id="TcKeetContratosProyectosDto">
-      <select id="row">
-        select      
-          tc_keet_contratos_proyectos.id_contrato_proyecto as id_key,
-					tc_keet_contratos_proyectos.*
-        from      
-          tc_keet_contratos_proyectos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_contratos_proyectos
-        where      
-          id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
       </select>
     </unit>
 		<unit id="TcKeetPrestamosArchivosDto">

@@ -18,6 +18,8 @@ import mx.org.kaana.keet.db.dto.TcKeetContratistasDepartamentosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPersonalDto;
 import mx.org.kaana.keet.db.dto.TcKeetDepartamentosDto;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBancosDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
@@ -200,6 +202,8 @@ public class Transaccion extends IBaseTnx {
               if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBeneficiariosDto.class, params) > -1L) {
                 if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaTipoContactoDto.class, params) > -1L) {
                   if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBancosDto.class, params) > -1L) {
+                    DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDetallesDto.class, "eliminar", params);
+                    DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasPersonasDto.class, "eliminar", params);
                     DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosPersonalDto.class, "persona", params);
                     DaoFactory.getInstance().deleteAll(sesion, TcKeetContratistasDepartamentosDto.class, params);
                     DaoFactory.getInstance().updateAll(sesion, TrManticEmpresaPersonalDto.class, params, "persona");

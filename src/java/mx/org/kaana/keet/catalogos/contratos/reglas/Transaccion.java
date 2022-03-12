@@ -70,6 +70,10 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setOrden(siguiente.getOrden());
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					this.contrato.getContrato().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+          if(this.contrato.getContrato().getIdTipoMedioPago()<= 0L)
+            this.contrato.getContrato().setIdTipoMedioPago(null);
+          if(this.contrato.getContrato().getIdBanco()<= 0L)
+            this.contrato.getContrato().setIdBanco(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
 //					Collections.sort(this.contrato.getContrato().getLotes());
 //					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
@@ -78,6 +82,10 @@ public class Transaccion extends IBaseTnx {
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;
 				case MODIFICAR:
+          if(this.contrato.getContrato().getIdTipoMedioPago()<= 0L)
+            this.contrato.getContrato().setIdTipoMedioPago(null);
+          if(this.contrato.getContrato().getIdBanco()<= 0L)
+            this.contrato.getContrato().setIdBanco(null);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
 //					Collections.sort(this.contrato.getContrato().getLotes());
 //					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden

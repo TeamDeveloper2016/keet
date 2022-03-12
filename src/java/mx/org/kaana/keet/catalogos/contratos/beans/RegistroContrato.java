@@ -213,7 +213,7 @@ public class RegistroContrato implements Serializable {
 		try {			
 			if(this.contratoPersonas.remove(this.contratoPersona)) {
 				if(!this.contratoPersona.getNuevo())
-					addDeleteList(this.contratoPersona);
+					this.addDeleteList(this.contratoPersona);
 				JsfBase.addMessage("Se eliminó correctamente el empleado.", ETipoMensaje.INFORMACION);
 			} // if
 			else

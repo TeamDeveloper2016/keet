@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -33,8 +34,10 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.PointSelectEvent;
@@ -94,11 +97,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("mostrarGeo", false);
- 			this.attrs.put("cpNuevo", false);						
+      this.attrs.put("mostrarGeo", Boolean.FALSE);
+ 			this.attrs.put("cpNuevo", Boolean.FALSE);						
+ 			this.attrs.put("mostrarBanco", Boolean.FALSE);						
       this.toLoadCombos();
 			this.doLoad();
       this.doLoadItemsDomicilio();
+      this.toLoadTiposPagos();
+      this.toLoadBancos();
+      this.doCheckMedioPago();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -824,5 +831,86 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String toColor(Lote row) {
     return row.isMostar()? "": "janal-display-none";
   }
+ 
+  public void doCalculateCosto() {
+    if(this.contrato.getContrato().getCosto()<= 0D) {
+      double costo= 0D;
+      for (Lote item: this.contrato.getContrato().getLotes()) {
+        costo+= item.getCosto();
+      } // for
+      this.contrato.getContrato().setCosto(Numero.toRedondearSat(costo));
+    } // if
+  }
+  
+	private void toLoadTiposPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+      if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+  			this.contrato.getContrato().setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+      else {
+        int index= tiposMediosPagos.indexOf(this.contrato.getContrato().getIkTipoMedioPago());
+        if(index>= 0)
+    			this.contrato.getContrato().setIkTipoMedioPago(tiposMediosPagos.get(index));
+        else 
+    			this.contrato.getContrato().setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+      } // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toLoadTiposPagos
+	  
+	private void toLoadBancos() {
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> campos       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+      if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+  			this.contrato.getContrato().setIkBanco(UIBackingUtilities.toFirstKeySelectEntity(bancos));
+      else {
+        int index= bancos.indexOf(this.contrato.getContrato().getIkBanco());
+        if(index>= 0)
+    			this.contrato.getContrato().setIkBanco(bancos.get(index));
+        else
+    			this.contrato.getContrato().setIkBanco(UIBackingUtilities.toFirstKeySelectEntity(bancos));
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadBancos  
+  
+  public void doCalculateAnticipo() {
+    if(this.contrato.getContrato().getCosto()> 0D && this.contrato.getContrato().getPorcentaje()> 0D) {
+      this.contrato.getContrato().setAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getPorcentaje()/ 100* this.contrato.getContrato().getCosto()));
+    } // if
+  }
+ 
+	public void doCheckMedioPago() {
+		Long tipoMedioPago= this.contrato.getContrato().getIkTipoMedioPago().getKey();
+		try {
+			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doCheckMedioPago  
   
 }

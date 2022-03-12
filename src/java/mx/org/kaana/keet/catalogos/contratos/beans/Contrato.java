@@ -19,6 +19,8 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Contrato extends TcKeetContratosDto {
 
 	private static final long serialVersionUID= -2816173235044810661L;
+	private UISelectEntity ikTipoMedioPago;
+	private UISelectEntity ikBanco;
 	private UISelectEntity ikProyecto;
   private List<Lote> lotes;
 	private Lote loteSeleccion;
@@ -40,10 +42,10 @@ public class Contrato extends TcKeetContratosDto {
 	}
 	
 	public Contrato(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", new ArrayList<>(), new Lote(), new UISelectEntity(-1L), sqlAccion, nuevo);		
+		this(key, "", "", new ArrayList<>(), new Lote(), new UISelectEntity(-1L), sqlAccion, nuevo, new UISelectEntity(-1L), new UISelectEntity(-1L));		
 	}
 	
-	public Contrato(Long key, String claveDesarrollo, String desarrollo, List<Lote> lotes, Lote loteSeleccion, UISelectEntity ikProyecto, ESql sqlAccion, Boolean nuevo) {
+	public Contrato(Long key, String claveDesarrollo, String desarrollo, List<Lote> lotes, Lote loteSeleccion, UISelectEntity ikProyecto, ESql sqlAccion, Boolean nuevo, UISelectEntity ikTipoMedioPago, UISelectEntity ikBanco) {
 		super(key);
 		this.claveDesarrollo= claveDesarrollo;
 		this.desarrollo     = desarrollo;				
@@ -51,9 +53,31 @@ public class Contrato extends TcKeetContratosDto {
 		this.nuevo          = nuevo;
 		this.lotes          = lotes;
 		this.loteSeleccion  = loteSeleccion;
+		this.ikTipoMedioPago= ikTipoMedioPago;
+		this.ikBanco        = ikBanco;
 		this.ikProyecto     = ikProyecto;
 	}
 	
+	public UISelectEntity getIkTipoMedioPago() {
+		return ikTipoMedioPago;
+	} 
+
+	public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+		this.ikTipoMedioPago = ikTipoMedioPago;
+		if(this.ikTipoMedioPago!= null)
+			this.setIdTipoMedioPago(this.ikTipoMedioPago.getKey());
+	} 
+  
+	public UISelectEntity getIkBanco() {
+		return ikBanco;
+	} 
+
+	public void setIkBanco(UISelectEntity ikBanco) {
+		this.ikBanco = ikBanco;
+		if(this.ikBanco!= null)
+			this.setIdBanco(this.ikBanco.getKey());
+	} 
+  
 	public UISelectEntity getIkProyecto() {
 		return ikProyecto;
 	} 

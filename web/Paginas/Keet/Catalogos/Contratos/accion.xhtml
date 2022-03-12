@@ -21,13 +21,18 @@
         'contenedorGrupos\\:entidad'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'cinco-digitos', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:calle'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:exterior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:otraCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'}
+        'contenedorGrupos\\:cp'             : {validaciones: 'requerido', mascara: 'cinco-digitos', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calle'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior'       : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior'       : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle'     : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:otraCalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:porcentaje'     : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:anticipo'       : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:deposito'       : {validaciones: 'fecha', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:pagare'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
 			fieldsDomicilio ={
@@ -132,11 +137,11 @@
 								<p:outputLabel for="arranque" value="Arranque:"/>
 								<p:calendar id="arranque" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{keetCatalogosContratosAccion.contrato.contrato.arranque}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 								<p:outputLabel for="costo" value="Costo:"/>
-								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0"/>
 								<p:separator/>
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
                 <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" editable="false" disabled="true">
-									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}" />
+									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}" />
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -185,7 +190,9 @@
 									<p:inputText value="#{lote.calle}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column headerText="Costo" class="janal-wid-15">										
-									<p:inputNumber value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
+									<p:inputNumber value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0">
+                    <p:ajax event="change" process="@this contenedorGrupos:costo" update="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCalculateCosto}"/>
+                  </p:inputNumber>  
 								</p:column>								
 								<p:column headerText="Geo" class="janal-wid-col-20">																				
 									<h:graphicImage library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>
@@ -314,6 +321,44 @@
                 <p:selectBooleanCheckbox id="principal" value="#{keetCatalogosContratosAccion.contrato.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
               </p:panelGrid>
               <p:remoteCommand name="simpleProcess" actionListener="#{keetCatalogosContratosAccion.doLoadItemsDomicilio}" process="@this contenedorGrupos"/>
+            </p:tab>  
+						<p:tab id="tabAnticipo" title="Anticipo">	
+							<p:panelGrid id="anticipos" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                <p:outputLabel for="porcentaje" value="Porcentaje:"/>
+                <p:inputNumber id="porcentaje" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentaje}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100">
+                  <p:ajax event="change" process="@this contenedorGrupos:costo" update="contenedorGrupos:anticipo" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo}"/>
+                </p:inputNumber>  
+                <p:outputLabel for="anticipo" value="Anticipo:"/>
+                <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" />
+                <p:separator/>
+                <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCheckMedioPago}" update="contenedorGrupos:anticipos @(.banco)"/>
+                  <f:selectItems value="#{keetCatalogosContratosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
+                <p:selectOneMenu id="idBanco" value="#{keetCatalogosContratosAccion.contrato.contrato.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt banco" converter="janal.convertidor.Entity" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}">
+                  <f:selectItems value="#{keetCatalogosContratosAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Razón social">
+                    <h:outputText value="#{item.razonSocial}"/>
+                  </p:column>   
+                </p:selectOneMenu>              
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
+                <p:inputText id="referencia" styleClass="janal-wid-100-txt banco" value="#{keetCatalogosContratosAccion.contrato.contrato.referencia}" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
+                <p:outputLabel for="deposito" value="Fecha de deposito:"/>
+                <p:calendar id="deposito" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{keetCatalogosContratosAccion.contrato.contrato.deposito}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+                <p:outputLabel for="pagare" value="Número de pagare:" styleClass="janal-color-blue"/>
+                <p:inputText id="pagare" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.pagare}" />
+              </p:panelGrid>  
             </p:tab>  
 					</p:tabView>
 				</div>

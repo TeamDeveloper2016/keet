@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,6 +226,11 @@ public class Transaccion extends IBaseTnx {
 		TcKeetContratosDto contratosDto    = null;
 		try{
 			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class, "TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
+			contratosDto.setPorcentaje(0D);
+			contratosDto.setAnticipo(0D);
+			contratosDto.setIdTipoMedioPago(null);
+			contratosDto.setIdBanco(null);
+			contratosDto.setDeposito(LocalDate.now());
 			contratosDto.setIdUsuario(JsfBase.getIdUsuario());
 			contratosDto.setIdContratoEstatus(1L);//cambiar estatus por el inicial
 			DaoFactory.getInstance().insert(sesion, contratosDto);

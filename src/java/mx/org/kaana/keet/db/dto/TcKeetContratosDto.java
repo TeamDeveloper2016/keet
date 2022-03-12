@@ -68,6 +68,20 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   private String nombre;
 	@Column (name="permiso")
   private String permiso;
+	@Column (name="porcentaje")
+  private Double porcentaje;
+	@Column (name="anticipo")
+  private Double anticipo;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_banco")
+  private Long idBanco;
+  @Column (name="referencia")
+  private String referencia;
+  @Column (name="deposito")
+  private LocalDate deposito;
+  @Column (name="pagare")
+  private String pagare;
 
   public TcKeetContratosDto() {
     this(new Long(-1L));
@@ -83,6 +97,10 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   }
   
   public TcKeetContratosDto(String clave, Long idProyecto, String etapa, LocalDate recepcion, LocalDate aceptacion, Long ejercicio, String consecutivo, Long idContratoEstatus, Long idUsuario, Long idContrato, LocalDate arranque, String observaciones, Long idEmpresa, Long orden, Long noViviendas, Double costo, String nombre, String permiso) {
+    this(clave, idProyecto, etapa, recepcion, aceptacion, ejercicio, consecutivo, idContratoEstatus, idUsuario, idContrato, arranque, observaciones, idEmpresa, orden, noViviendas, costo, nombre, permiso, 0D, 0D, -1L, -1L, null, LocalDate.now(), null);    
+  }
+  
+  public TcKeetContratosDto(String clave, Long idProyecto, String etapa, LocalDate recepcion, LocalDate aceptacion, Long ejercicio, String consecutivo, Long idContratoEstatus, Long idUsuario, Long idContrato, LocalDate arranque, String observaciones, Long idEmpresa, Long orden, Long noViviendas, Double costo, String nombre, String permiso, Double porcentaje, Double anticipo, Long idTipoMedioPago, Long idBanco, String referencia, LocalDate deposito, String pagare) {
     setClave(clave);
     setIdProyecto(idProyecto);
     setEtapa(etapa);
@@ -102,6 +120,13 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		setCosto(costo);
     this.nombre= nombre;
     this.permiso= permiso;
+    this.porcentaje= porcentaje;
+    this.anticipo= anticipo;
+    this.idTipoMedioPago= idTipoMedioPago;
+    this.idBanco= idBanco;
+    this.recepcion= recepcion;
+    this.deposito= deposito;
+    this.pagare= pagare;
   }
 	
   public void setClave(String clave) {
@@ -255,6 +280,62 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   public void setPermiso(String permiso) {
     this.permiso = permiso;
   }
+
+  public Double getPorcentaje() {
+    return porcentaje;
+  }
+
+  public void setPorcentaje(Double porcentaje) {
+    this.porcentaje = porcentaje;
+  }
+
+  public Double getAnticipo() {
+    return anticipo;
+  }
+
+  public void setAnticipo(Double anticipo) {
+    this.anticipo = anticipo;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdBanco() {
+    return idBanco;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public LocalDate getDeposito() {
+    return deposito;
+  }
+
+  public void setDeposito(LocalDate deposito) {
+    this.deposito = deposito;
+  }
+
+  public String getPagare() {
+    return pagare;
+  }
+
+  public void setPagare(String pagare) {
+    this.pagare = pagare;
+  }
 	
   @Transient
   @Override
@@ -308,6 +389,20 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());		
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPermiso());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorcentaje());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAnticipo());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDeposito());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPagare());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -334,6 +429,13 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.put("costo", getCosto());
 		regresar.put("nombre", getNombre());
 		regresar.put("permiso", getPermiso());
+		regresar.put("porcentaje", getPorcentaje());
+		regresar.put("anticipo", getAnticipo());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("referencia", getReferencia());
+		regresar.put("deposito", getDeposito());
+		regresar.put("pagare", getPagare());
   	return regresar;
   }
 
