@@ -329,7 +329,7 @@
                   <p:ajax event="change" process="@this contenedorGrupos:costo" update="contenedorGrupos:anticipo" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo}"/>
                 </p:inputNumber>  
                 <p:outputLabel for="anticipo" value="Anticipo:"/>
-                <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" />
+                <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0" />
                 <p:separator/>
                 <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -356,7 +356,7 @@
                 <p:inputText id="referencia" styleClass="janal-wid-100-txt banco" value="#{keetCatalogosContratosAccion.contrato.contrato.referencia}" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
                 <p:outputLabel for="deposito" value="Fecha de deposito:"/>
                 <p:calendar id="deposito" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{keetCatalogosContratosAccion.contrato.contrato.deposito}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
-                <p:outputLabel for="pagare" value="Número de pagare:" styleClass="janal-color-blue"/>
+                <p:outputLabel for="pagare" value="No pagare:" styleClass="janal-color-blue"/>
                 <p:inputText id="pagare" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.pagare}" />
               </p:panelGrid>  
             </p:tab>  

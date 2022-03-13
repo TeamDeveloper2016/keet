@@ -7,6 +7,98 @@
   </model>
 
   <dml>
+    <unit id="TcKeetEstimacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_estimaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estimaciones
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_estimaciones
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+    </unit>    
+    <unit id="TcKeetEstimacionesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_estimaciones_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estimaciones_detalles
+        where      
+          id_estimacion = {idEstimacion} and id_tipo_retencion = {idTipoRetencion}
+      </select>
+    </unit>    
+    <unit id="TcKeetEstimacionesEstatusDto">
+      <select id="row">
+        select      
+          tc_keet_estimaciones_estatus.id_estimacion_estatus as id_key,
+          tc_keet_estimaciones_estatus.*
+        from      
+          tc_keet_estimaciones_estatus
+        where 
+          {condicion}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estimaciones_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="estatus">
+        select      
+          tc_keet_estimaciones_estatus.id_estimacion_estatus as id_key,
+          tc_keet_estimaciones_estatus.*
+        from      
+          tc_keet_estimaciones_estatus
+        where 
+          id_estimacion_estatus in ({estatusAsociados})
+        order by
+          id_estimacion_estatus
+      </select>
+    </unit>    
+    <unit id="TcKeetTiposRetencionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_retenciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_retenciones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKeetContratistasDepartamentosDto">
       <select id="row">
         select      

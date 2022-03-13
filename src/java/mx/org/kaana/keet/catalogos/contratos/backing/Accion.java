@@ -99,7 +99,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("mostrarGeo", Boolean.FALSE);
  			this.attrs.put("cpNuevo", Boolean.FALSE);						
- 			this.attrs.put("mostrarBanco", Boolean.FALSE);						
       this.toLoadCombos();
 			this.doLoad();
       this.doLoadItemsDomicilio();
@@ -833,13 +832,13 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
  
   public void doCalculateCosto() {
-    if(this.contrato.getContrato().getCosto()<= 0D) {
+    // if(this.contrato.getContrato().getCosto()<= 0D) {
       double costo= 0D;
       for (Lote item: this.contrato.getContrato().getLotes()) {
         costo+= item.getCosto();
       } // for
       this.contrato.getContrato().setCosto(Numero.toRedondearSat(costo));
-    } // if
+    // } // if
   }
   
 	private void toLoadTiposPagos() {
