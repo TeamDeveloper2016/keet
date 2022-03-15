@@ -359,6 +359,11 @@ public class Accion extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   }
+ 
+  public void doRowUpdateFecha(Retencion row) {
+    if(Objects.equals(row.getSql(), ESql.SELECT))
+      row.setSql(ESql.UPDATE);
+  }
   
 	@Override
 	protected void finalize() throws Throwable {

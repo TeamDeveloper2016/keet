@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -45,17 +46,19 @@ public class TcKeetEstimacionesDetallesDto implements IBaseDto, Serializable {
   private Long idDeduccion;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="vence")
+  private LocalDate vence;
 
   public TcKeetEstimacionesDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetEstimacionesDetallesDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetEstimacionesDetallesDto(Long idEstimacion, Long idTipoRetencion, Long idUsuario, Long idEstimacionDetalle, Double porcentaje, Double importe, Long idDeduccion) {
+  public TcKeetEstimacionesDetallesDto(Long idEstimacion, Long idTipoRetencion, Long idUsuario, Long idEstimacionDetalle, Double porcentaje, Double importe, Long idDeduccion, LocalDate vence) {
     setIdEstimacion(idEstimacion);
     setIdTipoRetencion(idTipoRetencion);
     setIdUsuario(idUsuario);
@@ -64,6 +67,7 @@ public class TcKeetEstimacionesDetallesDto implements IBaseDto, Serializable {
     setImporte(importe);
     setIdDeduccion(idDeduccion);
     setRegistro(LocalDateTime.now());
+    setVence(vence);
   }
 	
   public void setIdEstimacion(Long idEstimacion) {
@@ -130,6 +134,14 @@ public class TcKeetEstimacionesDetallesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public LocalDate getVence() {
+    return vence;
+  }
+
+  public void setVence(LocalDate vence) {
+    this.vence = vence;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -160,6 +172,8 @@ public class TcKeetEstimacionesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getIdDeduccion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getVence());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -175,13 +189,14 @@ public class TcKeetEstimacionesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("importe", getImporte());
 		regresar.put("idDeduccion", getIdDeduccion());
 		regresar.put("registro", getRegistro());
+		regresar.put("vence", getVence());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEstimacion(), getIdTipoRetencion(), getIdUsuario(), getIdEstimacionDetalle(), getPorcentaje(), getImporte(), getIdDeduccion(), getRegistro()
+      getIdEstimacion(), getIdTipoRetencion(), getIdUsuario(), getIdEstimacionDetalle(), getPorcentaje(), getImporte(), getIdDeduccion(), getRegistro(), getVence()
     };
     return regresar;
   }

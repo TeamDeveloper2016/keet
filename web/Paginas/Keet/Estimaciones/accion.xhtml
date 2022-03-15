@@ -179,6 +179,14 @@
                     <f:selectItem itemValue="2" itemLabel="SUMA"/>
                   </p:selectOneMenu>  
                 </p:column>
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Vence"/>
+									</f:facet>
+  								<p:calendar id="vence" inputStyleClass="janal-wid-50" styleClass="janal-wid-100" value="#{row['vence']}" showOn="button" pattern="dd/MM/yyyy" locale="es">
+                    <p:ajax event="dateSelect" process="@this" listener="#{keetEstimacionesAccion.doRowUpdateFecha(row)}"/>
+                  </p:calendar>  
+                </p:column>
 								<f:facet name="footer">
 									<p:outputLabel value="Total [#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size()}] registros"/>
 								</f:facet>
