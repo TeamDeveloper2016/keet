@@ -11,9 +11,11 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -29,7 +31,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.keet.ingresos.reglas.Transaccion;
+import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import org.primefaces.event.TabChangeEvent;
@@ -64,11 +66,12 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-			// if(JsfBase.getFlashAttribute("accion")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? 1L: JsfBase.getFlashAttribute("idEstimacion"));
+			if(JsfBase.getFlashAttribute("accion")== null)
+			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("actualizar", Boolean.FALSE);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -84,6 +87,7 @@ public class Accion extends IBaseFilter implements Serializable {
       switch (this.accion) {
         case AGREGAR:		
           this.estimaciones= new Estimaciones();
+          this.attrs.put("actualizar", Boolean.TRUE);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -102,17 +106,22 @@ public class Accion extends IBaseFilter implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
-      // transaccion = new Transaccion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf());
-      if (transaccion.ejecutar(this.accion)) {
-        regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-        if(this.accion.equals(EAccion.AGREGAR)) 
-          UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la estimación ', '"+ this.estimaciones.getEstimacion().getConsecutivo()+ "');");
-        else
-          if(!this.accion.equals(EAccion.CONSULTAR)) 
-            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la estimación"), ETipoMensaje.INFORMACION);
+      // FALTA VERIFICAR SI EL MONTO DE TODAS LAS AMORTIZACIONES DE LOS ANTICIPOS ES MENOR O IGUAL AL ANTICIPO PAGADO DEL CONTRATO
+      if(this.checkAnticipoGlobal()) {
+        transaccion = new Transaccion(this.estimaciones);
+        if (transaccion.ejecutar(this.accion)) {
+          regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+          if(this.accion.equals(EAccion.AGREGAR)) 
+            UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la estimación ', '"+ this.estimaciones.getEstimacion().getConsecutivo()+ "');");
+          else
+            if(!this.accion.equals(EAccion.CONSULTAR)) 
+              JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la estimación"), ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar la estimación !", ETipoMensaje.ERROR);      			
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar la estimación !", ETipoMensaje.ERROR);      			
+        JsfBase.addMessage("El importe de la amortización de anticipo supera el anticipo del contrato !", ETipoMensaje.ERROR);      			
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -219,7 +228,7 @@ public class Accion extends IBaseFilter implements Serializable {
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(!contratos.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
+        if(this.accion.equals(EAccion.AGREGAR)) 
           this.estimaciones.getEstimacion().setIkContrato(contratos.get(0));
         else  
           this.estimaciones.getEstimacion().setIkContrato(contratos.get(contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato())));
@@ -268,6 +277,7 @@ public class Accion extends IBaseFilter implements Serializable {
     for (Retencion item : this.estimaciones.getEstimacion().getRetenciones()) {
       item.setImporte(Numero.toRedondearSat(item.getPorcentaje()* this.estimaciones.getEstimacion().getImporte()/ 100D));
     } // for
+    this.doUpdateAccion(null);
   }
   
   public void doRowUpdateCuenta(Retencion row, Boolean porcentaje)  {
@@ -285,12 +295,69 @@ public class Accion extends IBaseFilter implements Serializable {
             row.setPorcentaje(Numero.toRedondearSat(row.getImporte()* 100D/ this.estimaciones.getEstimacion().getImporte()));
           } // else
         } // if  
+        this.doUpdateAccion(row);
       } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+  }
+  
+  public void doUpdateAccion(Retencion row) {
+    double suma= this.estimaciones.getEstimacion().getImporte();
+    for (Retencion item: this.estimaciones.getEstimacion().getRetenciones()) {
+      if(Objects.equals(item.getIdDeduccion(), 1L))
+        suma-= item.getImporte();
+      else
+        suma+= item.getImporte();
+    } // for
+    this.estimaciones.getEstimacion().setFacturar(Numero.toRedondearSat(suma));
+    if(row!= null && Objects.equals(row.getSql(), ESql.SELECT))
+      row.setSql(ESql.UPDATE);
+  }
+
+  public void doUpdatePorcentaje() {
+    List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+    if(contratos!= null && !contratos.isEmpty() && (Boolean)this.attrs.get("actualizar")) {
+      int index= contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato());
+      if(index>= 0) {
+        this.estimaciones.getEstimacion().setIkContrato(contratos.get(index));
+        for (Retencion item: this.estimaciones.getEstimacion().getRetenciones()) 
+          if(Objects.equals(item.getIdTipoRetencion(), 1L))
+            item.setPorcentaje(this.estimaciones.getEstimacion().getIkContrato().toDouble("porcentaje"));
+        this.attrs.put("actualizar", Boolean.FALSE);
+      } // if 
+    } // if 
+  } 
+  
+  private Boolean checkAnticipoGlobal() {
+    Boolean regresar= Boolean.TRUE;
+    List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+		Map<String, Object>params     = new HashMap<>();
+		try {
+      if(contratos!= null && !contratos.isEmpty()) {
+        int index= contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato());
+        if(index>= 0) {
+          this.estimaciones.getEstimacion().setIkContrato(contratos.get(index));
+          Double anticipo= this.estimaciones.getEstimacion().getIkContrato().toDouble("anticipo");
+          if(anticipo> 0D) {
+            params.put("idContrato", this.estimaciones.getEstimacion().getIdContrato());
+            Value total= DaoFactory.getInstance().toField("VistaEstimacionesDto", "anticipo", params, "total");
+            if(total!= null && total.getData()!= null)
+              regresar= total.toDouble()<= anticipo;
+          } // if 
+        } // if 
+      } // if 
+		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 	@Override

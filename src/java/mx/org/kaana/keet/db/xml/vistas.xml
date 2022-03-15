@@ -41,8 +41,20 @@
 				  and {condicion}
         {sortOrder}
       </select>
-      <select id="row">
-        
+      <select id="anticipo">
+        select
+          sum(tc_keet_estimaciones_detalles.importe) as total
+        from
+          tc_keet_estimaciones_detalles
+        inner join
+          tc_keet_estimaciones on tc_keet_estimaciones_detalles.id_estimacion= tc_keet_estimaciones.id_estimacion
+        inner join
+          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+        where
+          tc_keet_contratos.id_contrato= {idContrato}
+          and tc_keet_estimaciones_detalles.id_tipo_retencion= 1
+        group by
+          tc_keet_contratos.id_contrato
       </select>
 		</unit>
 		<unit id="VistaAnticiposPagosDto">

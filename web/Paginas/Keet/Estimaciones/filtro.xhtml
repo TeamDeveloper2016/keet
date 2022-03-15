@@ -143,7 +143,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -191,7 +191,7 @@
               </f:facet>
               <h:outputText value="#{row['saldo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.registro}">
+            <p:column class="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
@@ -202,14 +202,14 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{keetEstimacionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" action="#{keetEstimacionesFiltro.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator/>
-            <p:menuitem id="modificar" value="Modificar" action="#{keetEstimacionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idVentaEstatus eq '11'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idVentaEstatus eq '11'}"/>					
+            <p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" action="#{keetEstimacionesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
+            <p:separator/>
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doMovimientos}"/>
             <p:separator/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|11|12|13|', keetEstimacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
-            <p:menuitem id="pagos" icon="fa fa-funnel-dollar" value="Pagos" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doRecordPagos}" rendered="#{fn:contains('|12|', keetEstimacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>

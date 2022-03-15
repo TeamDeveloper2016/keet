@@ -105,16 +105,16 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-		String regresar= "accion";
-    EAccion eaccion= null;
-		Long idVenta   = -1L;
+		String regresar  = "accion";
+    EAccion eaccion  = null;
+		Long idEstimacion= -1L;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       if(!EAccion.AGREGAR.equals(eaccion))
-        idVenta= ((Entity)this.attrs.get("seleccionado")).getKey();
+        idEstimacion= ((Entity)this.attrs.get("seleccionado")).getKey();
 		  JsfBase.setFlashAttribute("accion", eaccion);
 			JsfBase.setFlashAttribute("retorno", "filtro");
-			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.AGREGAR)? -1L: idVenta);
+			JsfBase.setFlashAttribute("idEstimacion", eaccion.equals(EAccion.AGREGAR)? -1L: idEstimacion);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -130,9 +130,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((Ingreso)DaoFactory.getInstance().findById(Ingreso.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La estimación se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la estimación", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -144,25 +144,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEstimacion")) && !this.attrs.get("idEstimacion").toString().equals("-1"))
-  		sb.append("(tc_mantic_estimaciones.id_estimacion=").append(this.attrs.get("idEstimacion")).append(") and ");
+  		sb.append("(tc_keet_estimaciones.id_estimacion=").append(this.attrs.get("idEstimacion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
   		sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
+  		sb.append("(tc_keet_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("factura")))
   		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("factura")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_mantic_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_mantic_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
 		  sb.append("(tc_keet_estimaciones.importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_keet_estimaciones.importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idEstimacionEstatus")) && !this.attrs.get("idEstimacionEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_estimaciones.id_estimacion_estatus= ").append(this.attrs.get("idEstimacionEstatus")).append(") and ");
+  		sb.append("(tc_keet_estimaciones.id_estimacion_estatus= ").append(this.attrs.get("idEstimacionEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else

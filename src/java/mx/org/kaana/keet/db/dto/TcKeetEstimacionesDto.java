@@ -27,8 +27,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_factura")
-  private Long idFactura;
+  @Column (name="id_venta")
+  private Long idVenta;
   @Column (name="facturar")
   private Double facturar;
   @Column (name="saldo")
@@ -67,8 +67,8 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetEstimacionesDto(Long idFactura, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa) {
-    setIdFactura(idFactura);
+  public TcKeetEstimacionesDto(Long idVenta, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa) {
+    setIdVenta(idVenta);
     setFacturar(facturar);
     setSaldo(saldo);
     setImporte(importe);
@@ -84,12 +84,12 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
   }
 	
-  public void setIdFactura(Long idFactura) {
-    this.idFactura = idFactura;
+  public void setIdVenta(Long idVenta) {
+    this.idVenta = idVenta;
   }
 
-  public Long getIdFactura() {
-    return idFactura;
+  public Long getIdVenta() {
+    return idVenta;
   }
 
   public void setFacturar(Double facturar) {
@@ -211,7 +211,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdFactura());
+		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFacturar());
 		regresar.append(Constantes.SEPARADOR);
@@ -245,7 +245,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idFactura", getIdFactura());
+		regresar.put("idVenta", getIdVenta());
 		regresar.put("facturar", getFacturar());
 		regresar.put("saldo", getSaldo());
 		regresar.put("importe", getImporte());
@@ -265,7 +265,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdFactura(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa()
+      getIdVenta(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa()
     };
     return regresar;
   }

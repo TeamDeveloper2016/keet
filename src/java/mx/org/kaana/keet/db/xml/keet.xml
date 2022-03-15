@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetEstimacionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_estimaciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estimaciones_bitacora
+        where      
+          id_estimacion_bitacora = {idEstimacionBitacora}
+      </select>
+    </unit>    
     <unit id="TcKeetEstimacionesDto">
       <select id="row">
         select      
@@ -75,7 +93,9 @@
           tc_keet_tipos_retenciones.porcentaje,
           tc_keet_tipos_retenciones.limite,
           ifnull(tt_keet_estimaciones_detalles.importe, 0) as importe,
-          ifnull(tt_keet_estimaciones_detalles.id_deduccion, 2) as id_deduccion
+          ifnull(tt_keet_estimaciones_detalles.id_deduccion, 1) as id_deduccion,
+          ifnull(tt_keet_estimaciones_detalles.id_usuario, -1) as id_usuario,
+          ifnull(tt_keet_estimaciones_detalles.registro, current_timestamp()) as registro
         from      
           tc_keet_tipos_retenciones
         left join  
@@ -143,7 +163,7 @@
           tc_keet_tipos_retenciones.porcentaje,
           tc_keet_tipos_retenciones.limite,
           0 as importe,
-          2 as id_deduccion
+          1 as id_deduccion
         from      
           tc_keet_tipos_retenciones
         order by

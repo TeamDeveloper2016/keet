@@ -56,6 +56,8 @@ public class Estimaciones implements Serializable {
         this.estimacion.setIkCliente(new UISelectEntity(-1L));
         this.estimacion.setIkContrato(new UISelectEntity(-1L));
         this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetTiposRetencionesDto", "inicial", params));
+        for (Retencion item: this.estimacion.getRetenciones()) 
+          item.setSql(ESql.INSERT);
       } // if
       else {
         this.estimacion= (Estimacion)DaoFactory.getInstance().toEntity(Estimacion.class, "TcKeetEstimacionesDto", "estimacion", params);
@@ -65,9 +67,8 @@ public class Estimaciones implements Serializable {
           this.estimacion.setIkCliente(new UISelectEntity(this.estimacion.getIdCliente()));
           this.estimacion.setIkContrato(new UISelectEntity(this.estimacion.getIdContrato()));
           this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetEstimacionesDetallesDto", "estimacion", params));
-          for (Retencion item: this.estimacion.getRetenciones()) {
+          for (Retencion item: this.estimacion.getRetenciones()) 
             item.setSql(ESql.SELECT);
-          } // for
         } // if
       } // else
     } // try
