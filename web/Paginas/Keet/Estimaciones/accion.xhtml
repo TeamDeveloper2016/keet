@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetEstimacionesAccion.attrs.nombreAccion} una estimación"/>
+  <ui:param name="janalBackingPage" value="#{keetEstimacionesAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">
+      //<![CDATA[
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idSucursal'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idDesarrollo'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idCliente'        : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idContrato'       : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:factura'          : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:fechaVencimiento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:importe'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'retencion1' : {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+			};
+			
+    	$(document).ready(function() {
+        setTimeout("janal.readingMode('#{keetEstimacionesAccion.attrs.nombreAccion}')", 500);
+				janal.decimals= 4;
+      });
+			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{keetEstimacionesAccion.attrs.nombreAccion}')", 500);
+      }
+      
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			}
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+      function valida(input, max, name) {
+        var value= $(input).val();
+        janal.console('accion.valida: '+ name+ ' '+ max+ ' value: '+ value+ ' es flotante '+ janal.isDouble(value));
+        janal.clean();
+        if(!janal.isDouble(value))
+          $(input).val('0');
+        else {
+          var val= parseFloat(value, 10).toFixed(2);
+          if(val> max && max>= 0) {
+            janal.warn(name, 'El porcetaje máximo permitido para '+ name+ ' es de '+ max+ '%');
+            $(input).val(max);
+          } // if  
+        } // else  
+        return true;
+      }
+      
+      $(document).ready(function() {
+        $(document).on('keydown', '.key-calculos-event', function(e) {
+          var VK_ENTER= 13;
+          var key     = e.keyCode? e.keyCode: e.which;
+          janal.console('accion.keydown [key-buscados-event]: '+ key);   
+          if(key === VK_ENTER) {
+            var event = jQuery.Event("change");
+            event.keyCode= key;
+            event.which  = key;
+            $(this).trigger(event);
+          } // if  
+        }); // on
+      }) // ready   
+      //]]>
+		</script>   
+		<style>
+			.ui-datatable .ui-datatable-header {
+				text-align: left !important;
+			}	
+			.ui-datatable .ui-datatable-tablewrapper table tbody .ui-state-highlight td {
+				color: #0059b3 !important;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+		<p:remoteCommand name="temporal" process="@this @(.key-event-before)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetEstimacionesAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+								<p:selectOneMenu id="idSucursal" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{keetEstimacionesAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
+									<f:selectItems value="#{keetEstimacionesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+								<p:selectOneMenu id="idDesarrollo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetEstimacionesAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
+									<f:selectItems value="#{keetEstimacionesAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>                   
+								</p:selectOneMenu>
+								<p:outputLabel for="idCliente" value="Cliente:"/>												
+								<p:inputText id="idCliente" value="#{keetEstimacionesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
+                <p:outputLabel for="idContrato" value="Contrato:"/>
+                <p:selectOneMenu id="idContrato" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetEstimacionesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                  <p:column headerText="Clave" styleClass="janal-wid-10">
+										<p:outputLabel value="#{list.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<p:outputLabel value="#{list.nombre}"/>
+									</p:column>   
+									<p:column headerText="Etapa" styleClass="janal-wid-10">
+										<p:outputLabel value="#{list.etapa}"/>
+									</p:column>   
+									<p:column styleClass="janal-wid-15 janal-column-right" headerText="No. viviendas">
+										<p:outputLabel value="#{list.noViviendas}"/>
+									</p:column>   
+								</p:selectOneMenu>																						
+								<p:separator/>
+								<p:outputLabel for="importe" value="Importe:"/>
+                <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-color-blue" minValue="0">
+                  <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateImporte}"/>
+                </p:inputNumber>
+                <p:outputLabel for="facturar" value="Facturar:" rendered="false"/>
+                <p:inputNumber id="facturar" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-color-blue" minValue="0" readonly="true" rendered="false"/>
+              </p:panelGrid>
+              <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idEstimacionDetalle}" style="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones ne null and keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 0}">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Retenciones asociadas al contrato" styleClass="janal-text-white"/>
+                  </div>  
+                </f:facet>  
+                <p:column styleClass="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Nombre"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}"/>
+								</p:column>					
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Porcentaje"/>
+									</f:facet>
+                  <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center">
+                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
+                  </p:inputText>
+								</p:column>											
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Importe"/>
+									</f:facet>
+									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center">
+                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tabla\\:tabla\\:#{index}\\:importe', -1, 'Importe');" oncomplete="valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
+                  </p:inputText>
+								</p:column>																				
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>              
+              <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
+						</p:tab>
+						<p:tab title="Observaciones">
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{keetEstimacionesAccion.estimaciones.estimacion.observaciones}"/>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetEstimacionesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetEstimacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEstimacionesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEstimacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+</ui:composition>

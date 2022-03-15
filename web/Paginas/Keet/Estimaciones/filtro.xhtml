@@ -98,8 +98,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{keetEstimacionesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="factura" value="No factura:"/>
-              <p:inputText id="factura" value="#{keetEstimacionesFiltro.attrs.factura}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="factura" value="No factura:" rendered="false"/>
+              <p:inputText id="factura" value="#{keetEstimacionesFiltro.attrs.factura}" styleClass="janal-wid-100-txt" rendered="false"/> 
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
               <p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>

@@ -55,17 +55,19 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   private Long idEstimacion;
   @Column (name="orden")
   private Long orden;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
 
   public TcKeetEstimacionesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetEstimacionesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetEstimacionesDto(Long idFactura, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden) {
+  public TcKeetEstimacionesDto(Long idFactura, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa) {
     setIdFactura(idFactura);
     setFacturar(facturar);
     setSaldo(saldo);
@@ -79,6 +81,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEstimacion(idEstimacion);
     setOrden(orden);
+    setIdEmpresa(idEmpresa);
   }
 	
   public void setIdFactura(Long idFactura) {
@@ -185,6 +188,14 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     return orden;
   }
 
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -225,6 +236,8 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.append(getIdEstimacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -245,13 +258,14 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEstimacion", getIdEstimacion());
 		regresar.put("orden", getOrden());
+		regresar.put("idEmpresa", getIdEmpresa());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdFactura(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden()
+      getIdFactura(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa()
     };
     return regresar;
   }

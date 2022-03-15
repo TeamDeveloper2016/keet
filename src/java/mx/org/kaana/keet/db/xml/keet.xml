@@ -24,6 +24,20 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+      <select id="estimacion">
+        select      
+          tc_keet_proyectos.id_cliente,
+          tc_keet_proyectos.id_desarrollo, 
+          tc_keet_estimaciones.*
+        from      
+          tc_keet_estimaciones
+        inner join
+          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        where      
+          tc_keet_estimaciones.id_estimacion = {idEstimacion}
+      </select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -49,6 +63,26 @@
           tc_keet_estimaciones_detalles
         where      
           id_estimacion = {idEstimacion} and id_tipo_retencion = {idTipoRetencion}
+      </select>
+      <select id="estimacion">
+        select      
+          ifnull(tt_keet_estimaciones_detalles.id_estimacion_detalle, truncate(rand()* 10000* -1, 0)) as id_key,
+          ifnull(tt_keet_estimaciones_detalles.id_estimacion_detalle, truncate(rand()* 10000* -1, 0)) as id_estimacion_detalle,
+          ifnull(tt_keet_estimaciones_detalles.id_estimacion, -1) as id_estimacion,
+          ifnull(tt_keet_estimaciones_detalles.id_tipo_retencion, tc_keet_tipos_retenciones.id_tipo_retencion) as id_tipo_retencion,
+          tc_keet_tipos_retenciones.nombre,
+          tc_keet_tipos_retenciones.alias,
+          tc_keet_tipos_retenciones.porcentaje,
+          tc_keet_tipos_retenciones.limite,
+          ifnull(tt_keet_estimaciones_detalles.importe, 0) as importe,
+          ifnull(tt_keet_estimaciones_detalles.id_deduccion, 2) as id_deduccion
+        from      
+          tc_keet_tipos_retenciones
+        left join  
+          (select * from tc_keet_estimaciones_detalles where tc_keet_estimaciones_detalles.id_estimacion= {idEstimacion}) 
+          as tt_keet_estimaciones_detalles on tc_keet_tipos_retenciones.id_tipo_retencion= tt_keet_estimaciones_detalles.id_tipo_retencion
+        order by
+          tc_keet_tipos_retenciones.registro
       </select>
     </unit>    
     <unit id="TcKeetEstimacionesEstatusDto">
@@ -97,6 +131,23 @@
           tc_keet_tipos_retenciones
         where      
           nombre = '{nombre}'
+      </select>
+      <select id="inicial">
+        select      
+          truncate(rand()* 10000* -1, 0) as id_key,
+          truncate(rand()* 10000* -1, 0) as id_estimacion_detalle,
+          -1 as id_estimacion,
+          tc_keet_tipos_retenciones.id_tipo_retencion,
+          tc_keet_tipos_retenciones.nombre,
+          tc_keet_tipos_retenciones.alias,
+          tc_keet_tipos_retenciones.porcentaje,
+          tc_keet_tipos_retenciones.limite,
+          0 as importe,
+          2 as id_deduccion
+        from      
+          tc_keet_tipos_retenciones
+        order by
+          tc_keet_tipos_retenciones.registro        
       </select>
     </unit>    
     <unit id="TcKeetContratistasDepartamentosDto">
