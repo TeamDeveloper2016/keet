@@ -797,7 +797,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		try {
 			params= new HashMap<>();
 			params.put("idContrato", this.ingreso.getIdContrato());
-			this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosRetencionesDto", "retenciones", params);      
+			this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosDeduccionesDto", "retenciones", params);      
       UIBackingUtilities.resetDataTable("tablaRetenciones");		
       if(this.retenciones== null)
         this.retenciones= new ArrayList<>();        

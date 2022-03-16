@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.keet.enums.EArchivosContratos;
+import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
+import mx.org.kaana.keet.db.dto.TcKeetContratosRetencionesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -75,11 +78,10 @@ public class Transaccion extends IBaseTnx {
           if(this.contrato.getContrato().getIdBanco()<= 0L)
             this.contrato.getContrato().setIdBanco(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
-//					Collections.sort(this.contrato.getContrato().getLotes());
-//					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes())
 						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
+          this.toFillRetenciones(sesion);
 					break;
 				case MODIFICAR:
           if(this.contrato.getContrato().getIdTipoMedioPago()<= 0L)
@@ -87,19 +89,22 @@ public class Transaccion extends IBaseTnx {
           if(this.contrato.getContrato().getIdBanco()<= 0L)
             this.contrato.getContrato().setIdBanco(null);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
-//					Collections.sort(this.contrato.getContrato().getLotes());
-//					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes())
 						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
+          this.toFillRetenciones(sesion);
 					break;				
 				case ELIMINAR:
-					for(Lote item:this.contrato.getContrato().getLotes()){
+          Map<String, Object> params= new HashMap<>();
+          params.put("idContrato", this.contrato.getContrato().getIdContrato());
+          DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosRetencionesDto.class, params);
+          Methods.clean(params);
+					for(Lote item:this.contrato.getContrato().getLotes()) {
 						item.setAccion(ESql.DELETE);
 						this.actualizarLote(sesion, item);
 					} // for
 					regresar= DaoFactory.getInstance().delete(sesion, this.contrato.getContrato())>= 1L;
-					break;
+          break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dtoDelete)>= 1L;
 					break;
@@ -325,5 +330,32 @@ public class Transaccion extends IBaseTnx {
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
+ 
+  private void toFillRetenciones(Session sesion) throws Exception {
+    try {   
+      for (Retencion item: this.contrato.getContrato().getRetenciones()) {
+        if(item.getActivo())
+          switch(item.getSql()) {
+            case INSERT:
+              item.setIdUsuario(JsfBase.getIdUsuario());
+              item.setIdContrato(this.contrato.getContrato().getIdContrato());
+              DaoFactory.getInstance().insert(sesion, item);
+              break;
+            case UPDATE:
+              item.setRegistro(LocalDateTime.now());
+              DaoFactory.getInstance().update(sesion, item);
+              break;
+            case SELECT:
+              break;
+          } // switch
+        else
+          if(item.getKey()> 0L)
+             DaoFactory.getInstance().delete(sesion, item);
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+  }
   
 }

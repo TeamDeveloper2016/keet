@@ -52,6 +52,7 @@
           tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
         where
           tc_keet_contratos.id_contrato= {idContrato}
+          and tc_keet_estimaciones.id_estimacion!= {idEstimacion}
           and tc_keet_estimaciones_detalles.id_tipo_retencion= 1
         group by
           tc_keet_contratos.id_contrato

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -226,8 +225,10 @@ public class Transaccion extends IBaseTnx {
 		TcKeetContratosDto contratosDto    = null;
 		try{
 			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class, "TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
-			contratosDto.setPorcentaje(0D);
+			contratosDto.setPorcentajeAnticipo(0D);
 			contratosDto.setAnticipo(0D);
+			contratosDto.setPorcentajeFondo(0D);
+			contratosDto.setFondoGarantia(0D);
 			contratosDto.setIdTipoMedioPago(null);
 			contratosDto.setIdBanco(null);
 			contratosDto.setDeposito(LocalDate.now());

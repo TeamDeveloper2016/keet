@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import org.primefaces.event.TabChangeEvent;
@@ -120,8 +121,6 @@ public class Accion extends IBaseFilter implements Serializable {
         else 
           JsfBase.addMessage("Ocurrió un error al registrar la estimación !", ETipoMensaje.ERROR);      			
       } // if
-      else 
-        JsfBase.addMessage("El importe de la amortización de anticipo supera el anticipo del contrato !", ETipoMensaje.ERROR);      			
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -311,6 +310,8 @@ public class Accion extends IBaseFilter implements Serializable {
         suma-= item.getImporte();
       else
         suma+= item.getImporte();
+      if(row== null && Objects.equals(item.getSql(), ESql.SELECT))
+        item.setSql(ESql.UPDATE);
     } // for
     this.estimaciones.getEstimacion().setFacturar(Numero.toRedondearSat(suma));
     if(row!= null && Objects.equals(row.getSql(), ESql.SELECT))
@@ -333,6 +334,9 @@ public class Accion extends IBaseFilter implements Serializable {
   
   private Boolean checkAnticipoGlobal() {
     Boolean regresar= Boolean.TRUE;
+    Double anticipo = 0D; 
+    Double importe  = 0D; 
+    Value total     = null;
     List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
 		Map<String, Object>params     = new HashMap<>();
 		try {
@@ -340,12 +344,24 @@ public class Accion extends IBaseFilter implements Serializable {
         int index= contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato());
         if(index>= 0) {
           this.estimaciones.getEstimacion().setIkContrato(contratos.get(index));
-          Double anticipo= this.estimaciones.getEstimacion().getIkContrato().toDouble("anticipo");
+          anticipo= this.estimaciones.getEstimacion().getIkContrato().toDouble("anticipo");
           if(anticipo> 0D) {
             params.put("idContrato", this.estimaciones.getEstimacion().getIdContrato());
-            Value total= DaoFactory.getInstance().toField("VistaEstimacionesDto", "anticipo", params, "total");
-            if(total!= null && total.getData()!= null)
-              regresar= total.toDouble()<= anticipo;
+            params.put("idEstimacion", this.estimaciones.getEstimacion().getIdEstimacion());
+            total= DaoFactory.getInstance().toField("VistaEstimacionesDto", "anticipo", params, "total");
+            if(total!= null && total.getData()!= null) {
+              for (Retencion item: this.estimaciones.getEstimacion().getRetenciones()) {
+                if(Objects.equals(item.getIdTipoRetencion(), 1L))
+                  importe= item.getImporte();
+              } // for  
+              regresar= (total.toDouble()+ importe)<= anticipo;
+              if(!regresar)
+                JsfBase.addMessage("El importe ["+ 
+                  Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, importe)+ "] de la amortización de anticipo supera el anticipo del contrato ["+ 
+                  Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, anticipo)+ "], acumulado de las amortizaciones de anticipos anteriores ["+ 
+                  Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, total.toDouble())+ "], pendiente por amortizar del anticipo ["+
+                  Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, anticipo- (total.toDouble()+ importe))+"] !", ETipoMensaje.ERROR);      			
+            } // if  
           } // if 
         } // if 
       } // if 

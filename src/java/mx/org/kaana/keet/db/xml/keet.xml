@@ -7,6 +7,27 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosRetencionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_retenciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_retenciones
+        where      
+          id_tipo_retencion = {idTipoRetencion} and id_contrato = {idContrato}
+      </select>
+      <delete id="rows">
+        delete from tc_keet_contratos_retenciones where id_contrato= {idContrato}
+      </delete>
+    </unit>    
     <unit id="TcKeetEstimacionesBitacoraDto">
       <select id="row">
         select      
@@ -158,6 +179,24 @@
           truncate(rand()* 10000* -1, 0) as id_key,
           truncate(rand()* 10000* -1, 0) as id_estimacion_detalle,
           -1 as id_estimacion,
+          tc_keet_tipos_retenciones.id_tipo_retencion,
+          tc_keet_tipos_retenciones.nombre,
+          tc_keet_tipos_retenciones.alias,
+          tc_keet_tipos_retenciones.porcentaje,
+          tc_keet_tipos_retenciones.limite,
+          0 as importe,
+          1 as id_deduccion,
+          curdate() as vence
+        from      
+          tc_keet_tipos_retenciones
+        order by
+          tc_keet_tipos_retenciones.registro        
+      </select>
+      <select id="retenciones">
+        select      
+          truncate(rand()* 10000* -1, 0) as id_key,
+          truncate(rand()* 10000* -1, 0) as id_contrato_retencion,
+          -1 as id_contrato,
           tc_keet_tipos_retenciones.id_tipo_retencion,
           tc_keet_tipos_retenciones.nombre,
           tc_keet_tipos_retenciones.alias,
@@ -703,12 +742,12 @@
           id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_nomina = {idNomina}
       </select>
     </unit>    
-    <unit id="TcKeetContratosRetencionesDto">
+    <unit id="TcKeetContratosDeduccionesDto">
       <select id="row">
         select      
           *
         from      
-          tc_keet_contratos_retenciones
+          tc_keet_contratos_deducciones
         where 
           {condicion} 
       </select>
@@ -716,16 +755,16 @@
         select      
           *
         from      
-          tc_keet_contratos_retenciones
+          tc_keet_contratos_deducciones
         where      
           id_contrato = {idContrato} and orden = {orden}
       </select>
       <select id="retenciones">
         select
-          tc_keet_contratos_retenciones.id_contrato_retencion as id_key,
-          tc_keet_contratos_retenciones.*
+          tc_keet_contratos_deducciones.id_contrato_retencion as id_key,
+          tc_keet_contratos_deducciones.*
         from
-          tc_keet_contratos_retenciones
+          tc_keet_contratos_deducciones
         where
           id_contrato= {idContrato}  
         order by
@@ -3896,8 +3935,31 @@
         where 
           id_desarrollo_
       </select>
+      <select id="inicial">
+        select      
+          ifnull(tt_keet_contratos_retenciones.id_contrato_retencion, truncate(rand()* 10000* -1, 0)) as id_key,
+          ifnull(tt_keet_contratos_retenciones.id_contrato_retencion, truncate(rand()* 10000* -1, 0)) as id_contrato_retencion,
+          ifnull(tt_keet_contratos_retenciones.id_contrato, -1) as id_contrato,
+          ifnull(tt_keet_contratos_retenciones.id_tipo_retencion, tc_keet_tipos_retenciones.id_tipo_retencion) as id_tipo_retencion,
+          ifnull(tt_keet_contratos_retenciones.nombre, tc_keet_tipos_retenciones.nombre) as nombre,
+          tc_keet_tipos_retenciones.alias,
+          tc_keet_tipos_retenciones.porcentaje,
+          tc_keet_tipos_retenciones.limite,
+          ifnull(tt_keet_contratos_retenciones.importe, 0) as importe,
+          1 as id_deduccion,
+          ifnull(tt_keet_contratos_retenciones.id_usuario, -1) as id_usuario,
+          ifnull(tt_keet_contratos_retenciones.registro, current_timestamp()) as registro,
+          curdate() as vence
+        from      
+          tc_keet_tipos_retenciones
+        left join  
+          (select * from tc_keet_contratos_retenciones where tc_keet_contratos_retenciones.id_contrato= {idContrato}) 
+          as tt_keet_contratos_retenciones on tc_keet_tipos_retenciones.id_tipo_retencion= tt_keet_contratos_retenciones.id_tipo_retencion
+        order by
+          tc_keet_tipos_retenciones.registro
+      </select>      
     </unit>
-		 <unit id="TcKeetContratosArchivosDto">
+		<unit id="TcKeetContratosArchivosDto">
       <select id="row">
         select      
           tc_keet_contratos_archivos.id_contrato_archivo as id_key,

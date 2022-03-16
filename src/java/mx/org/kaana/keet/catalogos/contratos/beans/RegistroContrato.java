@@ -32,7 +32,6 @@ public class RegistroContrato implements Serializable {
 	private List<ContratoDomicilio> contratoDomicilios;
 	private ContratoDomicilio contratoDomicilioSelecion;
 
-
 	public RegistroContrato() {
 		this(-1L, new Contrato(), new Domicilio(), new ArrayList<ContratoDomicilio>(), new ArrayList<ContratoPersonal>(), new ContratoPersonal(),  new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	} // RegistroProveedor
@@ -156,12 +155,13 @@ public class RegistroContrato implements Serializable {
   public void setContratoDomicilioSelecion(ContratoDomicilio contratoDomicilioSelecion) {
     this.contratoDomicilioSelecion = contratoDomicilioSelecion;
   }
-	
+
 	private void init() {
 		MotorBusqueda motor= null;
 		try {
 			motor= new MotorBusqueda(this.idContrato);
 			this.contrato= motor.toContrato();
+      this.contrato.toLoadRetenciones();
 			this.contrato.setLotes(motor.toLotes());
 			this.contratoPersonas= new ArrayList<>();
       this.initCollections(motor);

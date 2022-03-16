@@ -23,12 +23,12 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_contratos_retenciones")
-public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_contratos_deducciones")
+public class TcKeetContratosDeduccionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_tipo_retencion")
-  private Long idTipoRetencion;
+  @Column (name="descripcion")
+  private String descripcion;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_contrato_retencion")
@@ -37,44 +37,50 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_contrato")
   private Long idContrato;
+  @Column (name="alias")
+  private String alias;
+  @Column (name="orden")
+  private Long orden;
+  @Column (name="nombre")
+  private String nombre;
+  @Column (name="campo")
+  private String campo;
   @Column (name="porcentaje")
   private Double porcentaje;
   @Column (name="limite")
   private Double limite;
-  @Column (name="nombre")
-  private String nombre;
-  @Column (name="importe")
-  private Double importe;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetContratosRetencionesDto() {
+  public TcKeetContratosDeduccionesDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetContratosRetencionesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null);
+  public TcKeetContratosDeduccionesDto(Long key) {
+    this(null, new Long(-1L), null, null, null, null, null, null, null, 10D);
     setKey(key);
   }
 
-  public TcKeetContratosRetencionesDto(Long idTipoRetencion, Long idContratoRetencion, Long idUsuario, Long idContrato, Double porcentaje, Double limite, String nombre, Double importe) {
-    setIdTipoRetencion(idTipoRetencion);
+  public TcKeetContratosDeduccionesDto(String descripcion, Long idContratoRetencion, Long idUsuario, Long idContrato, String alias, Long orden, String nombre, String campo, Double porcentaje, Double limite) {
+    setDescripcion(descripcion);
     setIdContratoRetencion(idContratoRetencion);
     setIdUsuario(idUsuario);
     setIdContrato(idContrato);
-    setPorcentaje(porcentaje);
-    setLimite(limite);
+    setAlias(alias);
+    setOrden(orden);
     setNombre(nombre);
-    setImporte(importe);
+    setCampo(campo);
+    setPorcentaje(porcentaje);
     setRegistro(LocalDateTime.now());
+    this.limite= limite;
   }
 	
-  public void setIdTipoRetencion(Long idTipoRetencion) {
-    this.idTipoRetencion = idTipoRetencion;
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
   }
 
-  public Long getIdTipoRetencion() {
-    return idTipoRetencion;
+  public String getDescripcion() {
+    return descripcion;
   }
 
   public void setIdContratoRetencion(Long idContratoRetencion) {
@@ -101,20 +107,20 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
     return idContrato;
   }
 
-  public void setPorcentaje(Double porcentaje) {
-    this.porcentaje = porcentaje;
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
-  public Double getPorcentaje() {
-    return porcentaje;
+  public String getAlias() {
+    return alias;
   }
 
-  public void setLimite(Double limite) {
-    this.limite = limite;
+  public void setOrden(Long orden) {
+    this.orden = orden;
   }
 
-  public Double getLimite() {
-    return limite;
+  public Long getOrden() {
+    return orden;
   }
 
   public void setNombre(String nombre) {
@@ -125,12 +131,20 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setImporte(Double importe) {
-    this.importe = importe;
+  public void setCampo(String campo) {
+    this.campo = campo;
   }
 
-  public Double getImporte() {
-    return importe;
+  public String getCampo() {
+    return campo;
+  }
+
+  public void setPorcentaje(Double porcentaje) {
+    this.porcentaje = porcentaje;
+  }
+
+  public Double getPorcentaje() {
+    return porcentaje;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -139,6 +153,14 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
 
   public LocalDateTime getRegistro() {
     return registro;
+  }
+
+  public Double getLimite() {
+    return limite;
+  }
+
+  public void setLimite(Double limite) {
+    this.limite = limite;
   }
 
   @Transient
@@ -156,7 +178,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdTipoRetencion());
+		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContratoRetencion());
 		regresar.append(Constantes.SEPARADOR);
@@ -164,13 +186,17 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContrato());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPorcentaje());
+		regresar.append(getAlias());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getLimite());
+		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
+		regresar.append(getCampo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorcentaje());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLimite());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -180,14 +206,16 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idTipoRetencion", getIdTipoRetencion());
+		regresar.put("descripcion", getDescripcion());
 		regresar.put("idContratoRetencion", getIdContratoRetencion());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idContrato", getIdContrato());
+		regresar.put("alias", getAlias());
+		regresar.put("orden", getOrden());
+		regresar.put("nombre", getNombre());
+		regresar.put("campo", getCampo());
 		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("limite", getLimite());
-		regresar.put("nombre", getNombre());
-		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -195,7 +223,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoRetencion(), getIdContratoRetencion(), getIdUsuario(), getIdContrato(), getPorcentaje(), getLimite(), getNombre(), getImporte(), getRegistro()
+      getDescripcion(), getIdContratoRetencion(), getIdUsuario(), getIdContrato(), getAlias(), getOrden(), getNombre(), getCampo(), getPorcentaje(), getLimite(), getRegistro()
     };
     return regresar;
   }
@@ -224,7 +252,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcKeetContratosRetencionesDto.class;
+    return TcKeetContratosDeduccionesDto.class;
   }
 
   @Override
@@ -240,7 +268,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetContratosRetencionesDto other = (TcKeetContratosRetencionesDto) obj;
+    final TcKeetContratosDeduccionesDto other = (TcKeetContratosDeduccionesDto) obj;
     if (getIdContratoRetencion() != other.idContratoRetencion && (getIdContratoRetencion() == null || !getIdContratoRetencion().equals(other.idContratoRetencion))) {
       return false;
     }

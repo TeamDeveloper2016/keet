@@ -1,7 +1,7 @@
 package mx.org.kaana.keet.ingresos.beans;
 
 import java.io.Serializable;
-import mx.org.kaana.keet.db.dto.TcKeetContratosRetencionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDeduccionesDto;
 
 /**
  *@company KAANA
@@ -11,7 +11,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosRetencionesDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Retencion extends TcKeetContratosRetencionesDto implements Serializable {
+public class Retencion extends TcKeetContratosDeduccionesDto implements Serializable {
 
   private static final long serialVersionUID = 8747773782762554803L;
 
@@ -50,7 +50,7 @@ public class Retencion extends TcKeetContratosRetencionesDto implements Serializ
  
   @Override
   public Class toHbmClass() {
-    return TcKeetContratosRetencionesDto.class;
+    return TcKeetContratosDeduccionesDto.class;
   }
   
 }

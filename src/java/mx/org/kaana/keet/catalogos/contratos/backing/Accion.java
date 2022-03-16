@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
@@ -34,12 +35,14 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
+import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.map.PointSelectEvent;
 import org.primefaces.model.map.LatLng;
 
@@ -895,9 +898,37 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // finally
 	} // toLoadBancos  
   
-  public void doCalculateAnticipo() {
-    if(this.contrato.getContrato().getCosto()> 0D && this.contrato.getContrato().getPorcentaje()> 0D) {
-      this.contrato.getContrato().setAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getPorcentaje()/ 100* this.contrato.getContrato().getCosto()));
+  public void doCalculateAnticipo(Boolean porcentaje) {
+    if(this.contrato.getContrato().getCosto()> 0D) {
+      if(porcentaje) 
+        this.contrato.getContrato().setAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeAnticipo()/ 100* this.contrato.getContrato().getCosto()));
+      else
+        this.contrato.getContrato().setPorcentajeAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getAnticipo()* 100/ this.contrato.getContrato().getCosto()));
+      if(this.contrato.getContrato().getPorcentajeAnticipo()> 0D && this.contrato.getContrato().getRetenciones()!= null && !this.contrato.getContrato().getRetenciones().isEmpty()) {
+        for (Retencion item: this.contrato.getContrato().getRetenciones()) {
+          if(Objects.equals(item.getIdTipoRetencion(), 1L)) {
+            item.setPorcentaje(this.contrato.getContrato().getPorcentajeAnticipo());
+            this.doRowUpdateCuenta(item, Boolean.TRUE);
+          } // if  
+        } // for
+      } // if
+    } // if
+  }
+ 
+  public void doCalculateFondoGarantia(Boolean porcentaje) {
+    if(this.contrato.getContrato().getCosto()> 0D) {
+      if(porcentaje)
+        this.contrato.getContrato().setFondoGarantia(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeFondo()/ 100* this.contrato.getContrato().getCosto()));
+      else
+        this.contrato.getContrato().setPorcentajeFondo(Numero.toRedondearSat(this.contrato.getContrato().getFondoGarantia()* 100/ this.contrato.getContrato().getCosto()));
+      if(this.contrato.getContrato().getPorcentajeFondo()> 0D && this.contrato.getContrato().getRetenciones()!= null && !this.contrato.getContrato().getRetenciones().isEmpty()) {
+        for (Retencion item: this.contrato.getContrato().getRetenciones()) {
+          if(Objects.equals(item.getIdTipoRetencion(), 2L)) {
+            item.setPorcentaje(this.contrato.getContrato().getPorcentajeFondo());
+            this.doRowUpdateCuenta(item, Boolean.TRUE);
+          } // if  
+        } // for
+      } // if
     } // if
   }
  
@@ -911,5 +942,49 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doCheckMedioPago  
+ 
+  public void doRowUpdateCuenta(Retencion row, Boolean porcentaje)  {
+    try { 
+      if(row!= null) {
+        if(this.contrato.getContrato().getCosto()== null || this.contrato.getContrato().getCosto()<= 0D)
+          this.contrato.getContrato().setCosto(row.getImporte());
+        if(porcentaje) {
+          row.setPorcentaje(Numero.toRedondearSat(row.getPorcentaje()));
+          row.setImporte(Numero.toRedondearSat(row.getPorcentaje()* this.contrato.getContrato().getCosto()/ 100D));
+        } // if
+        else {
+          row.setImporte(Numero.toRedondearSat(row.getImporte()));
+          row.setPorcentaje(Numero.toRedondearSat(row.getImporte()* 100D/ this.contrato.getContrato().getCosto()));
+        } // else
+        this.doUpdateAccion(row);
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doUpdateAccion(Retencion row) {
+    if(row!= null && Objects.equals(row.getSql(), ESql.SELECT))
+      row.setSql(ESql.UPDATE);
+  }
+ 
+  public void doUpdateCosto() {
+    if(this.contrato.getContrato().getCosto()== null || this.contrato.getContrato().getCosto()> 0D) {
+       this.contrato.getContrato().setAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeAnticipo()/ 100* this.contrato.getContrato().getCosto()));
+       this.contrato.getContrato().setFondoGarantia(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeFondo()/ 100* this.contrato.getContrato().getCosto()));
+       if(this.contrato.getContrato().getRetenciones()!= null && !this.contrato.getContrato().getRetenciones().isEmpty()) {
+        for (Retencion item: this.contrato.getContrato().getRetenciones()) {
+          this.doRowUpdateCuenta(item, Boolean.TRUE);
+        } // for
+      } // if
+    } // if
+  }
+ 
+  public void doTabChange(TabChangeEvent event) {
+		// if(event.getTab().getTitle().equals("Retenciones"))
+			// UIBackingUtilities.execute("");
+	}
   
 }

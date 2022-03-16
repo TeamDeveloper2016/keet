@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.DiaHabil;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
@@ -28,6 +31,7 @@ public class Contrato extends TcKeetContratosDto {
 	private String desarrollo;		
 	private ESql sqlAccion;
 	private Boolean nuevo;		
+  private List<Retencion> retenciones;
 
 	public Contrato() {
 		this(-1L);
@@ -56,6 +60,7 @@ public class Contrato extends TcKeetContratosDto {
 		this.ikTipoMedioPago= ikTipoMedioPago;
 		this.ikBanco        = ikBanco;
 		this.ikProyecto     = ikProyecto;
+    this.toLoadRetenciones();
 	}
 	
 	public UISelectEntity getIkTipoMedioPago() {
@@ -136,6 +141,14 @@ public class Contrato extends TcKeetContratosDto {
 		this.nuevo = nuevo;
 	}	
 	
+  public List<Retencion> getRetenciones() {
+    return retenciones;
+  }
+
+  public void setRetenciones(List<Retencion> retenciones) {
+    this.retenciones = retenciones;
+  }
+  
   public boolean addLote(Lote lote) throws Exception{
 		boolean regresar= false;
 		try {
@@ -229,5 +242,30 @@ public class Contrato extends TcKeetContratosDto {
 	public Boolean getPaginator() {
 		return this.lotes.size() > 10;
 	}	
+  
+  public void toLoadRetenciones() {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idContrato", this.getIdContrato());      
+      if(this.getIdContrato()< 0L)
+        this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetTiposRetencionesDto", "retenciones", params);
+      else
+        this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosDto", "inicial", params);
+      for (Retencion item: this.retenciones) {
+        item.setActivo(item.getKey()> 0L || item.getIdTipoRetencion()< 3L);
+        if(item.isValid())
+          item.setSql(ESql.SELECT);
+        else
+          item.setSql(ESql.INSERT);
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }	

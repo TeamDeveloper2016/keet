@@ -321,7 +321,7 @@ $.mask.masks = $.extend($.mask.masks, {
 
   $.validator.addMethod('sat', function(value, element, params) {
       if (!janal.empty(value)) 
-        $(element).val(parseFloat($(element).val(), 10).toFixed(4)); 
+        $(element).val(parseFloat($(element).val(), 10).toFixed(2)); 
       return true;
     }, function(params, element) {
       return 'No se logro convertir a n\u00FAmero y por lo tanto no se ajustar\u00F3n los decimales.';
