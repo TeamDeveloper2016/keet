@@ -24,6 +24,26 @@
         where      
           id_tipo_retencion = {idTipoRetencion} and id_contrato = {idContrato}
       </select>
+      <select id="inicial">
+        select      
+          truncate(rand()* 10000* -1, 0) as id_key,
+          truncate(rand()* 10000* -1, 0) as id_estimacion_detalle,
+          -1 as id_estimacion,
+          tc_keet_contratos_retenciones.id_tipo_retencion,
+          tc_keet_contratos_retenciones.nombre,
+          ' ' as alias,
+          tc_keet_contratos_retenciones.porcentaje,
+          tc_keet_contratos_retenciones.limite,
+          0 as importe,
+          1 as id_deduccion,
+          curdate() as vence
+        from      
+          tc_keet_contratos_retenciones
+        where
+          id_contrato= {idContrato}
+        order by
+          tc_keet_contratos_retenciones.id_tipo_retencion        
+      </select>
       <delete id="rows">
         delete from tc_keet_contratos_retenciones where id_contrato= {idContrato}
       </delete>
@@ -108,23 +128,25 @@
           ifnull(tt_keet_estimaciones_detalles.id_estimacion_detalle, truncate(rand()* 10000* -1, 0)) as id_key,
           ifnull(tt_keet_estimaciones_detalles.id_estimacion_detalle, truncate(rand()* 10000* -1, 0)) as id_estimacion_detalle,
           ifnull(tt_keet_estimaciones_detalles.id_estimacion, -1) as id_estimacion,
-          ifnull(tt_keet_estimaciones_detalles.id_tipo_retencion, tc_keet_tipos_retenciones.id_tipo_retencion) as id_tipo_retencion,
-          tc_keet_tipos_retenciones.nombre,
-          tc_keet_tipos_retenciones.alias,
-          tc_keet_tipos_retenciones.porcentaje,
-          tc_keet_tipos_retenciones.limite,
+          ifnull(tt_keet_estimaciones_detalles.id_tipo_retencion, tc_keet_contratos_retenciones.id_tipo_retencion) as id_tipo_retencion,
+          tc_keet_contratos_retenciones.nombre,
+          ' ' as alias,
+          tc_keet_contratos_retenciones.porcentaje,
+          tc_keet_contratos_retenciones.limite,
           ifnull(tt_keet_estimaciones_detalles.importe, 0) as importe,
           ifnull(tt_keet_estimaciones_detalles.id_deduccion, 1) as id_deduccion,
           ifnull(tt_keet_estimaciones_detalles.id_usuario, -1) as id_usuario,
           ifnull(tt_keet_estimaciones_detalles.registro, current_timestamp()) as registro,
           ifnull(tt_keet_estimaciones_detalles.vence, curdate()) as vence
         from      
-          tc_keet_tipos_retenciones
+          tc_keet_contratos_retenciones
         left join  
           (select * from tc_keet_estimaciones_detalles where tc_keet_estimaciones_detalles.id_estimacion= {idEstimacion}) 
-          as tt_keet_estimaciones_detalles on tc_keet_tipos_retenciones.id_tipo_retencion= tt_keet_estimaciones_detalles.id_tipo_retencion
+          as tt_keet_estimaciones_detalles on tc_keet_contratos_retenciones.id_tipo_retencion= tt_keet_estimaciones_detalles.id_tipo_retencion
+        where
+          tc_keet_contratos_retenciones.id_contrato= {idContrato}
         order by
-          tc_keet_tipos_retenciones.registro
+          tc_keet_contratos_retenciones.id_tipo_retencion
       </select>
     </unit>    
     <unit id="TcKeetEstimacionesEstatusDto">
@@ -174,24 +196,6 @@
         where      
           nombre = '{nombre}'
       </select>
-      <select id="inicial">
-        select      
-          truncate(rand()* 10000* -1, 0) as id_key,
-          truncate(rand()* 10000* -1, 0) as id_estimacion_detalle,
-          -1 as id_estimacion,
-          tc_keet_tipos_retenciones.id_tipo_retencion,
-          tc_keet_tipos_retenciones.nombre,
-          tc_keet_tipos_retenciones.alias,
-          tc_keet_tipos_retenciones.porcentaje,
-          tc_keet_tipos_retenciones.limite,
-          0 as importe,
-          1 as id_deduccion,
-          curdate() as vence
-        from      
-          tc_keet_tipos_retenciones
-        order by
-          tc_keet_tipos_retenciones.registro        
-      </select>
       <select id="retenciones">
         select      
           truncate(rand()* 10000* -1, 0) as id_key,
@@ -208,7 +212,7 @@
         from      
           tc_keet_tipos_retenciones
         order by
-          tc_keet_tipos_retenciones.registro        
+          tc_keet_tipos_retenciones.id_tipo_retencion
       </select>
     </unit>    
     <unit id="TcKeetContratistasDepartamentosDto">

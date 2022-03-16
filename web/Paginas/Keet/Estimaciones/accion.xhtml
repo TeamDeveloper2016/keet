@@ -83,7 +83,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{keetEstimacionesAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:ajax event="tabChange" listener="#{keetEstimacionesAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
@@ -112,7 +112,7 @@
 								<p:inputText id="idCliente" value="#{keetEstimacionesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="idContrato" value="Contrato:"/>
                 <p:selectOneMenu id="idContrato" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="change" process="@this" update="contenedorGrupos:tabla" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetEstimacionesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
                   <p:column headerText="Clave" styleClass="janal-wid-10">
 										<p:outputLabel value="#{list.clave}"/>
@@ -147,6 +147,12 @@
                     <p:outputLabel value="Retenciones asociadas a la estimación" styleClass="janal-text-white"/>
                   </div>  
                 </f:facet>  
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}"/>
+								</p:column>					
                 <p:column styleClass="MarAuto Responsive">
 									<f:facet name="header">
 										<h:outputText value="Nombre"/>
@@ -157,19 +163,19 @@
 									<f:facet name="header">
 										<h:outputText value="Porcentaje"/>
 									</f:facet>
-                  <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center">
-                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
+                  <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center" disabled="#{row['idTipoRetencion'] lt 3}">
+                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');" oncomplete="janal.refresh();"/>
                   </p:inputText>
 								</p:column>											
 								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
 										<h:outputText value="Importe"/>
 									</f:facet>
-									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center janal-color-blue">
-                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tabla\\:tabla\\:#{index}\\:importe', -1, 'Importe');" oncomplete="valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
+									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center janal-color-blue" disabled="#{row['idTipoRetencion'] lt 3}">
+                    <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tabla\\:tabla\\:#{index}\\:importe', -1, 'Importe');" oncomplete="valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}'); janal.refresh();"/>
                   </p:inputText>
 								</p:column>																				
-								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Acción"/>
 									</f:facet>
@@ -183,7 +189,7 @@
 									<f:facet name="header">
 										<h:outputText value="Vence"/>
 									</f:facet>
-  								<p:calendar id="vence" inputStyleClass="janal-wid-50" styleClass="janal-wid-100" value="#{row['vence']}" showOn="button" pattern="dd/MM/yyyy" locale="es">
+  								<p:calendar id="vence" inputStyleClass="janal-wid-50" styleClass="janal-wid-100" value="#{row['vence']}" showOn="button" pattern="dd/MM/yyyy" locale="es" rendered="#{row['idTipoRetencion'] eq 2}">
                     <p:ajax event="dateSelect" process="@this" listener="#{keetEstimacionesAccion.doRowUpdateFecha(row)}"/>
                   </p:calendar>  
                 </p:column>

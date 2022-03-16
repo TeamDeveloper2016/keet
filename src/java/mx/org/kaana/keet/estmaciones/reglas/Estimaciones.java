@@ -55,13 +55,12 @@ public class Estimaciones implements Serializable {
         this.estimacion.setIkDesarrollo(new UISelectEntity(-1L));
         this.estimacion.setIkCliente(new UISelectEntity(-1L));
         this.estimacion.setIkContrato(new UISelectEntity(-1L));
-        this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetTiposRetencionesDto", "inicial", params));
-        for (Retencion item: this.estimacion.getRetenciones()) 
-          item.setSql(ESql.INSERT);
+        this.estimacion.setRetenciones(new ArrayList<>());
       } // if
       else {
         this.estimacion= (Estimacion)DaoFactory.getInstance().toEntity(Estimacion.class, "TcKeetEstimacionesDto", "estimacion", params);
         if(this.estimacion!= null) {
+          params.put("idContrato", this.estimacion.getIdContrato());      
           this.estimacion.setIkEmpresa(new UISelectEntity(this.estimacion.getIdEmpresa()));
           this.estimacion.setIkDesarrollo(new UISelectEntity(this.estimacion.getIdDesarrollo()));
           this.estimacion.setIkCliente(new UISelectEntity(this.estimacion.getIdCliente()));
@@ -80,5 +79,23 @@ public class Estimaciones implements Serializable {
       Methods.clean(params);
     } // finally
   }
-  
+
+  public void toLoadRetenciones(Long idContrato) {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idContrato", idContrato);      
+      this.estimacion.setRetenciones((List<Retencion>) DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosRetencionesDto", "inicial", params));
+      for (Retencion item : this.estimacion.getRetenciones()) {
+        item.setSql(ESql.INSERT);
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+          
 }

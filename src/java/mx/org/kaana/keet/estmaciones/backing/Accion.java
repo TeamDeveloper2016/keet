@@ -67,12 +67,11 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("accion")== null)
-			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
+			// if(JsfBase.getFlashAttribute("accion")== null)
+			//  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? 2L: JsfBase.getFlashAttribute("idEstimacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("actualizar", Boolean.FALSE);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -88,7 +87,6 @@ public class Accion extends IBaseFilter implements Serializable {
       switch (this.accion) {
         case AGREGAR:		
           this.estimaciones= new Estimaciones();
-          this.attrs.put("actualizar", Boolean.TRUE);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -320,14 +318,11 @@ public class Accion extends IBaseFilter implements Serializable {
 
   public void doUpdatePorcentaje() {
     List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-    if(contratos!= null && !contratos.isEmpty() && (Boolean)this.attrs.get("actualizar")) {
+    if(contratos!= null && !contratos.isEmpty()) {
       int index= contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato());
       if(index>= 0) {
         this.estimaciones.getEstimacion().setIkContrato(contratos.get(index));
-        for (Retencion item: this.estimaciones.getEstimacion().getRetenciones()) 
-          if(Objects.equals(item.getIdTipoRetencion(), 1L))
-            item.setPorcentaje(this.estimaciones.getEstimacion().getIkContrato().toDouble("porcentaje"));
-        this.attrs.put("actualizar", Boolean.FALSE);
+        this.estimaciones.toLoadRetenciones(this.estimaciones.getEstimacion().getIdContrato());
       } // if 
     } // if 
   } 
