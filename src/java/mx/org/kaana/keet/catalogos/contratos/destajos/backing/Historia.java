@@ -88,13 +88,11 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-    List<Columna> columns    = null;		
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();		
+		Map<String, Object>params= new HashMap<>();
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
       this.toLoadContratos();
@@ -106,10 +104,9 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
 	} // toLadCatalogos	
 	
 	private void toLoadContratos() {
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {      
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.build("VistaTableroDto", "contratos", params);
 			this.attrs.put("contratos", contratos);
@@ -158,7 +155,7 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
       List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
       if(contratos!= null) {
         contrato= contratos.get(contratos.indexOf(contrato));
-		    regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+		    regresar.append(Cadena.rellenar(contrato.toString("idEmpresa"), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
       } // if
       else
         regresar.append(Cadena.rellenar("", 25, '9', true));

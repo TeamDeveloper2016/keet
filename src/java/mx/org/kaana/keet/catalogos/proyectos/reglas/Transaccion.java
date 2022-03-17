@@ -222,13 +222,14 @@ public class Transaccion extends IBaseTnx {
 	} // cargarPlanos
 
 	private void crearContrato(Session sesion) throws Exception {
-		TcKeetContratosDto contratosDto    = null;
+		TcKeetContratosDto contratosDto= null;
 		try{
 			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class, "TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
 			contratosDto.setPorcentajeAnticipo(0D);
 			contratosDto.setAnticipo(0D);
 			contratosDto.setPorcentajeFondo(0D);
 			contratosDto.setFondoGarantia(0D);
+			contratosDto.setVence(LocalDate.now().plusYears(1));
 			contratosDto.setIdTipoMedioPago(null);
 			contratosDto.setIdBanco(null);
 			contratosDto.setDeposito(LocalDate.now());

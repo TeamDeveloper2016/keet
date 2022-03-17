@@ -137,7 +137,7 @@
                   </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                     <p:outputLabel for="facturar" value="Facturar:" styleClass="janal-color-orange"/>
-                    <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center calculos janal-color-orange" minValue="0" readonly="true"/>
+                    <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
                   </p:panelGrid>  
                 </p:panelGrid>
               </p:panelGrid>
@@ -185,7 +185,7 @@
                     <f:selectItem itemValue="2" itemLabel="SUMA"/>
                   </p:selectOneMenu>  
                 </p:column>
-								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Vence"/>
 									</f:facet>

@@ -154,7 +154,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
       List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
       if(contratos!= null) {
         contrato= contratos.get(contratos.indexOf(contrato));
-		    regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+		    regresar.append(Cadena.rellenar(contrato.toString("idEmpresa"), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(contrato.toString("orden"), 3, '0', true));
       } // if
       else
         regresar.append(Cadena.rellenar("", 25, '9', true));

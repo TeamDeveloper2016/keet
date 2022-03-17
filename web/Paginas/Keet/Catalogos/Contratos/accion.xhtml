@@ -405,6 +405,8 @@
                   </p:fieldset>
                 </p:panelGrid>  
                 <p:separator/>
+                <p:outputLabel for="vence" value="Vencimiento fondo de garantía:"/>
+                <p:calendar id="vence" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{keetCatalogosContratosAccion.contrato.contrato.vence}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
                 <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCheckMedioPago}" update="contenedorGrupos:anticipos @(.banco)"/>

@@ -921,7 +921,8 @@
           tc_keet_contratos.id_empresa,
           tc_keet_contratos.ejercicio,
           tc_keet_contratos.clave,
-          tc_keet_contratos.nombre
+          tc_keet_contratos.nombre,
+          tc_keet_contratos.orden
         from
           tc_keet_contratos
         inner join

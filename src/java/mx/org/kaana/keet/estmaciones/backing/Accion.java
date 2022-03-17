@@ -67,10 +67,10 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-			// if(JsfBase.getFlashAttribute("accion")== null)
-			//  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? 2L: JsfBase.getFlashAttribute("idEstimacion"));
+			if(JsfBase.getFlashAttribute("accion")== null)
+			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
     } // try
