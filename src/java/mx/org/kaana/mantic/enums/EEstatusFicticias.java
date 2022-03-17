@@ -30,4 +30,5 @@ public enum EEstatusFicticias {
 	public static EEstatusFicticias fromIdFicticia(Long idEstatusFicticia) {
     return lookup.get(idEstatusFicticia);
   } 
+  
 }

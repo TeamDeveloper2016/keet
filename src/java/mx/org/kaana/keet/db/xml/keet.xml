@@ -65,6 +65,9 @@
         where      
           id_estimacion_bitacora = {idEstimacionBitacora}
       </select>
+      <delete id="rows">
+        delete from tc_keet_estimaciones_bitacora where id_estimacion= {idEstimacion}
+      </delete>
     </unit>    
     <unit id="TcKeetEstimacionesDto">
       <select id="row">
@@ -148,6 +151,9 @@
         order by
           tc_keet_contratos_retenciones.id_tipo_retencion
       </select>
+      <delete id="rows">
+        delete from tc_keet_estimaciones_detalles where tc_keet_estimaciones_detalles.id_estimacion= {idEstimacion}
+      </delete>
     </unit>    
     <unit id="TcKeetEstimacionesEstatusDto">
       <select id="row">

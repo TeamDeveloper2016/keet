@@ -392,8 +392,7 @@
           tc_keet_contratos_lotes.lote,
           tc_keet_estaciones.codigo         
         order by
-          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
-          convert(tc_keet_contratos_lotes.lote, unsigned integer),
+          tc_keet_contratos_lotes.orden,
           tc_keet_estaciones.clave
       </select>  
       <select id="codigos">
@@ -2451,9 +2450,9 @@
         left join
           tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         group by
-					tc_keet_nominas_personas.id_nomina_persona,
-					tc_keet_nominas.id_nomina,
-					tr_mantic_empresa_personal.id_empresa_persona,
+					id_nomina_persona,
+					id_nomina,
+					id_empresa_persona
         {sortOrder}
 			</select>
 			<select id="calculada">
@@ -2518,9 +2517,9 @@
         left join
           tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo        
         group by
-					tc_keet_nominas_personas.id_nomina_persona,
-					tc_keet_nominas.id_nomina,
-					tr_mantic_empresa_personal.id_empresa_persona,
+					id_nomina_persona,
+					id_nomina,
+					id_empresa_persona
         {sortOrder}
 			</select>
 			<select id="proveedores">
@@ -5572,6 +5571,10 @@
 						tr_mantic_empresa_personal
 					inner join 
 						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+          inner join
+            tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona 
+          inner join
+            tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento      
 					inner join 
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 					where 

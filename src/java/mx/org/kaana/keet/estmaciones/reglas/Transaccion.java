@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -11,6 +12,9 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
+import mx.org.kaana.keet.estmaciones.beans.EEstatusEstimaciones;
 import mx.org.kaana.keet.estmaciones.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -32,16 +36,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID=-6069204157451117549L;
  
+	private Long idEstimacion;	
 	private Estimaciones orden;	
 	private String messageError;
   private TcKeetEstimacionesBitacoraDto bitacora;
 
+	public Transaccion(Long idEstimacion) {
+		this.idEstimacion= idEstimacion;
+	}
+  
 	public Transaccion(Estimaciones orden) {
-		this(orden, null);
+		this.orden= orden;
 	}
 
-	public Transaccion(Estimaciones orden, TcKeetEstimacionesBitacoraDto bitacora) {
-		this.orden   = orden;
+	public Transaccion(TcKeetEstimacionesBitacoraDto bitacora) {
 		this.bitacora= bitacora;
 	}
 	
@@ -78,11 +86,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
           this.toFillDetalle(sesion);
 					break;				
 				case ELIMINAR:
+          regresar= this.toDeleteEstimacion(sesion);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden.getEstimacion().setIdEstimacionEstatus(this.bitacora.getIdEstimacionEstatus());
- 						regresar= DaoFactory.getInstance().update(sesion, this.orden.getEstimacion())>= 1L;
+            TcKeetEstimacionesDto estimacion= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.bitacora.getIdEstimacion());
+						estimacion.setIdEstimacionEstatus(this.bitacora.getIdEstimacionEstatus());
+            if(Objects.equals(this.bitacora.getIdEstimacionEstatus(), EEstatusEstimaciones.CANCELADA.getIdEstatusFicticia()))
+              this.toCancelEstimacion(sesion);
+            else
+              if(Objects.equals(this.bitacora.getIdEstimacionEstatus(), EEstatusEstimaciones.TERMINADA.getIdEstatusFicticia()))
+                this.toTerminateEstimacion(sesion);
+ 						regresar= DaoFactory.getInstance().update(sesion, estimacion)>= 1L;
 					} // if
 					break;
 			} // switch
@@ -93,7 +108,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
-		LOG.info("Se registro de forma correcta la estimación: "+ this.orden.getEstimacion().getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
@@ -144,4 +158,54 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	} // toSiguiente
 
+  private Boolean toDeleteEstimacion(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEstimacion", this.idEstimacion);      
+      DaoFactory.getInstance().deleteAll(sesion, TcKeetEstimacionesDetallesDto.class, params);
+      DaoFactory.getInstance().deleteAll(sesion, TcKeetEstimacionesBitacoraDto.class, params);
+      regresar= DaoFactory.getInstance().delete(sesion, new TcKeetEstimacionesDto(this.idEstimacion))> 0L;
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private Boolean toCancelEstimacion(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      // CANCELAR LA FACTURA Y LA VENTA ASOCIADA A LA ESTIMACION
+      params.put("idEstimacion", this.idEstimacion);      
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toTerminateEstimacion(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      // CAMBIAR EL ESTATUS DE LA FACTURA Y LA VENTA
+      params.put("idEstimacion", this.idEstimacion);      
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 } 

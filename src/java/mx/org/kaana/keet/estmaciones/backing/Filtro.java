@@ -31,8 +31,8 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.ingresos.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
+import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
+import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "keetEstimacionesFiltro")
@@ -127,8 +127,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion = null;
 		Entity seleccionado     = null;
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((Ingreso)DaoFactory.getInstance().findById(Ingreso.class, seleccionado.getKey()));
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			transaccion= new Transaccion(seleccionado.getKey());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La estimación se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
@@ -142,35 +142,41 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idEstimacion")) && !this.attrs.get("idEstimacion").toString().equals("-1"))
-  		sb.append("(tc_keet_estimaciones.id_estimacion=").append(this.attrs.get("idEstimacion")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
-  		sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_keet_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
-		if(!Cadena.isVacio(this.attrs.get("factura")))
-  		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("factura")).append("%') and ");
-		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-		  sb.append("(tc_keet_estimaciones.importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-		  sb.append("(tc_keet_estimaciones.importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("idEstimacionEstatus")) && !this.attrs.get("idEstimacionEstatus").toString().equals("-1"))
-  		sb.append("(tc_keet_estimaciones.id_estimacion_estatus= ").append(this.attrs.get("idEstimacionEstatus")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    try {
+      StringBuilder sb= new StringBuilder();
+      if(!Cadena.isVacio(this.attrs.get("idEstimacion")) && !this.attrs.get("idEstimacion").toString().equals("-1"))
+        sb.append("(tc_keet_estimaciones.id_estimacion=").append(this.attrs.get("idEstimacion")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
+        sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
+        sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+        sb.append("(tc_keet_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
+      if(!Cadena.isVacio(this.attrs.get("factura")))
+        sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("factura")).append("%') and ");
+      if(!Cadena.isVacio(this.fechaInicio))
+        sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+      if(!Cadena.isVacio(this.fechaTermino))
+        sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+        sb.append("(tc_keet_estimaciones.importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+      if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+        sb.append("(tc_keet_estimaciones.importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
+      if(!Cadena.isVacio(this.attrs.get("idEstimacionEstatus")) && !this.attrs.get("idEstimacionEstatus").toString().equals("-1"))
+        sb.append("(tc_keet_estimaciones.id_estimacion_estatus= ").append(this.attrs.get("idEstimacionEstatus")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
 		return regresar;
 	}
 	
@@ -206,10 +212,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   
 	public void doLoadDesarrollos() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		UISelectEntity empresa    = null;
     try {
-			params= new HashMap<>();			
 			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
 			if(empresa.getKey()>= 1L)
         params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
@@ -275,11 +280,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcKeetEstimacionesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);
@@ -296,13 +300,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion           = null;
-		TcManticVentasBitacoraDto bitacora= null;
+		TcKeetEstimacionesBitacoraDto bitacora= null;
 		Entity seleccionado               = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			Ingreso orden= (Ingreso)DaoFactory.getInstance().findById(Ingreso.class, seleccionado.getKey());
-			bitacora   = new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getCticket(), orden.getTotal());
-			transaccion= new Transaccion(orden, bitacora);
+			bitacora   = new TcKeetEstimacionesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), -1L, seleccionado.getKey(), JsfBase.getIdUsuario(), (String)this.attrs.get("justificacion"));
+			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -318,8 +321,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	// doActualizaEstatus
 	
 	public String doImportar() {
+		JsfBase.setFlashAttribute("idEstimacion",((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Ingresos/filtro");		
-		JsfBase.setFlashAttribute("idVenta",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 	
@@ -331,7 +334,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 
 	public String doRecordPagos() {
-		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idEstimacion", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"));
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Ingresos/filtro");
 		return "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
@@ -343,5 +346,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}
+
+  public String doLoadFactura() {
+    String regresar= "documento";
+		try {
+			JsfBase.setFlashAttribute("idEstimacion", ((Entity)this.attrs.get("seleccionado")).getKey());
+		  JsfBase.setFlashAttribute("accion", EAccion.REPROCESAR);
+			JsfBase.setFlashAttribute("retorno", "filtro");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  } 
   
 }

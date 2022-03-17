@@ -58,7 +58,7 @@
 							<p:ajax event="change" onstart="return janal.bloquear();" process="@this departamento" listener="#{keetCatalogosContratosContratistasAsignacion.doLoad}" update="nombre" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.departamentos}"/>
 						</p:selectOneMenu>																
-						<p:outputLabel for="nombre" value="Contratista:"/>							
+						<p:outputLabel for="nombre" value="Contratista o subconstratista:"/>							
 						<p:selectOneMenu id="nombre" value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombre}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
 							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombres}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>
 							<p:column headerText="Departamento">

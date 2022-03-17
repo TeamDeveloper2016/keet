@@ -11,16 +11,16 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        idEmpresa    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        idDesarrollo : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        idCliente    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        idContrato   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        consecutivo  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        factura      : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idDesarrollo: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idCliente   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idContrato  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        factura     : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        montoInicio : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+        montoTermino: {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
         idEstimacionEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
 			
@@ -185,7 +185,7 @@
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.saldo}">
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.saldo}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
@@ -202,21 +202,23 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" action="#{keetEstimacionesFiltro.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem icon="fa fa-search" value="Consultar" action="#{keetEstimacionesFiltro.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" />					
+            <p:separator rendered="#{fn:contains('|1|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
+            <p:menuitem icon="fa fa-edit" value="Modificar" action="#{keetEstimacionesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>
+            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
             <p:separator/>
-            <p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" action="#{keetEstimacionesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
+            <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doMovimientos}"/>
             <p:separator/>
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doMovimientos}"/>
-            <p:separator/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|2|3|5|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}" />
+            <p:menuitem icon="fa fa-file-signature" value="Factura" action="#{keetEstimacionesFiltro.doLoadFactura}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|2|3|5|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>
     </div>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la factura ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la estimación ?" />
   <ui:param name="accionConfirmacion" value="#{keetEstimacionesFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
