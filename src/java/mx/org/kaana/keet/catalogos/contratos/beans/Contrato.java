@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.DiaHabil;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
-import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -253,7 +251,7 @@ public class Contrato extends TcKeetContratosDto {
         this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosDto", "inicial", params);
       for (Retencion item: this.retenciones) {
         item.setActivo(item.getKey()> 0L || item.getIdTipoRetencion()< 3L);
-        if(item.isValid())
+        if(item.getKey()> 0L)
           item.setSql(ESql.SELECT);
         else
           item.setSql(ESql.INSERT);

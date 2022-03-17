@@ -94,6 +94,7 @@ public class Accion extends IBaseFilter implements Serializable {
           break;
       } // switch
       this.toLoadCatalog();
+      this.doRowUpdateImporte();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -270,10 +271,9 @@ public class Accion extends IBaseFilter implements Serializable {
     } // switch    
 	}
 
-  public void doRowUpdateImporte()  {
-    for (Retencion item : this.estimaciones.getEstimacion().getRetenciones()) {
+  public void doRowUpdateImporte() {
+    for (Retencion item : this.estimaciones.getEstimacion().getRetenciones()) 
       item.setImporte(Numero.toRedondearSat(item.getPorcentaje()* this.estimaciones.getEstimacion().getImporte()/ 100D));
-    } // for
     this.doUpdateAccion(null);
   }
   
@@ -314,6 +314,7 @@ public class Accion extends IBaseFilter implements Serializable {
     this.estimaciones.getEstimacion().setFacturar(Numero.toRedondearSat(suma));
     if(row!= null && Objects.equals(row.getSql(), ESql.SELECT))
       row.setSql(ESql.UPDATE);
+    this.toUpdateTotal();
   }
 
   public void doUpdatePorcentaje() {
@@ -323,6 +324,7 @@ public class Accion extends IBaseFilter implements Serializable {
       if(index>= 0) {
         this.estimaciones.getEstimacion().setIkContrato(contratos.get(index));
         this.estimaciones.toLoadRetenciones(this.estimaciones.getEstimacion().getIdContrato());
+        this.doRowUpdateImporte();
       } // if 
     } // if 
   } 
@@ -375,7 +377,14 @@ public class Accion extends IBaseFilter implements Serializable {
     if(Objects.equals(row.getSql(), ESql.SELECT))
       row.setSql(ESql.UPDATE);
   }
-  
+
+  private void toUpdateTotal() {
+    double suma= 0D;
+    for (Retencion item : this.estimaciones.getEstimacion().getRetenciones()) 
+      suma+= item.getImporte();
+    this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, suma));
+  }
+
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -385,5 +394,5 @@ public class Accion extends IBaseFilter implements Serializable {
 			super.finalize();
 		} // finally	
 	}
-
+  
 }

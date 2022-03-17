@@ -27,6 +27,7 @@
 			
     	$(document).ready(function() {
         setTimeout("janal.readingMode('#{keetEstimacionesAccion.attrs.nombreAccion}')", 500);
+        setTimeout("reloadCalculos();", 500);
 				janal.decimals= 4;
       });
 			
@@ -127,20 +128,20 @@
 										<p:outputLabel value="#{list.noViviendas}"/>
 									</p:column>   
 								</p:selectOneMenu>																						
-								<p:separator/>
-                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-right">
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                     <p:outputLabel for="importe" value="Importe:" styleClass="janal-color-blue"/>
-                    <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                    <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center janal-color-blue" minValue="0">
                       <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateImporte}"/>
                     </p:inputNumber>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                    <p:outputLabel for="facturar" value="Facturar:" styleClass="janal-color-orange"/>
-                    <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
+                    <p:outputLabel for="facturar" value="Facturar:" styleClass="janal-color-orange janal-font-bold janal-icons-header"/>
+                    <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
                   </p:panelGrid>  
                 </p:panelGrid>
               </p:panelGrid>
+              <p:remoteCommand name="reloadCalculos" process="@this" update="@(.calculos)"/>
               <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idEstimacionDetalle}" style="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones ne null and keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 0}">
                 <f:facet name="header">
                   <div style="display: flex;">
@@ -163,7 +164,7 @@
 									<f:facet name="header">
 										<h:outputText value="Porcentaje"/>
 									</f:facet>
-                  <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center" disabled="#{row['idTipoRetencion'] lt 3}">
+                  <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center">
                     <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');" oncomplete="janal.refresh();"/>
                   </p:inputText>
 								</p:column>											
@@ -171,7 +172,7 @@
 									<f:facet name="header">
 										<h:outputText value="Importe"/>
 									</f:facet>
-									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center janal-color-blue" disabled="#{row['idTipoRetencion'] lt 3}">
+									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-95 calculos key-calculos-event janal-column-center janal-color-blue">
                     <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tabla\\:tabla\\:#{index}\\:importe', -1, 'Importe');" oncomplete="valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}'); janal.refresh();"/>
                   </p:inputText>
 								</p:column>																				
@@ -194,6 +195,7 @@
                   </p:calendar>  
                 </p:column>
 								<f:facet name="footer">
+                  <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;Total de retencion(es): &lt;strong&gt;#{keetEstimacionesAccion.attrs.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="calculos" style="float:left;" escape="false"/>
 									<p:outputLabel value="Total [#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>              
