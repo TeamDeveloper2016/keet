@@ -126,11 +126,14 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
     try {
 			// if(JsfBase.getFlashAttribute("accion")== null)
 			// 	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? 4L: JsfBase.getFlashAttribute("idEstimacion"));
       this.estimaciones= new Estimaciones((Long)this.attrs.get("idEstimacion"));
-      if(Objects.equals(this.estimaciones.getEstimacion().getIdVenta(), null))
+      if(Objects.equals(this.estimaciones.getEstimacion().getIdVenta(), null)) {
         this.estimaciones.getEstimacion().setIdVenta(-1L);
+        this.accion= EAccion.AGREGAR;
+      } // if  
+      else 
+        this.accion= EAccion.MODIFICAR;
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.attrs.put("folio", "");
@@ -205,6 +208,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           params.put("idVenta", this.estimaciones.getEstimacion().getIdVenta());
           this.ingreso= (Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", params);
           if(!Cadena.isVacio(this.ingreso.getIdFactura())) {
+            this.attrs.put("idFactura", this.ingreso.getIdFactura());
             params.put("idFactura", this.ingreso.getIdFactura());
             this.comprobante= (Factura)DaoFactory.getInstance().toEntity(Factura.class, "TcManticFacturasDto", "identically", params);
           } // if  
@@ -266,7 +270,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    JsfBase.setFlashAttribute("idVenta", this.ingreso.getIdVenta());
+    JsfBase.setFlashAttribute("idEstimacion", this.estimaciones.getEstimacion().getIdEstimacion());
     return regresar;
   } // doAccion
 
@@ -397,6 +401,9 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
           this.doCheckFolio();
           this.toReadArticulos();
+          if(!Objects.equals(this.estimaciones.getEstimacion().getFacturar(), this.ingreso.getTotal()))
+            UIBackingUtilities.execute("janal.warn('facturar', 'El importe por facturar ["+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.estimaciones.getEstimacion().getFacturar())
+                    + "] es diferente al importe de la factura ["+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.ingreso.getTotal())+ "]');");
         } // if  
         else {
           this.doDeleteXml();
@@ -614,6 +621,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
       transaccion = new Operacion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf(), this.estimaciones);
       if (transaccion.ejecutar(EAccion.ELIMINAR)) {
         this.doDeleteXml();
+        this.accion= EAccion.AGREGAR;
+        this.attrs.put("idFactura", -1L);
         JsfBase.addMessage("Se eliminó la factura y la cuenta x cobrar !", ETipoMensaje.INFORMACION);
       } // if
     } // try
@@ -646,7 +655,10 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
       this.comprobante.setCadenaOriginal(null);
       this.setIkSerie(new UISelectEntity(1L));
       this.setIkTipoComprobante(new UISelectEntity(1L));
-      this.articulos.clear();
+      if(this.articulos== null)
+        this.articulos= new ArrayList<>();
+      else  
+        this.articulos.clear();
       if(this.attrs.get("faltantes")!= null) {
         List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
         faltantes.clear();

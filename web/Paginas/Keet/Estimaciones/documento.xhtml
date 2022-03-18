@@ -63,7 +63,7 @@
 			}
 
       function checkCancelXml() {
-        return confirm('Precaución, ¿Esta seguro que desea cancelar la factura? porque con esto se cancelará la cuenta x cobrar?');  
+        return confirm('Precaución, ¿Esta seguro que desea cancelar la factura?\nPorque con esto se cancelará la cuenta x cobrar que se había generado por el importe de $ #{keetEstimacionesDocumento.ingreso.total}.');  
       }
 
       function valida(input, max, name) {
@@ -164,7 +164,7 @@
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaFactura" value="Timbrado factura:"/>
-                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-98 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetEstimacionesDocumento.comprobante.timbrado}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
+                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-98 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetEstimacionesDocumento.comprobante.timbrado}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true" disabled="true"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="importe" value="Importe:"/>
@@ -172,7 +172,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-98" styleClass="janal-wid-100 todos" value="#{keetEstimacionesDocumento.comprobante.registro}" pattern="dd/MM/yyyy" readonlyInput="false" locale="es"/>
+                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-98" styleClass="janal-wid-100 todos" value="#{keetEstimacionesDocumento.comprobante.registro}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaVencimiento" value="Fecha vencimiento:"/>
@@ -187,14 +187,19 @@
 							<p:outputLabel for="comentarios" value="Comentarios:" styleClass="janal-wid-100-txt" style="display:#{keetEstimacionesDocumento.consultar};"/><br style="display:#{keetEstimacionesDocumento.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetEstimacionesDocumento.attrs.observaciones}" style="display:#{keetEstimacionesDocumento.consultar};"/>
 							<p:spacer height="5px"/>
+              <p:outputLabel value="Al agregar una factura en formato XML y aceptar se estará generando una cuenta x cobrar para este cliente por el importe de la factura" styleClass="janal-color-black" style="cursor: pointer;"/>              
               <p:fileUpload id="archivo" listener="#{keetEstimacionesDocumento.doFileUpload}" disabled="#{keetEstimacionesDocumento.ingreso.idDesarrollo lt 1}"
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{keetEstimacionesDocumento.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetEstimacionesDocumento.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
               <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-97, janal-fix-3 janal-column-right" style="#{(empty keetEstimacionesDocumento.xml) and (empty keetEstimacionesDocumento.pdf)? 'display: none': ''}">
 							  <p:commandLink value="XML importado: #{keetEstimacionesDocumento.xml.ruta}#{keetEstimacionesDocumento.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver XML" style="#{(empty keetEstimacionesDocumento.xml)? 'display: none': ''}"/>
-                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetEstimacionesDocumento.doDeleteXml}" title="Eliminar XML" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetEstimacionesDocumento.xml) and (keetEstimacionesDocumento.attrs.idFactura lt 1)? 'display: none': ''}"/>
-                <p:commandButton icon="fa fa-cancel" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetEstimacionesDocumento.doCancelXml}" title="Cancelar factura" onstart="return checkCancelXml();" oncomplete="janal.desbloquear();" style="#{(empty keetEstimacionesDocumento.xml) and (keetEstimacionesDocumento.attrs.idFactura gt 0)? 'display: none': ''}"/>
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetEstimacionesDocumento.doDeleteXml}" title="Eliminar XML" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetEstimacionesDocumento.xml) or (keetEstimacionesDocumento.attrs.idFactura gt 0)? 'display: none': ''}"/>
+                  <p:commandButton icon="fa fa-close" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetEstimacionesDocumento.doCancelXml}" title="Cancelar factura" onstart="return checkCancelXml();" oncomplete="janal.desbloquear();" style="#{(empty keetEstimacionesDocumento.xml) or (keetEstimacionesDocumento.attrs.idFactura lt 1)? 'display: none': ''}"/>
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-97, janal-fix-3 janal-column-right" style="#{(empty keetEstimacionesDocumento.xml) and (empty keetEstimacionesDocumento.pdf)? 'display: none': ''}">
 							  <p:commandLink value="PDF importado: #{keetEstimacionesDocumento.pdf.ruta}#{keetEstimacionesDocumento.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty keetEstimacionesDocumento.pdf)? 'display: none': ''}"/>
                 <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetEstimacionesDocumento.doDeletePdf}" title="Eliminar PDF" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetEstimacionesDocumento.pdf)? 'display: none': ''}"/>
               </p:panelGrid>  

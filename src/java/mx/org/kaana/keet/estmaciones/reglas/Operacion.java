@@ -100,7 +100,7 @@ public class Operacion extends IBaseTnx implements Serializable {
 			params= new HashMap<>();
       if(this.orden!= null && Objects.equals(-1L, this.orden.getIdContrato()))
         this.orden.setIdContrato(null);
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura");
 			switch(accion) {
 				case AGREGAR:
           Long idFactura= this.toRegistrarFactura(sesion, EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
@@ -131,18 +131,24 @@ public class Operacion extends IBaseTnx implements Serializable {
 					break;				
 				case ELIMINAR:
           params.put("idVenta", this.estimaciones.getEstimacion().getIdVenta());
-          this.estimaciones.getEstimacion().setIdVenta(-1L);
+          this.estimaciones.getEstimacion().setIdVenta(null);
           DaoFactory.getInstance().update(sesion, this.estimaciones.getEstimacion());
           DaoFactory.getInstance().deleteAll(sesion, TcManticClientesDeudasBitacoraDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TcManticClientesDeudasDto.class, params);
   				params.put("idFactura", this.orden.getIdFactura());
-          DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
-          DaoFactory.getInstance().delete(sesion, this.orden);
+          this.orden.setIdFactura(null);
           this.orden.setObservaciones((Cadena.isVacio(this.orden.getObservaciones())? "": this.orden.getObservaciones().concat(","))+ "SE ELIMINO LA VENTA PORQUE SE ELIMINO LA FACTURA DE LA ESTIMACION");
           this.orden.setIdVentaEstatus(EEstatusFicticias.ELIMINADA.getIdEstatusFicticia());
+          DaoFactory.getInstance().update(sesion, this.orden);
           bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
           regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-          this.toUpdateDeuda(sesion);
+          sesion.flush();
+          DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasBitacoraDto.class, params);
+          DaoFactory.getInstance().delete(sesion, TcManticFacturasDto.class, (Long)params.get("idFactura"));
+          TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+          cliente.setSaldo(Numero.toRedondearSat(cliente.getSaldo()- this.orden.getTotal()));
+          DaoFactory.getInstance().update(sesion, cliente);
           this.toCheckDeleteFile(sesion);
 					break;
 				case JUSTIFICAR:
@@ -175,7 +181,6 @@ public class Operacion extends IBaseTnx implements Serializable {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
-		LOG.info("Se registro de forma correcta la factura: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 

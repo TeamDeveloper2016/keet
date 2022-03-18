@@ -6213,6 +6213,9 @@
         where      
           id_factura_bitacora = {idFacturaBitacora}
       </select>
+      <delete id="rows">
+        delete from tc_mantic_facturas_bitacora where id_factura = {idFactura}
+      </delete>
 		</unit>
 		<unit id="TcManticIncidentesDto">
       <select id="row">
