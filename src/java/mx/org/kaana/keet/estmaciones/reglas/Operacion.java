@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.ingresos.reglas;
+package mx.org.kaana.keet.estmaciones.reglas;
 
 import java.io.File;
 import java.io.Serializable;
@@ -15,15 +15,15 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.keet.estmaciones.reglas.Estimaciones;
 import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
@@ -39,7 +39,6 @@ import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.facturas.enums.EEstatusClientesDeudas;
-import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
 /**
@@ -50,9 +49,9 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx implements Serializable {
+public class Operacion extends IBaseTnx implements Serializable {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
+  private static final Logger LOG = Logger.getLogger(Operacion.class);
 	private static final long serialVersionUID=-6069204157451117549L;
  
 	private Ingreso orden;	
@@ -64,20 +63,16 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private Estimaciones estimaciones;
 	private TcManticVentasBitacoraDto bitacora;
 
-	public Transaccion(Ingreso orden) {
-		this(orden, null, Collections.EMPTY_LIST, null, null);
+	public Operacion(Ingreso orden) {
+		this(orden, null, Collections.EMPTY_LIST, null, null, null);
 	}
 
-	public Transaccion(Ingreso orden, TcManticVentasBitacoraDto bitacora) {
+	public Operacion(Ingreso orden, TcManticVentasBitacoraDto bitacora) {
 		this(orden);
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(Ingreso orden, Factura comprobante, List<Articulo> articulos, Importado xml, Importado pdf) {
-    this(orden, comprobante, articulos, xml, pdf, null);
-  }
-  
-	public Transaccion(Ingreso orden, Factura comprobante, List<Articulo> articulos, Importado xml, Importado pdf, Estimaciones estimaciones) {
+	public Operacion(Ingreso orden, Factura comprobante, List<Articulo> articulos, Importado xml, Importado pdf, Estimaciones estimaciones) {
 		this.orden      = orden;		
 		this.comprobante= comprobante;		
     this.articulos  = articulos;
@@ -121,23 +116,33 @@ public class Transaccion extends IBaseTnx implements Serializable {
     				this.orden.setIdSerie(this.orden.getIdSerie()== null || this.orden.getIdSerie()<= 0? null: this.orden.getIdSerie());
             DaoFactory.getInstance().insert(sesion, this.orden);
             bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), this.orden.getCticket(), this.orden.getTotal());
-            regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+            DaoFactory.getInstance().insert(sesion, bitacoraNota);
             this.toFillArticulos(sesion);
+            this.estimaciones.getEstimacion().setIdVenta(this.orden.getIdVenta());
+            regresar= DaoFactory.getInstance().update(sesion, this.estimaciones.getEstimacion())>= 1L;
             this.toUpdateDeleteXml(sesion);	
             // AGREGAR UNA CUENTA POR COBRAR 
             this.toRecordDeuda(sesion);
           } // if
 					break;
 				case MODIFICAR:
+          DaoFactory.getInstance().update(sesion, this.estimaciones.getEstimacion());
           regresar= this.toUpdateDeuda(sesion);
 					break;				
 				case ELIMINAR:
+          params.put("idVenta", this.estimaciones.getEstimacion().getIdVenta());
+          this.estimaciones.getEstimacion().setIdVenta(-1L);
+          DaoFactory.getInstance().update(sesion, this.estimaciones.getEstimacion());
+          DaoFactory.getInstance().deleteAll(sesion, TcManticClientesDeudasBitacoraDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticClientesDeudasDto.class, params);
   				params.put("idFactura", this.orden.getIdFactura());
           DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
           DaoFactory.getInstance().delete(sesion, this.orden);
-          this.orden.setIdVentaEstatus(13L);
+          this.orden.setObservaciones((Cadena.isVacio(this.orden.getObservaciones())? "": this.orden.getObservaciones().concat(","))+ "SE ELIMINO LA VENTA PORQUE SE ELIMINO LA FACTURA DE LA ESTIMACION");
+          this.orden.setIdVentaEstatus(EEstatusFicticias.ELIMINADA.getIdEstatusFicticia());
           bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
           regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+          this.toUpdateDeuda(sesion);
           this.toCheckDeleteFile(sesion);
 					break;
 				case JUSTIFICAR:
@@ -240,40 +245,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	} // toSiguienteCuenta
   
-	private void toDeleteAll(String path, String type, List<Nombres> listado) {
-    FileSearch fileSearch = new FileSearch();
-    fileSearch.searchDirectory(new File(path), type.toLowerCase());
-    if(fileSearch.getResult().size()> 0)
-		  for (String matched: fileSearch.getResult()) {
-				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
-				if(listado.indexOf(new Nombres(name))< 0) {
-          LOG.warn("Factura: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
-				  File file= new File(matched);
-				  // file.delete();
-				} // if
-      } // for
-	}
-	
-	private List<Nombres> toListFile(Session sesion, String path, String name, Long idTipoArchivo) throws Exception {
-		List<Nombres> regresar= null;
-		Map<String, Object> params=null;
-		try {
-			params  = new HashMap<>();
-			params.put("idTipoArchivo", idTipoArchivo);
-			params.put("ruta", path);
-			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticFacturasArchivosDto", "listado", params);
-			regresar.add(new Nombres(name));
-		} // try 
-		catch (Exception e) {
-			Error.mensaje(e);
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	} 
-	
 	protected void toUpdateDeleteXml(Session sesion) throws Exception {
 		TcManticFacturasArchivosDto tmp= null;
 		if(this.orden.getIdVenta()!= -1L) {
@@ -395,14 +366,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
       deuda.setIdUsuario(JsfBase.getIdUsuario());
       deuda.setImporte(this.orden.getTotal());
       deuda.setSaldo(this.orden.getTotal());
-      deuda.setRetencion1(this.orden.getRetencion1());
-      deuda.setRetencion2(this.orden.getRetencion2());
-      deuda.setRetencion3(this.orden.getRetencion3());
-      deuda.setRetencion4(this.orden.getRetencion4());
-      deuda.setRetencion5(this.orden.getRetencion5());
-      deuda.setRetencion6(this.orden.getRetencion6());
-      deuda.setRetencion7(this.orden.getRetencion7());
-      //deuda.setLimite(this.toLimiteCredito(sesion));
       deuda.setLimite(this.comprobante.getVencimiento());
       deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
       DaoFactory.getInstance().insert(sesion, deuda);		
@@ -418,7 +381,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	} // registrarDeuda  
 
   protected boolean toUpdateDeuda(Session sesion) throws Exception {
-    boolean regresar= false;
+    boolean regresar= Boolean.FALSE;
     TcManticClientesDeudasDto deuda           = null;
     TcManticClientesDeudasBitacoraDto registro= null;
     Map<String, Object> params                = null;
@@ -427,16 +390,19 @@ public class Transaccion extends IBaseTnx implements Serializable {
       params.put("idVenta", this.orden.getIdVenta());      
       params.put("idCliente", this.orden.getIdCliente());      
       deuda = (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
-      deuda.setRetencion1(this.orden.getRetencion1());
-      deuda.setRetencion2(this.orden.getRetencion2());
-      deuda.setRetencion3(this.orden.getRetencion3());
-      deuda.setRetencion4(this.orden.getRetencion4());
-      deuda.setRetencion5(this.orden.getRetencion5());
-      deuda.setRetencion6(this.orden.getRetencion6());
-      deuda.setRetencion7(this.orden.getRetencion7());
-      DaoFactory.getInstance().update(sesion, deuda);
-      registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE ACTUALIZARON LAS RETENCIONES", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
-      regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+      if(!Objects.equals(deuda.getImporte(), this.orden.getTotal())) {
+        Double diferencia= this.orden.getTotal()- deuda.getImporte();
+        deuda.setImporte(Numero.toRedondearSat(deuda.getImporte()- diferencia));
+        deuda.setSaldo(Numero.toRedondearSat(deuda.getSaldo()- diferencia));
+        DaoFactory.getInstance().update(sesion, deuda);
+        TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+        cliente.setSaldo(Numero.toRedondearSat(cliente.getSaldo()+ diferencia));
+        DaoFactory.getInstance().update(sesion, cliente);
+        registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE ACTUALIZÓ EL IMPORTE DE LA FACTURA", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
+        regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;

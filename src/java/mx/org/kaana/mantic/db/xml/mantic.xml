@@ -255,6 +255,16 @@
         where      
           id_cliente_deuda_bitacora = {idClienteBitacora}
       </select>
+      <delete id="rows">
+        delete 
+          tc_mantic_clientes_deudas_bitacora 
+        from 
+          tc_mantic_clientes_deudas_bitacora
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes_deudas_bitacora.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+        where 
+          tc_mantic_clientes_deudas.id_venta= {idVenta}
+      </delete>
     </unit>    
     <unit id="TcManticClientesPagosControlesDto">
       <select id="row">
@@ -5776,6 +5786,12 @@
           id_cliente= {idCliente}
 				  and id_venta= {idVenta}
 			</update>
+			<delete id="rows">
+        delete from 
+          tc_mantic_clientes_deudas
+        where 
+          id_venta= {idVenta}
+			</delete>
     </unit>
     <unit id="TcManticClientesPagosDto">
       <select id="row">

@@ -49,7 +49,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import mx.org.kaana.keet.ingresos.reglas.Transaccion;
+import mx.org.kaana.keet.estmaciones.reglas.Operacion;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -134,6 +134,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.attrs.put("folio", "");
+			this.attrs.put("idFactura", -1L);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -226,8 +227,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
 
   public String doAceptar() { 
     this.ingreso.setIdExtra(2L);
-    Transaccion transaccion= null;
-    String regresar        = null;
+    Operacion transaccion= null;
+    String regresar      = null;
     try {
       if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
         if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
@@ -240,7 +241,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           if(this.getReceptor().getRfc().equals(this.estimaciones.getEstimacion().getIkCliente().toString("rfc"))) {
             if(Objects.equals(this.estimaciones.getEstimacion().getIdVenta(), -1L))
               this.estimaciones.getEstimacion().setIdVenta(null);
-            transaccion = new Transaccion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf());
+            transaccion = new Operacion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf(), this.estimaciones);
             if (transaccion.ejecutar(this.accion)) {
               regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
               if(this.accion.equals(EAccion.AGREGAR)) 
@@ -598,7 +599,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
       } // if
     } // try
     catch (Exception e) {
-      throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
     } // catch
     finally {
       Methods.clean(params);
@@ -606,6 +608,21 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
     } // finally
   }
  
+  public void doCancelXml() {
+    Operacion transaccion= null;
+    try {
+      transaccion = new Operacion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf(), this.estimaciones);
+      if (transaccion.ejecutar(EAccion.ELIMINAR)) {
+        this.doDeleteXml();
+        JsfBase.addMessage("Se eliminó la factura y la cuenta x cobrar !", ETipoMensaje.INFORMACION);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch
+  }
+  
   public void doDeleteXml() {
     if(this.resetXml(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"))) {
       this.ingreso.setDescuentos(0D);
