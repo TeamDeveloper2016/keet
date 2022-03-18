@@ -21,7 +21,8 @@
           tc_mantic_clientes.razon_social,
           tc_keet_estimaciones_estatus.nombre as estatus,
           tc_keet_estimaciones_estatus.estatus_asociados,
-          tc_keet_estimaciones.registro
+          tc_keet_estimaciones.registro,
+          tc_keet_estimaciones.id_venta
         from
           tc_keet_estimaciones
         inner join

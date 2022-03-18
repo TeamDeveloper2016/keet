@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -19,7 +18,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -350,8 +348,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doLoadFactura() {
     String regresar= "documento";
 		try {
-			JsfBase.setFlashAttribute("idEstimacion", ((Entity)this.attrs.get("seleccionado")).getKey());
-		  JsfBase.setFlashAttribute("accion", EAccion.REPROCESAR);
+      Entity seleccionado= ((Entity)this.attrs.get("seleccionado"));
+			JsfBase.setFlashAttribute("idEstimacion", seleccionado.getKey());
+		  JsfBase.setFlashAttribute("accion", seleccionado.toLong("idVenta")== null || seleccionado.toLong("idVenta")< 0L? EAccion.AGREGAR: EAccion.MODIFICAR);
 			JsfBase.setFlashAttribute("retorno", "filtro");
 		} // try
 		catch (Exception e) {

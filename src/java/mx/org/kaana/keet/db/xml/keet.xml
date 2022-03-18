@@ -134,7 +134,7 @@
           ifnull(tt_keet_estimaciones_detalles.id_tipo_retencion, tc_keet_contratos_retenciones.id_tipo_retencion) as id_tipo_retencion,
           tc_keet_contratos_retenciones.nombre,
           ' ' as alias,
-          tc_keet_contratos_retenciones.porcentaje,
+          ifnull(tt_keet_estimaciones_detalles.porcentaje, tc_keet_contratos_retenciones.porcentaje) as porcentaje,
           tc_keet_contratos_retenciones.limite,
           ifnull(tt_keet_estimaciones_detalles.importe, 0) as importe,
           ifnull(tt_keet_estimaciones_detalles.id_deduccion, 1) as id_deduccion,

@@ -25,7 +25,6 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
-  private TcManticClientesDto cliente;
   private List<Retencion> retenciones;
 
   public Estimacion() {
@@ -57,14 +56,6 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
 	public void setIkCliente(UISelectEntity ikCliente) {
 		this.ikCliente=ikCliente;
 	}
-
-  public TcManticClientesDto getCliente() {
-    return cliente;
-  }
-
-  public void setCliente(TcManticClientesDto cliente) {
-    this.cliente = cliente;
-  }
 
   public UISelectEntity getIkContrato() {
     return ikContrato;

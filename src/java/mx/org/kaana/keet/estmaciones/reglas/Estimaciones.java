@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.estmaciones.beans.Estimacion;
 import mx.org.kaana.keet.estmaciones.beans.Retencion;
@@ -60,11 +61,14 @@ public class Estimaciones implements Serializable {
       else {
         this.estimacion= (Estimacion)DaoFactory.getInstance().toEntity(Estimacion.class, "TcKeetEstimacionesDto", "estimacion", params);
         if(this.estimacion!= null) {
+          params.put("sucursales", this.estimacion.getIdEmpresa());      
+          params.put("idDesarrollo", this.estimacion.getIdDesarrollo());      
+          params.put("idCliente", this.estimacion.getIdCliente());
           params.put("idContrato", this.estimacion.getIdContrato());      
-          this.estimacion.setIkEmpresa(new UISelectEntity(this.estimacion.getIdEmpresa()));
-          this.estimacion.setIkDesarrollo(new UISelectEntity(this.estimacion.getIdDesarrollo()));
-          this.estimacion.setIkCliente(new UISelectEntity(this.estimacion.getIdCliente()));
-          this.estimacion.setIkContrato(new UISelectEntity(this.estimacion.getIdContrato()));
+          this.estimacion.setIkEmpresa(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcManticEmpresasDto", "empresas", params)));
+          this.estimacion.setIkDesarrollo(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetDesarrollosDto", "byId", params)));
+          this.estimacion.setIkCliente(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcManticClientesDto", "igual", params)));
+          this.estimacion.setIkContrato(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetContratosDto", "byId", params)));
           this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetEstimacionesDetallesDto", "estimacion", params));
           for (Retencion item: this.estimacion.getRetenciones()) 
             item.setSql(ESql.SELECT);

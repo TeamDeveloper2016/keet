@@ -250,8 +250,6 @@ public class Accion extends IBaseFilter implements Serializable {
       UISelectEntity item= desarrollos.get(desarrollos.indexOf(desarrollo));
 			this.attrs.put("cliente", item.toString("razonSocial"));			
       this.estimaciones.getEstimacion().setIkCliente(new UISelectEntity(item.toLong("idCliente")));
-      this.estimaciones.getEstimacion().setCliente((TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.estimaciones.getEstimacion().getIkCliente().getKey()));
-      params.put("idCliente", this.estimaciones.getEstimacion().getCliente()!= null? this.estimaciones.getEstimacion().getCliente().getIdCliente(): -1L);
 			this.doLoadContratos();
 		} // try // try
 		catch (Exception e) {
