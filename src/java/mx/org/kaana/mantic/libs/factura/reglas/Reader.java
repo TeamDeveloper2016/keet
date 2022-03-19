@@ -210,17 +210,17 @@ public class Reader implements Serializable{
 		try {
 			regresar= new ArrayList<>();
 			conceptos= document.getDocumentElement().getElementsByTagName("cfdi:Conceptos").item(0).getChildNodes();				
-			for (int i = 0; i < conceptos.getLength(); i++){				
+			for (int i= 0; i< conceptos.getLength(); i++) {	
 				node= conceptos.item(i)== null? conceptos.item(i).getNextSibling(): conceptos.item(i);
 				if(node!= null) {
 					nodeName= node.getNodeName();
 					if(nodeName.equals("cfdi:Concepto")) {
 						concepto= new Concepto();
 						mapAttrs= node.getAttributes();
-						for (int count = 0; count < mapAttrs.getLength(); count++){						
+						for (int count = 0; count < mapAttrs.getLength(); count++) {
 							nameAttr= mapAttrs.item(count).getNodeName();
 							valAttr= mapAttrs.item(count).getNodeValue();
-							switch(nameAttr){
+							switch(nameAttr) {
 								case "Cantidad":
 									concepto.setCantidad(valAttr);
 									break;
@@ -251,7 +251,10 @@ public class Reader implements Serializable{
 							} // switc						
 						} // for		
         		LOG.info("Reader.readConceptos: "+ concepto.getDescripcion());
- 						concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
+            if(node.getFirstChild()!= null)
+ 						  concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
+            else 
+              concepto.setTraslado(new Traslado(concepto.getImporte(), "002", "Exento", "0"));
 						concepto.setInformacionAduanera(readInformacionAduanera(node));
 						if(regresar.indexOf(concepto)< 0)
 						  regresar.add(concepto);
