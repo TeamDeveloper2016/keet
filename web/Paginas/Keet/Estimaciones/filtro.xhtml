@@ -210,8 +210,8 @@
             <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doMovimientos}"/>
             <p:separator/>
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
-            <p:separator rendered="#{fn:contains('|2|3|5|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}" />
-            <p:menuitem icon="fa fa-file-signature" value="Factura" action="#{keetEstimacionesFiltro.doLoadFactura}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|2|3|5|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}" />
+            <p:menuitem icon="fa fa-file-signature" value="Factura" action="#{keetEstimacionesFiltro.doLoadFactura}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>

@@ -190,7 +190,7 @@
 									<f:facet name="header">
 										<h:outputText value="Vence"/>
 									</f:facet>
-  								<p:calendar id="vence" inputStyleClass="janal-wid-50" styleClass="janal-wid-100" value="#{row['vence']}" showOn="button" pattern="dd/MM/yyyy" locale="es" rendered="#{row['idTipoRetencion'] eq 2}">
+  								<p:calendar id="vence" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{row['vence']}" pattern="dd/MM/yyyy" locale="es" rendered="#{row['idTipoRetencion'] eq 2}">
                     <p:ajax event="dateSelect" process="@this" listener="#{keetEstimacionesAccion.doRowUpdateFecha(row)}"/>
                   </p:calendar>  
                 </p:column>

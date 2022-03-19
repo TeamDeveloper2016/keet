@@ -7,9 +7,9 @@
   <!-- XULHA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="gylvicom_tester" password="20tester20" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/gylvicom_training?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
    -->
-  <!-- KALUM
+  <!-- KALUM -->
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="gylvicom_track" password="20track20" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/gylvicom_testing?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
-	 -->
+	
   <!-- DEVELOMENT 
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="gylvi_admin" password="admin_gylvi" type="javax.sql.DataSource" url="jdbc:mariadb://localhost:3306/gylvi?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
 	 -->
