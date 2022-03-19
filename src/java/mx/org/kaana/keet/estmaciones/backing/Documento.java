@@ -124,9 +124,9 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
   @Override
   protected void init() {		
     try {
-			// if(JsfBase.getFlashAttribute("accion")== null)
-			// 	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? 4L: JsfBase.getFlashAttribute("idEstimacion"));
+			if(JsfBase.getFlashAttribute("accion")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
       this.estimaciones= new Estimaciones((Long)this.attrs.get("idEstimacion"));
       if(Objects.equals(this.estimaciones.getEstimacion().getIdVenta(), null)) {
         this.estimaciones.getEstimacion().setIdVenta(-1L);
@@ -402,8 +402,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           this.doCheckFolio();
           this.toReadArticulos();
           if(!Objects.equals(this.estimaciones.getEstimacion().getFacturar(), this.ingreso.getTotal()))
-            UIBackingUtilities.execute("janal.warn('facturar', 'El importe por facturar ["+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.estimaciones.getEstimacion().getFacturar())
-                    + "] es diferente al importe de la factura ["+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.ingreso.getTotal())+ "]');");
+            UIBackingUtilities.execute("janal.warn('facturar', 'El importe por facturar [$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.estimaciones.getEstimacion().getFacturar())
+                    + "] es diferente al importe de la factura [$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.ingreso.getTotal())+ "]');");
         } // if  
         else {
           this.doDeleteXml();
@@ -449,28 +449,15 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
 	}
 	
 	public StreamedContent doFileDownload() {
-		return this.doPdfFileDownload(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"));
+		return this.doPdfFileDownload("");
 	}	
 	
 	public void doViewDocument() {
-		this.doViewDocument(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"));
+		this.doViewDocument("");
 	}
 
 	public void doViewFile() {
-		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"));
-	}
-
-	public void doLoadXmlFile() {
-		try {
-			if(this.getXml()!= null) {
-				String alias= Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.getXml().getRuta()).concat(this.getXml().getName());
-				this.toReadFactura(new File(alias), false, 1D);
-			} // if	
-	  }	// try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
+		this.doViewFile("");
 	}
 
 	public void doAutoSaveOrden() {
@@ -621,6 +608,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
       transaccion = new Operacion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf(), this.estimaciones);
       if (transaccion.ejecutar(EAccion.ELIMINAR)) {
         this.doDeleteXml();
+        this.doDeletePdf();
         this.accion= EAccion.AGREGAR;
         this.attrs.put("idFactura", -1L);
         JsfBase.addMessage("Se eliminó la factura y la cuenta x cobrar !", ETipoMensaje.INFORMACION);

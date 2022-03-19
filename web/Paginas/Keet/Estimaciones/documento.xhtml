@@ -63,7 +63,7 @@
 			}
 
       function checkCancelXml() {
-        return confirm('Precaución, ¿Esta seguro que desea cancelar la factura?\nPorque con esto se cancelará la cuenta x cobrar que se había generado por el importe de $ #{keetEstimacionesDocumento.ingreso.total}.');  
+        return confirm('¿Esta seguro que desea cancelar la factura?\n\nEsto cancelará la cuenta x cobrar que se había generado por el importe de $ #{keetEstimacionesDocumento.ingreso.total}.');  
       }
 
       function valida(input, max, name) {
@@ -152,7 +152,7 @@
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="facturar" value="Por facturar:" styleClass="janal-color-orange janal-font-bold"/>
-                  <p:inputText id="facturar" value="#{keetEstimacionesDocumento.estimaciones.estimacion.facturar}" styleClass="janal-wid-98 janal-color-orange janal-font-bold" readonly="true"/>
+                  <p:inputText id="facturar" value="$ #{keetEstimacionesDocumento.doMiles(keetEstimacionesDocumento.estimaciones.estimacion.facturar)}" styleClass="janal-wid-98 janal-color-orange janal-font-bold janal-column-center" readonly="true"/>
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="factura" value="Folio de la factura:" styleClass="janal-wid-100"/>

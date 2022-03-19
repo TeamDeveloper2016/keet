@@ -149,7 +149,9 @@ public class Operacion extends IBaseTnx implements Serializable {
           TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
           cliente.setSaldo(Numero.toRedondearSat(cliente.getSaldo()- this.orden.getTotal()));
           DaoFactory.getInstance().update(sesion, cliente);
-          this.toCheckDeleteFile(sesion);
+          this.toCheckDeleteFile(sesion, this.xml.getName(), 2L);
+          if(this.pdf!= null)
+            this.toCheckDeleteFile(sesion, this.pdf.getName(), 2L);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {

@@ -157,6 +157,10 @@ public abstract class IBaseTnx {
   }
   
   protected boolean toCheckDeleteFile(Session sesion, String nombre) throws Exception {
+    return this.toCheckDeleteFile(sesion, nombre, 1L);
+  }
+  
+  protected boolean toCheckDeleteFile(Session sesion, String nombre, Long ratificar) throws Exception {
     boolean regresar= false;
     Long idEliminado= 1L;
     Map<String, Object> params = null;
@@ -166,7 +170,7 @@ public abstract class IBaseTnx {
       TcManticArchivosDto documento= (TcManticArchivosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "identically", params);
       if(documento!= null) {
 				LOG.info("Documento: "+ documento.getAlias()+ " a ratificar su existencia en el servidor");
-        documento.setIdEliminado(1L);
+        documento.setIdEliminado(ratificar);
         regresar= DaoFactory.getInstance().update(sesion, documento)> 0L;
       } // if
       params.put("registro", Fecha.getFormatoHoras(-2));      

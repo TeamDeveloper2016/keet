@@ -446,12 +446,11 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	
 	protected void toViewFile(String nameXml) {
 		String regresar   = "";
-		String name       = nameXml;
     StringBuilder sb  = new StringBuilder("");
     FileReader in     = null;
 		BufferedReader br = null;
 		try {
-			in= new FileReader(name);
+			in= new FileReader(nameXml);
 			br= new BufferedReader(in);
 			String line;
 			while ((line = br.readLine()) != null) {
