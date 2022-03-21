@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -57,17 +58,23 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_empresa")
   private Long idEmpresa;
+  @Column (name="id_nomina_periodo")
+  private Long idNominaPeriodo;
+  @Column (name="fecha_pago")
+  private LocalDate fechaPago;
+  @Column (name="pagado")
+  private LocalDate pagado;
 
   public TcKeetEstimacionesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetEstimacionesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, -1L, LocalDate.now(), LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetEstimacionesDto(Long idVenta, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa) {
+  public TcKeetEstimacionesDto(Long idVenta, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa, Long idNominaPeriodo, LocalDate fechaPago, LocalDate pagado) {
     setIdVenta(idVenta);
     setFacturar(facturar);
     setSaldo(saldo);
@@ -82,6 +89,9 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setIdEstimacion(idEstimacion);
     setOrden(orden);
     setIdEmpresa(idEmpresa);
+    setIdNominaPeriodo(idNominaPeriodo);
+    setFechaPago(fechaPago);
+    setPagado(pagado);
   }
 	
   public void setIdVenta(Long idVenta) {
@@ -196,6 +206,30 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     this.idEmpresa = idEmpresa;
   }
 
+  public Long getIdNominaPeriodo() {
+    return idNominaPeriodo;
+  }
+
+  public void setIdNominaPeriodo(Long idNominaPeriodo) {
+    this.idNominaPeriodo = idNominaPeriodo;
+  }
+
+  public LocalDate getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(LocalDate fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public LocalDate getPagado() {
+    return pagado;
+  }
+
+  public void setPagado(LocalDate pagado) {
+    this.pagado = pagado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -238,6 +272,12 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNominaPeriodo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPagado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -259,13 +299,16 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.put("idEstimacion", getIdEstimacion());
 		regresar.put("orden", getOrden());
 		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
+		regresar.put("fechaPago", getFechaPago());
+		regresar.put("pagado", getPagado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdVenta(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa()
+      getIdVenta(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa(), getIdNominaPeriodo(), getFechaPago(), getPagado()
     };
     return regresar;
   }

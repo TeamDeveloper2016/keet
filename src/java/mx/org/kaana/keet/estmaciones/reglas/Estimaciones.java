@@ -56,6 +56,7 @@ public class Estimaciones implements Serializable {
         this.estimacion.setIkDesarrollo(new UISelectEntity(-1L));
         this.estimacion.setIkCliente(new UISelectEntity(-1L));
         this.estimacion.setIkContrato(new UISelectEntity(-1L));
+        this.estimacion.setIkNominaPeriodo(new UISelectEntity(-1L));
         this.estimacion.setRetenciones(new ArrayList<>());
       } // if
       else {
@@ -65,10 +66,12 @@ public class Estimaciones implements Serializable {
           params.put("idDesarrollo", this.estimacion.getIdDesarrollo());      
           params.put("idCliente", this.estimacion.getIdCliente());
           params.put("idContrato", this.estimacion.getIdContrato());      
+          params.put("idNominaPeriodo", this.estimacion.getIdNominaPeriodo());      
           this.estimacion.setIkEmpresa(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcManticEmpresasDto", "empresas", params)));
           this.estimacion.setIkDesarrollo(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetDesarrollosDto", "byId", params)));
           this.estimacion.setIkCliente(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcManticClientesDto", "igual", params)));
           this.estimacion.setIkContrato(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetContratosDto", "byId", params)));
+          this.estimacion.setIkNominaPeriodo(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetNominasPeriodosDto", "igual", params)));
           this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetEstimacionesDetallesDto", "estimacion", params));
           for (Retencion item: this.estimacion.getRetenciones()) 
             item.setSql(ESql.SELECT);

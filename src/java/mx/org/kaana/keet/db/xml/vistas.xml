@@ -3910,6 +3910,8 @@
 					tc_keet_nominas.id_nomina as id_key,
 					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
 					tc_keet_nominas_periodos.ejercicio,
+          tc_keet_nominas_periodos.inicio,
+          tc_keet_nominas_periodos.termino,
 					tc_keet_nominas_periodos.orden as semana
 				from
 					tc_keet_nominas

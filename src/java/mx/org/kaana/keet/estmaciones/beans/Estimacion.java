@@ -1,11 +1,11 @@
 package mx.org.kaana.keet.estmaciones.beans;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 
 /**
  *@company KAANA
@@ -25,10 +25,11 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+	private UISelectEntity ikNominaPeriodo;
   private List<Retencion> retenciones;
 
   public Estimacion() {
-    super(null, 0D, 0D, 0D, new Long(Fecha.getAnioActual()), "", 1L, -1L, -1L, "", -1L, 1L, -1L);
+    super(null, 0D, 0D, 0D, new Long(Fecha.getAnioActual()), "", 1L, -1L, -1L, "", -1L, 1L, -1L, -1L, LocalDate.now(), LocalDate.now().plusDays(7));
   }
   
 	public UISelectEntity getIkEmpresa() {
@@ -81,6 +82,16 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
 
   public void setIdCliente(Long idCliente) {
     this.idCliente = idCliente;
+  }
+
+  public UISelectEntity getIkNominaPeriodo() {
+    return ikNominaPeriodo;
+  }
+
+  public void setIkNominaPeriodo(UISelectEntity ikNominaPeriodo) {
+    this.ikNominaPeriodo = ikNominaPeriodo;
+		if(this.ikNominaPeriodo!= null)
+		  this.setIdNominaPeriodo(this.ikNominaPeriodo.getKey());
   }
 
   public List<Retencion> getRetenciones() {

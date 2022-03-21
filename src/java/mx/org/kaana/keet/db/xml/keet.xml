@@ -2013,6 +2013,15 @@
 				where
 				  id_nomina_periodo&gt;{idNominaPeriodo}
       </select>			
+      <select id="igual">
+        select      
+          tc_keet_nominas_periodos.id_nomina_periodo as id_key,
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas_periodos
+        where      
+          id_nomina_periodo= {idNominaPeriodo}
+      </select>
     </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
       <select id="row">

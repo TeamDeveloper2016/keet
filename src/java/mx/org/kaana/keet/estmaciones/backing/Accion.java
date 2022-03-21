@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -230,7 +231,8 @@ public class Accion extends IBaseFilter implements Serializable {
           this.estimaciones.getEstimacion().setIkContrato(contratos.get(0));
         else  
           this.estimaciones.getEstimacion().setIkContrato(contratos.get(contratos.indexOf(this.estimaciones.getEstimacion().getIkContrato())));
-		} // try // try
+      this.toLoadPeriodos();
+		} // try 
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
 		} // catch
@@ -239,10 +241,39 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // finally
 	} // doLoadContratos
   
+	private void toLoadPeriodos() {
+		List<UISelectEntity> periodos= null;
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    try {
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idTipoNomina", 1L);
+      if(this.accion.equals(EAccion.AGREGAR)) 
+  			params.put("ejercicio", Fecha.getAnioActual()- 1);
+      else
+  			params.put("ejercicio", this.estimaciones.getEstimacion().getIkNominaPeriodo().toLong("ejercicio"));
+			periodos= UIEntity.build("VistaNominaDto", "nominas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("periodos", periodos);
+      if(!periodos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR)) 
+          this.estimaciones.getEstimacion().setIkNominaPeriodo(periodos.get(0));
+        else  
+          this.estimaciones.getEstimacion().setIkNominaPeriodo(periodos.get(periodos.indexOf(this.estimaciones.getEstimacion().getIkNominaPeriodo())));
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	} // doLoadPeriodos
+  
 	public void doUpdateCliente() {
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
-		List<Columna> columns           = null;
 		Map<String, Object>params       = new HashMap<>();
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
@@ -258,7 +289,6 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			Methods.clean(params);
-			Methods.clean(columns);
 		} // finally
 	} // doUpdateCliente  
   
