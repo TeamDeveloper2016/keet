@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Estado de cuenta" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+    <script type="text/javascript">
+      Janal.Control.fields = {        
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idDesarrollo: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idCliente   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idContrato  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
+        dias        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        vencidos    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        idContratoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };
+			
+			Janal.Control.credenciales ={
+				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
+			};
+      
+			Janal.Control.limitePago ={
+				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				limite       : {validaciones: 'requerido', mascara: 'fecha', grupo: 'credenciales'},
+				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
+			};
+      
+			fieldsDialog = {
+				'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},
+        'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
+			};
+      
+			fieldsPlazo = {
+				'plazo': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+			};
+    </script>		
+		<style>
+			.janal-tr-orange {
+				background-color: #ABEBC6 !important;
+			}
+      .ui-icon-circle-triangle-ex {
+          background-image: url('../images/triangleRight.png') !important;
+          background-position: 0px 0px;   
+      }
+      .ui-icon-circle-triangle-sx {
+          background-image: url('../images/triangleDown.png') !important;
+          background-position: 0px 0px;
+      }	
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="ui-grid-col-3">
+					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstimacionesSaldos.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{keetEstimacionesSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetEstimacionesSaldos.doLoadDesarrollos}" process="@this idEmpresa" update="idDesarrollo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:selectItems value="#{keetEstimacionesSaldos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetEstimacionesSaldos.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{keetEstimacionesSaldos.doLoadContratos}" process="@this" update="idCliente idContrato"/>
+                <f:selectItems value="#{keetEstimacionesSaldos.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="idCliente" value="Cliente:"/>
+              <p:selectOneMenu id="idCliente" value="#{keetEstimacionesSaldos.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetEstimacionesSaldos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.razonSocial}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idContrato" value="Contrato:"/>
+              <p:selectOneMenu id="idContrato" value="#{keetEstimacionesSaldos.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetEstimacionesSaldos.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>                   
+              </p:selectOneMenu>              
+							<p:outputLabel for="consecutivo" value="Consecutivo:"/>
+              <p:inputText id="consecutivo" value="#{keetEstimacionesSaldos.attrs.consecutivo}" placeholder="Contrato" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="nombre" value="Nombre:"/>
+							<p:inputText id="nombre" value="#{keetEstimacionesSaldos.attrs.nombre}" placeholder="Contrato" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="razonSocial" value="Razón social:" rendered="false"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEstimacionesSaldos.attrs.cliente}" completeMethod="#{keetEstimacionesSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"  rendered="false">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
+							<p:outputLabel for="dias" value="Días vencidos:"/>
+							<p:inputText id="dias" value="#{keetEstimacionesSaldos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="vencidos" value="Vencidos:"/>
+							<p:selectOneMenu id="vencidos" value="#{keetEstimacionesSaldos.attrs.vencidos}" converter="javax.faces.Long" styleClass="janal-wid-96">
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+							</p:selectOneMenu>
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesSaldos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesSaldos.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{keetEstimacionesSaldos.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{keetEstimacionesSaldos.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{keetEstimacionesSaldos.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{keetEstimacionesSaldos.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
+							<p:outputLabel for="idContratoEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idContratoEstatus" value="#{keetEstimacionesSaldos.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetEstimacionesSaldos.attrs.allEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+  						<p:separator/>
+						</p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{keetEstimacionesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaPagosRealizados"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{keetEstimacionesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaPagosRealizados"/>
+						</div>
+					</p:panel>
+				</div>
+				<p:spacer/>
+				<div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="cliente" value="#{keetEstimacionesSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstimacionesSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstimacionesSaldos.lazyModel.rowCount gt keetEstimacionesSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowToggle" process="@this tabla" update="detalle" listener="#{keetEstimacionesSaldos.onRowToggle}" />  
+						<p:ajax event="rowSelect" process="tabla" update="detalle" oncomplete="PF('kajoolTable').writeSelections();" skipChildren="false"/>
+            <p:column style="width:32px">
+							<f:facet name="header">
+                <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
+							</f:facet>
+              <p:rowToggler/>
+            </p:column>            
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{cliente.desarrollo}">
+							<f:facet name="header">
+								<h:outputText value="Cliente"/>
+							</f:facet>
+              <i class="fa fa-fw fa-user janal-color-orange"></i>
+							<h:outputText value="#{cliente['razonSocial']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{cliente.cuentas}">
+							<f:facet name="header">
+								<h:outputText value="Contratos"/>
+							</f:facet>
+							<h:outputText value="#{cliente['contratos']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.importe}">
+							<f:facet name="header">
+								<h:outputText value="Importe"/>
+							</f:facet>
+							<h:outputText value="#{cliente['total']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.estimaciones}">
+							<f:facet name="header">
+								<h:outputText value="Estimaciones"/>
+							</f:facet>
+							<h:outputText value="#{cliente['estimaciones']}"/>
+						</p:column>						
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.saldo}">
+							<f:facet name="header">
+								<h:outputText value="Saldo"/>
+							</f:facet>
+							<h:outputText value="#{cliente['saldo']}"/>
+						</p:column>						
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.anticipo}">
+							<f:facet name="header">
+								<h:outputText value="Anticipos"/>
+							</f:facet>
+							<h:outputText value="#{cliente['anticipo']}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.amortizacion}">
+							<f:facet name="header">
+								<h:outputText value="Amortizacion"/>
+							</f:facet>
+							<h:outputText value="#{cliente['amortizacion']}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.fondoGarantia}">
+							<f:facet name="header">
+								<h:outputText value="Fondo garantía"/>
+							</f:facet>
+							<h:outputText value="#{cliente['fondoGarantia']}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{cliente.retenciones}">
+							<f:facet name="header">
+								<h:outputText value="Retenciones"/>
+							</f:facet>
+							<h:outputText value="#{cliente['retenciones']}"/>
+						</p:column>
+						<p:rowExpansion> 
+              <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{keetEstimacionesSaldos.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstimacionesSaldos.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{keetEstimacionesSaldos.lazyModelDetalle.rowCount gt keetEstimacionesSaldos.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{keetEstimacionesSaldos.toColor(row)}" paginatorPosition="bottom" style="display: #{empty keetEstimacionesSaldos.lazyModelDetalle? 'none': ''}">
+                <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Cliente: #{keetEstimacionesSaldos.attrs.rowSeleccionado.razonSocial}" styleClass="janal-text-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle');" oncomplete="janal.desbloquear();"/>
+                      <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
+                      <p:separator/>
+                      <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetEstimacionesSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                      <p:separator/>					
+                      <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetEstimacionesSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">   
+                    <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetEstimacionesSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                    <p:commandButton id="enviar" icon="fa fa-mail-forward" title="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetEstimacionesSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                  </div>  
+                </f:facet>												
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
+                  <f:facet name="header">
+                    <h:outputText value="Desarrollo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['desarrollo']}"/>
+                </p:column>					
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.nombre}">
+                  <f:facet name="header">
+                    <h:outputText value="Contrato"/>
+                  </f:facet>
+                  <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>											
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row['total']}"/>
+                </p:column>											
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.estimaciones}">
+                  <f:facet name="header">
+                    <h:outputText value="Estimaciones"/>
+                  </f:facet>
+                  <h:outputText value="#{row['estimaciones']}"/>
+                </p:column>						
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
+                  <f:facet name="header">
+                    <h:outputText value="Saldo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['saldo']}"/>
+                </p:column>						
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.anticipo}">
+                  <f:facet name="header">
+                    <h:outputText value="Anticipos"/>
+                  </f:facet>
+                  <h:outputText value="#{row['anticipo']}"/>
+                </p:column>
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.amortizacion}">
+                  <f:facet name="header">
+                    <h:outputText value="Amortizacion"/>
+                  </f:facet>
+                  <h:outputText value="#{row['amortizacion']}"/>
+                </p:column>
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.fondoGarantia}">
+                  <f:facet name="header">
+                    <h:outputText value="Fondo garantía"/>
+                  </f:facet>
+                  <h:outputText value="#{row['fondoGarantia']}"/>
+                </p:column>
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.retenciones}">
+                  <f:facet name="header">
+                    <h:outputText value="Retenciones"/>
+                  </f:facet>
+                  <h:outputText value="#{row['retenciones']}"/>
+                </p:column>
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
+                  <p:commandButton icon="fa fa-copy" process="@this" update="tablaPagosRealizados" actionListener="#{keetEstimacionesSaldos.toLoadPagosRealizados(row)}" title="Contratos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
+                </p:column>
+                <f:facet name="footer">
+                  <div style="display:flow-root;">
+                    <div style="float: right;">
+                      <p:outputLabel value="Total [#{keetEstimacionesSaldos.lazyModelDetalle== null? 0: keetEstimacionesSaldos.lazyModelDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
+                    </div>
+                  </div>
+                </f:facet>
+              </p:dataTable>     
+              <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle">            
+                <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" action="#{keetEstimacionesSaldos.doAccion}" process="@this detalle"/>
+                <p:separator/>
+                <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" actionListener="#{keetEstimacionesSaldos.doUpdateDocumentos()}" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
+              </p:contextMenu>
+              <h:commandLink id="detallePdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="detalleXls">
+                <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>		              
+            </p:rowExpansion>  
+						<f:facet name="footer">
+              <p:outputLabel value="Total [#{keetEstimacionesSaldos.lazyModel== null? 0: keetEstimacionesSaldos.lazyModel.rowCount}] registros" styleClass="importado janal-color-orange"/>
+						</f:facet>
+					</p:dataTable>
+          <p:spacer height="5px"/>
+          <p:dataTable id="tablaPagosRealizados" widgetVar="kajoolTablePagosRealizados" var="pago" value="#{keetEstimacionesSaldos.pagosRealizados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstimacionesSaldos.attrs.pagoRealizado}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetEstimacionesSaldos.pagosRealizados!= null? '': 'none'}" rowKey="#{pago.idKey}">
+            <f:facet name="header">
+              <div style="float: left">
+                <p:outputLabel value="Estimaciones por contrato: #{keetEstimacionesSaldos.attrs.seleccionado.nombre}" styleClass="janal-text-white janal-font-bold"/>
+              </div>
+              <p:spacer width="20px"/>
+            </f:facet>
+						<p:column class="janal-column-center janal-wid-10 MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Estimacion"/>
+							</f:facet>
+              <h:outputText value="#{pago['consecutivo']}"/>
+						</p:column>		
+						<p:column class="janal-column-center MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Periodo"/>
+							</f:facet>
+							<h:outputText value="#{pago['inicio']} al #{pago['termino']}"/>
+						</p:column>		
+						<p:column class="janal-column-left janal-wid-6 MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Factura"/>
+							</f:facet>
+							<h:outputText value="#{pago['folio']}"/>
+						</p:column>		
+						<p:column class="janal-column-right janal-wid-8 MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Importe"/>
+							</f:facet>
+							<h:outputText value="#{pago['factura']}"/>
+						</p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{pago.total}">
+              <f:facet name="header">
+                <h:outputText value="Total"/>
+              </f:facet>
+              <h:outputText value="#{pago['total']}"/>
+            </p:column>											
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.saldo}">
+              <f:facet name="header">
+                <h:outputText value="Saldo"/>
+              </f:facet>
+              <h:outputText value="#{pago['saldo']}"/>
+            </p:column>						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.amortizacion}">
+              <f:facet name="header">
+                <h:outputText value="Amortizacion"/>
+              </f:facet>
+              <h:outputText value="#{pago['amortizacion']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.fondoGarantia}">
+              <f:facet name="header">
+                <h:outputText value="Fondo garantía"/>
+              </f:facet>
+              <h:outputText value="#{pago['fondoGarantia']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.retenciones}">
+              <f:facet name="header">
+                <h:outputText value="Retenciones"/>
+              </f:facet>
+              <h:outputText value="#{pago['retenciones']}"/>
+            </p:column>
+            <f:facet name="footer">
+              <div style="display: flow-root;">
+                <div style="float: right;">
+                  <p:outputLabel value="Total [#{keetEstimacionesSaldos.pagosRealizados== null? 0: keetEstimacionesSaldos.pagosRealizados.size()}] registros" styleClass="importado"/>
+                </div>
+              </div>
+            </f:facet>            
+          </p:dataTable>  																	
+				</div>
+			</div>	
+    </div>			
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{keetEstimacionesSaldos.doRegresar}" immediate="true" rendered="#{not empty keetEstimacionesSaldos.attrs.retorno}"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{keetEstimacionesSaldos.doRegresar}" immediate="true" rendered="#{not empty keetEstimacionesSaldos.attrs.retorno}"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="lineaSeparacion" value="false" />
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza #{keetEstimacionesSaldos.attrs.msgAutorizacion}" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.#{keetEstimacionesSaldos.attrs.limitePago});" width="50%" onHide="janal.restore(); janal.desbloquear();">
+			<h:form id="formAutorizacion" prependId="false">
+				<div class="janal-wid-100-txt janal-column-center">
+				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{keetEstimacionesSaldos.attrs.ok? '': 'none'};"/>
+			  </div>
+        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
+          <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+  					<p:outputLabel for="cuenta" value="Usuario:"/>
+	  				<p:inputText id="cuenta" value="#{keetEstimacionesSaldos.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+          </p:panelGrid>
+  				<p:panelGrid columns="1" styleClass="janal-wid-100">
+	  				<p:outputLabel for="contrasenia" value="Contraseña:"/>
+		  			<p:password id="contrasenia" value="#{keetEstimacionesSaldos.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-justificacion" autocomplete="new-password"/>									
+          </p:panelGrid>
+        </p:panelGrid>
+        <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+          <p:outputLabel for="limite" value="Vencimiento:" styleClass="janal-wid-100-txt" rendered="#{keetEstimacionesSaldos.attrs.limitePago eq 'limitePago'}"/>
+          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{keetEstimacionesSaldos.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" rendered="#{keetEstimacionesSaldos.attrs.limitePago eq 'limitePago'}"/>
+        </p:panelGrid>   
+        <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
+        <p:inputTextarea id="justificacion" rows="2" value="#{keetEstimacionesSaldos.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia justificacion limite" update="invalido" value="Aceptar" action="#{keetEstimacionesSaldos.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
+					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide();"/>
+				</div>	
+			</h:form>
+		</p:dialog>			
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar estado de cuenta" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="70%">
+			<h:form id="formDialogoCorreos" prependId="false">
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">																	
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetEstimacionesSaldos.correos}" selection="#{keetEstimacionesSaldos.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" action="#{keetEstimacionesSaldos.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetEstimacionesSaldos.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoCorreos" actionListener="#{keetEstimacionesSaldos.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de cliente" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoClientes', fieldsCliente);janal.refresh();">		
+			<h:form id="formDialogoClientes" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
+					<p:outputLabel for="busqueda" value="Nombre:"/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
+						<p:inputText id="busqueda" value="#{keetEstimacionesSaldos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{keetEstimacionesSaldos.doClientes}" process="@this busqueda" update="encontrados resultados" onstart="return janal.partial('dialogo');"/>
+					</h:panelGrid>
+					<p:outputLabel for="encontrados" value="Encontrados:"/>
+					<p:selectOneMenu id="encontrados" value="#{keetEstimacionesSaldos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+						<f:selectItems value="#{keetEstimacionesSaldos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="RFC">
+							<h:outputText value="#{item.rfc}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-100" headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>  
+					</p:selectOneMenu>
+					<p:spacer/>
+					<p:outputLabel id="resultados" value="Registros encontrados: [#{keetEstimacionesSaldos.attrs.resultados}]" style="float: right !important"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{keetEstimacionesSaldos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog> 
+		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar periodo del estado de cuenta" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear(); janal.restore();" onShow="janal.change('formDialogoPlazo', fieldsPlazo); janal.refresh();">
+			<h:form id="formDialogoPlazo" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="contrato" value="Contratos:"/>
+          <p:selectOneMenu id="contrato" value="#{keetEstimacionesSaldos.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+            <f:selectItems value="#{keetEstimacionesSaldos.attrs.documentos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': ' | '}#{element.nombre}"/>
+            <p:column headerText="Clave">
+              <h:outputText value="#{item.clave}"/>
+            </p:column>   
+            <p:column headerText="Nombre">
+              <h:outputText value="#{item.nombre}"/>
+            </p:column>                   
+          </p:selectOneMenu>              
+					<p:outputLabel for="plazo" value="Plazo:"/>
+          <p:selectOneRadio id="plazo" value="#{keetEstimacionesSaldos.attrs.plazo}" columns="1">
+						<p:ajax event="change" listener="#{keetEstimacionesSaldos.doCalcularPlazo}" process="@this" update="panelFechas"/>
+						<f:selectItem itemLabel="Últimos 30 días" itemValue="1"/>
+						<f:selectItem itemLabel="De inicio de mes" itemValue="2"/>
+						<f:selectItem itemLabel="Periodo" itemValue="3"/>
+						<f:selectItem itemLabel="Cuentas pendientes" itemValue="4"/>
+					</p:selectOneRadio>
+				</h:panelGrid>	
+        <h:panelGrid id="panelFechas" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-45">
+					<h:outputLabel for="vigenciaIni" value="Periodo:"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{keetEstimacionesSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(keetEstimacionesSaldos.attrs.plazo eq 3)}"/>
+          <h:outputLabel for="vigenciaFin" value=" al "/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{keetEstimacionesSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(keetEstimacionesSaldos.attrs.plazo eq 3)}"/>
+				</h:panelGrid>
+        <hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+          <p:commandButton icon="fa fa-check" process="@this, @parent" update="tabla" value="Aceptar" actionListener="#{keetEstimacionesSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide();" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

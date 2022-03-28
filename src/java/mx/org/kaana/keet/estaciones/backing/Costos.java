@@ -140,10 +140,10 @@ public class Costos extends IBaseAttribute implements Serializable {
           if(transacion.ejecutar(EAccion.DESTRANSFORMACION)) {
             JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
             regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);				
-            JsfBase.addMessage("Se actualizaron las costos de forma correcta", ETipoMensaje.ALERTA);
+            JsfBase.addMessage("Se actualizaron los costos de forma correcta", ETipoMensaje.ALERTA);
           } // if
           else  
-            JsfBase.addMessage("Ocurrió un error al registrar las costos", ETipoMensaje.ERROR);      			
+            JsfBase.addMessage("Ocurrió un error al registrar los costos", ETipoMensaje.ERROR);      			
         } // if
         else
           JsfBase.addMessage("El costo tiene que ser mayor a cero y no puede haber valores negativos", ETipoMensaje.ERROR);      			

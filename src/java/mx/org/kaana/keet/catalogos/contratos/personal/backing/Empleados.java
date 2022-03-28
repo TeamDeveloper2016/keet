@@ -52,9 +52,9 @@ public class Empleados extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
-			loadCatalogos();
-			doLoad();
-    } // try // try
+			this.loadCatalogos();
+			this.doLoad();
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
