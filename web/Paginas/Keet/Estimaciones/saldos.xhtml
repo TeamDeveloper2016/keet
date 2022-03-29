@@ -267,7 +267,7 @@
                   <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
                   <h:outputText value="#{row['nombre']}"/>
                 </p:column>											
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
                   <f:facet name="header">
                     <h:outputText value="Total"/>
                   </f:facet>
@@ -309,7 +309,7 @@
                   </f:facet>
                   <h:outputText value="#{row['retenciones']}"/>
                 </p:column>
-                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
                   <p:commandButton icon="fa fa-copy" process="@this" update="tablaPagosRealizados" actionListener="#{keetEstimacionesSaldos.toLoadPagosRealizados(row)}" title="Contratos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
                 </p:column>
                 <f:facet name="footer">
@@ -344,25 +344,25 @@
               </div>
               <p:spacer width="20px"/>
             </f:facet>
-						<p:column class="janal-column-center janal-wid-10 MarAuto Responsive">
+						<p:column class="janal-column-center janal-wid-10 MarAuto Responsive" sortBy="#{pago.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Estimacion"/>
 							</f:facet>
               <h:outputText value="#{pago['consecutivo']}"/>
 						</p:column>		
-						<p:column class="janal-column-center MarAuto Responsive">
+						<p:column class="janal-column-center MarAuto Responsive" sortBy="#{pago.inicio}">
 							<f:facet name="header">
 								<h:outputText value="Periodo"/>
 							</f:facet>
 							<h:outputText value="#{pago['inicio']} al #{pago['termino']}"/>
 						</p:column>		
-						<p:column class="janal-column-left janal-wid-6 MarAuto Responsive">
+						<p:column class="janal-column-left janal-wid-8 MarAuto Responsive" sortBy="#{pago.folio}">
 							<f:facet name="header">
 								<h:outputText value="Factura"/>
 							</f:facet>
 							<h:outputText value="#{pago['folio']}"/>
 						</p:column>		
-						<p:column class="janal-column-right janal-wid-8 MarAuto Responsive">
+						<p:column class="janal-column-right janal-wid-8 MarAuto Responsive" sortBy="#{pago.factura}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
@@ -380,7 +380,7 @@
               </f:facet>
               <h:outputText value="#{pago['saldo']}"/>
             </p:column>						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.amortizacion}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{pago.amortizacion}">
               <f:facet name="header">
                 <h:outputText value="Amortizacion"/>
               </f:facet>
@@ -392,7 +392,7 @@
               </f:facet>
               <h:outputText value="#{pago['fondoGarantia']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{pago.retenciones}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{pago.retenciones}">
               <f:facet name="header">
                 <h:outputText value="Retenciones"/>
               </f:facet>

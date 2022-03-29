@@ -375,7 +375,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	}	
 	
 	public void doReporte(String nombre) throws Exception {
-		doReporte(nombre, false);
+		this.doReporte(nombre, false);
 	} // doReporte	
 	
 	@Override
@@ -415,14 +415,14 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       }
       else{
         params= this.toPrepare();	
-        params.put("sortOrder", "order by	nombre_empresa, nomina, puesto,  nombre_completo asc");
+        params.put("sortOrder", "order by	nombre_empresa, nomina, desarrollo, puesto,  nombre_completo asc");
         this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       }
       this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       if(sendMail)
         this.reporte.doAceptarSimple();			
 			else{
-				if(doVerificarReporte())
+				if(this.doVerificarReporte())
 					this.reporte.doAceptar();			
 			} // else
     } // try

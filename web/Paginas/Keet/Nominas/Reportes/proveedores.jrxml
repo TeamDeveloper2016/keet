@@ -186,21 +186,21 @@
 					<textField evaluationTime="Group" evaluationGroup="GRUPO_NOMINA" pattern="¤ #,##0.0" isBlankWhenNull="true">
 						<reportElement x="180" y="1" width="90" height="14" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="12b94a3e-bff6-4e96-9fc8-c751344bb36d"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$V{NOMINA_TOTAL}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="GRUPO_NOMINA" pattern="¤ #,##0.0" isBlankWhenNull="true">
 						<reportElement x="90" y="1" width="90" height="14" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="fd7b36f0-9ec6-4629-bfdf-d1fd7fa60d9a"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$V{NOMINA_IVA}]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Group" evaluationGroup="GRUPO_NOMINA" pattern="¤ #,##0.0" isBlankWhenNull="true">
 						<reportElement x="0" y="1" width="90" height="14" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="8d6e98e7-64d1-4c27-8cc3-12c1fc5c8d8e"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="11" isBold="true"/>
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$V{NOMINA_SUBTOTAL}]]></textFieldExpression>
 					</textField>
