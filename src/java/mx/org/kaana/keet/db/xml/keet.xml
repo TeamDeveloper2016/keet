@@ -3962,8 +3962,8 @@
           ifnull(tt_keet_contratos_retenciones.id_tipo_retencion, tc_keet_tipos_retenciones.id_tipo_retencion) as id_tipo_retencion,
           ifnull(tt_keet_contratos_retenciones.nombre, tc_keet_tipos_retenciones.nombre) as nombre,
           tc_keet_tipos_retenciones.alias,
-          tc_keet_tipos_retenciones.porcentaje,
-          tc_keet_tipos_retenciones.limite,
+          ifnull(tt_keet_contratos_retenciones.porcentaje, tc_keet_tipos_retenciones.porcentaje) as porcentaje,
+          ifnull(tt_keet_contratos_retenciones.limite, tc_keet_tipos_retenciones.limite) as limite,
           ifnull(tt_keet_contratos_retenciones.importe, 0) as importe,
           1 as id_deduccion,
           ifnull(tt_keet_contratos_retenciones.id_usuario, -1) as id_usuario,
@@ -3975,7 +3975,7 @@
           (select * from tc_keet_contratos_retenciones where tc_keet_contratos_retenciones.id_contrato= {idContrato}) 
           as tt_keet_contratos_retenciones on tc_keet_tipos_retenciones.id_tipo_retencion= tt_keet_contratos_retenciones.id_tipo_retencion
         order by
-          tc_keet_tipos_retenciones.registro
+          tc_keet_tipos_retenciones.id_tipo_retencion
       </select>      
     </unit>
 		<unit id="TcKeetContratosArchivosDto">

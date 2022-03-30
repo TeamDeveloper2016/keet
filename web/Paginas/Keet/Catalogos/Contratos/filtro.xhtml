@@ -13,6 +13,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'clave'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombre'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'etapa'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'razonSocial'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'viviendasMayor': {validaciones: 'libre', mascara: 'libre'},
@@ -57,6 +58,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{keetCatalogosContratosFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/>  
+              <p:outputLabel for="nombre" value="Nombre:"/>
+              <p:inputText id="nombre" value="#{keetCatalogosContratosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="etapa" value="Etapa:"/>
               <p:inputText id="etapa" value="#{keetCatalogosContratosFiltro.attrs.etapa}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="razonSocial" value="Cliente:"/>
@@ -117,11 +120,11 @@
               </f:facet>
               <h:outputText value="#{row['desarrollo']}"/>
             </p:column>
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Etapa"/>
+                <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{row['etapa']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>			            
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">

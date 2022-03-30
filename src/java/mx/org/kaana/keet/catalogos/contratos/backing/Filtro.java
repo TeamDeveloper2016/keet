@@ -57,7 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idContratoEstatus", new UISelectEntity("-1"));
 			if(JsfBase.getFlashAttribute("idContratoProcess")!= null){
 				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idContratoProcess", null);
 			} // if
     } // try
@@ -80,6 +80,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("proyecto", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -186,6 +187,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("(tc_mantic_clientes.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_keet_contratos.clave like '%").append(this.attrs.get("clave")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("nombre")))
+			sb.append("(tc_keet_contratos.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("etapa")))
 			sb.append("(tc_keet_contratos.etapa like '%").append(this.attrs.get("etapa")).append("%') and ");
     if(provedores!= null && cliente!= null && provedores.indexOf(cliente)>= 0) 

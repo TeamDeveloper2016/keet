@@ -88,6 +88,10 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   private Double fondoGarantia;
   @Column (name="vence")
   private LocalDate vence;
+  @Column (name="inicio")
+  private LocalDate inicio;
+  @Column (name="termino")
+  private LocalDate termino;
 
   public TcKeetContratosDto() {
     this(new Long(-1L));
@@ -103,10 +107,10 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   }
   
   public TcKeetContratosDto(String clave, Long idProyecto, String etapa, LocalDate recepcion, LocalDate aceptacion, Long ejercicio, String consecutivo, Long idContratoEstatus, Long idUsuario, Long idContrato, LocalDate arranque, String observaciones, Long idEmpresa, Long orden, Long noViviendas, Double costo, String nombre, String permiso) {
-    this(clave, idProyecto, etapa, recepcion, aceptacion, ejercicio, consecutivo, idContratoEstatus, idUsuario, idContrato, arranque, observaciones, idEmpresa, orden, noViviendas, costo, nombre, permiso, 0D, 0D, -1L, -1L, null, LocalDate.now(), null, 0D, 0D, LocalDate.now());
+    this(clave, idProyecto, etapa, recepcion, aceptacion, ejercicio, consecutivo, idContratoEstatus, idUsuario, idContrato, arranque, observaciones, idEmpresa, orden, noViviendas, costo, nombre, permiso, 0D, 0D, -1L, -1L, null, LocalDate.now(), null, 0D, 0D, LocalDate.now(), LocalDate.now(), LocalDate.now());
   }
   
-  public TcKeetContratosDto(String clave, Long idProyecto, String etapa, LocalDate recepcion, LocalDate aceptacion, Long ejercicio, String consecutivo, Long idContratoEstatus, Long idUsuario, Long idContrato, LocalDate arranque, String observaciones, Long idEmpresa, Long orden, Long noViviendas, Double costo, String nombre, String permiso, Double porcentajeAnticipo, Double anticipo, Long idTipoMedioPago, Long idBanco, String referencia, LocalDate deposito, String pagare, Double porcentajeFondo, double fondoGarantia, LocalDate vence) {
+  public TcKeetContratosDto(String clave, Long idProyecto, String etapa, LocalDate recepcion, LocalDate aceptacion, Long ejercicio, String consecutivo, Long idContratoEstatus, Long idUsuario, Long idContrato, LocalDate arranque, String observaciones, Long idEmpresa, Long orden, Long noViviendas, Double costo, String nombre, String permiso, Double porcentajeAnticipo, Double anticipo, Long idTipoMedioPago, Long idBanco, String referencia, LocalDate deposito, String pagare, Double porcentajeFondo, double fondoGarantia, LocalDate vence, LocalDate inicio, LocalDate termino) {
     setClave(clave);
     setIdProyecto(idProyecto);
     setEtapa(etapa);
@@ -136,6 +140,8 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
     this.porcentajeFondo= porcentajeFondo;
     this.fondoGarantia= fondoGarantia;
     this.vence= vence;
+    this.inicio= inicio;
+    this.termino= termino;
   }
 	
   public void setClave(String clave) {
@@ -369,6 +375,22 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   public void setVence(LocalDate vence) {
     this.vence = vence;
   }
+
+  public LocalDate getInicio() {
+    return inicio;
+  }
+
+  public void setInicio(LocalDate inicio) {
+    this.inicio = inicio;
+  }
+
+  public LocalDate getTermino() {
+    return termino;
+  }
+
+  public void setTermino(LocalDate termino) {
+    this.termino = termino;
+  }
 	
   @Transient
   @Override
@@ -442,6 +464,10 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.append(getFondoGarantia());		
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getVence());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getInicio());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTermino());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -478,13 +504,15 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.put("porcentajeFondo", getPorcentajeFondo());
 		regresar.put("fondoGarantia", getFondoGarantia());
 		regresar.put("vence", getVence());
+		regresar.put("inicio", getInicio());
+		regresar.put("termino", getTermino());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getClave(), getIdProyecto(), getEtapa(), getRecepcion(), getAceptacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdContratoEstatus(), getIdUsuario(), getIdContrato(), getArranque(), getObservaciones(), getIdEmpresa(), getOrden(), getNoViviendas(), getCosto(), getNombre(), getPermiso(), getPorcentajeFondo(), getFondoGarantia(), getVence()
+			getClave(), getIdProyecto(), getEtapa(), getRecepcion(), getAceptacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdContratoEstatus(), getIdUsuario(), getIdContrato(), getArranque(), getObservaciones(), getIdEmpresa(), getOrden(), getNoViviendas(), getCosto(), getNombre(), getPermiso(), getPorcentajeFondo(), getFondoGarantia(), getVence(), getInicio(), getTermino()
     };
     return regresar;
   }
