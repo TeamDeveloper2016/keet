@@ -287,8 +287,9 @@
                   </f:facet>
                   <h:outputText value="#{row['retenciones']}"/>
                 </p:column>
-                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
-                  <p:commandButton icon="fa fa-copy" process="@this" update="tablaPagosRealizados" actionListener="#{keetEstimacionesSaldos.toLoadPagosRealizados(row)}" title="Contratos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" exportable="false">
+                  <p:commandButton icon="fa fa-copy" process="@this" update="tablaPagosRealizados" actionListener="#{keetEstimacionesSaldos.doLoadPagosRealizados(row)}" title="Contratos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
+                  <p:commandButton icon="fa fa-file-pdf-o" process="@this tabla" actionListener="#{keetEstimacionesSaldos.doContrato('ESTIMACION_SALDOS', row)}" title="Estado cuenta" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"  update="descargar"/>
                 </p:column>
                 <f:facet name="footer">
                   <div style="display:flow-root;">
@@ -376,6 +377,9 @@
                 <h:outputText value="Retenciones"/>
               </f:facet>
               <h:outputText value="#{pago['retenciones']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
+              <p:commandButton icon="fa fa-file-pdf-o" process="@this tabla" actionListener="#{keetEstimacionesSaldos.doEstimaciones('ESTIMACION_SALDOS', pago)}" title="Estado cuenta" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"  update="descargar"/>
             </p:column>
             <f:facet name="footer">
               <div style="display: flow-root;">

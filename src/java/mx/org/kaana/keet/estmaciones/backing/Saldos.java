@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -55,7 +56,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private FormatLazyModel historialPagos;
 	private List<Entity> pagosRealizados;
 	private Long individual;
-  protected FormatLazyModel lazyPagosRealizados;
 
   public FormatLazyModel getLazyModelDetalle() {
     return lazyModelDetalle;
@@ -101,10 +101,6 @@ public class Saldos extends IBaseFilter implements Serializable {
     return pagosRealizados;
   }
 
-  public FormatLazyModel getLazyPagosRealizados() {
-    return lazyPagosRealizados;
-  }
-
   @PostConstruct
   @Override
   protected void init() {
@@ -114,6 +110,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.toLoadSucursales();
       this.toLoadCatalog();
+      this.attrs.put("ikContrato", -1L);
+      this.attrs.put("ikEstimacion", -1L);
       this.individual= -1L;
     } // try
     catch (Exception e) {
@@ -141,9 +139,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));    
 			this.lazyModel = new FormatCustomLazy("VistaEstimacionesDto", "clientes", params, columns);
       UIBackingUtilities.resetDataTable();	
-      this.lazyModelDetalle   = null;
-      this.pagosRealizados    = null;
-      this.lazyPagosRealizados= null;																	 
+      this.lazyModelDetalle= null;
+      this.pagosRealizados = null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -170,8 +167,13 @@ public class Saldos extends IBaseFilter implements Serializable {
       else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
         sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
     } // if
-    else
+    else {
       sb.append("tc_mantic_clientes.id_cliente= ").append(this.individual).append(" and ");
+      if(!Cadena.isVacio(this.attrs.get("ikContrato")) && !Objects.equals((Long)this.attrs.get("ikContrato"), -1L))
+        sb.append("tc_keet_contratos.id_contrato= ").append((Long)this.attrs.get("ikContrato")).append(" and ");
+      if(!Cadena.isVacio(this.attrs.get("ikEstimacion")) && !Objects.equals((Long)this.attrs.get("ikEstimacion"), -1L))
+        sb.append("tc_keet_estimaciones.id_estimacion= ").append((Long)this.attrs.get("ikEstimacion")).append(" and ");
+    } // if  
   	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_keet_contratos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
   	if(!Cadena.isVacio(this.attrs.get("nombre")))
@@ -206,6 +208,38 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar;		
 	} // toPrepare	
 
+  public void doLoadPagosRealizados(Entity row) {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      this.attrs.put("seleccionado", row);
+      params = new HashMap<>();      
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());      
+      params.put("idContrato", row.toLong("idContrato"));      
+      columns = new ArrayList<>();
+      columns.add(new Columna("factura", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("facturar", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("amortizacion", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));  
+      this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "estimacion", params);
+      if(this.pagosRealizados!= null && !this.pagosRealizados.isEmpty()) 
+        UIBackingUtilities.toFormatEntitySet(this.pagosRealizados, columns);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+	  } // finally
+  } 
+  
  	protected void toLoadCatalog() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
@@ -285,6 +319,22 @@ public class Saldos extends IBaseFilter implements Serializable {
   public void doEstadoCuenta(String nombre, Entity row) throws Exception {
     this.individual= row.toLong("idCliente");
     this.doReporte(nombre);
+    this.individual= -1L;    
+  }
+
+  public void doContrato(String nombre, Entity row) throws Exception {
+    this.individual= row.toLong("idCliente");
+    this.attrs.put("ikContrato", row.toLong("idContrato"));
+    this.doReporte(nombre);
+    this.attrs.put("ikContrato", -1L);
+    this.individual= -1L;    
+  }
+  
+  public void doEstimaciones(String nombre, Entity row) throws Exception {
+    this.individual= row.toLong("idCliente");
+    this.attrs.put("ikEstimacion", row.toLong("idEstimacion"));
+    this.doReporte(nombre);
+    this.attrs.put("ikEstimacion", -1L);
     this.individual= -1L;    
   }
   

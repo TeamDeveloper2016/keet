@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="estimacion" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="144"/>
+	<property name="ireport.x" value="67"/>
+	<property name="ireport.y" value="207"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -77,14 +77,14 @@
 	<field name="FOLIO" class="java.lang.String"/>
 	<field name="FACTURA" class="java.math.BigDecimal"/>
 	<field name="FACTURAR" class="java.math.BigDecimal"/>
-	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="ESTIMADO" class="java.math.BigDecimal"/>
 	<field name="SALDO" class="java.math.BigDecimal"/>
 	<field name="AMORTIZACION" class="java.math.BigDecimal"/>
 	<field name="FONDO_GARANTIA" class="java.math.BigDecimal"/>
 	<field name="RETENCIONES" class="java.math.BigDecimal"/>
 	<field name="ID_ESTIMACION_ESTATUS" class="java.math.BigDecimal"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
 	</variable>
 	<variable name="CLIENTE_RETENCION" class="java.lang.Double" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
 		<variableExpression><![CDATA[$F{RETENCIONES}]]></variableExpression>
@@ -106,8 +106,8 @@
 		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="CLIENTE_TOTAL" class="java.lang.Double" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
-		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	<variable name="CLIENTE_ESTIMADO" class="java.lang.Double" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
+		<variableExpression><![CDATA[$F{ESTIMADO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="CLIENTE_ANTICIPO" class="java.lang.Double" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
@@ -142,8 +142,8 @@
 		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="CONTRATO_TOTAL" class="java.lang.Double" resetType="Group" resetGroup="CONTRATO" calculation="Sum">
-		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	<variable name="CONTRATO_ESTIMADO" class="java.lang.Double" resetType="Group" resetGroup="CONTRATO" calculation="Sum">
+		<variableExpression><![CDATA[$F{ESTIMADO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="CONTRATO_ANTICIPO" class="java.lang.Double" resetType="Group" resetGroup="CONTRATO" calculation="Sum">
@@ -178,8 +178,8 @@
 		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="TOTAL_TOTAL" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	<variable name="TOTAL_ESTIMADO" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{ESTIMADO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="TOTAL_ANTICIPO" class="java.lang.Double" calculation="Sum">
@@ -203,7 +203,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["   CLIENTE  :  "+ $F{RAZON_SOCIAL}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["  CLIENTE  :  "+ $F{RAZON_SOCIAL}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -251,17 +251,17 @@
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$V{CLIENTE_TOTAL}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$V{CLIENTE_ESTIMADO}]]></textFieldExpression>
 					</textField>
 					<staticText>
-						<reportElement x="0" y="0" width="25" height="14" forecolor="#000000" uuid="489e2281-4249-4b48-8d8c-a063dae2526a"/>
+						<reportElement x="0" y="0" width="37" height="14" forecolor="#000000" uuid="489e2281-4249-4b48-8d8c-a063dae2526a"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Total:]]></text>
+						<text><![CDATA[Cliente:]]></text>
 					</staticText>
 					<textField evaluationTime="Group" evaluationGroup="CLIENTE" pattern="#,##0.00" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="26" y="0" width="79" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="ab16e51f-0dea-4886-b8f3-efd675087435"/>
+						<reportElement mode="Opaque" x="37" y="0" width="68" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="ab16e51f-0dea-4886-b8f3-efd675087435"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
@@ -306,7 +306,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["               CONTRATO  :  "+ $F{CONTRATO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["      CONTRATO  :  "+ $F{CONTRATO}]]></textFieldExpression>
 				</textField>
 				<frame>
 					<reportElement mode="Opaque" x="0" y="15" width="752" height="15" forecolor="#000000" backcolor="#FFFF99" uuid="1555a9c4-e832-4553-b5b0-1080fc4dfa01"/>
@@ -433,7 +433,7 @@
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$V{CONTRATO_TOTAL}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$V{CONTRATO_ESTIMADO}]]></textFieldExpression>
 					</textField>
 					<staticText>
 						<reportElement x="105" y="0" width="51" height="14" forecolor="#000000" uuid="3d3315ca-9d4b-4c42-adda-057c6f33c6ee"/>
@@ -443,14 +443,14 @@
 						<text><![CDATA[Anticipo:]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="0" y="0" width="25" height="14" forecolor="#000000" uuid="133d3842-1c54-4c2b-bdb0-804e883a5ff2"/>
+						<reportElement x="0" y="0" width="37" height="14" forecolor="#000000" uuid="133d3842-1c54-4c2b-bdb0-804e883a5ff2"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Total:]]></text>
+						<text><![CDATA[Contrato:]]></text>
 					</staticText>
 					<textField evaluationTime="Group" evaluationGroup="CONTRATO" pattern="#,##0.00" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="26" y="0" width="79" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="95975360-e829-4c24-a0d7-8c61ff4e400e"/>
+						<reportElement mode="Opaque" x="37" y="0" width="68" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="95975360-e829-4c24-a0d7-8c61ff4e400e"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
@@ -477,7 +477,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="78" splitType="Stretch">
+		<band height="77" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement key="image-1" stretchType="RelativeToTallestObject" x="0" y="0" width="137" height="77" uuid="7d34a0af-473f-424c-9620-1a1602775de9"/>
 				<box>
@@ -620,7 +620,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ESTIMADO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="538" y="0" width="66" height="14" uuid="8b8f518e-b420-403e-8f19-cf2c6f8d6d6f"/>
@@ -705,7 +705,7 @@
 					<pen lineWidth="1.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="604" y="4" width="76" height="15" uuid="c956cf12-330d-49b2-9922-cc5380b7d93d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
@@ -719,40 +719,40 @@
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="680" y="4" width="72" height="15" uuid="00689f2c-2765-48de-824e-749fbf564a87"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_RETENCION}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="464" y="4" width="74" height="15" uuid="7b4276e8-ca9d-4981-aa17-655b9f8b5449"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_FACTURADO}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="538" y="4" width="66" height="15" uuid="070109e6-e05e-4618-b774-d5d5ed1b95d4"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_AMORTIZACION}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="334" y="4" width="78" height="15" uuid="f0a8f6c1-120f-4194-b5e5-165add94ec79"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_SALDO}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="250" y="4" width="84" height="15" uuid="02bf4742-9911-46f3-a73e-04c3db5aab20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{TOTAL_TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{TOTAL_ESTIMADO}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="106" y="6" width="51" height="14" forecolor="#000000" uuid="af2403be-9fbe-4435-a681-f58e39f9e5ad"/>
@@ -761,14 +761,14 @@
 				</textElement>
 				<text><![CDATA[Anticipo:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField evaluationTime="Report" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Opaque" x="27" y="6" width="78" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="e2649b1b-8f7b-4eb1-97cc-1d4717b455da"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_COSTO}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="CLIENTE" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField evaluationTime="Group" evaluationGroup="CLIENTE" pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Opaque" x="159" y="5" width="91" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="6ee6edfc-2fb6-4514-b17a-8f7e587c2d4e"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
