@@ -66,6 +66,7 @@ public enum EReportes implements IReportAttribute{
   LISTADO_NOMINA            ("VistaNominaDto", "lazy", "Listado de nómina", "/Paginas/Keet/Nominas/Reportes/nomina", EFormatos.PDF, "listado_nomina", "/Paginas/Keet/Nominas/filtro"),
   DETALLE_NOMINA_PERSONAS   ("VistaNominaConsultasDto", "personas", "Detalle de nómina del personal", "/Paginas/Keet/Nominas/Reportes/detallePersona", EFormatos.PDF, "detalle_nomina_persona", "/Paginas/Keet/Nominas/filtro"),
   LISTADO_NOMINA_PERSONAS   ("VistaNominaConsultasDto", "personas", "Listado de nómina del personal", "/Paginas/Keet/Nominas/Reportes/personas", EFormatos.PDF, "listado_nomina_contratistas", "/Paginas/Keet/Nominas/personas"),
+  LISTADO_NOMINA_CALCULADA  ("VistaNominaConsultasDto", "calculada", "Listado de nómina del personal", "/Paginas/Keet/Nominas/Reportes/personas", EFormatos.PDF, "listado_nomina_contratistas", "/Paginas/Keet/Nominas/personas"),
   LISTADO_NOMINA_PROVEEDORES("VistaNominaConsultasDto", "proveedores", "Listado de nómina de los subcontratistas", "/Paginas/Keet/Nominas/Reportes/proveedores", EFormatos.PDF, "listado_nomina_subcontratistas", "/Paginas/Keet/Nominas/proveedores"),
   DESTAJOS_CONTRATISTA_X    ("VistaNominaConsultasDto", "personas", "Detalle del destajos del contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Nominas/filtro"),
   DESTAJOS_CAT_CONTRATISTA  ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
@@ -80,7 +81,8 @@ public enum EReportes implements IReportAttribute{
   PROTOTIPOS                ("VistaReportesEstacionesDto", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones_prototipo", "/Paginas/Keet/Estaciones/contrato"),
   MATERIALES                ("VistaReportesEstacionesDto", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro"),
   CONTROLES                 ("VistaReportesEstacionesDto", "controles", "Controles", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "controles", "/Paginas/Keet/Estaciones/contrato"),
-  CAJA_CHICA                ("VistaReportesCajaChicaDto", "detalle", "Listado de gastos de caja chica", "/Paginas/Keet/CajaChica/Reportes/detalleCajaChica", EFormatos.PDF, "caja_chica", "/Paginas/Keet/CajaChica/filtro");
+  CAJA_CHICA                ("VistaReportesCajaChicaDto", "detalle", "Listado de gastos de caja chica", "/Paginas/Keet/CajaChica/Reportes/detalleCajaChica", EFormatos.PDF, "caja_chica", "/Paginas/Keet/CajaChica/filtro"),
+  ESTIMACION_SALDOS         ("VistaEstimacionesDto", "saldos", "Estado de cuenta", "/Paginas/Keet/Estimaciones/Reportes/estimacion", EFormatos.PDF, "estado_cuenta", "/Paginas/Keet/Estimaciones/saldos");
 		
 	private final String proceso;
   private final String idXml;

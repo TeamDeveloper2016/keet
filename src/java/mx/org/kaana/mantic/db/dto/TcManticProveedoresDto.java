@@ -72,7 +72,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   }
 
   public TcManticProveedoresDto(Long key) {
-    this(null, key, null, 5L, "0.00", null, null, null, null, null, null, null, null, null, 2L, 0D, 0D);
+    this(null, key, null, 5L, "0.00", null, null, null, 1L, null, null, null, null, null, 2L, 0D, 0D);
     setKey(key);
   }
 

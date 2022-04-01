@@ -396,7 +396,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));	
       this.reporte= JsfBase.toReporte();
-      if(!reporteSeleccion.equals(EReportes.LISTADO_NOMINA_PERSONAS)){
+      if(!reporteSeleccion.equals(EReportes.LISTADO_NOMINA_PERSONAS)) {
         paramsPpal= this.toPrepare();
         entity= (Entity)this.attrs.get("seleccionado");
         paramsPpal.put("sortOrder", "order by nomina desc");
@@ -412,12 +412,22 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
         parametros.put(Constantes.TILDE.concat("SUBREPORTE_1"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport1.jasper");
         parametros.put(Constantes.TILDE.concat("SUBREPORTE_2"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport2.jasper");
         this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, paramsPpal, parametros));		
-      }
-      else{
+      } // if
+      else {
         params= this.toPrepare();	
         params.put("sortOrder", "order by	nombre_empresa, nomina, desarrollo, puesto,  nombre_completo asc");
-        this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      }
+        Long idNominaEstatus= -1L;
+        List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
+        if(nominas!= null && !nominas.isEmpty()) {
+          int index= nominas.indexOf((UISelectEntity)this.attrs.get("idNomina"));
+          if(index>= 0) 
+            idNominaEstatus= nominas.get(index).toLong("idNominaEstatus");
+        } // if
+        if(Objects.equals(idNominaEstatus, -1L) || Objects.equals(idNominaEstatus, ENominaEstatus.TERMINADA))
+          this.reporte.toAsignarReporte(new ParametrosReporte(EReportes.LISTADO_NOMINA_PERSONAS, params, parametros));		
+        else
+          this.reporte.toAsignarReporte(new ParametrosReporte(EReportes.LISTADO_NOMINA_CALCULADA, params, parametros));		
+      } // else_ACTU
       this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       if(sendMail)
         this.reporte.doAceptarSimple();			

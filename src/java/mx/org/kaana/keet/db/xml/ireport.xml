@@ -6,6 +6,77 @@
   <model>
   </model>
   <dml>
+    <unit id="VistaReportesEstimacionesDto">
+      <select id="estimacion">
+			  select
+          tc_keet_estimaciones.id_estimacion as id_key,
+          tc_mantic_clientes.id_cliente,
+          tc_mantic_clientes.razon_social,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.nombre as contrato,
+          tc_keet_contratos.costo,
+          tc_keet_contratos.anticipo,
+          tc_keet_contratos.fondo_garantia as fondo,
+          tc_keet_estimaciones.id_estimacion,
+          tc_keet_estimaciones.consecutivo,
+          tc_keet_nominas_periodos.inicio,
+          tc_keet_nominas_periodos.termino,
+          concat(tc_keet_series.clave, tc_mantic_facturas.folio) as folio,
+          tc_mantic_ventas.total as factura,
+          tc_keet_estimaciones.facturar,
+          sum(tc_keet_estimaciones.importe) as total,
+          sum(tc_keet_estimaciones.saldo) as saldo,
+          ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
+          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+          tc_keet_estimaciones.id_estimacion_estatus
+        from
+          tc_keet_estimaciones
+        inner join
+          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join 
+          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join
+          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        left join
+          tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
+        left join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        left join
+          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+        left join (
+          select
+            tc_keet_estimaciones.id_estimacion,    
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+          from    
+            tc_keet_estimaciones 
+          inner join
+            tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+          inner join
+            tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+          inner join
+            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+          inner join 
+            tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+          group by
+            tc_keet_estimaciones.id_estimacion
+        ) tt_keet_retenciones on tc_keet_estimaciones.id_estimacion= tt_keet_retenciones.id_estimacion
+        where
+          tc_keet_estimaciones.id_empresa in ({idEmpresa})
+          and {condicion}
+        group by
+          tc_mantic_clientes.id_cliente,
+          tc_keet_contratos.id_contrato,
+          tc_keet_estimaciones.id_estimacion desc        
+      </select>
+    </unit>  
     <unit id="VistaReportesCajaChicaDto">
       <select id="detalle">
         select

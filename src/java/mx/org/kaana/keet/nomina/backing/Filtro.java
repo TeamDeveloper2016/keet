@@ -347,13 +347,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {		  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.LISTADO_NOMINA)){
+      if(reporteSeleccion.equals(EReportes.LISTADO_NOMINA)) {
         params = this.toPrepare();
         params.put("sortOrder", "order by tc_keet_nominas.id_nomina desc");
       }
-      else {
+      else 
         params = this.toPrepare();
-      }
       this.reporte= JsfBase.toReporte();
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
