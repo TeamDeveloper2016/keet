@@ -68,6 +68,7 @@ public class Garantias extends IBaseAttribute implements Serializable {
       if(JsfBase.getFlashAttribute("idContrato")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion"));
       this.contrato= (TcKeetContratosDto)DaoFactory.getInstance().findById(TcKeetContratosDto.class, (Long)this.attrs.get("idContrato"));
 			this.doLoad();

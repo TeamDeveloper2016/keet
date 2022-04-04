@@ -423,6 +423,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/saldos");					
 			JsfBase.setFlashAttribute("idContrato", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idContrato"));			
+      JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionadoDetalle")).toLong("idCliente"));
       return "/Paginas/Keet/Catalogos/Contratos/garantias".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
