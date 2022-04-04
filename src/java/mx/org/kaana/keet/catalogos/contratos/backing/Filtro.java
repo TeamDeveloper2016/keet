@@ -48,14 +48,14 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
-			loadEmpresas();
+			this.toLoadEmpresas();
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", "tipoObra");
 			this.attrs.put("tipoObras", tiposObras);
 			this.attrs.put("tipoObra", UIBackingUtilities.toFirstKeySelectEntity(tiposObras));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetContratosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idContratoEstatus", new UISelectEntity("-1"));
-			if(JsfBase.getFlashAttribute("idContratoProcess")!= null){
+			if(JsfBase.getFlashAttribute("idContratoProcess")!= null) {
 				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
 				this.doLoad();
 				this.attrs.put("idContratoProcess", null);
@@ -267,7 +267,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 	
-	private void loadEmpresas() {
+	private void toLoadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
@@ -286,6 +286,18 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally{
 			Methods.clean(params);
 		}	// finally	
-	} // loadEmpresas
-	
+	} // toLoadEmpresas
+  
+  public String doGarantias() {
+    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Contratos/garantias".concat(Constantes.REDIRECIONAR);
+  }
+  
+  public String doExtras() {
+    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Contratos/extras".concat(Constantes.REDIRECIONAR);
+  }
+  
 }

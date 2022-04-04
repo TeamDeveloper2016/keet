@@ -401,7 +401,7 @@
                   </p:fieldset>
                   <p:fieldset legend="Fondo de garantía:">
                     <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
-                      <p:inputNumber id="porcentajeFondo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeFondo}" inputStyleClass="janal-wid-100-txt janal-column-center fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100"  emptyValue="zero" symbol=" %" symbolPosition="s">
+                      <p:inputNumber id="porcentajeFondo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeFondo}" inputStyleClass="janal-wid-100-txt janal-column-center fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" emptyValue="zero" symbol=" %" symbolPosition="s">
                         <p:ajax event="change" process="@this contenedorGrupos:fondoGarantia" update="contenedorGrupos:fondoGarantia @(.fondo)" listener="#{keetCatalogosContratosAccion.doCalculateFondoGarantia(true)}"/>
                       </p:inputNumber>  
                       <p:inputNumber id="fondoGarantia" value="#{keetCatalogosContratosAccion.contrato.contrato.fondoGarantia}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">

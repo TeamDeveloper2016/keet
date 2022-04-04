@@ -165,6 +165,9 @@
             <p:menuitem id="estaciones" action="#{keetCatalogosContratosFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" ajax="false" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
+            <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
+            <p:menuitem id="garantias" icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:menuitem id="extras" icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
           </p:contextMenu>
         </div>
       </div>

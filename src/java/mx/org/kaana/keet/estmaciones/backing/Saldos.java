@@ -15,7 +15,6 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -109,6 +108,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.toLoadSucursales();
+      if(JsfBase.getFlashAttribute("idContratoProcess")!= null) {
+        this.individual= (Long)JsfBase.getFlashAttribute("idClienteProcess");
+        this.doLoad();
+      } // if  
       this.toLoadCatalog();
       this.attrs.put("ikContrato", -1L);
       this.attrs.put("ikEstimacion", -1L);
@@ -352,6 +355,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       this.doVerificarReporte();
@@ -364,15 +368,12 @@ public class Saldos extends IBaseFilter implements Serializable {
   } // doReporte
   
   public boolean doVerificarReporte() {
-    boolean regresar = false;
-		if(this.reporte.getTotal()> 0L) {
+    boolean regresar = this.reporte.getTotal()> 0L;
+		if(regresar) 
 			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
-      regresar = true;
-    } // if
-		else{
+    else {
 			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
 		} // else
     return regresar;
 	} // doVerificarReporte	
@@ -420,9 +421,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	public String doAccion() {
 		String regresar= null; 
 		try {
-			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");					
-			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idVenta"));			
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/saldos");					
+			JsfBase.setFlashAttribute("idContrato", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idContrato"));			
+      return "/Paginas/Keet/Catalogos/Contratos/garantias".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -598,5 +599,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}  
+ 
+  public String doExtras() {
+    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionadoDetalle")).toLong("idContrato"));
+    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionadoDetalle")).toLong("idCliente"));
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Contratos/extras".concat(Constantes.REDIRECIONAR);
+  }
   
 }

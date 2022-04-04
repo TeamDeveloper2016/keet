@@ -116,7 +116,7 @@
 								<p:inputText id="idCliente" value="#{keetEstimacionesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="idContrato" value="Contrato:"/>
                 <p:selectOneMenu id="idContrato" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" update="contenedorGrupos:tabla" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="change" process="@this" update="contenedorGrupos:tabla calculos" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetEstimacionesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
                   <p:column headerText="Clave" styleClass="janal-wid-10">
 										<p:outputLabel value="#{list.clave}"/>
@@ -200,7 +200,7 @@
                     <p:ajax event="change" process="@this tabla" update="contenedorGrupos:importe @(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tabla\\:tabla\\:#{index}\\:importe', -1, 'Importe');" oncomplete="valida('#contenedorGrupos\\:tabla\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}'); janal.refresh();"/>
                   </p:inputText>
 								</p:column>																				
-                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" rendered="false">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" rendered="#{keetEstimacionesAccion.isCafu}">
 									<f:facet name="header">
 										<h:outputText value="Acción"/>
 									</f:facet>

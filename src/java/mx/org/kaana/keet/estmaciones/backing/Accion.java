@@ -30,12 +30,12 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -63,6 +63,10 @@ public class Accion extends IBaseFilter implements Serializable {
 	public String getConsultar() {
 		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
 	}
+  
+  public Boolean getIsCafu() {
+    return Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu");
+  }  
   
 	@PostConstruct
   @Override
@@ -335,7 +339,7 @@ public class Accion extends IBaseFilter implements Serializable {
       if(Objects.equals(item.getIdDeduccion(), 1L))
         suma-= item.getImporte();
       else
-        suma+= item.getImporte();
+        suma+= 0L; // item.getImporte();
       if(row== null && Objects.equals(item.getSql(), ESql.SELECT))
         item.setSql(ESql.UPDATE);
     } // for

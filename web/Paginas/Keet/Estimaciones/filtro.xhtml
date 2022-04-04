@@ -134,12 +134,9 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem value="Agregar" action="#{keetEstimacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" action="#{keetEstimacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
@@ -202,16 +199,8 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem icon="fa fa-search" value="Consultar" action="#{keetEstimacionesFiltro.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" />					
-            <p:separator rendered="#{fn:contains('|1|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
-            <p:menuitem icon="fa fa-edit" value="Modificar" action="#{keetEstimacionesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus eq '1'}"/>					
-            <p:separator/>
-            <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetEstimacionesFiltro.doMovimientos}"/>
-            <p:separator/>
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstimacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
-            <p:separator rendered="#{fn:contains('|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}" />
-            <p:menuitem icon="fa fa-file-signature" value="Factura" action="#{keetEstimacionesFiltro.doLoadFactura}" ajax="false" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|2|', keetEstimacionesFiltro.attrs.seleccionado.idEstimacionEstatus)}"/>
+            <p:menuitem icon="fa fa-copy" value="Garantias" action="#{keetEstimacionesFiltro.doAccion('GENERAR')}" ajax="false" onstart="return janal.bloquear();" process="@this tabla" oncomplete="janal.desbloquear();" />					
+            <p:menuitem icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" process="@this tabla" oncomplete="janal.desbloquear();"/>
           </p:contextMenu>						
         </div>
       </div>

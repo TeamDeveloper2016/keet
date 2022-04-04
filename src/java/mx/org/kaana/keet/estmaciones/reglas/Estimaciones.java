@@ -1,11 +1,11 @@
 package mx.org.kaana.keet.estmaciones.reglas;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
@@ -14,6 +14,7 @@ import mx.org.kaana.keet.estmaciones.beans.Retencion;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
@@ -50,7 +51,7 @@ public class Estimaciones implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idEstimacion", idEstimacion);      
-      if(Objects.equal(idEstimacion, -1L)) {
+      if(Objects.equals(idEstimacion, -1L)) {
         this.estimacion= new Estimacion();
         this.estimacion.setIkEmpresa(new UISelectEntity(-1L));
         this.estimacion.setIkDesarrollo(new UISelectEntity(-1L));
@@ -73,8 +74,11 @@ public class Estimaciones implements Serializable {
           this.estimacion.setIkContrato(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetContratosDto", "byId", params)));
           this.estimacion.setIkNominaPeriodo(new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("TcKeetNominasPeriodosDto", "igual", params)));
           this.estimacion.setRetenciones((List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetEstimacionesDetallesDto", "estimacion", params));
-          for (Retencion item: this.estimacion.getRetenciones()) 
+          for (Retencion item: this.estimacion.getRetenciones()) {
             item.setSql(ESql.SELECT);
+            if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu") && item.getKey()< 0L) 
+              item.setIdTipoRetencion(2L);
+          } // if  
         } // if
       } // else
     } // try
@@ -92,8 +96,10 @@ public class Estimaciones implements Serializable {
     try {      
       params.put("idContrato", idContrato);      
       this.estimacion.setRetenciones((List<Retencion>) DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosRetencionesDto", "inicial", params));
-      for (Retencion item : this.estimacion.getRetenciones()) {
+      for (Retencion item: this.estimacion.getRetenciones()) {
         item.setSql(ESql.INSERT);
+        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu") && item.getKey()< 0L) 
+          item.setIdTipoRetencion(2L);
       } // for
     } // try
     catch (Exception e) {

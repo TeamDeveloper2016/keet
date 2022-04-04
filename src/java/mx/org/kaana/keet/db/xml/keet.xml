@@ -7,6 +7,34 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosGarantiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_garantias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_garantias
+        where      
+          id_contrato= {idContrato} and descripcion = '{descripcion}'
+      </select>
+      <select id="contrato">
+        select      
+          tc_keet_contratos_garantias.id_contrato_garantia as id_key,
+          tc_keet_contratos_garantias.descripcion as igual,
+          tc_keet_contratos_garantias.*
+        from      
+          tc_keet_contratos_garantias
+        where      
+          id_contrato = {idContrato}
+      </select>
+    </unit>    
     <unit id="TcKeetContratosRetencionesDto">
       <select id="row">
         select      

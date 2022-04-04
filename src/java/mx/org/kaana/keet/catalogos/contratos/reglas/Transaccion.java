@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
+import mx.org.kaana.keet.catalogos.contratos.beans.Garantia;
 import mx.org.kaana.keet.catalogos.contratos.beans.Generador;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Presupuesto;
@@ -41,6 +42,7 @@ public class Transaccion extends IBaseTnx {
 	private IBaseDto dtoDelete;
 	private EArchivosContratos tipoArchivo;
 	private TcKeetContratosBitacoraDto bitacora;
+  private List<Garantia> garantias;
 	
 	public Transaccion(RegistroContrato contrato) {
 		this(contrato, EArchivosContratos.DOCUMENTOS);
@@ -58,6 +60,10 @@ public class Transaccion extends IBaseTnx {
 
 	public Transaccion(IBaseDto dtoDelete) {
 		this.dtoDelete = dtoDelete;
+	}	
+	
+	public Transaccion(List<Garantia> garantias) {
+		this.garantias = garantias;
 	}	
 	
 	@Override
@@ -135,6 +141,9 @@ public class Transaccion extends IBaseTnx {
 						this.contrato.getContrato().setIdContratoEstatus(this.bitacora.getIdContratoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
 					} // if
+					break;
+				case GENERAR:
+          regresar= this.toGarantias(sesion);
 					break;
 			} // switch
 		} // try
@@ -356,6 +365,32 @@ public class Transaccion extends IBaseTnx {
     catch (Exception e) {
 			throw e;
     } // catch	
+  }
+ 
+  private Boolean toGarantias(Session sesion) throws Exception {
+    Boolean regresar= this.garantias.size()<= 0;
+    try {   
+      for (Garantia item: this.garantias) {
+        switch(item.getSql()) {
+          case SELECT:
+            regresar= Boolean.TRUE;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
   }
   
 }

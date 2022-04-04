@@ -13,7 +13,7 @@ public enum ESql {
   INSERT, UPDATE, DELETE, SELECT, UPSERT;
 
 	public Long getKey () {
-	  return Long.valueOf(ordinal()+1);
+	  return Long.valueOf(ordinal()+ 1);
 	}
 
 }
