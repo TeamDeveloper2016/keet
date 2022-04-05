@@ -5009,6 +5009,7 @@
 				select 
           tc_keet_contratos.id_contrato id_key,
           tc_keet_contratos.id_contrato,
+          tc_mantic_clientes.id_cliente,
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre,
           tc_keet_contratos.no_viviendas,

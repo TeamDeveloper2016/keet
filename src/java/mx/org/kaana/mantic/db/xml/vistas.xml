@@ -2377,6 +2377,42 @@
 				order by
 				  tc_mantic_clientes_pagos.registro desc
       </select>        
+			<select id="extras">
+				select
+          tc_mantic_ventas.id_venta as id_key,
+				  tc_mantic_ventas.id_venta,
+				  tc_mantic_facturas.id_factura,
+				  tc_mantic_ventas.ticket as consecutivo, 
+				  tc_keet_series.clave as serie,
+				  tc_mantic_facturas.folio,
+				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+				  tc_mantic_facturas.timbrado,
+				  tc_mantic_ventas.total as importe,
+				  tc_mantic_ventas.total,
+				  tc_mantic_ventas.observaciones,
+          if(tc_mantic_ventas.id_venta_estatus= 11 or tc_mantic_ventas.id_venta_estatus= 12, 1, if(tc_mantic_ventas.id_venta_estatus= 13, 2, 3)) as eliminar,
+          tc_mantic_ventas.id_venta_estatus,
+          tc_mantic_ventas_estatus.nombre as estatus,
+				  tc_mantic_facturas.registro
+				from
+				  tc_mantic_ventas
+				inner join
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona				
+				inner join
+				  tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus= tc_mantic_ventas_estatus.id_venta_estatus
+        left join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        left join
+          tc_keet_series on tc_mantic_ventas.id_serie= tc_keet_series.id_serie
+				where
+				  tc_mantic_ventas.id_contrato= {idContrato}
+          and tc_mantic_ventas.id_tipo_documento= 1
+          and tc_mantic_ventas.id_venta_estatus in (11, 12, 13, 14)
+          and tc_mantic_ventas.id_extra= 2
+        {sortOrder}
+			</select>
 			<select id="folio">
 				select
 				  tc_mantic_ventas.ticket as consecutivo, tc_mantic_facturas.registro

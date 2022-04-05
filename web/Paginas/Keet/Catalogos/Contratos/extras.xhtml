@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Listado de factur(a) por conceptos de extras"/>
+  <ui:param name="janalBackingPage" value="#{keetCatalogosContratosExtras}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+      //<![CDATA[
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:factura'          : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:fechaVencimiento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:importe'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+			};
+			
+    	$(document).ready(function() {
+      });
+			
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			}
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+      
+      function depurar() {
+        return confirm("Precaución:\n¿Esta seguro que desea cancelar la factura de extras?\n\nAl aceptar se cancelará la cuenta por cobrar de esta factura");
+      }
+      
+      function eliminar() {
+        return confirm("Precaución:\n¿Esta seguro que desea eliminar la factura de extras?\n\nAl aceptar se eliminará la cuenta por cobrar de esta factura");
+      }
+      //]]>
+		</script>   
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+				overflow-y: auto !important;
+				overflow-x: auto !important;
+				max-height: 370px;
+			}			
+			.ui-datatable .ui-datatable-header {
+				text-align: left !important;
+			}	
+			.zui-datatable .ui-datatable-tablewrapper table tbody .ui-state-highlight td {
+				color: #0059b3 !important;
+			}
+			.janal-move-left {
+				display: contents;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+		<p:remoteCommand name="cleanUploadFiles" actionListener="#{keetCatalogosContratosExtras.doCancelar}" process="@this"/>
+		<p:remoteCommand name="factura" actionListener="#{keetCatalogosContratosExtras.doCheckFolio}" process="@this contenedorGrupos:factura" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+		<p:remoteCommand name="viewDocument" actionListener="#{keetCatalogosContratosExtras.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{keetCatalogosContratosExtras.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<p:remoteCommand name="temporal" process="@this @(.key-event-before)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetCatalogosContratosExtras.doTabChange}" process="@this" update="archivo @(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                <p:outputLabel value="Contrato:"/>
+  							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-column-center janal-wid-40, janal-wid-40">
+                  <p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{keetCatalogosContratosExtras.contrato.clave}" readonly="true"/>
+                  <p:inputText styleClass="janal-wid-100-txt janal-column-center janal-color-blue" value="#{keetCatalogosContratosExtras.contrato.nombre}" readonly="true"/>
+                  <p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{keetCatalogosContratosExtras.contrato.etapa}" readonly="true"/>
+                </p:panelGrid>  
+                <p:outputLabel value="Cliente:"/>
+                <p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.cliente.razonSocial}" readonly="true"/>
+								<p:separator/>
+                <p:outputLabel for="factura" value="Folio factura:"/>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+  								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetCatalogosContratosExtras.comprobante.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+    							<p:inputText id="idSerie" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetCatalogosContratosExtras.ikSerie.clave}" readonly="true"/>
+                  <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetCatalogosContratosExtras.ikTipoComprobante.nombre}" readonly="true"/>
+                </p:panelGrid>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								  <p:outputLabel for="fechaFactura" value="Timbrado:"/>
+	  							  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetCatalogosContratosExtras.comprobante.timbrado}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+		    						<p:outputLabel for="importe" value="Importe:"/>
+                    <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetCatalogosContratosExtras.doMiles(keetCatalogosContratosExtras.ingreso.total)}" readonly="true"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
+                    <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100 todos" value="#{keetCatalogosContratosExtras.comprobante.registro}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="fechaVencimiento" value="Fecha vencimiento:"/>
+                    <p:calendar id="fechaVencimiento" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100 todos" value="#{keetCatalogosContratosExtras.comprobante.vencimiento}" pattern="dd/MM/yyyy" readonlyInput="false" locale="es"/>
+                  </p:panelGrid>
+                </p:panelGrid>  
+              </p:panelGrid>  
+						</p:tab>
+						<p:tab title="Importar">
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{keetCatalogosContratosExtras.diferente? '': 'none'}">
+								<p:outputLabel value="El RFC del cliente [#{keetCatalogosContratosExtras.cliente.rfc}] #{keetCatalogosContratosExtras.cliente.razonSocial} no coincide con el de la factura [#{keetCatalogosContratosExtras.receptor.rfc}] #{keetCatalogosContratosExtras.receptor.nombre}" styleClass="janal-color-orange" style="cursor: pointer;"/>
+							</p:panelGrid>	
+							<p:outputLabel for="comentarios" value="Comentarios:" styleClass="janal-wid-100-txt" style="display:#{keetCatalogosContratosExtras.consultar};"/><br style="display:#{keetCatalogosContratosExtras.consultar};"/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.attrs.observaciones}" style="display:#{keetCatalogosContratosExtras.consultar};"/>
+							<p:spacer height="5px"/>
+              <p:fileUpload id="archivo" listener="#{keetCatalogosContratosExtras.doFileUpload}" disabled="#{keetCatalogosContratosExtras.ingreso.idDesarrollo lt 1}"
+								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{keetCatalogosContratosExtras.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosContratosExtras.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
+              <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-97, janal-fix-3" style="#{(empty keetCatalogosContratosExtras.xml) and (empty keetCatalogosContratosExtras.pdf)? 'display: none': ''}">
+							  <p:commandLink value="XML importado: #{keetCatalogosContratosExtras.xml.ruta}#{keetCatalogosContratosExtras.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver XML" style="#{(empty keetCatalogosContratosExtras.xml)? 'display: none': ''}"/>
+                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetCatalogosContratosExtras.doDeleteXml}" title="Eliminar XML" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetCatalogosContratosExtras.xml)? 'display: none': ''}"/>
+							  <p:commandLink value="PDF importado: #{keetCatalogosContratosExtras.pdf.ruta}#{keetCatalogosContratosExtras.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty keetCatalogosContratosExtras.pdf)? 'display: none': ''}"/>
+                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetCatalogosContratosExtras.doDeletePdf}" title="Eliminar PDF" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetCatalogosContratosExtras.pdf)? 'display: none': ''}"/>
+              </p:panelGrid>  
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{keetCatalogosContratosExtras.attrs.faltantes}" selection="#{keetCatalogosContratosExtras.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
+                  <f:facet name="header">
+                    <div style="display: flow-root;">
+                      <p:outputLabel value="Partidas cargadas del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
+                    </div>	
+                  </f:facet>
+                  <p:column class="MarAuto Responsive janal-wid-col-38">
+                    <f:facet name="header">
+                      <h:outputText value="No"/>
+                    </f:facet>
+                    <h:outputText value="#{index+ 1}.-"/>
+                  </p:column>		
+                  <p:column class="janal-column-center MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="SAT"/>
+                    </f:facet>
+                    <h:outputText value="#{row['sat']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-center MarAuto Responsive janal-wid-6">
+                    <f:facet name="header">
+                      <h:outputText value="Código"/>
+                    </f:facet>
+                    <h:outputText value="#{row['codigo']}"/>
+                  </p:column>		
+                  <p:column  class="MarAuto Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Concepto"/>
+                    </f:facet>
+                    <h:outputText value="#{row['nombre']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Costo"/>
+                    </f:facet>
+                    <h:outputText value="#{keetCatalogosContratosExtras.doMiles(row['costo'])}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Cantidad"/>
+                    </f:facet>
+                    <h:outputText value="#{row['cantidad']}"/>	
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Descuento"/>
+                    </f:facet>
+                    <h:outputText value="#{row['descuento']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                    <f:facet name="header">
+                      <h:outputText value="IVA"/>
+                    </f:facet>
+                    <h:outputText value="#{row['iva']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Impuesto"/>
+                    </f:facet>
+                    <h:outputText value="#{row['impuestos']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Total"/>
+                    </f:facet>
+                    <h:outputText value="#{keetCatalogosContratosExtras.doMiles(row['importe'])}"/>
+                  </p:column>		
+                  <f:facet name="footer">
+                    <p:outputLabel value="Facturado: $ #{keetCatalogosContratosExtras.doMiles(keetCatalogosContratosExtras.ingreso.total)}" styleClass="importado janal-color-blue janal-font-bold"/>
+                  </f:facet>
+                </p:dataTable>
+							</p:panelGrid>	
+							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty keetCatalogosContratosExtras.emisor? 'none': ''}; margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.emisor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.emisor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Regimen fiscal:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.emisor.regimenFiscal}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
+							<p:panel header="Receptor" styleClass="involucrados" style="display: #{empty keetCatalogosContratosExtras.receptor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelReceptor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.receptor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.receptor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Uso CFDI:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.receptor.usoCfdi}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
+						</p:tab>
+						<p:tab title="Observaciones">
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosExtras.ingreso.observaciones}"/>
+						</p:tab>
+						<p:tab title="Factura(s)">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosExtras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosExtras.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosExtras.lazyModel.rowCount gt keetCatalogosContratosExtras.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">							
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>												
+                <p:column class="MarAuto Responsive janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.consecutivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Consecutivo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['consecutivo']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-5 janal-column-center" sortBy="#{row.serie}">
+                  <f:facet name="header">
+                    <h:outputText value="Serie"/>
+                  </f:facet>
+                  <h:outputText value="#{row['serie']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-6 janal-column-center" sortBy="#{row.folio}">
+                  <f:facet name="header">
+                    <h:outputText value="Folio"/>
+                  </f:facet>
+                  <h:outputText value="#{row['folio']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+                  <f:facet name="header">
+                    <h:outputText value="Registró"/>
+                  </f:facet>
+                  <h:outputText value="#{row['usuario']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
+                  <f:facet name="header">
+                    <h:outputText value="Importe"/>
+                  </f:facet>
+                  <h:outputText value="#{row['total']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.timbrado}">
+                  <f:facet name="header">
+                    <h:outputText value="Timbrado"/>
+                  </f:facet>
+                  <i class="fa fa-fw fa-grip-vertical janal-color-orange janal-icons-header" title="Observaciones: #{row['observaciones']}"></i>
+                  <h:outputText value="#{row['timbrado']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
+                  <h:outputText value="#{row['estatus']}"/>
+                </p:column>														
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Registro" />
+                  </f:facet>
+                  <h:outputText value="#{row['registro']}"/>
+                </p:column>
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-8">
+                  <p:commandButton icon="fa fa-close" process="@this tabla" update="contenedorGrupos" actionListener="#{keetCatalogosContratosExtras.doCancel(row)}" title="Cancelar" rendered="#{row.eliminar.toLong eq 1}" onstart="return depurar()" oncomplete="janal.refresh()"/>
+                  <p:commandButton icon="fa fa-trash" process="@this tabla" update="contenedorGrupos" actionListener="#{keetCatalogosContratosExtras.doDelete(row)}" title="Eliminar" rendered="#{row.eliminar.toLong eq 1}" onstart="return eliminar()" oncomplete="janal.refresh()"/>
+                </p:column>  
+                <f:facet name="footer">
+                  <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;Total de garantía(s): &lt;strong&gt;#{keetCatalogosContratosExtras.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="calculos" style="float:left;" escape="false"/>
+                  <p:outputLabel value="Total [#{keetCatalogosContratosExtras.lazyModel== null ? 0: keetCatalogosContratosExtras.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>  
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosExtras.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosExtras.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosExtras.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosExtras.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{keetCatalogosContratosExtras.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's,
+					 <p:commandLink ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" value=" click ">
+							<p:fileDownload value="#{keetCatalogosContratosExtras.doFileDownload}" />
+					 </p:commandLink>
+					 para descargarlo !.
+				</object>							
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{keetCatalogosContratosExtras.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
+          #{keetCatalogosContratosExtras.attrs.temporal}
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

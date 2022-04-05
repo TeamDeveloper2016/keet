@@ -105,6 +105,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doAccion(String accion) {
     JsfBase.setFlashAttribute("idEstimacion", ((Entity) this.attrs.get("seleccionado")).toLong("idEstimacion"));
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).toLong("idContrato"));
+    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/filtro");
     return "/Paginas/Keet/Catalogos/Contratos/garantias".concat(Constantes.REDIRECIONAR);
   } // doAccion  
@@ -350,6 +351,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doExtras() {
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).toLong("idContrato"));
+    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
     return "extras".concat(Constantes.REDIRECIONAR);
   }
