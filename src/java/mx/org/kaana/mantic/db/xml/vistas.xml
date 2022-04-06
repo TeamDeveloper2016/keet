@@ -2410,7 +2410,7 @@
 				  tc_mantic_ventas.id_contrato= {idContrato}
           and tc_mantic_ventas.id_tipo_documento= 1
           and tc_mantic_ventas.id_venta_estatus in (11, 12, 13, 14)
-          and tc_mantic_ventas.id_extra= 2
+          and tc_mantic_ventas.id_extra= 1
         {sortOrder}
 			</select>
 			<select id="folio">

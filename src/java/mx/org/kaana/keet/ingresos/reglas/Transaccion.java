@@ -15,6 +15,8 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.libs.formato.Fecha;
@@ -89,91 +91,25 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                      = false;
-		TcManticVentasBitacoraDto bitacoraNota= null;
-		Map<String, Object> params            = null;
-		Siguiente consecutivo                 = null;
-		Siguiente cuenta                      = null;
-    TcManticFacturasDto factura           = null;
-    TcManticFacturasBitacoraDto evidencia = null;
-    TcManticClientesDeudasDto deuda       = null;
-    TcManticClientesDeudasBitacoraDto bita= null;
-    TcManticClientesDto cliente           = null; 
+		boolean regresar= false;
 		try {
-			params= new HashMap<>();
       if(this.orden!= null && Objects.equals(-1L, this.orden.getIdContrato()))
         this.orden.setIdContrato(null);
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura");
 			switch(accion) {
 				case AGREGAR:
-          Long idFactura= this.toRegistrarFactura(sesion, EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
-          if(idFactura>= 1L) {
-            consecutivo= this.toSiguiente(sesion);
-            this.orden.setTicket(consecutivo.getConsecutivo());			
-            this.orden.setCticket(consecutivo.getOrden());			
-            cuenta= this.toSiguienteCuenta(sesion);			
-            this.orden.setConsecutivo(cuenta.getOrden());			
-            this.orden.setOrden(cuenta.getOrden());
-            this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-    				this.orden.setIdFactura(idFactura);
-    				this.orden.setIdSerie(this.orden.getIdSerie()== null || this.orden.getIdSerie()<= 0? null: this.orden.getIdSerie());
-            DaoFactory.getInstance().insert(sesion, this.orden);
-            bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), this.orden.getCticket(), this.orden.getTotal());
-            regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-            this.toFillArticulos(sesion);
-            this.toUpdateDeleteXml(sesion);	
-            // AGREGAR UNA CUENTA POR COBRAR 
-            this.toRecordDeuda(sesion);
-          } // if
+          regresar= this.toAddFactura(sesion);
 					break;
 				case MODIFICAR:
           regresar= this.toUpdateDeuda(sesion);
 					break;				
 				case ELIMINAR:
-  				params.put("idFactura", this.orden.getIdFactura());
-          DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
-          factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, this.orden.getIdFactura());
-          factura.setIdFacturaEstatus(3L);
-          DaoFactory.getInstance().update(sesion, factura);
-          evidencia= new TcManticFacturasBitacoraDto(factura.getIdFacturaEstatus(), factura.getIdFactura(), "SE ELIMINO LA FACTURA DE FORMA MANUAL", JsfBase.getIdUsuario(), -1L);
-          DaoFactory.getInstance().insert(sesion, evidencia);
-  				params.put("idVenta", this.orden.getIdVenta());
-  				params.put("idCliente", this.orden.getIdCliente());
-          deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
-          deuda.setIdClienteDeudaEstatus(5L);
-          DaoFactory.getInstance().update(sesion, deuda);
-          bita= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE ELIMINO LA FACTURA DE FORMA MANUAL", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
-          DaoFactory.getInstance().insert(sesion, bita);
-          cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
-          cliente.setSaldo(cliente.getSaldo()- deuda.getSaldo());
-          DaoFactory.getInstance().update(sesion, cliente);
-          this.orden.setIdVentaEstatus(13L);
-          DaoFactory.getInstance().update(sesion, this.orden);
-          bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-          this.toCheckDeleteFile(sesion);
+          regresar= this.toRemoveFactura(sesion, 13L, "ELIMINÓ");
+  				// params.put("idFactura", this.orden.getIdFactura());
+          // DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
 					break;
 				case DEPURAR:
-          factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, this.orden.getIdFactura());
-          factura.setIdFacturaEstatus(3L);
-          DaoFactory.getInstance().update(sesion, factura);
-          evidencia= new TcManticFacturasBitacoraDto(factura.getIdFacturaEstatus(), factura.getIdFactura(), "SE CANCELO LA FACTURA DE FORMA MANUAL", JsfBase.getIdUsuario(), -1L);
-          DaoFactory.getInstance().insert(sesion, evidencia);
-  				params.put("idVenta", this.orden.getIdVenta());
-  				params.put("idCliente", this.orden.getIdCliente());
-          deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
-          deuda.setIdClienteDeudaEstatus(5L);
-          DaoFactory.getInstance().update(sesion, deuda);
-          bita= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE CANCELO LA FACTURA DE FORMA MANUAL", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
-          DaoFactory.getInstance().insert(sesion, bita);
-          cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
-          cliente.setSaldo(cliente.getSaldo()- deuda.getSaldo());
-          DaoFactory.getInstance().update(sesion, cliente);
-          this.orden.setIdVentaEstatus(14L);
-          DaoFactory.getInstance().update(sesion, this.orden);
-          bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-          this.toCheckDeleteFile(sesion);
+          regresar= this.toRemoveFactura(sesion, 14L, "CANCELÓ");
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -205,9 +141,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
-    finally {
-      Methods.clean(params);
-    } // finally
 		LOG.info("Se registro de forma correcta la factura: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
@@ -495,5 +428,80 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // if
 		} // for
 	} // toFillArticulos
+  
+  private Boolean toAddFactura(Session sesion) throws Exception {
+    Boolean regresar              = Boolean.FALSE;
+    TcManticVentasBitacoraDto nota= null;
+		Siguiente consecutivo         = null;
+		Siguiente cuenta              = null;
+	  try {
+      Long idFactura= this.toRegistrarFactura(sesion, EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
+      if(idFactura>= 1L) {
+        consecutivo= this.toSiguiente(sesion);
+        this.orden.setTicket(consecutivo.getConsecutivo());			
+        this.orden.setCticket(consecutivo.getOrden());			
+        cuenta= this.toSiguienteCuenta(sesion);			
+        this.orden.setConsecutivo(cuenta.getOrden());			
+        this.orden.setOrden(cuenta.getOrden());
+        this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+        this.orden.setIdFactura(idFactura);
+        this.orden.setIdSerie(this.orden.getIdSerie()== null || this.orden.getIdSerie()<= 0? null: this.orden.getIdSerie());
+        DaoFactory.getInstance().insert(sesion, this.orden);
+        nota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), this.orden.getCticket(), this.orden.getTotal());
+        regresar= DaoFactory.getInstance().insert(sesion, nota)>= 1L;
+        this.toFillArticulos(sesion);
+        this.toUpdateDeleteXml(sesion);	
+        // AGREGAR UNA CUENTA POR COBRAR 
+        this.toRecordDeuda(sesion);
+      } // if
+    } // try
+		catch (Exception e) {
+      throw e;
+		} // catch		
+    return regresar;
+  }
+  
+  private Boolean toRemoveFactura(Session sesion, Long idVentaEstatus, String text) throws Exception {
+    Boolean regresar                      = Boolean.FALSE;
+    TcManticVentasBitacoraDto nota        = null;
+		Map<String, Object> params            = null;
+    TcManticFacturasDto factura           = null;
+    TcManticFacturasBitacoraDto evidencia = null;
+    TcManticClientesDeudasDto deuda       = null;
+    TcManticClientesDeudasBitacoraDto bita= null;
+    TcManticClientesDto cliente           = null; 
+		try {
+			params= new HashMap<>();
+      params.put("idFactura", this.orden.getIdFactura());
+      DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params);
+      factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, this.orden.getIdFactura());
+      factura.setIdFacturaEstatus(3L);
+      DaoFactory.getInstance().update(sesion, factura);
+      evidencia= new TcManticFacturasBitacoraDto(factura.getIdFacturaEstatus(), factura.getIdFactura(), "SE ".concat(text).concat(" LA FACTURA DE FORMA MANUAL"), JsfBase.getIdUsuario(), -1L);
+      DaoFactory.getInstance().insert(sesion, evidencia);
+      params.put("idVenta", this.orden.getIdVenta());
+      params.put("idCliente", this.orden.getIdCliente());
+      deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
+      deuda.setIdClienteDeudaEstatus(5L);
+      DaoFactory.getInstance().update(sesion, deuda);
+      bita= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE ".concat(text).concat(" LA FACTURA DE FORMA MANUAL"), JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
+      DaoFactory.getInstance().insert(sesion, bita);
+      cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+      cliente.setSaldo(cliente.getSaldo()- deuda.getSaldo());
+      DaoFactory.getInstance().update(sesion, cliente);
+      this.orden.setIdVentaEstatus(idVentaEstatus);
+      DaoFactory.getInstance().update(sesion, this.orden);
+      nota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
+      regresar= DaoFactory.getInstance().insert(sesion, nota)>= 1L;
+      this.toCheckDeleteFile(sesion);      
+    } // try
+		catch (Exception e) {
+      throw e;
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 } 

@@ -37,6 +37,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.keet.ingresos.enums.EClaveCatalogo;
@@ -52,7 +53,6 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
 import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -75,10 +75,10 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 	private static final Log LOG              = LogFactory.getLog(Extras.class);
   private static final long serialVersionUID= 327393488565639367L;
 
-	protected EAccion accion;	
   protected Ingreso ingreso;
   protected Factura comprobante;
 	private TcKeetContratosDto contrato;
+  private TcKeetProyectosDto proyecto;
   protected TcManticClientesDto cliente;
   protected List<Articulo> articulos;
 	private UISelectEntity ikSerie;
@@ -119,10 +119,6 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 		  this.ingreso.setIdTipoComprobante(this.ikTipoComprobante.getKey());
 	}
   
-	public String getConsultar() {
-		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
-	}
-  
 	public Boolean getDiferente() {
 	  return this.getEmisor()!= null && this.cliente!= null && !this.getReceptor().getRfc().equals(this.cliente.getRfc());
 	}
@@ -148,15 +144,14 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
   protected void init() {		
     try {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Catalogos/Contratos/filtro": JsfBase.getFlashAttribute("retorno"));
-			// if(JsfBase.getFlashAttribute("idContrato")== null)
-			// 	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			if(JsfBase.getFlashAttribute("idContrato")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato")== null? -1L: JsfBase.getFlashAttribute("idContrato"));
-      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
-      this.attrs.put("idContrato", 39L);
-      this.attrs.put("idCliente", 5L);
+      this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion"));
       this.contrato= (TcKeetContratosDto)DaoFactory.getInstance().findById(TcKeetContratosDto.class, (Long)this.attrs.get("idContrato"));
-      this.cliente = (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, (Long)this.attrs.get("idCliente"));
-      this.accion= EAccion.AGREGAR;
+      this.proyecto= (TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosDto.class, this.contrato.getIdProyecto());
+      this.cliente = (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, proyecto.getIdCliente());
+      this.attrs.put("idCliente", proyecto.getIdCliente());
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.attrs.put("folio", "");
 			this.doLoad();
@@ -170,66 +165,55 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 	@Override
   public void doLoad() {
     try {
-      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.toLoadFacturas();
-      switch (this.accion) {
-        case AGREGAR:								
-          this.comprobante= new Factura();
-          this.comprobante.setIdUsuario(JsfBase.getIdUsuario());
-          this.comprobante.setIntentos(0L);
-          this.ingreso= new Ingreso(
-            0D, // Double descuentos, 
-            null, // Long idFactura, 
-            1L, // Long idCredito, 
-            "0", // String extras, 
-            0D, // Double global, 
-            0D, // Double utilidad, 
-            0D, // Double total, 
-            null, // Long idAlmacen, 
-            1D, // Double tipoDeCambio, 
-            1L, // Long orden, 
-            2L, // Long idAutorizar, 
-            this.cliente.getIdCliente(), // Long idCliente, 
-            "0", // String descuento, 
-            1L, // Long ejercicio, 
-            1L, // Long consecutivo, 
-            JsfBase.getIdUsuario(), // Long idUsuario, 
-            0D, // Double impuestos, 
-            3L, // Long idUsoCfdi, 
-            1L,// Long idSinIva, 
-            0D, // Double subTotal, 
-            null, // String observaciones, 
-            this.cliente.getIdEmpresa(), // Long idEmpresa, 
-            -1L, // Long idVenta, 
-            LocalDate.now(), // LocalDate dia, 
-            12L, //  Long idVentaEstatus, 
-            null, // String cotizacion, 
-            null, // String ticket, 
-            null, // Long ccotizacion, 
-            null, // Long cticket, 
-            LocalDate.now(), // LocalDate vigencia, 
-            1L, // Long idManual, 
-            2L, // Long idFacturar, 
-            LocalDateTime.now() // LocalDateTime cobro 
-          );
-          this.ingreso.setIdTipoDocumento(1L);
-          this.ingreso.setIdFactura(-1L);
-    			this.setIkSerie(new UISelectEntity(1L));
-    			this.setIkTipoComprobante(new UISelectEntity(1L));
-          this.articulos= new ArrayList<>();
-          break;
-        case MODIFICAR:					
-        case CONSULTAR:					
-          this.ingreso= (Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", Variables.toMap("idVenta".concat("~")+ this.attrs.get("idVenta")));
-          if(!Cadena.isVacio(this.ingreso.getIdFactura()))
-            this.comprobante= (Factura)DaoFactory.getInstance().toEntity(Factura.class, "TcManticFacturasDto", "identically", Variables.toMap("idFactura~"+ this.ingreso.getIdFactura()));
-          else
-            this.comprobante= new Factura();
-          this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
-          this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
-          this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.ingreso.getIdCliente());
-          break;
-      } // switch
+      this.comprobante= new Factura();
+      this.comprobante.setIdUsuario(JsfBase.getIdUsuario());
+      this.comprobante.setIntentos(0L);
+      this.ingreso= new Ingreso(
+        0D, // Double descuentos, 
+        null, // Long idFactura, 
+        1L, // Long idCredito, 
+        "0", // String extras, 
+        0D, // Double global, 
+        0D, // Double utilidad, 
+        0D, // Double total, 
+        null, // Long idAlmacen, 
+        1D, // Double tipoDeCambio, 
+        1L, // Long orden, 
+        2L, // Long idAutorizar, 
+        this.cliente.getIdCliente(), // Long idCliente, 
+        "0", // String descuento, 
+        1L, // Long ejercicio, 
+        1L, // Long consecutivo, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        0D, // Double impuestos, 
+        3L, // Long idUsoCfdi, 
+        1L,// Long idSinIva, 
+        0D, // Double subTotal, 
+        null, // String observaciones, 
+        this.cliente.getIdEmpresa(), // Long idEmpresa, 
+        -1L, // Long idVenta, 
+        LocalDate.now(), // LocalDate dia, 
+        12L, //  Long idVentaEstatus, 
+        null, // String cotizacion, 
+        null, // String ticket, 
+        null, // Long ccotizacion, 
+        null, // Long cticket, 
+        LocalDate.now(), // LocalDate vigencia, 
+        1L, // Long idManual, 
+        2L, // Long idFacturar, 
+        LocalDateTime.now() // LocalDateTime cobro 
+      );
+      this.ingreso.setIdContrato(this.contrato.getIdContrato());
+      this.ingreso.setIdDesarrollo(this.proyecto.getIdDesarrollo());
+			Value value= DaoFactory.getInstance().toField("TrManticClienteDomicilioDto", "principalCliente", this.proyecto.toMap(), "idClienteDomicilio");
+			if(value!= null && value.getData()!= null)
+        this.ingreso.setIdClienteDomicilio(value.toLong());
+      this.ingreso.setIdTipoDocumento(1L);
+      this.ingreso.setIdFactura(-1L);
+      this.setIkSerie(new UISelectEntity(1L));
+      this.setIkTipoComprobante(new UISelectEntity(1L));
+      this.articulos= new ArrayList<>();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -275,13 +259,9 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
         if(!Cadena.isVacio(this.getXml())) {
           if(this.getReceptor().getRfc().equals(this.cliente.getRfc())) {
             transaccion = new Transaccion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf());
-            if (transaccion.ejecutar(this.accion)) {
+            if (transaccion.ejecutar(EAccion.AGREGAR)) {
               regresar= this.doCancelar();
-              if(this.accion.equals(EAccion.AGREGAR)) 
-                UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ this.ingreso.getTicket()+ "');");
-              else
-                if(!this.accion.equals(EAccion.CONSULTAR)) 
-                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura"), ETipoMensaje.INFORMACION);
+              UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ this.ingreso.getTicket()+ "');");
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la factura !", ETipoMensaje.ERROR);      			
@@ -304,8 +284,8 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idContratoProcess", this.attrs.get("idContrato"));
-  	JsfBase.setFlashAttribute("idCliente", this.cliente.getIdCliente());
   	JsfBase.setFlashAttribute("ikContrato", this.attrs.get("idContrato"));
+  	JsfBase.setFlashAttribute("idCliente", this.cliente.getIdCliente());
   	JsfBase.setFlashAttribute("idEstimacion", this.attrs.get("idEstimacion"));
 		if(this.ingreso== null || !this.ingreso.isValid()) {
 			if(this.getXml()!= null && this.getXml().getRuta()!= null) {

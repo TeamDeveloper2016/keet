@@ -3967,7 +3967,8 @@
         from      
           tr_mantic_cliente_domicilio
 				where 
-					tr_mantic_cliente_domicilio.id_cliente={idCliente} and tr_mantic_cliente_domicilio.id_principal=1
+					tr_mantic_cliente_domicilio.id_cliente={idCliente} 
+          and tr_mantic_cliente_domicilio.id_principal= 1
       </select>
 			<delete id="rows">
         delete from tr_mantic_cliente_domicilio where id_cliente={idCliente}
