@@ -63,7 +63,7 @@ public class Accion extends Comun implements Serializable {
 					loadIncidente(idIncidente);
 					this.attrs.put("nombre", new UISelectEntity(this.incidente.getIdEmpresaPersona()));
 					this.attrs.put("nombreModificar", "XYZ");
-					doLoad();
+					this.doLoad();
 					this.attrs.put("seleccionado", new Entity(this.incidente.getIdEmpresaPersona()));					
 					break;
 			} // switch
@@ -90,7 +90,7 @@ public class Accion extends Comun implements Serializable {
 		} // catch		
 	} // loadIncidente
 	
-	private void loadTiposIncidentes(){
+	private void loadTiposIncidentes() {
 		List<UISelectItem> tiposIncidentes= null;
 		Map<String, Object>params         = null;
 		try {
@@ -106,16 +106,16 @@ public class Accion extends Comun implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      campos= new ArrayList<>();
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "autoCompletarAccion", params, campos);
+      columns= new ArrayList<>();
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "autoCompletarAccion", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -123,7 +123,7 @@ public class Accion extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 

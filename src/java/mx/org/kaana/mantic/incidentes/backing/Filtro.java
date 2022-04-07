@@ -325,7 +325,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doImportar
 	
-	public void doEliminar(){		
+	public void doEliminar() {		
 		Transaccion transaccion  = null;
 		List<Incidente>incidentes= null;
 		Incidente dto            = null;
@@ -344,5 +344,11 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch				
-	} // doAceptar
+	} // doEliminar
+  
+  public String doMasivas() {
+   	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro'");			
+	  return "incidencia".concat(Constantes.REDIRECIONAR);
+  }
+  
 }

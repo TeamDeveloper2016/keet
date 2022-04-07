@@ -34,6 +34,7 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   NUMERO_SIN_DECIMALES("#####0"),
   NUMERO_CON_DECIMALES("#####0.00"),
   NUMERO_SAT_DECIMALES("#####0.00"),
+  FECHA_ESTANDAR("yyyyMMdd"),
   FECHA_CORTA("dd/MM/yyyy"),
   FECHA_NOMBRE_DIA("Dia, dd/MM/yyyy"),
   FECHA_EXTENDIDA("dd del Mes del yyyy"),
@@ -123,6 +124,9 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           break;
         case NUMERO_SAT_DECIMALES:
           regresar = Numero.formatear(Numero.NUMERO_SAT_DECIMALES, Numero.getDouble(regresar));
+          break;
+        case FECHA_ESTANDAR:
+          regresar = Fecha.formatear(Fecha.FECHA_ESTANDAR, Fecha.getFechaHora(regresar));
           break;
         case FECHA_CORTA:
           regresar = Fecha.formatear(Fecha.FECHA_CORTA, Fecha.getFechaHora(regresar));

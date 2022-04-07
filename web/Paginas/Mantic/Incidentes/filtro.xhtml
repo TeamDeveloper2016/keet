@@ -91,7 +91,8 @@
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">								
 								<p:menuButton styleClass="lg-pantalla" value="Opciones">
-									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar un indicencia" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+									<p:menuitem icon="fa fa-copy" value="Masivas" title="Incidencias masivas" action="#{manticIncidentesFiltro.doMasivas()}" onstart="return janal.bloquear()"/>						
 									<p:separator/>										
 									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>										
@@ -100,7 +101,7 @@
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Consecutivo"/>
 								</f:facet>

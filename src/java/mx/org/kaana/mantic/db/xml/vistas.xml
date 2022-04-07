@@ -5147,10 +5147,11 @@
 			<select id="autoCompletar">
 				select 
 				  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+				  tr_mantic_empresa_personal.id_empresa_persona,
 				  tc_mantic_personas.nombres,
 				  tc_mantic_personas.paterno,
 				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
 				  tc_mantic_personas.rfc,
 				  tc_mantic_personas.curp,
 				  tc_mantic_personas.fecha_nacimiento,
@@ -5159,9 +5160,9 @@
 		 		  tc_janal_tipos_sexos.nombre as sexo,
 				  tc_janal_tipos_sexos.nombre,
 				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre sucursal,
-					tc_mantic_puestos.nombre puesto,
-					tr_mantic_persona_tipo_contacto.valor contacto
+					tc_mantic_empresas.nombre as sucursal,
+					tc_mantic_puestos.nombre as puesto,
+					tr_mantic_persona_tipo_contacto.valor as contacto
 				from 
 					tc_mantic_personas
 				inner join

@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.incidentes.reglas;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -22,6 +23,7 @@ import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
+import mx.org.kaana.mantic.incidentes.beans.Repercusion;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
@@ -29,6 +31,7 @@ public class Transaccion extends IBaseTnx {
 	protected Incidente incidente;
 	private String messageError;	
 	private String observaciones;	
+  private List<Repercusion> incidentes;
 	private boolean estatus;
 
 	public Transaccion(Incidente incidente) {
@@ -41,6 +44,10 @@ public class Transaccion extends IBaseTnx {
 		this.estatus      = false;
 	}
 
+	public Transaccion(List<Repercusion> incidentes) {
+    this.incidentes= incidentes;
+  }
+  
 	protected Incidente getIncidente() {
 		return incidente;
 	}
@@ -81,6 +88,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case MOVIMIENTOS:
 					regresar= this.modificarAnticipo(sesion, true);
+					break;
+				case REPROCESAR:
+					regresar= this.registrarInidencias(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -211,6 +221,10 @@ public class Transaccion extends IBaseTnx {
 	} // isProcesoEmpleado 
 	
 	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus) throws Exception{
+    return this.registrarBitacora(sesion, idIncidente, idEstatus, this.incidente.getObservaciones());
+  }
+  
+	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus, String observaciones) throws Exception{
 		boolean regresar                 = false;
 		TcManticIncidentesBitacoraDto dto= null;
 		try {
@@ -218,7 +232,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setIdIncidente(idIncidente);
 			dto.setIdIncidenteEstatus(idEstatus);
 			dto.setIdUsuario(JsfBase.getIdUsuario());
-			dto.setJustificacion(this.incidente.getObservaciones());
+			dto.setJustificacion(observaciones);
 			regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 		} // try
 		catch (Exception e) {
@@ -376,7 +390,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(sesion, TcManticIncidentesDto.class, this.incidente.getIdIncidente());
 			dto.setIdIncidenteEstatus(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente());
-			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
+			if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 				this.incidente.setObservaciones("LA INCIDENCIA FUE CANCELADA");
 				regresar= registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());
 			} // if
@@ -386,4 +400,30 @@ public class Transaccion extends IBaseTnx {
 		} // catch
 		return regresar;
 	} // eliminarIncidente
+  
+  private Boolean registrarInidencias(Session sesion) throws Exception {
+    Boolean regresar     = Boolean.TRUE;
+		Siguiente consecutivo= null;
+    for (Repercusion item: this.incidentes) {
+      switch(item.getSql()) {
+        case SELECT:
+        case UPDATE:
+        case DELETE:
+          break;
+        case INSERT:
+          consecutivo= this.toSiguiente(sesion);			
+          item.setConsecutivo(consecutivo.getConsecutivo());			
+          item.setOrden(consecutivo.getOrden());			
+          item.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
+          item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());			
+          item.setCosto(0D);
+          regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+          if(regresar) 
+            regresar= this.registrarBitacora(sesion, item.getIdIncidente(), item.getIdIncidenteEstatus(), "INCIDENCIA REGISTRADA DE FORMA MASIVA");
+          break;
+      } // switch
+    } // for
+    return regresar;
+  }
+  
 }
