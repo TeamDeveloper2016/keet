@@ -32,6 +32,10 @@
 				} // if
 				return ok;
 			} // validaJustificacion
+      
+      function confirmar() {
+        return confirm("Precaución:\n¿Esta seguro que desea aceptar todas las incidencia registradas?\n\nFaltas\nDías festivos\nDías triples\nExcedentes de nómina\nHoras extras\n");
+      }
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
@@ -75,7 +79,7 @@
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">										
 					<div class="ui-grid-row janal-grid-row">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalExportar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalExportar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosPersonalExportar.lazyModel.rowCount gt keetCatalogosContratosPersonalExportar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">														
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalExportar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalExportar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosPersonalExportar.lazyModel.rowCount gt keetCatalogosContratosPersonalExportar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">								
@@ -83,11 +87,14 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" actionListener="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-edit" value="Aplicar incidencias" actionListener="#{keetCatalogosContratosPersonalExportar.doAplicar()}" process="@this" onstart="if(confirmar()) { return janal.bloquear(); }" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>									
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-edit" title="Aplicar incidencias" action="#{keetCatalogosContratosPersonalExportar.doAplicar()}" process="@this" onstart="if(confirmar()) { return janal.bloquear(); }" oncomplete="janal.desbloquear()"/>
 							</f:facet>												
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">

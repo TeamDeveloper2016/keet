@@ -3,6 +3,7 @@ package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -340,7 +341,7 @@ public class Exportar extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doImportar	
 	
-	public void doEliminar(){
+	public void doEliminar() {
 		Transaccion transaccion  = null;
 		List<Incidente>incidentes= null;
 		Incidente dto            = null;
@@ -351,13 +352,25 @@ public class Exportar extends IBaseFilter implements Serializable {
 			incidentes.add(dto);
 			transaccion= new Transaccion(null, incidentes);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia.", ETipoMensaje.ERROR);							
+				JsfBase.addMessage("Eliminar incidencia", "Se eliminó de forma correcta la incidencia", ETipoMensaje.ERROR);							
 			else
-				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Eliminar incidencia", "Ocurrio un error al eliminar la incidencia", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch				
 	} // doAceptar
+  
+  public void doAplicar() {
+    try {      
+      Long afectados= DaoFactory.getInstance().updateAll(TcManticIncidentesDto.class, Collections.EMPTY_MAP, "incidentes");
+  		JsfBase.addMessage("Incidencia", "Se aceptaron "+ afectados+ " incidencias del personal", ETipoMensaje.ALERTA);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 }

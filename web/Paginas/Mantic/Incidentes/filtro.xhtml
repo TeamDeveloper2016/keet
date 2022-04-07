@@ -33,6 +33,10 @@
 				} // if
 				return ok;
 			} // validaJustificacion
+      
+      function confirmar() {
+        return confirm("Precaución:\n¿Esta seguro que desea aceptar todas las incidencia registradas?\n\nFaltas\nDías festivos\nDías triples\nExcedentes de nómina\nHoras extras\n");
+      }
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
@@ -96,10 +100,14 @@
 									<p:separator/>										
 									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>										
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-edit" value="Aplicar incidencias" actionListener="#{manticIncidentesFiltro.doAplicar()}" process="@this" onstart="if(confirmar()) { return janal.bloquear(); }" oncomplete="janal.desbloquear()"/>
 								</p:menuButton>
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>															
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-copy" title="Masivas" action="#{manticIncidentesFiltro.doMasivas()}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-edit" title="Aplicar incidencias" action="#{manticIncidentesFiltro.doAplicar()}" process="@this" onstart="if(confirmar()) { return janal.bloquear(); }" oncomplete="janal.desbloquear()"/>
 							</f:facet>												
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
@@ -137,19 +145,19 @@
 								</f:facet>
 								<h:outputText value="#{row['ejercicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.inicio}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.inicio}">
 								<f:facet name="header">
 									<h:outputText value="Inicio"/>
 								</f:facet>
 								<h:outputText value="#{row['inicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.termino}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.termino}">
 								<f:facet name="header">
 									<h:outputText value="Termino"/>
 								</f:facet>
 								<h:outputText value="#{row['termino']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
 								<f:facet name="header">
 									<h:outputText value="Registro"/>
 								</f:facet>

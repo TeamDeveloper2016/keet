@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.incidentes.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -349,6 +350,17 @@ public class Filtro extends Comun implements Serializable {
   public String doMasivas() {
    	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro'");			
 	  return "incidencia".concat(Constantes.REDIRECIONAR);
+  }
+ 
+  public void doAplicar() {
+    try {      
+      Long afectados= DaoFactory.getInstance().updateAll(TcManticIncidentesDto.class, Collections.EMPTY_MAP, "incidentes");
+  		JsfBase.addMessage("Incidencia", "Se aceptaron "+ afectados+ " incidencias del personal", ETipoMensaje.ALERTA);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

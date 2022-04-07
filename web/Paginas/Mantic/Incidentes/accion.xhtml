@@ -92,11 +92,11 @@
   <ui:define name="acciones">
     <div class="lg-pantalla">
       <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticIncidentesAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticIncidentesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="filtro?faces-redirect=true" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
     </div>		
     <div class="xs-pantalla">
       <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticIncidentesAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticIncidentesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="filtro?faces-redirect=true" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
     </div>		
   </ui:define>	
 </ui:composition>
