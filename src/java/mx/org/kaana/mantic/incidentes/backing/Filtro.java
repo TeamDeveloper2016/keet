@@ -337,9 +337,9 @@ public class Filtro extends Comun implements Serializable {
 			incidentes.add(dto);
 			transaccion= new Transaccion(null, incidentes);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia.", ETipoMensaje.ERROR);							
+				JsfBase.addMessage("Eliminar incidencia", "Se eliminó de forma correcta la incidencia", ETipoMensaje.ERROR);							
 			else
-				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Eliminar incidencia", "Ocurrio un error al eliminar la incidencia", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -354,7 +354,7 @@ public class Filtro extends Comun implements Serializable {
  
   public String doIncentivos() {
    	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro");			
-	  return "incentivos".concat(Constantes.REDIRECIONAR);
+	  return "incentivo".concat(Constantes.REDIRECIONAR);
   }
  
   public void doAplicar() {

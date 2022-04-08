@@ -34,7 +34,7 @@ import java.time.LocalDate;
 
 @Named(value = "manticIncidentesIncentivos")
 @ViewScoped
-public class Incentivos extends IBaseAttribute implements Serializable {
+public class Incentivo extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   private Repercusion repercusion;
