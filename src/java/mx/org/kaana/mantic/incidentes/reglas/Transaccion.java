@@ -416,7 +416,6 @@ public class Transaccion extends IBaseTnx {
           item.setOrden(consecutivo.getOrden());			
           item.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
           item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());			
-          item.setCosto(0D);
           regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
           if(regresar) 
             regresar= this.registrarBitacora(sesion, item.getIdIncidente(), item.getIdIncidenteEstatus(), "INCIDENCIA REGISTRADA DE FORMA MASIVA");

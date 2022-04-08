@@ -4987,7 +4987,7 @@
 					tc_keet_contratos_personal.id_contratos_personal = {idContratoPersona}
 				  or tr_mantic_empresa_personal.id_empresa_persona = {idEmpresaPersona}												
 			</select>
-			<select id="existe">
+			<select id="incidencia">
 				select
 				  tc_mantic_incidentes.id_incidente as id_key,
           concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as empleado,
@@ -5006,6 +5006,28 @@
 			    tc_mantic_incidentes.id_empresa_persona= {idEmpresaPersona}
 			    and tc_mantic_incidentes.id_incidente_estatus in (1, 2, 3, 5, 6)
           and tc_mantic_tipos_incidentes.grupo= 1
+			    and date_format(tc_mantic_incidentes.inicio, '%Y%m%d')&gt;= '{inicio}'
+			    and date_format(tc_mantic_incidentes.termino, '%Y%m%d')&lt;= '{termino}'        
+			</select>
+			<select id="incentivo">
+				select
+				  tc_mantic_incidentes.id_incidente as id_key,
+          concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as empleado,
+          tc_mantic_incidentes.inicio as inicio,
+          tc_mantic_incidentes.termino as termino,
+          tc_mantic_tipos_incidentes.nombre as incidencia
+				from 
+				  tc_mantic_incidentes
+  			inner join
+ 				  tc_mantic_tipos_incidentes on tc_mantic_incidentes.id_tipo_incidente= tc_mantic_tipos_incidentes.id_tipo_incidente
+				inner join 
+					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+			  where
+			    tc_mantic_incidentes.id_empresa_persona= {idEmpresaPersona}
+			    and tc_mantic_incidentes.id_incidente_estatus in (1, 2, 3, 5, 6)
+          and tc_mantic_tipos_incidentes.id_tipo_incidente in (1, 2, 3, 4, 5, 6, 9, 15, 16, 17, 22)
 			    and date_format(tc_mantic_incidentes.inicio, '%Y%m%d')&gt;= '{inicio}'
 			    and date_format(tc_mantic_incidentes.termino, '%Y%m%d')&lt;= '{termino}'        
 			</select>

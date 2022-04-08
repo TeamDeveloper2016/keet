@@ -32,6 +32,7 @@ import mx.org.kaana.keet.nomina.functions.Redondea;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import org.apache.commons.logging.Log;
@@ -201,6 +202,23 @@ public class Nomina implements Serializable {
 		return regresar;
 	}
 	
+  private void toCalculateFaltas(Concepto concepto, TcManticIncidentesDto item) {
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        if(Objects.equals(item.getInicio().getDayOfWeek(), DayOfWeek.MONDAY))
+          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
+        else
+          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
+        break;
+      case "gylvi":
+        concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
+        break;
+      case "triana":
+        concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.3"));
+        break;
+    } // switch
+  }
+  
 	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente, Long dias) throws CloneNotSupportedException {
 		int count= 0;
 		for (TcManticIncidentesDto item: incidentes) {
@@ -211,12 +229,8 @@ public class Nomina implements Serializable {
 				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
 				if(index>= 0) {
 					Concepto concepto= (Concepto)this.personales.get(index).clone();
-          // VERIFICAR SI ES LUNES PARA COBRARLA POR 1.5 DIAS 
           if(Objects.equals(concepto.getNombre(), "FALTA"))
-            if(Objects.equals(item.getInicio().getDayOfWeek(), DayOfWeek.MONDAY))
-              concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
-            else
-              concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
+            this.toCalculateFaltas(concepto, item);
 					concepto.setFecha(item.getInicio());
 					if(incidente.recuperar())
 						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));
@@ -271,10 +285,11 @@ public class Nomina implements Serializable {
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA, dias);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.DIAFESTIVO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.TRIPLE);
-				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXEDENTE);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXCEDENTE);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.PRESTAMO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.ABONO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.APERTURACH);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.HORAS);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.SALDOCH);
 				int count= 0;
 				// REMOVER TODOS LOS INCIDENTES QUE SE ALCANZARON A APLICAR EN LA NOMINA
@@ -284,10 +299,11 @@ public class Nomina implements Serializable {
           if(!(Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.FALTA.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.DIAFESTIVO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.TRIPLE.idTipoIncidente()) ||
-               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.EXEDENTE.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.EXCEDENTE.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.PRESTAMO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.APERTURACH.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.HORAS.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.SALDOCH.idTipoIncidente())))
             incidente.setIdNomina(this.nomina.getIdNomina());
 					if(Cadena.isVacio(incidente.getIdNomina()))

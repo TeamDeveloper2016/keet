@@ -347,9 +347,14 @@ public class Filtro extends Comun implements Serializable {
 		} // catch				
 	} // doEliminar
   
-  public String doMasivas() {
-   	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro'");			
+  public String doIncidencias() {
+   	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro");			
 	  return "incidencia".concat(Constantes.REDIRECIONAR);
+  }
+ 
+  public String doIncentivos() {
+   	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro");			
+	  return "incentivos".concat(Constantes.REDIRECIONAR);
   }
  
   public void doAplicar() {

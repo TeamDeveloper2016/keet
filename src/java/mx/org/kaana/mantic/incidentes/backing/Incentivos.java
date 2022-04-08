@@ -32,9 +32,9 @@ import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
 import mx.org.kaana.mantic.incidentes.beans.Repercusion;
 import java.time.LocalDate;
 
-@Named(value = "manticIncidentesIncidencia")
+@Named(value = "manticIncidentesIncentivos")
 @ViewScoped
-public class Incidencia extends IBaseAttribute implements Serializable {
+public class Incentivos extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   private Repercusion repercusion;
@@ -77,7 +77,7 @@ public class Incidencia extends IBaseAttribute implements Serializable {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("grupo", 1L);
+			params.put("grupo", 3L);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tipos= UISelect.build("TcManticTiposIncidentesDto", "byGrupo", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tipos", tipos);
@@ -192,20 +192,9 @@ public class Incidencia extends IBaseAttribute implements Serializable {
   
   public void doChangeInicio() {
     if(this.repercusion.getInicio()!= null)
-      if(this.repercusion.getInicio().isAfter(this.repercusion.getTermino()))
-        this.repercusion.setTermino(LocalDate.ofEpochDay(this.repercusion.getInicio().toEpochDay()));
-      else
-        if(Objects.equals(this.repercusion.getIdTipoIncidente(), 1L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 7L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 8L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 9L)) 
-          this.repercusion.setTermino(LocalDate.ofEpochDay(this.repercusion.getInicio().toEpochDay()));
+      this.repercusion.setTermino(LocalDate.ofEpochDay(this.repercusion.getInicio().toEpochDay()));
   }
   
-  public void doChangeTermino() {
-    if(this.repercusion.getTermino()!= null) {
-      if(this.repercusion.getTermino().isBefore(this.repercusion.getInicio()))
-        this.repercusion.setInicio(LocalDate.ofEpochDay(this.repercusion.getTermino().toEpochDay()));
-    } // if
-  }
- 
   public void doLoadNombres() {
     UISelectEntity persona= (UISelectEntity)this.attrs.get("nombre");  
     if(persona!= null) {
@@ -256,7 +245,7 @@ public class Incidencia extends IBaseAttribute implements Serializable {
       columns.add(new Columna("incidencia", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
-      Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaIncidenciasDto", "incidencia", params);
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaIncidenciasDto", "incentivo", params);
       if(entity!= null) {
         UIBackingUtilities.toFormatEntity(entity, columns);
 			  JsfBase.addMessage("El empleado ya tiene una incidencia ".concat(entity.toString("incidencia")).concat(" registrada del ").concat(entity.toString("inicio")).concat(" al ").concat(entity.toString("termino")), ETipoMensaje.ERROR);

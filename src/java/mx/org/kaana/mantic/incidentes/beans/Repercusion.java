@@ -38,6 +38,7 @@ public class Repercusion extends TcManticIncidentesDto implements Serializable {
 
   public Repercusion(Long key) {
     super(key);
+    super.setCosto(0D);
     super.setIdUsuario(JsfBase.getIdUsuario());
     this.sql= ESql.INSERT;
   }
@@ -163,6 +164,7 @@ public class Repercusion extends TcManticIncidentesDto implements Serializable {
     regresar.setIdTipoIncidente(this.getIdTipoIncidente());
     regresar.setInicio(this.getTermino());
     regresar.setTermino(this.getTermino());
+    regresar.setCosto(0D);
     return regresar;
   }
   
