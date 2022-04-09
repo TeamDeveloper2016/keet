@@ -6327,7 +6327,7 @@
         set 
           tc_mantic_incidentes.id_incidente_estatus= 2
         where
-          tc_mantic_incidentes.id_incidente_estatus= 5
+          tc_mantic_incidentes.id_incidente_estatus in (1, 5)
           and tc_mantic_tipos_incidentes.grupo in (1, 3)
       </update>  
     </unit>

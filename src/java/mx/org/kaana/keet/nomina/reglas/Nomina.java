@@ -290,6 +290,7 @@ public class Nomina implements Serializable {
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.ABONO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.APERTURACH);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.HORAS);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.MEDIODIA);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.SALDOCH);
 				int count= 0;
 				// REMOVER TODOS LOS INCIDENTES QUE SE ALCANZARON A APLICAR EN LA NOMINA
@@ -304,6 +305,7 @@ public class Nomina implements Serializable {
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.APERTURACH.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.HORAS.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.MEDIODIA.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.SALDOCH.idTipoIncidente())))
             incidente.setIdNomina(this.nomina.getIdNomina());
 					if(Cadena.isVacio(incidente.getIdNomina()))

@@ -32,7 +32,7 @@ import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
 import mx.org.kaana.mantic.incidentes.beans.Repercusion;
 import java.time.LocalDate;
 
-@Named(value = "manticIncidentesIncentivos")
+@Named(value = "manticIncidentesIncentivo")
 @ViewScoped
 public class Incentivo extends IBaseAttribute implements Serializable {
 

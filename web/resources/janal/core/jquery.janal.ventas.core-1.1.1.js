@@ -25,10 +25,6 @@
 		values      : '\\:values',
 		sats        : '\\:sat',
 		descriptions: '\\:nombres',
-		selector    : '.key-down-event',
-		focus       : '.key-focus-event',
-		averages    : '.key-press-enter',
-		filter      : '.key-filter-event',
 		ctrlPlus    : false,
 		ctrlDiv     : false,
 		current     : '',
@@ -112,12 +108,12 @@
 						break;
 				} // switch
 			});
-      $(document).on('focus', this.filter, function() {
+      $(document).on('focus', '.key-filter-event', function() {
 				janal.console('jsVentas.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$articulos.current= $(this).val().trim();
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keyup', this.filter, function(e) {
+      $(document).on('keyup', '.key-filter-event', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVentas.keyup: '+ $(this).attr('id')+ ' current: ['+ $articulos.current+ '] value: ['+ $(this).val().trim()+ ']');
 				if($articulos.current!== $(this).val().trim()) {
@@ -213,11 +209,11 @@
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('focus', this.selector, function() {
+      $(document).on('focus', '.key-down-event', function() {
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keydown', this.averages, function(e) {
+      $(document).on('keydown', '.key-press-enter', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVentas.keydown [key-press-enter]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
@@ -274,7 +270,20 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keyup', '.key-down-event', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
+	  		var calculate= $articulos.get().trim().startsWith('=');
+				switch(key) {
+					case $articulos.VK_ENTER:        
+            if(calculate)
+						  $articulos.set(eval($articulos.get().trim().substring(1)));
+            else
+						  return $articulos.down(true);
+            break;
+				} // switch
+      });
+      $(document).on('keydown', '.key-down-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVentas.keydown: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) {

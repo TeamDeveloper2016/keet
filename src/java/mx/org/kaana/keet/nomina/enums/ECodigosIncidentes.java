@@ -28,7 +28,8 @@ public enum ECodigosIncidentes {
   APERTURACH(20L, "AN1", Boolean.TRUE, 3),
   SALDOCH(21L, "AO1", Boolean.TRUE, 3),
   SOBRESUELDO(-1L, "AP1", Boolean.TRUE, -1),
-  HORAS(22L, "AQ1|AR1|AS1|AT1|AU1|AV1", Boolean.TRUE, 6);
+  HORAS(22L, "AQ1|AR1|AS1|AT1|AU1|AV1", Boolean.TRUE, 6),
+  MEDIODIA(23L, "BJ1|BK1|BL1|BM1|BN1|BO1", Boolean.TRUE, 6);
 	
 	private Long idTipoIncidente;
 	private String codigos;

@@ -235,7 +235,7 @@ public class Transaccion extends IBaseTnx {
 			this.persona.getEmpresaPersona().setIdEmpresa(this.persona.getIdEmpresa());						
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
-			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo");
+			this.persona.getEmpresaPersona().setObservaciones("ALTA DE EMPLEADO NUEVO");
       if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0)
 			  this.persona.getEmpresaPersona().setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());

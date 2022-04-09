@@ -13,8 +13,6 @@
 	Janal.Control.Kardex.Core= Class.extend({
 		joker       : 'contenedorGrupos\\:tabla\\:',
 		comodin     : 'contenedorGrupos\\\\:tabla\\\\:',
-		selector    : '.key-down-event',
-		focus       : '.key-focus-event',
 		reference   : '#codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
@@ -110,7 +108,7 @@
 					$kardex.typingTimer= setTimeout($kardex.look($(this)), $kardex.doneInterval);
 				return false;
 			});  
-      $(document).on('focus', this.focus, function() {
+      $(document).on('focus', '.key-focus-event', function() {
 				janal.lastNameFocus= this;
   			janal.console('jsKardex.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
 				if(janal.calculator(this))
@@ -185,7 +183,20 @@
 					else
 						return $kardex.calculate(this);
 			});	
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keyup', '.key-down-event', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
+	  		var calculate= $kardex.get().trim().startsWith('=');
+				switch(key) {
+					case $kardex.VK_ENTER:        
+            if(calculate)
+						  $kardex.set(eval($kardex.get().trim().substring(1)));
+            else
+						  return $kardex.find();
+            break;
+				} // switch
+      });
+      $(document).on('keydown', '.key-down-event', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				if(($kardex.change.indexOf(key)>= 0)) {
 					$kardex.leavePage= false;
