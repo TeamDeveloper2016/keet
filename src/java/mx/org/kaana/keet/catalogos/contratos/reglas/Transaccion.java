@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
+import mx.org.kaana.keet.catalogos.contratos.beans.Fondo;
 import mx.org.kaana.keet.catalogos.contratos.beans.Garantia;
 import mx.org.kaana.keet.catalogos.contratos.beans.Generador;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
@@ -43,6 +44,7 @@ public class Transaccion extends IBaseTnx {
 	private EArchivosContratos tipoArchivo;
 	private TcKeetContratosBitacoraDto bitacora;
   private List<Garantia> garantias;
+  private Fondo fondo;
 	
 	public Transaccion(RegistroContrato contrato) {
 		this(contrato, EArchivosContratos.DOCUMENTOS);
@@ -64,6 +66,10 @@ public class Transaccion extends IBaseTnx {
 	
 	public Transaccion(List<Garantia> garantias) {
 		this.garantias = garantias;
+	}	
+	
+	public Transaccion(Fondo fondo) {
+		this.fondo = fondo;
 	}	
 	
 	@Override
@@ -144,6 +150,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case GENERAR:
           regresar= this.toGarantias(sesion);
+					break;
+				case MOVIMIENTOS:
+          regresar= this.toFondoGarantia(sesion);
 					break;
 			} // switch
 		} // try
@@ -386,6 +395,22 @@ public class Transaccion extends IBaseTnx {
             break;
         } // switch
       } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toFondoGarantia(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    try { 
+      this.fondo.setIdUsuario(JsfBase.getIdUsuario());
+      this.fondo.setRegistro(LocalDateTime.now());
+      if(this.fondo.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, this.fondo)> 0L;
+      else
+        regresar= DaoFactory.getInstance().insert(sesion, this.fondo)> 0L;
     } // try
     catch (Exception e) {
 			throw e;

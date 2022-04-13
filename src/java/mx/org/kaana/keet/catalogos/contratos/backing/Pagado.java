@@ -52,12 +52,10 @@ public class Pagado extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Catalogos/Contratos/filtro": JsfBase.getFlashAttribute("retorno"));
-      //if(JsfBase.getFlashAttribute("idContrato")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      //this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
-      //this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
-      this.attrs.put("idContrato", 39L);
-      this.attrs.put("idCliente", 15L);
+      if(JsfBase.getFlashAttribute("idContrato")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion"));
       this.contrato= (TcKeetContratosDto)DaoFactory.getInstance().findById(TcKeetContratosDto.class, (Long)this.attrs.get("idContrato"));
 			this.doLoad();
@@ -78,6 +76,10 @@ public class Pagado extends IBaseAttribute implements Serializable {
       this.fondo= (Fondo)DaoFactory.getInstance().toEntity(Fondo.class, "TcKeetContratosVecimientosDto", "identically", params);
       if(this.fondo== null)
         this.fondo= new Fondo();
+      else {
+        this.fondo.setIkTipoMedioPago(new UISelectEntity(this.fondo.getIdTipoMedioPago()));
+        this.fondo.setIkBanco(new UISelectEntity(this.fondo.getIdBanco()));
+      } // else  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -92,13 +94,14 @@ public class Pagado extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-  	  // transaccion= new Transaccion(this.garantias);
-			if (transaccion.ejecutar(EAccion.GENERAR)) {
+      this.fondo.setIdContrato(this.contrato.getIdContrato());
+  	  transaccion= new Transaccion(this.fondo);
+			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
 				regresar= this.doCancelar();
-				JsfBase.addMessage("Se registraron la(s) garantía(s) del contrato", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se registró el fondo de garantía", ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar las garantía(s)", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el fondo de garantía", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
