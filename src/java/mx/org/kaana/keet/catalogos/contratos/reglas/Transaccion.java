@@ -29,6 +29,8 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.keet.enums.EArchivosContratos;
 import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRetencionesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -411,6 +413,11 @@ public class Transaccion extends IBaseTnx {
         regresar= DaoFactory.getInstance().update(sesion, this.fondo)> 0L;
       else
         regresar= DaoFactory.getInstance().insert(sesion, this.fondo)> 0L;
+      TcKeetContratosDto item= (TcKeetContratosDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosDto.class, this.fondo.getIdContrato());      
+      item.setIdContratoEstatus(EContratosEstatus.LIQUIDADO.getKey());
+      DaoFactory.getInstance().update(sesion, item);
+      TcKeetContratosBitacoraDto evidencia= new TcKeetContratosBitacoraDto("CONTRATO LIQUIDADO EL FONDO DE GARANTÍA", item.getIdContratoEstatus(), JsfBase.getIdUsuario(), -1L, item.getIdContrato());
+      DaoFactory.getInstance().insert(sesion, evidencia);
     } // try
     catch (Exception e) {
 			throw e;

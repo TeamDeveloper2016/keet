@@ -146,6 +146,15 @@
         where      
           tc_keet_estimaciones.id_estimacion = {idEstimacion}
       </select>
+			<select id="total">
+        select      
+          tc_keet_estimaciones.id_contrato as id_key,
+          sum(importe) as total
+        from      
+          tc_keet_estimaciones
+        where
+          tc_keet_estimaciones.id_contrato= {idContrato}
+      </select>  
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

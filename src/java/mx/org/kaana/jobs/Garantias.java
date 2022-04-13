@@ -16,14 +16,12 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 
@@ -40,7 +38,7 @@ public class Garantias implements Job, Serializable {
 
 	private static final Log LOG              =LogFactory.getLog(Garantias.class);
 	private static final long serialVersionUID=7505746848602636876L;
-	private static final String BODY_GARANTIA = "Contrato: \\nNombre *{contrato}* con periodo de {periodo} del desarrollo *{desarrollo}* por un importe de *${importe}* el cúal venció *{vence}*\\n\\n";
+	private static final String BODY_GARANTIA = "Contrato: \\nNombre *{contrato}* con periodo de {periodo} del desarrollo *{desarrollo}* por un importe de *${importe}* el cuál venció *{vence}*\\n\\n";
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -93,7 +91,6 @@ public class Garantias implements Job, Serializable {
           LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
           notificar.doSendGarantia(sb.toString());
         } // for
-        JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ actores.toString()+ "] !", ETipoMensaje.INFORMACION);
       } // if
 	  } // try
 		catch (Exception e) {

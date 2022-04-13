@@ -11,6 +11,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
@@ -97,6 +100,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             else
               if(Objects.equals(this.bitacora.getIdEstimacionEstatus(), EEstatusEstimaciones.TERMINADA.getIdEstatusFicticia()))
                 this.toTerminateEstimacion(sesion);
+            this.toCheckContrato(sesion, estimacion.getIdContrato());
  						regresar= DaoFactory.getInstance().update(sesion, estimacion)>= 1L;
 					} // if
 					break;
@@ -206,6 +210,30 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+  
+  private void toCheckContrato(Session sesion, Long idContrato) throws Exception {
+    Double total= 0D;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idContrato", idContrato);      
+      Value value= DaoFactory.getInstance().toField("TcKeetEstimacionesDto", "total", params, "total");
+      if(value!= null && value.getData()!= null)
+        total= value.toDouble();
+      TcKeetContratosDto item= (TcKeetContratosDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosDto.class, idContrato);      
+      if(item!= null && Objects.equals(total, item.getCosto())) {
+        item.setIdContratoEstatus(EContratosEstatus.COBRADO.getKey());
+        DaoFactory.getInstance().update(sesion, item);
+        TcKeetContratosBitacoraDto evidencia= new TcKeetContratosBitacoraDto("CONTRATO ESTIMADO AL 100% SIN FONDO DE GARANTÍA", item.getIdContratoEstatus(), JsfBase.getIdUsuario(), -1L, item.getIdContrato());
+        DaoFactory.getInstance().insert(sesion, evidencia);
+      } // if  
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 } 
