@@ -13,6 +13,8 @@
 		 <clase expresion="0 0/60 * 1/1 * ? *" id="facturas"    description="sincronización de facturas" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Facturas</clase>
 		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="descargas de respaldos"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Descargas</clase>
 		 <clase expresion="0 0,30 0/1 ? * * *" id="facturacion" description="facturación automatica"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Timbrado</clase>		 
-		 <clase expresion="0 0 4 1/1 * ? *"    id="depuracion"  description="depuración de archivos"     load="true" pruebas="*" produccion="*" >mx.org.kaana.jobs.Depuracion</clase>		 
+		 <clase expresion="0 0 4 1/1 * ? *"    id="depuracion"  description="depuración de archivos"     load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Depuracion</clase>		 
+		 <clase expresion="0 0 8 1/1 * ? *"    id="garantias"   description="fondos de garantias"        load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Garantia</clase>		 
+		 <clase expresion="0 0 17 ? * FRI *"    id="balance"     description="estados de cuenta"          load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Balance</clase>		 
    </tarea>      	        
 </tareas>

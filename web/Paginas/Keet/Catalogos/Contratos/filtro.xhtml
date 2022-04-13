@@ -166,6 +166,8 @@
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="garantias" icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:menuitem id="extras" icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
+            <p:menuitem id="fondo" icon="fa fa-medium" value="Fondo garantía" action="#{keetCatalogosContratosFiltro.doFondoGarantia()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
           </p:contextMenu>
         </div>
       </div>

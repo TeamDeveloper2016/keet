@@ -322,6 +322,32 @@
           tc_keet_estimaciones.id_estimacion
         {sortOrder}        
       </select>
+      <select id="garantias">
+        select
+          tc_keet_contratos.id_contrato as id_key, 
+          tc_keet_contratos.id_contrato, 
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_keet_contratos.clave, 
+          tc_keet_contratos.nombre, 
+          tc_keet_contratos.etapa,
+          tc_keet_contratos.fondo_garantia,
+          tc_keet_contratos.inicio,
+          tc_keet_contratos.termino,
+          tc_keet_contratos.vence
+        from
+          tc_keet_contratos
+        inner join 
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join 
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+        left join
+          tc_keet_contratos_vecimientos on tc_keet_contratos.id_contrato= tc_keet_contratos_vecimientos.id_contrato
+        where
+          date_format(tc_keet_contratos.vence, '%Y%m%d')&lt;= '{fecha}'  
+          and tc_keet_contratos_vecimientos.id_contrato_vencimiento is null
+        order by
+          tc_keet_contratos.registro desc
+      </select>
 		</unit>
 		<unit id="VistaAnticiposPagosDto">
 			<select id="lazy">

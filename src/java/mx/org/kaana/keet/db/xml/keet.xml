@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosVecimientosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_vecimientos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_vecimientos
+        where      
+          id_contrato = {idContrato}
+      </select>
+    </unit>    
     <unit id="TcKeetContratosGarantiasDto">
       <select id="row">
         select      
