@@ -736,6 +736,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdDesarrollo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(contratos== null || contratos.isEmpty()) 

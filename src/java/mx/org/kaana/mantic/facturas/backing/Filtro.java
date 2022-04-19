@@ -239,6 +239,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1")) {
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			  contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
         clientes = UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
       } // if  

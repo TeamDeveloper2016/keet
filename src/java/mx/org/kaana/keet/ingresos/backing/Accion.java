@@ -429,6 +429,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.ingreso.getIdDesarrollo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(!contratos.isEmpty()) 

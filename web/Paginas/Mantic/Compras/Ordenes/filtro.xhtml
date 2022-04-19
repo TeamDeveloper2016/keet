@@ -34,6 +34,14 @@
 				} // if
 				return ok;
 			} // validaJustificacion
+      
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
     </script>		
 		<style>
       .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}

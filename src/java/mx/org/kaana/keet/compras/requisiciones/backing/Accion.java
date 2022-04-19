@@ -429,6 +429,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", ((UISelectEntity) this.attrs.get("desarrollo")).getKey());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "etapa");
 			this.attrs.put("contratos", contratos);
 		} // try

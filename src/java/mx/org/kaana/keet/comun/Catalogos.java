@@ -272,6 +272,7 @@ public final class Catalogos {
     try {
       params = new HashMap<>();
       params.put("idDesarrollo", idDesarrollos);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("contratos", contratos);
       attrs.put("idContrato", contratos!= null? UIBackingUtilities.toFirstKeySelectEntity(contratos): new UISelectEntity(-1L));

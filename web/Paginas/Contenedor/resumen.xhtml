@@ -14,7 +14,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Resumen de estimación de obra" />
   <ui:define name="librerias">
 		<script src="https://maps.google.com/maps/api/js?key=AIzaSyBT_SYV5r3kJdT_bO0ijJmNjxqZqhb7xNY" type="text/javascript"></script>
@@ -47,6 +47,14 @@
          } // else  
          jsEcharts.responsive();
        }
+       
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
     </script>		
     <style type="text/css">
       .keet-chart-title { font-weight: normal !important; font-size: 16px; }
@@ -72,6 +80,17 @@
       </pe:methodParam>  			
 		</pe:remoteCommand>    
    <div class="Container100 dashboard">
+      <div class="ContainerIndent">        					
+        <div class="Container100 Responsive overview-box">
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <div class="Container100 Responsive Fs14 janal-column-left janal-color-black">
+                <i class=""></i><p:spacer width="8px" height="1px"/>Estado de cuenta por contrato al día <span id="hoy"/>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>  
       <div class="ContainerIndent">        					
         <div class="Container50 Responsive overview-box">					
 					<div class="Container100 Responsive">					
@@ -258,11 +277,48 @@
         </div>  
       </div>  
       <div class="ContainerIndent">        
-        <div class="Container100 Responsive overview-box">					
+        <div class="Container30 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-chart">
-                <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Historial de semanas
+                </div>
+                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolResumen.semanas}" paginator="#{kajoolResumen.semanas.size() gt (kajoolUtilAplicacion.isMobile? 9: 12)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 9: 12}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 9: 12}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolResumen.attrs.semana}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                  <p:column styleClass="janal-column-center Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Semana"/>
+                    </f:facet>
+                    <h:outputText value="#{row.semana}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-30 MarAuto Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Facturado"/>
+                    </f:facet>
+                    <h:outputText value="#{row.facturado}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-30 MarAuto Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Pagado"/>
+                    </f:facet>
+                    <h:outputText value="#{row.pagado}"/>
+                  </p:column>                    
+                  <f:facet name="footer">
+                    <p:outputLabel value="Total [#{kajoolResumen.semanas.size()}] registros"/>
+                  </f:facet>
+                </p:dataTable>                
+              </p:panel>  
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="">.</span>
+              </div>   
+            </div>
+          </div>  
+        </div>  
+        <div class="Container70 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-chart">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
                   <i class="fa fa-file-invoice-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Gráfico de lo facturado contra lo pagado
                 </div>
                 <div class="keet-chart-panel-box">
@@ -278,17 +334,16 @@
           </div>  
         </div>  
       </div>  
-      <div class="ContainerIndent">        					
-        <div class="Container100 Responsive overview-box">
-					<div class="Container100 Responsive">					
-						<div class="ContainerIndent card">
-              <div class="Container100 Responsive Fs14 janal-column-right janal-color-black">
-                <i class=""></i><p:spacer width="8px" height="1px"/>Estado de cuenta por contrato al día <span id="hoy"/>
-              </div>
-            </div>
-          </div>
-        </div>  
-      </div>  
+    </div>		
+    <div class="janal-line-button">
+      <div class="lg-pantalla">
+        <p:commandButton value="Enviar" icon="fa fa-whatsapp" accesskey="e" process="@form" action="#{kajoolResumen.doEnviar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+        <p:commandButton value="Reporte" icon="fa fa-file-pdf-o" accesskey="r" process="@this" update="descargar" action="#{kajoolResumen.doReporte}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      </div>		
+      <div class="xs-pantalla">
+        <p:commandButton title="Enviar" icon="fa fa-whatsapp" process="@form" action="#{kajoolResumen.doEnviar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+        <p:commandButton title="Reporte" icon="fa fa-file-pdf-o" process="@this" update="descargar" action="#{kajoolResumen.doReporte}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      </div>		
     </div>		
 		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
 			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
@@ -299,4 +354,6 @@
 			</p:panelGrid>
 		</p:notificationBar>
   </ui:define>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="lineaSeparacion" value="false"/>	1
 </ui:composition>

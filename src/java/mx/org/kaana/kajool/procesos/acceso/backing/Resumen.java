@@ -13,13 +13,17 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.model.Multiple;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -28,6 +32,10 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,6 +54,13 @@ public class Resumen extends Respaldos implements Serializable {
   private static final long serialVersionUID= 5323749709626263805L;
   private static final Log LOG              = LogFactory.getLog(Resumen.class);
 
+  private List<Entity> semanas;
+	private Reporte reporte;
+
+  public List<Entity> getSemanas() {
+    return semanas;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -105,8 +120,8 @@ public class Resumen extends Respaldos implements Serializable {
       params = new HashMap<>();
       params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
   		desarrollos= UIEntity.build("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
-      attrs.put("desarrollos", desarrollos);
-      attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
+      this.attrs.put("desarrollos", desarrollos);
+      this.attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
       this.doLoadContratos();
 		} // try
 		catch (Exception e) {
@@ -130,10 +145,11 @@ public class Resumen extends Respaldos implements Serializable {
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
       params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
-      attrs.put("contratos", contratos);
+      this.attrs.put("contratos", contratos);
       UISelectEntity idContrato= contratos!= null? UIBackingUtilities.toFirstKeySelectEntity(contratos): new UISelectEntity(-1L);
-      attrs.put("idContrato", idContrato);
+      this.attrs.put("idContrato", idContrato);
       if(idContrato.size()> 1)
         UIBackingUtilities.toFormatUIEntitySet(contratos, columns);
 		} // try
@@ -165,6 +181,14 @@ public class Resumen extends Respaldos implements Serializable {
       if(idNomina!= null && !idNomina.isEmpty())
         UIBackingUtilities.toFormatEntity(idNomina, columns);
       this.attrs.put("idNomina", idNomina);
+      this.semanas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "semanas", params);
+      if(semanas!= null && !semanas.isEmpty()) {
+        columns.clear();
+  			columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
+	  		columns.add(new Columna("facturado", EFormatoDinamicos.MILES_CON_DECIMALES));
+	  		columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
+        UIBackingUtilities.toFormatEntitySet(semanas, columns);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -218,7 +242,11 @@ public class Resumen extends Respaldos implements Serializable {
         int index= contratos.indexOf((UISelectEntity)this.attrs.get("idContrato"));
         if(index>= 0)
           this.attrs.put("idContrato", contratos.get(index));
+        else
+          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: ''}}});");
       } // if
+      else
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: ''}}});");
       this.toLoadNomina();
       this.toLoadAcumulado();
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "pagado", params));
@@ -239,7 +267,6 @@ public class Resumen extends Respaldos implements Serializable {
       else
         this.attrs.put("confronta", "{}");
       UIBackingUtilities.execute("jsEcharts.update('confronta', {json:".concat((String)this.attrs.get("confronta")).concat("});"));
-      UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato:'"+ ((UISelectEntity)this.attrs.get("idContrato")).toString("nombre")+ ((UISelectEntity)this.attrs.get("idContrato")).toString("etapa")+ "'}}});");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -282,5 +309,97 @@ public class Resumen extends Respaldos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	}	
+
+  public void doEnviar() {
+    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> actores= new HashMap<>();
+    String nomina              = "";
+    String periodo             = "";
+    try {      
+      UISelectEntity idNomina= (UISelectEntity)this.attrs.get("idNomina");
+      if(idNomina!= null && !idNomina.isEmpty()) {
+        nomina = idNomina.toString("semana");
+        periodo= idNomina.toString("inicio").concat(" al ").concat(idNomina.toString("termino"));
+      } // if  
+      Encriptar encriptar= new Encriptar();
+      actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
+          actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
+          break;
+        case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
+          actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
+          actores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
+          break;
+        case "triana":
+          actores.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
+          actores.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
+          break;
+      } // swtich
+      this.toReporte(Boolean.TRUE);
+      Cafu notificar= new Cafu("", "", this.reporte.getAlias(), nomina, periodo);
+      for (String actor: actores.keySet()) {
+        notificar.setNombre(Cadena.nombrePersona(actor));
+        notificar.setCelular((String)actores.get(actor));
+        LOG.info("Enviando mensaje de whatsapp al celular: "+ actor);
+        notificar.doSendEstadoCuenta();
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(actores);
+    } // finally
+  } 
+  
+  public void doReporte() {
+    this.toReporte(Boolean.FALSE);
+  }
+  
+  private void toReporte(Boolean email) {
+		Parametros comunes           = null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    try {   
+      params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());	
+      params.put(Constantes.SQL_VERDADERO, "tc_keet_contratos.id_contrato="+ ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
+      reporteSeleccion= EReportes.CONTRATO_RESUMEN;
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
+			if(email) 
+        this.reporte.doAceptarSimple();			
+			else {				
+				this.doVerificarReporte();
+				this.attrs.put("reporteName", this.reporte.getArchivo());
+				this.reporte.doAceptar();			
+			} // else		      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
+  
+  public void doVerificarReporte() {
+		if(this.reporte.getTotal()> 0L)
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
+    else {
+			UIBackingUtilities.execute("generalHide()");		
+			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+		} // else
+	} // doVerificarReporte	  
   
 }

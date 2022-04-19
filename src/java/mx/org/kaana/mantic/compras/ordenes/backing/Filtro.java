@@ -347,14 +347,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-} // doReporte
+  } // doReporte
 	
 	public void doVerificarReporte() {
 		if(this.reporte.getTotal()> 0L)
 			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
+    else {
 			UIBackingUtilities.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte		
 	
@@ -447,7 +447,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			motor= new MotorBusqueda(seleccionado.toLong("idProveedor"));
 			contactos= motor.toProveedoresTipoContacto();
 			this.correos= new ArrayList<>();
-			for(ProveedorTipoContacto contacto: contactos){
+			for(ProveedorTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
 					this.correos.add(new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor(), contacto.getIdPreferido()));				
 			} // for

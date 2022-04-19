@@ -350,6 +350,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.estimaciones.getEstimacion().getIdDesarrollo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
 		} // try 

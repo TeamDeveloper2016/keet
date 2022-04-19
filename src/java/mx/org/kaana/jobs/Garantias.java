@@ -24,8 +24,6 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
-
-
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import org.apache.commons.logging.Log;
@@ -66,7 +64,7 @@ public class Garantias implements Job, Serializable {
             actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
             break;
-          case "gylvi":
+          case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
             actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
             actores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
             break;

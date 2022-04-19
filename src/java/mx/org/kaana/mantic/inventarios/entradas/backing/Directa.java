@@ -407,6 +407,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.proyecto.getIdDesarrollo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratosProyecto", contratos);
       if(!contratos.isEmpty()) 
@@ -429,6 +430,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.empleado.getIdDesarrollo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratosEmpleado", contratos);
       if(!contratos.isEmpty()) 
