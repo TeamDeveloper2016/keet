@@ -66,9 +66,7 @@ public class Resumen extends Respaldos implements Serializable {
   public void doLoad() {
     try {
       this.toLoadEmpresas();
-      this.toLoadNomina();
-      this.toLoadAcumulado();
-      this.toLoadDataConfronta();
+      this.doLoadDataConfronta();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -123,7 +121,7 @@ public class Resumen extends Respaldos implements Serializable {
   public void doLoadContratos() {
 		List<UISelectEntity>contratos= null;
     List<Columna> columns        = null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     try {
 			columns= new ArrayList<>();
 			columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -131,8 +129,6 @@ public class Resumen extends Respaldos implements Serializable {
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
-      
-      params = new HashMap<>();
       params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
   		contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       attrs.put("contratos", contratos);
@@ -213,10 +209,18 @@ public class Resumen extends Respaldos implements Serializable {
     } // finally
   }
   
-	private void toLoadDataConfronta() {
+	public void doLoadDataConfronta() {
     Map<String, Object> params = new HashMap<>();
     try {      
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());    
+      List<UISelectEntity> contratos= (List<UISelectEntity>)attrs.get("contratos");
+      if(contratos!= null && !contratos.isEmpty()) {
+        int index= contratos.indexOf((UISelectEntity)this.attrs.get("idContrato"));
+        if(index>= 0)
+          this.attrs.put("idContrato", contratos.get(index));
+      } // if
+      this.toLoadNomina();
+      this.toLoadAcumulado();
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "pagado", params));
       if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
      		BarModel model= new BarModel(new Title(), multiple);
@@ -232,6 +236,10 @@ public class Resumen extends Respaldos implements Serializable {
         model.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         this.attrs.put("confronta", model.toJson());
       } // if
+      else
+        this.attrs.put("confronta", "{}");
+      UIBackingUtilities.execute("jsEcharts.update('confronta', {json:".concat((String)this.attrs.get("confronta")).concat("});"));
+      UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato:'"+ ((UISelectEntity)this.attrs.get("idContrato")).toString("nombre")+ ((UISelectEntity)this.attrs.get("idContrato")).toString("etapa")+ "'}}});");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

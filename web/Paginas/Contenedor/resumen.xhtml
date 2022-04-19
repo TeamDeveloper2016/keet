@@ -105,7 +105,7 @@
                   </p:selectOneMenu>	
                   <p:outputLabel for="idContrato" value="Contrato:"/>
                   <p:selectOneMenu id="idContrato" value="#{kajoolResumen.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" listener="#{kajoolResumen.doLoadData}" process="@this" update="@this" oncomplete="janal.desbloquear()"/>
+                    <p:ajax event="change" listener="#{kajoolResumen.doLoadDataConfronta}" process="@this" update="@this @(.contrato)" oncomplete="janal.desbloquear()"/>
                     <f:selectItems value="#{kajoolResumen.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                     <p:column headerText="Clave">
                       <h:outputText value="#{item.clave}"/>
@@ -240,14 +240,14 @@
                   <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <p:outputLabel value="Total facturado:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.facturado}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.facturado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <p:outputLabel value="Total pagado:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.pagado}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.pagado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
-                  <p:inputText value="Total vencido: $ #{kajoolResumen.attrs.acumulado.vencido}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                  <p:inputText value="Total vencido: $ #{kajoolResumen.attrs.acumulado.vencido}   (facturas con más de 11 días calendario)" styleClass="janal-color-red janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                 </p:panelGrid>  
               </p:panel>			              
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
