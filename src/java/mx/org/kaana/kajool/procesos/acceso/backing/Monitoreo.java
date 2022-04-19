@@ -30,6 +30,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -120,7 +121,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 			  this.checkDownloadBackup();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }
@@ -138,7 +139,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       this.toLoadNominaContratistas();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
@@ -155,7 +156,7 @@ public class Monitoreo extends Respaldos implements Serializable {
         this.attrs.put("nombreResidentePivote", this.residentes.get(this.residentePivote).toString("nombreCompleto"));
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
@@ -186,7 +187,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if  
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -225,7 +226,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // else
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -274,7 +275,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       this.toLoadProveedores();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -317,7 +318,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       this.toLoadNominaProveedores();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -362,7 +363,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       this.toLoadProveedores();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -410,7 +411,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -452,7 +453,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -496,7 +497,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // else
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -527,7 +528,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // else
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }
@@ -567,7 +568,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // else
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }
@@ -621,7 +622,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // else
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }
@@ -649,7 +650,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if  
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }
@@ -660,7 +661,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch
 	}	
 
@@ -727,7 +728,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch
     finally {
       Methods.clean(params);
@@ -765,7 +766,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
     finally {
@@ -832,7 +833,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch		                    
   } // onMarkerSelect
   
@@ -853,7 +854,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 			this.doLoadFiles();
 		} // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
     finally {
@@ -879,7 +880,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			throw e;
 		} // catch		
 	} // doLoadFiles
@@ -897,7 +898,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 			UIBackingUtilities.resetDataTable("tablaAvances");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {      
@@ -954,7 +955,7 @@ public class Monitoreo extends Respaldos implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
     return regresar;
 	} // doCapturaAvances
@@ -972,7 +973,7 @@ public class Monitoreo extends Respaldos implements Serializable {
         } // for
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -1020,7 +1021,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -1061,7 +1062,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -1093,7 +1094,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
     finally {
@@ -1153,7 +1154,7 @@ public class Monitoreo extends Respaldos implements Serializable {
       } // if  
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }

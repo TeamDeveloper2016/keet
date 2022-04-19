@@ -360,13 +360,19 @@
         from      
           tc_keet_prestamos_lotes
         where      
-          id_prestamo = {idPrestamo} and id_estacion = {idEstacion}
+          id_prestamo= {idPrestamo} 
+          and id_estacion= {idEstacion}
       </select>
       <delete id="rows">
         delete tc_keet_prestamos_lotes from tc_keet_prestamos_lotes where id_prestamo= {idPrestamo} and id_pagado= 2
       </delete>
       <update id="rows">
-        update tc_keet_prestamos_lotes set id_pagado= if((pagado{signo}{anticipo})> 0, 1, 2), pagado= (pagado{signo}{anticipo}) where id_estacion= {idEstacion}
+        update 
+          tc_keet_prestamos_lotes 
+        set 
+          id_pagado= if((pagado{signo}{anticipo})> 0, 1, 2), pagado= (pagado{signo}{anticipo}) 
+        where 
+          id_estacion= {idEstacion}
       </update>  
     </unit>    
     <unit id="TcKeetAnticiposLotesDto">

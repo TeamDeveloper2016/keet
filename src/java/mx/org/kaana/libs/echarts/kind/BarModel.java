@@ -16,6 +16,7 @@ import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
 import mx.org.kaana.libs.echarts.beans.Yaxis;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
+import mx.org.kaana.libs.echarts.enums.EKinds;
 import mx.org.kaana.libs.echarts.model.IDataSet;
 import mx.org.kaana.libs.echarts.model.SortNames;
 import mx.org.kaana.libs.json.Decoder;
@@ -205,9 +206,16 @@ public class BarModel extends BaseBarModel implements Serializable {
 		} // for
 	}
 
+	public void toChangeLineModel() {
+		for (Serie item : this.series) {
+			item.setType(EKinds.LINE.toString());
+		} // for
+	}
+
 	public void remove() {
     this.removeLines();
     this.removeMarks();
 	}
+
   
 }

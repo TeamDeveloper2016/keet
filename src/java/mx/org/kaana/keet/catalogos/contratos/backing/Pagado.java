@@ -147,14 +147,14 @@ public class Pagado extends IBaseAttribute implements Serializable {
 	private void toLoadBancos() {
 		List<UISelectEntity> bancos= null;
 		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		List<Columna> columns      = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns= new ArrayList<>();
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
       if(!this.fondo.isValid()) 
   			this.fondo.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity(bancos));
@@ -172,6 +172,7 @@ public class Pagado extends IBaseAttribute implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally
 	} // toLoadBancos  
   

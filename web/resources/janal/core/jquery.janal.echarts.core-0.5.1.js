@@ -251,7 +251,7 @@
       } // for      
 
     },
-     average: function (serie) {
+    average: function (serie) {
       var dataTemporal = null;
       var totalAcumulate = new Array(serie[0].data.length);
       var contador = 0;
@@ -310,7 +310,6 @@
         if (ok) {
           serieData[serieData.length - 1].data;
         } // if
-
       } // for      
     },
     fix: function (params) {
@@ -525,10 +524,10 @@
         } else {
           cantidad = cuantos;
         }
-        if (params.length > cantidad) {
-          params = params.toLowerCase();
-          params = params.charAt(0).toUpperCase() + params.slice(1);
-        } // if	
+        // if (params.length > cantidad) {
+        //  params = params.toLowerCase();
+        //   params = params.charAt(0).toUpperCase() + params.slice(1);
+        // } // if	
         if (params.length > 75)
           params = params.substring(0, 75) + '...';
       } // if
