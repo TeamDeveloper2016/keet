@@ -20,7 +20,7 @@ public final class Parametros implements Serializable {
 
   public Parametros(Long idEmpresa) throws Exception {
     this.idEmpresa = idEmpresa;
-    setComunes(toDatosEmpresa());
+    setComunes(this.toDatosEmpresa());
   }
 
   public Parametros(Long idEmpresa, Long idAlmacen, Long idAlmacenDestino) throws Exception {

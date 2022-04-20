@@ -342,6 +342,7 @@
           tc_keet_estimaciones.id_estimacion,
           tc_keet_estimaciones.importe,
           tc_keet_estimaciones.facturar,
+          (tc_keet_estimaciones.importe- sum(tc_keet_estimaciones_detalles.importe)) as estimado,
           concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as semana,
           tc_keet_nominas_periodos.inicio,
           tc_keet_nominas_periodos.termino,
@@ -356,6 +357,16 @@
           tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         inner join
           tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+        inner join (
+          select
+            max(tc_keet_estimaciones.id_estimacion) as id_estimacion
+          from
+            tc_keet_estimaciones
+          inner join
+            tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          where
+            tc_keet_estimaciones.id_contrato= {idContrato}
+        ) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion
         where  
           tc_keet_estimaciones.id_contrato= {idContrato}
         group by
@@ -390,14 +401,24 @@
         select
           tc_keet_estimaciones.id_estimacion as id_key,
           tc_keet_estimaciones.id_estimacion,
+          tc_keet_estimaciones.id_contrato,
+          tc_keet_contratos.costo,
           sum(tc_keet_estimaciones.importe) as estimado,
+          (tc_keet_contratos.costo- sum(tc_keet_estimaciones.importe)- ifnull(tt_keet_retenciones.anticipo, 0)- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_estimar,
+          round(sum(tc_keet_estimaciones.importe)* 100/ tc_keet_contratos.costo, 2) as porcentaje_estimado,
           sum(tc_keet_estimaciones.facturar) as facturado,
           ifnull(tt_keet_retenciones.anticipo, 0) as anticipo,
+          (tc_keet_contratos.anticipo- ifnull(tt_keet_retenciones.anticipo, 0)) as por_anticipo,
+          round(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2) as porcentaje_anticipado,
           ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+          (tc_keet_contratos.fondo_garantia- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_fondo,
+          round(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2) as porcentaje_fondeado,
           ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
           sum(ifnull(tc_mantic_clientes_deudas.importe, 0)- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as pagado
         from
           tc_keet_estimaciones
+        inner join
+          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
         inner join (
 					select
             tc_keet_estimaciones.id_contrato, 
@@ -5318,6 +5339,7 @@
 					tc_keet_contratos.id_contrato as id_key,
           tc_mantic_clientes.id_cliente,
           tc_keet_desarrollos.id_desarrollo,
+				  tc_mantic_empresas.nombre as empresa,  
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_clientes.razon_social,
           (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
@@ -5330,6 +5352,8 @@
 					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				inner join
 					tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
 				where
 					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
           and {condicion}

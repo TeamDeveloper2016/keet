@@ -117,7 +117,7 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
 	  if(this.total> 0 && JsfBase.getFacesContext()!= null) {
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(monitoreo!= null) {
-				long current       = ((Number)this.getVariableValue("REPORT_COUNT")).longValue();
+				long current= ((Number)this.getVariableValue("REPORT_COUNT")).longValue();
 				if(this.percentage) {
 					monitoreo.setProgreso((long)(current* 100/ monitoreo.getTotal()));
 				}	// if

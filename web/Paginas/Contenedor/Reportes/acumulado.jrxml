@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="acumulado" pageWidth="284" pageHeight="210" columnWidth="284" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.Vencido" uuid="81bc543a-dbc9-489c-8ee9-83b777c871d3">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORTE_SQL_ACUMULADO" class="java.lang.String"/>
+	<parameter name="REPORTE_SQL" class="java.lang.String"/>
+	<parameter name="REPORTE_REGISTROS" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[$P!{REPORTE_SQL_ACUMULADO}]]>
+	</queryString>
+	<field name="ESTIMADO" class="java.math.BigDecimal"/>
+	<field name="ANTICIPO" class="java.math.BigDecimal"/>
+	<field name="FONDO_GARANTIA" class="java.math.BigDecimal"/>
+	<field name="FACTURADO" class="java.math.BigDecimal"/>
+	<field name="PAGADO" class="java.math.BigDecimal"/>
+	<field name="ID_CONTRATO" class="java.lang.Long"/>
+	<field name="PORCENTAJE_ESTIMADO" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE_ANTICIPADO" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE_FONDEADO" class="java.math.BigDecimal"/>
+	<variable name="VENCIDO" class="java.math.BigDecimal" resetType="None">
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="200" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="34" width="284" height="15" uuid="471872fb-01ec-4abf-8c8e-3129e08e57ac"/>
+				<text><![CDATA[Total amortizado del anticipo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="2" width="284" height="15" uuid="a4f49109-becf-41af-96cc-864779da4d8b"/>
+				<text><![CDATA[Total estimado:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="114" width="284" height="15" backcolor="#F0F1F3" uuid="07e7469e-89c0-4e68-a638-410d5a7bcc48"/>
+				<textElement>
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FACTURADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="100" width="284" height="15" uuid="72db0ead-7763-4e70-a15b-129843db7f47"/>
+				<text><![CDATA[Total facturado:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="81" width="218" height="15" backcolor="#F0F1F3" uuid="38d4c92a-d63f-4bee-8f85-b112da48749a"/>
+				<textFieldExpression><![CDATA[$F{FONDO_GARANTIA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="48" width="218" height="15" backcolor="#F0F1F3" uuid="23079012-8fa0-444b-b34e-577b83032d13"/>
+				<textFieldExpression><![CDATA[$F{ANTICIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="16" width="218" height="15" backcolor="#F0F1F3" uuid="c374eac5-3fc4-46df-80e6-3b2c5b9aa585"/>
+				<textFieldExpression><![CDATA[$F{ESTIMADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="67" width="284" height="15" uuid="10ff6ca0-f3fd-430a-a3e1-b842dcc3f06a"/>
+				<text><![CDATA[Total retenido del fondo de garantía:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="148" width="284" height="15" backcolor="#F0F1F3" uuid="e3adc21c-af95-4547-8d68-5ddea68945e9"/>
+				<textElement>
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAGADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="134" width="284" height="15" uuid="17689bfa-5222-466e-b31a-806c84c277f6"/>
+				<text><![CDATA[Total pagado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="167" width="284" height="15" uuid="67d7b027-1c71-430c-b226-83e5fee98c27"/>
+				<text><![CDATA[Total vencido:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="0" y="181" width="120" height="15" forecolor="#FF0000" backcolor="#F0F1F3" uuid="ea825bad-a346-4e16-a376-c351e50d45b1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_SCRIPTLET}.getVencido()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="120" y="181" width="164" height="15" forecolor="#FF0000" backcolor="#F0F1F3" uuid="95dcfbd5-f983-45d4-953f-4fbf28405a15"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(facturas con mas de 11 días calendario)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="266" y="16" width="18" height="15" backcolor="#F0F1F3" uuid="4746fc08-6422-4479-b23d-ce24b6d031d2"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00">
+				<reportElement mode="Opaque" x="218" y="16" width="48" height="15" backcolor="#F0F1F3" uuid="32b1d6cf-92f6-47db-b706-aec4f25d1019"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE_ESTIMADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="266" y="48" width="18" height="15" backcolor="#F0F1F3" uuid="f16e81e5-4d15-47d6-9d32-fd4ca10c5a39"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00">
+				<reportElement mode="Opaque" x="218" y="48" width="48" height="15" backcolor="#F0F1F3" uuid="29fff8a1-dca3-42c6-920f-ca10c2b2b0a6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE_ANTICIPADO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00">
+				<reportElement mode="Opaque" x="218" y="81" width="48" height="15" backcolor="#F0F1F3" uuid="00cf1b43-b7ec-4ced-8b83-60e664c86df9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE_FONDEADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="266" y="81" width="18" height="15" backcolor="#F0F1F3" uuid="7b19c833-dd68-43b2-b742-8461c8f8614d"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

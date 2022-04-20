@@ -36,6 +36,7 @@ import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,6 +67,7 @@ public class Resumen extends Respaldos implements Serializable {
   protected void init() {
     try {      
       this.attrs.put("hoy", Fecha.getHoyCorreo());
+      this.attrs.put("individual", Boolean.TRUE);
       this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
       this.doLoad();
 			if(JsfBase.isAdminEncuestaOrAdmin())
@@ -176,9 +178,10 @@ public class Resumen extends Respaldos implements Serializable {
 			columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("facturar", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());      
       idNomina= (Entity)DaoFactory.getInstance().toEntity("VistaEstimacionesDto", "semana", params);
-      if(idNomina!= null && !idNomina.isEmpty())
+      if(idNomina!= null && !idNomina.isEmpty()) 
         UIBackingUtilities.toFormatEntity(idNomina, columns);
       this.attrs.put("idNomina", idNomina);
       this.semanas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "semanas", params);
@@ -212,6 +215,9 @@ public class Resumen extends Respaldos implements Serializable {
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vencido", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("porEstimar", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("porAnticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("porFondo", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());      
       Value vencido= (Value)DaoFactory.getInstance().toField("VistaEstimacionesDto", "vencido", params, "vencido");
       if(vencido== null || vencido.getData()== null)
@@ -220,6 +226,7 @@ public class Resumen extends Respaldos implements Serializable {
       if(acumulado!= null && !acumulado.isEmpty()) {
         acumulado.put("vencido", vencido);
         UIBackingUtilities.toFormatEntity(acumulado, columns);
+        this.attrs.put("vencido", acumulado.toString("vencido"));
       } // if  
       this.attrs.put("acumulado", acumulado);
     } // try
@@ -366,15 +373,21 @@ public class Resumen extends Respaldos implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     try {   
+      params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
       params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());	
-      params.put(Constantes.SQL_VERDADERO, "tc_keet_contratos.id_contrato="+ ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
+      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato="+ ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
       reporteSeleccion= EReportes.CONTRATO_RESUMEN;
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
-      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());			
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      parametros.put("REPORTE_VENCIDO", this.attrs.get("vencido"));			
+      parametros.put("REPORTE_SQL_SEMANA", Dml.getInstance().getSelect("VistaEstimacionesDto", "semana", params));
+      parametros.put("REPORTE_SQL_ACUMULADO", Dml.getInstance().getSelect("VistaEstimacionesDto", "acumulado", params));
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_SEMANA"), "/Paginas/Contenedor/Reportes/semana.jasper");
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_ACUMULADO"), "/Paginas/Contenedor/Reportes/acumulado.jasper");
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
 			if(email) 
         this.reporte.doAceptarSimple();			

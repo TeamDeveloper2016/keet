@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="semana" pageWidth="284" pageHeight="210" columnWidth="284" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="81bc543a-dbc9-489c-8ee9-83b777c871d3">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORTE_SQL_SEMANA" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[$P!{REPORTE_SQL_SEMANA}]]>
+	</queryString>
+	<field name="SEMANA" class="java.lang.String"/>
+	<field name="INICIO" class="java.util.Date"/>
+	<field name="TERMINO" class="java.util.Date"/>
+	<field name="IMPORTE" class="java.math.BigDecimal"/>
+	<field name="ANTICIPO" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE_ANTICIPO" class="java.math.BigDecimal"/>
+	<field name="FONDO_GARANTIA" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE_FONDO" class="java.math.BigDecimal"/>
+	<field name="RETENCIONES" class="java.math.BigDecimal"/>
+	<field name="ESTIMADO" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="200" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="33" width="283" height="15" uuid="471872fb-01ec-4abf-8c8e-3129e08e57ac"/>
+				<text><![CDATA[Importe de esta estimación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="1" width="283" height="15" uuid="a4f49109-becf-41af-96cc-864779da4d8b"/>
+				<text><![CDATA[Periodo:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="1" y="114" width="216" height="15" backcolor="#F0F1F3" uuid="07e7469e-89c0-4e68-a638-410d5a7bcc48"/>
+				<textFieldExpression><![CDATA[$F{FONDO_GARANTIA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="99" width="283" height="15" uuid="72db0ead-7763-4e70-a15b-129843db7f47"/>
+				<text><![CDATA[(-) Retención de fondo de garantía:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="1" y="81" width="216" height="15" backcolor="#F0F1F3" uuid="38d4c92a-d63f-4bee-8f85-b112da48749a"/>
+				<textFieldExpression><![CDATA[$F{ANTICIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="1" y="48" width="283" height="15" backcolor="#F0F1F3" uuid="23079012-8fa0-444b-b34e-577b83032d13"/>
+				<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement mode="Opaque" x="1" y="16" width="63" height="15" backcolor="#F0F1F3" uuid="c374eac5-3fc4-46df-80e6-3b2c5b9aa585"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{INICIO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="66" width="283" height="15" uuid="10ff6ca0-f3fd-430a-a3e1-b842dcc3f06a"/>
+				<text><![CDATA[(-) Amortizació de anticipo:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="1" y="148" width="283" height="15" backcolor="#F0F1F3" uuid="e3adc21c-af95-4547-8d68-5ddea68945e9"/>
+				<textFieldExpression><![CDATA[$F{ESTIMADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="133" width="140" height="15" uuid="17689bfa-5222-466e-b31a-806c84c277f6"/>
+				<text><![CDATA[Total estimado de la semana:]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="266" y="81" width="18" height="15" backcolor="#F0F1F3" uuid="735bdfa1-ee65-43cc-bfb0-4e32b0fa0fc0"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="266" y="114" width="18" height="15" backcolor="#F0F1F3" uuid="61de7d48-e41c-41e8-bd6e-9bcc51e4d5a3"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00">
+				<reportElement mode="Opaque" x="217" y="114" width="49" height="15" backcolor="#F0F1F3" uuid="069a69a5-9684-4fae-84ac-455482601af2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE_FONDO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00">
+				<reportElement mode="Opaque" x="217" y="81" width="49" height="15" backcolor="#F0F1F3" uuid="d32c5690-a1ce-4fe3-89ab-49ce53c59644"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE_ANTICIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="64" y="16" width="22" height="15" backcolor="#F0F1F3" uuid="acceb6ff-5844-4849-a037-d74f9bfd3ee6"/>
+				<textFieldExpression><![CDATA[" al "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement mode="Opaque" x="86" y="16" width="198" height="15" backcolor="#F0F1F3" uuid="95900f34-b4fb-480e-a132-de0c0aa4d660"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{TERMINO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement mode="Opaque" x="142" y="133" width="142" height="15" backcolor="#F0F1F3" uuid="736fc230-f834-4110-b4b6-cc57067c571f"/>
+				<textElement>
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SEMANA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
