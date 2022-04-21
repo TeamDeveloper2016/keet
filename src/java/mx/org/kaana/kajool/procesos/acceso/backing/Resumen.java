@@ -373,8 +373,14 @@ public class Resumen extends Respaldos implements Serializable {
 		EReportes reporteSeleccion   = null;
     try {   
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
-      params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());	
-      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato="+ ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
+      if((Boolean)this.attrs.get("individual")) {
+        params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());	
+        params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato="+ ((UISelectEntity)this.attrs.get("idContrato")).getKey());	
+      } // if  
+      else {
+        params.put("idDesarrollo", -1L);	
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);	
+      } // if  
       reporteSeleccion= EReportes.CONTRATO_RESUMEN;
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	

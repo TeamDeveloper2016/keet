@@ -6,8 +6,39 @@
 	<parameter name="REPORTE_SQL_CONFRONTA" class="java.lang.String"/>
 	<parameter name="REPORTE_SQL" class="java.lang.String"/>
 	<parameter name="REPORTE_REGISTROS" class="java.lang.Long"/>
+	<parameter name="ID_CONTRATO" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[new BigDecimal(-1)]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
-		<![CDATA[$P!{REPORTE_SQL_CONFRONTA}]]>
+		<![CDATA[select
+          tc_keet_estimaciones.id_estimacion as id_key,
+          'FACTURADO' as category,
+          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
+          tc_keet_estimaciones.facturar as value
+        from
+          tc_keet_estimaciones
+        inner join
+          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        where
+          tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+        union all
+        select
+          tc_keet_estimaciones.id_estimacion as id_key,
+          'PAGADO' as category,
+          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
+          (tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo) as value
+        from
+          tc_keet_estimaciones
+        inner join
+          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        left join
+          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+        where
+          tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+        order by
+          category,
+          serie
+]]>
 	</queryString>
 	<field name="CATEGORY" class="java.lang.String"/>
 	<field name="SERIE" class="java.lang.String"/>
@@ -61,10 +92,10 @@
 					<categoryAxisFormat labelRotation="45.0">
 						<axisFormat>
 							<labelFont>
-								<font size="6"/>
+								<font size="5"/>
 							</labelFont>
 							<tickLabelFont>
-								<font size="6"/>
+								<font size="5"/>
 							</tickLabelFont>
 						</axisFormat>
 					</categoryAxisFormat>
@@ -72,10 +103,10 @@
 					<valueAxisFormat>
 						<axisFormat>
 							<labelFont>
-								<font size="6"/>
+								<font size="5"/>
 							</labelFont>
 							<tickLabelFont>
-								<font size="6"/>
+								<font size="5"/>
 							</tickLabelFont>
 						</axisFormat>
 					</valueAxisFormat>

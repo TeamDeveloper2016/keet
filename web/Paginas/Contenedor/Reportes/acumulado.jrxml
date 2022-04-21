@@ -4,10 +4,57 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REPORTE_SQL_ACUMULADO" class="java.lang.String"/>
-	<parameter name="REPORTE_SQL" class="java.lang.String"/>
+	<parameter name="REPORTE_SQL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new BigDecimal(-1)]]></defaultValueExpression>
+	</parameter>
 	<parameter name="REPORTE_REGISTROS" class="java.lang.Long"/>
+	<parameter name="ID_CONTRATO" class="java.math.BigDecimal"/>
 	<queryString language="SQL">
-		<![CDATA[$P!{REPORTE_SQL_ACUMULADO}]]>
+		<![CDATA[select
+          tc_keet_estimaciones.id_estimacion as id_key,
+          tc_keet_estimaciones.id_estimacion,
+          tc_keet_estimaciones.id_contrato,
+          tc_keet_contratos.costo,
+          sum(tc_keet_estimaciones.importe) as estimado,
+          (tc_keet_contratos.costo- sum(tc_keet_estimaciones.importe)- ifnull(tt_keet_retenciones.anticipo, 0)- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_estimar,
+          round(sum(tc_keet_estimaciones.importe)* 100/ tc_keet_contratos.costo, 2) as porcentaje_estimado,
+          sum(tc_keet_estimaciones.facturar) as facturado,
+          ifnull(tt_keet_retenciones.anticipo, 0) as anticipo,
+          (tc_keet_contratos.anticipo- ifnull(tt_keet_retenciones.anticipo, 0)) as por_anticipo,
+          round(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2) as porcentaje_anticipado,
+          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+          (tc_keet_contratos.fondo_garantia- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_fondo,
+          round(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2) as porcentaje_fondeado,
+          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+          sum(ifnull(tc_mantic_clientes_deudas.importe, 0)- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as pagado
+        from
+          tc_keet_estimaciones
+        inner join
+          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+        inner join (
+					select
+            tc_keet_estimaciones.id_contrato,
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones
+          from
+            tc_keet_estimaciones
+          inner join
+            tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+          where
+            tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+          group by
+            tc_keet_estimaciones.id_contrato
+         ) tt_keet_retenciones on tc_keet_estimaciones.id_contrato= tt_keet_retenciones.id_contrato
+        left join
+          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+        where
+          tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+        group by
+          tc_keet_estimaciones.id_contrato
+        order by
+          tc_keet_estimaciones.registro
+]]>
 	</queryString>
 	<field name="ESTIMADO" class="java.math.BigDecimal"/>
 	<field name="ANTICIPO" class="java.math.BigDecimal"/>
@@ -36,11 +83,11 @@
 	<detail>
 		<band height="200" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="34" width="284" height="15" uuid="471872fb-01ec-4abf-8c8e-3129e08e57ac"/>
+				<reportElement x="0" y="34" width="212" height="15" uuid="471872fb-01ec-4abf-8c8e-3129e08e57ac"/>
 				<text><![CDATA[Total amortizado del anticipo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="2" width="284" height="15" uuid="a4f49109-becf-41af-96cc-864779da4d8b"/>
+				<reportElement x="0" y="2" width="212" height="15" uuid="a4f49109-becf-41af-96cc-864779da4d8b"/>
 				<text><![CDATA[Total estimado:]]></text>
 			</staticText>
 			<textField pattern="¤ #,##0.00">
@@ -67,7 +114,7 @@
 				<textFieldExpression><![CDATA[$F{ESTIMADO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="67" width="284" height="15" uuid="10ff6ca0-f3fd-430a-a3e1-b842dcc3f06a"/>
+				<reportElement x="0" y="67" width="212" height="15" uuid="10ff6ca0-f3fd-430a-a3e1-b842dcc3f06a"/>
 				<text><![CDATA[Total retenido del fondo de garantía:]]></text>
 			</staticText>
 			<textField pattern="¤ #,##0.00">
@@ -129,6 +176,18 @@
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA["%"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="211" y="2" width="73" height="15" uuid="64a20d79-790d-488d-8661-71c6700a3dca"/>
+				<text><![CDATA[% estimado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="211" y="34" width="73" height="15" uuid="a91b58ba-b86f-49db-8e8b-2f33ca8b982b"/>
+				<text><![CDATA[% amortizado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="211" y="67" width="73" height="15" uuid="9fd663b4-4f84-46e0-8da2-b3ca4d99f951"/>
+				<text><![CDATA[% retenido:]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

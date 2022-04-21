@@ -140,7 +140,7 @@ public class Transaccion extends IBaseTnx {
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
-				if(this.registraPersonaEmpresa(sesion, idPersona)){					
+				if(this.registraPersonaEmpresa(sesion, idPersona)) {
 					if (this.registraPersonasBeneficiarios(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona())) {
 						if (this.registraPersonasDomicilios(sesion, idPersona)) {
 							if(this.registraPersonasTipoContacto(sesion, idPersona)){

@@ -165,7 +165,8 @@ public final class Catalogos {
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + attrs.get("idEmpresa"));
+      // params.put(Constantes.SQL_CONDICION, "id_empresa=" + attrs.get("idEmpresa"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				attrs.put("puestos", puestos);

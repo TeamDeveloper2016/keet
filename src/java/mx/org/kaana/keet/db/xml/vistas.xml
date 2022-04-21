@@ -5355,7 +5355,7 @@
 				inner join 
 					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
 				where
-					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+					(tc_keet_desarrollos.id_desarrollo= {idDesarrollo} or {idDesarrollo}= -1)
           and {condicion}
         order by
           tc_keet_contratos.registro desc 

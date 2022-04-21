@@ -4,8 +4,46 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REPORTE_SQL_SEMANA" class="java.lang.String"/>
+	<parameter name="ID_CONTRATO" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[new BigDecimal(-1)]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
-		<![CDATA[$P!{REPORTE_SQL_SEMANA}]]>
+		<![CDATA[        select
+          tc_keet_estimaciones.id_estimacion as id_key,
+          tc_keet_estimaciones.id_estimacion,
+          tc_keet_estimaciones.importe,
+          tc_keet_estimaciones.facturar,
+          (tc_keet_estimaciones.importe- sum(tc_keet_estimaciones_detalles.importe)) as estimado,
+          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as semana,
+          tc_keet_nominas_periodos.inicio,
+          tc_keet_nominas_periodos.termino,
+          if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_anticipo,
+          if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_fondo,
+          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
+          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones
+        from
+          tc_keet_estimaciones
+        inner join
+          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        inner join
+          tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+        inner join (
+          select
+            max(tc_keet_estimaciones.id_estimacion) as id_estimacion
+          from
+            tc_keet_estimaciones
+          inner join
+            tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          where
+            tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+        ) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion
+        where
+          tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
+        group by
+          tc_keet_estimaciones.id_estimacion
+        order by
+          tc_keet_nominas_periodos.id_nomina_periodo desc]]>
 	</queryString>
 	<field name="SEMANA" class="java.lang.String"/>
 	<field name="INICIO" class="java.util.Date"/>

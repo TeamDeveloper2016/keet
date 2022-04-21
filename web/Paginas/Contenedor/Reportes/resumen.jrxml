@@ -90,6 +90,7 @@
 	<field name="FONDO_GARANTIA" class="java.math.BigDecimal"/>
 	<field name="PORCENTAJE_FONDO" class="java.math.BigDecimal"/>
 	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="ID_CONTRATO" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -288,14 +289,26 @@
 			</staticText>
 			<subreport>
 				<reportElement x="1" y="185" width="284" height="199" uuid="472dfdaa-c347-4913-ab18-09af5550efe0"/>
+				<subreportParameter name="ID_CONTRATO">
+					<subreportParameterExpression><![CDATA[$F{ID_CONTRATO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORTE_SQL">
+					<subreportParameterExpression><![CDATA[""]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="REPORTE_SQL_SEMANA">
 					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_SEMANA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORTE_REGISTROS">
+					<subreportParameterExpression><![CDATA[new Long(1L)]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORTE_SEMANA}]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement x="287" y="185" width="284" height="199" uuid="434698cc-76cc-4da8-92e0-50b02b929ace"/>
+				<subreportParameter name="ID_CONTRATO">
+					<subreportParameterExpression><![CDATA[$F{ID_CONTRATO}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="REPORTE_SQL_ACUMULADO">
 					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_ACUMULADO}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -357,6 +370,9 @@
 			</textField>
 			<subreport>
 				<reportElement x="0" y="384" width="572" height="242" uuid="da0623e2-2fae-4300-8732-a76bf7188dfc"/>
+				<subreportParameter name="ID_CONTRATO">
+					<subreportParameterExpression><![CDATA[$F{ID_CONTRATO}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="REPORTE_SQL_CONFRONTA">
 					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_CONFRONTA}]]></subreportParameterExpression>
 				</subreportParameter>
