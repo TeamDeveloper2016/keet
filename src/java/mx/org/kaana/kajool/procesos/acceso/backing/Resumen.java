@@ -226,7 +226,6 @@ public class Resumen extends Respaldos implements Serializable {
       if(acumulado!= null && !acumulado.isEmpty()) {
         acumulado.put("vencido", vencido);
         UIBackingUtilities.toFormatEntity(acumulado, columns);
-        this.attrs.put("vencido", acumulado.toString("vencido"));
       } // if  
       this.attrs.put("acumulado", acumulado);
     } // try
@@ -323,7 +322,7 @@ public class Resumen extends Respaldos implements Serializable {
     String nomina              = "";
     String periodo             = "";
     try {      
-      UISelectEntity idNomina= (UISelectEntity)this.attrs.get("idNomina");
+      Entity idNomina= (Entity)this.attrs.get("idNomina");
       if(idNomina!= null && !idNomina.isEmpty()) {
         nomina = idNomina.toString("semana");
         periodo= idNomina.toString("inicio").concat(" al ").concat(idNomina.toString("termino"));
@@ -383,11 +382,12 @@ public class Resumen extends Respaldos implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());			
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      parametros.put("REPORTE_VENCIDO", this.attrs.get("vencido"));			
       parametros.put("REPORTE_SQL_SEMANA", Dml.getInstance().getSelect("VistaEstimacionesDto", "semana", params));
       parametros.put("REPORTE_SQL_ACUMULADO", Dml.getInstance().getSelect("VistaEstimacionesDto", "acumulado", params));
+      parametros.put("REPORTE_SQL_CONFRONTA", Dml.getInstance().getSelect("VistaEstimacionesDto", "pagado", params));
       parametros.put(Constantes.TILDE.concat("SUBREPORTE_SEMANA"), "/Paginas/Contenedor/Reportes/semana.jasper");
       parametros.put(Constantes.TILDE.concat("SUBREPORTE_ACUMULADO"), "/Paginas/Contenedor/Reportes/acumulado.jasper");
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_CONFRONTA"), "/Paginas/Contenedor/Reportes/confronta.jasper");
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
 			if(email) 
         this.reporte.doAceptarSimple();			

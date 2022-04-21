@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="confronta" pageWidth="568" pageHeight="221" columnWidth="568" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="81bc543a-dbc9-489c-8ee9-83b777c871d3">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORTE_SQL_CONFRONTA" class="java.lang.String"/>
+	<parameter name="REPORTE_SQL" class="java.lang.String"/>
+	<parameter name="REPORTE_REGISTROS" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[$P!{REPORTE_SQL_CONFRONTA}]]>
+	</queryString>
+	<field name="CATEGORY" class="java.lang.String"/>
+	<field name="SERIE" class="java.lang.String"/>
+	<field name="VALUE" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="1" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="220" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="568" height="220" uuid="b3a3098c-921a-41c1-b2d2-177ba456f14e"/>
+					<chartTitle>
+						<font size="8"/>
+						<titleExpression><![CDATA["Gráfico de lo facturado vs planeado"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend textColor="#000000" position="Bottom">
+						<font size="6"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{CATEGORY}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SERIE}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{VALUE}]]></valueExpression>
+						<labelExpression><![CDATA[$F{SERIE}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot isShowLines="true">
+					<plot labelRotation="45.0">
+						<seriesColor seriesOrder="0" color="#F5FC2A"/>
+						<seriesColor seriesOrder="1" color="#00CC33"/>
+					</plot>
+					<categoryAxisLabelExpression><![CDATA["SEMANAS"]]></categoryAxisLabelExpression>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat>
+							<labelFont>
+								<font size="6"/>
+							</labelFont>
+							<tickLabelFont>
+								<font size="6"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["CANTIDAD EN PESOS"]]></valueAxisLabelExpression>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont>
+								<font size="6"/>
+							</labelFont>
+							<tickLabelFont>
+								<font size="6"/>
+							</tickLabelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

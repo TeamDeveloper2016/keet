@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="e63aa041-d550-4ff5-bbaa-4be535a8ac84">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="480"/>
+	<property name="ireport.y" value="532"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -70,6 +70,10 @@
 	</parameter>
 	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
 	<parameter name="REPORTE_VENCIDO" class="java.lang.String"/>
+	<parameter name="SUBREPORTE_CONFRONTA" class="net.sf.jasperreports.engine.JasperReport">
+		<defaultValueExpression><![CDATA["D:\\desarrollo\\plataforma\\netbeans\\keet\\web\\Paginas\\Contenedor\\Reportes\\confronta.jasper"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_SQL_CONFRONTA" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -195,7 +199,7 @@
 	<detail>
 		<band height="626" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="286" height="212" uuid="22bd8b05-044c-4f30-92ee-5532773b6f3a"/>
+				<reportElement x="0" y="0" width="286" height="172" uuid="22bd8b05-044c-4f30-92ee-5532773b6f3a"/>
 			</rectangle>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="65cfad37-0e69-46d8-82ab-294b871fdd1e"/>
@@ -205,13 +209,13 @@
 				<text><![CDATA[Datos del contrato]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="0" y="212" width="286" height="212" uuid="6ba6347e-f15e-46bc-886a-c7743a361064"/>
+				<reportElement x="0" y="172" width="286" height="212" uuid="6ba6347e-f15e-46bc-886a-c7743a361064"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="286" y="212" width="286" height="212" uuid="abce4841-b7f0-4634-9ad1-635655ba46ba"/>
+				<reportElement x="286" y="172" width="286" height="212" uuid="abce4841-b7f0-4634-9ad1-635655ba46ba"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="286" y="0" width="286" height="212" uuid="1f60ff51-e874-4388-bf11-a06ae400f957"/>
+				<reportElement x="286" y="0" width="286" height="172" uuid="1f60ff51-e874-4388-bf11-a06ae400f957"/>
 			</rectangle>
 			<staticText>
 				<reportElement mode="Opaque" x="286" y="0" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="c5ceb37b-83c7-47c5-bef6-5c179c231bc7"/>
@@ -221,14 +225,14 @@
 				<text><![CDATA[Montos del contrato]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="212" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="db52c034-afa7-4c4f-977a-196b4f60de9a"/>
+				<reportElement mode="Opaque" x="0" y="172" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="db52c034-afa7-4c4f-977a-196b4f60de9a"/>
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[Datos de avance de la semana]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="286" y="212" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="4cd73f1d-1560-4f81-a619-b759cd83bc97"/>
+				<reportElement mode="Opaque" x="286" y="172" width="286" height="13" forecolor="#FFFFFF" backcolor="#000000" uuid="4cd73f1d-1560-4f81-a619-b759cd83bc97"/>
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
@@ -283,7 +287,7 @@
 				<text><![CDATA[Total a estimar:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="1" y="225" width="284" height="199" uuid="472dfdaa-c347-4913-ab18-09af5550efe0"/>
+				<reportElement x="1" y="185" width="284" height="199" uuid="472dfdaa-c347-4913-ab18-09af5550efe0"/>
 				<subreportParameter name="REPORTE_SQL_SEMANA">
 					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_SEMANA}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -291,7 +295,7 @@
 				<subreportExpression><![CDATA[$P{SUBREPORTE_SEMANA}]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="287" y="225" width="284" height="199" uuid="434698cc-76cc-4da8-92e0-50b02b929ace"/>
+				<reportElement x="287" y="185" width="284" height="199" uuid="434698cc-76cc-4da8-92e0-50b02b929ace"/>
 				<subreportParameter name="REPORTE_SQL_ACUMULADO">
 					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_ACUMULADO}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -351,12 +355,26 @@
 				<reportElement mode="Opaque" x="1" y="27" width="284" height="15" backcolor="#F0F1F3" uuid="5e87a3bd-27a2-4480-977f-8b9677e826fa"/>
 				<textFieldExpression><![CDATA[$F{EMPRESA}]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="0" y="384" width="572" height="242" uuid="da0623e2-2fae-4300-8732-a76bf7188dfc"/>
+				<subreportParameter name="REPORTE_SQL_CONFRONTA">
+					<subreportParameterExpression><![CDATA[$P{REPORTE_SQL_CONFRONTA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORTE_SQL">
+					<subreportParameterExpression><![CDATA[""]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORTE_REGISTROS">
+					<subreportParameterExpression><![CDATA[1L]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORTE_CONFRONTA}]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="23" splitType="Stretch">
 			<textField>
-				<reportElement style="Column header" x="408" y="2" width="145" height="20" forecolor="#000000" uuid="f556db0e-4835-440d-984a-3347a0981a43"/>
+				<reportElement style="Column header" x="409" y="2" width="145" height="20" forecolor="#000000" uuid="f556db0e-4835-440d-984a-3347a0981a43"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
@@ -370,7 +388,7 @@
 				<textFieldExpression><![CDATA[$P{REPORT_SCRIPTLET}.getFecha(7,new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement style="Column header" x="553" y="2" width="18" height="20" forecolor="#000000" uuid="a4410479-7e5a-4117-b704-add89e42b0a1"/>
+				<reportElement style="Column header" x="554" y="2" width="15" height="20" forecolor="#000000" uuid="a4410479-7e5a-4117-b704-add89e42b0a1"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>

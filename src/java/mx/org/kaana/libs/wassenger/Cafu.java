@@ -52,7 +52,7 @@ public final class Cafu implements Serializable {
   private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\n{empresa}\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la dirección del almacen de entrega.\\n\\nPara cualquier duda o aclaración *{correo}*.\\n\\n{empresa}.\"";
   private static final String BODY_GARANTIA    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber que el día de hoy *{fecha}* venció el plazo del *fondo de garantía* de los siguiente(s) contrato(s)\\n\\n{contratos}Por lo que se solicita, se tomen las previsiones necesarias para hacer la recuperación de dicho fondo de garantía.\\n\\n{empresa}\"";
-  private static final String BODY_ESTADO_CUENTA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber el *estado de cuenta* por contrato a la semana *{nomina}* del periodo *{periodo}*, favor de descargar el reporte por consultar el detalle.\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nSe tienes *24 hrs* para descargar el reporte para su revisión\\n\\n{empresa}\"";
+  private static final String BODY_ESTADO_CUENTA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber el *resumen de estimación de obra* de la semana *{nomina}* del periodo *{periodo}*, favor de descargar el reporte para consultar el detalle.\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nSe tienes *24 hrs* para descargar el reporte para su revisión\\n\\n{empresa}\"";
   private static final int LENGTH_CELL_PHONE   = 10;
 
   private String token;
@@ -1068,6 +1068,8 @@ public final class Cafu implements Serializable {
         params.put("saludo", this.toSaludo());
         params.put("empresa", this.empresa);
         params.put("fecha", this.fecha);
+        params.put("nomina", this.nomina);
+        params.put("periodo", this.periodo);
         params.put("url", this.url);
         params.put("reporte", this.reporte);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
