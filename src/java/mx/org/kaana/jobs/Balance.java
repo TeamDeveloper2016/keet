@@ -16,18 +16,21 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
@@ -38,31 +41,34 @@ public class Balance implements Job, Serializable {
 
 	private static final Log LOG              =LogFactory.getLog(Balance.class);
 	private static final long serialVersionUID=7505746848602636876L;
+  
+	private Reporte reporte;
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
-    List<Entity> garantias     = null;
-    List<Columna> columns      = null;    
     Map<String, Object> params = new HashMap<>();
     Map<String, Object> actores= new HashMap<>();
-		try {      
-      Encriptar encriptar= new Encriptar();
-      params.put("fecha", Fecha.getHoyEstandar());      
-      columns = new ArrayList<>();
-      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
-      LOG.debug("GENERAR EL REPORTE DEL ESTADO DE CUENTA POR CONTRATO PARA QUE SEA ENVIADO A LOS GERENTES");
-      garantias= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "garantias", params, Constantes.SQL_TODOS_REGISTROS);
-      if(garantias!= null && !garantias.isEmpty()) {
-        UIBackingUtilities.toFormatEntitySet(garantias, columns);
+    List<Columna> columns      = null;
+    String nomina              = null;
+    String periodo             = null;
+    try {      
+			columns= new ArrayList<>();
+			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_NOMBRE_DIA));
+			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_NOMBRE_DIA));
+      params.put("idTipoNomina", 1L);
+      Entity idNomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+      if(idNomina!= null && !idNomina.isEmpty()) {
+        UIBackingUtilities.toFormatEntity(idNomina, columns);
+        nomina = idNomina.toString("semana");
+        periodo= idNomina.toString("inicio").concat(" al ").concat(idNomina.toString("termino"));
+        Encriptar encriptar= new Encriptar();
         actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
         switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
           case "cafu":
             actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
             break;
-          case "gylvi":
-            actores.put("Vizcaino ... ...", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
+          case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
             actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
             actores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
             break;
@@ -71,25 +77,66 @@ public class Balance implements Job, Serializable {
             actores.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
             break;
         } // swtich
-        Cafu notificar= new Cafu();
-        for (String residente: actores.keySet()) {
-          notificar.setNombre(Cadena.nombrePersona(residente));
-          notificar.setCelular((String)actores.get(residente));
-          LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
+        this.toReporte();
+        Cafu notificar= new Cafu("", "", this.reporte.getAlias(), nomina, periodo);
+        for (String actor: actores.keySet()) {
+          notificar.setNombre(Cadena.nombrePersona(actor));
+          notificar.setCelular((String)actores.get(actor));
+          LOG.info("Enviando mensaje de whatsapp al celular: "+ actor);
           notificar.doSendEstadoCuenta();
         } // for
-        JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ actores.toString()+ "] !", ETipoMensaje.INFORMACION);
       } // if
-	  } // try
-		catch (Exception e) {
-			Error.mensaje(e);
-		} // catch	
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
       Methods.clean(actores);
-    } // finally    
+			Methods.clean(columns);
+    } // finally
 	} // execute
+  
+  private void toReporte() {
+		Parametros comunes           = null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    String path                  = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+    try {   
+      path= path.substring(0, path.indexOf("WEB-INF/"));
+      System.out.println(path.concat("/resources/iktan/icon/acciones/"));
+      params.put("idDesarrollo", -1L);	
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);	
+      reporteSeleccion= EReportes.CONTRATO_RESUMEN;
+      this.reporte= new Reporte();	
+      parametros= (new Parametros(1L)).getComunes();
+      parametros.put("ENCUESTA", Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());			
+      parametros.put("REPORTE_ICON", path.concat("resources/iktan/icon/acciones/"));			
+      parametros.put("REPORTE_SQL_SEMANA", Dml.getInstance().getSelect("VistaEstimacionesDto", "semana", params));
+      parametros.put("REPORTE_SQL_ACUMULADO", Dml.getInstance().getSelect("VistaEstimacionesDto", "acumulado", params));
+      parametros.put("REPORTE_SQL_CONFRONTA", Dml.getInstance().getSelect("VistaEstimacionesDto", "pagado", params));
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_SEMANA"), "/Paginas/Contenedor/Reportes/semana.jasper");
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_ACUMULADO"), "/Paginas/Contenedor/Reportes/acumulado.jasper");
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_CONFRONTA"), "/Paginas/Contenedor/Reportes/confronta.jasper");
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
+      this.reporte.toLocalFiles(path);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }   
+  
+  public static void main(String ... args) throws JobExecutionException {
+    Balance balance= new Balance();
+    balance.execute(null);
+  }
   
 }
 

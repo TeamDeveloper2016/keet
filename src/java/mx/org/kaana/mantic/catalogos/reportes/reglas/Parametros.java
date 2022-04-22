@@ -70,10 +70,10 @@ public final class Parametros implements Serializable {
     Entity datosEmpresa         = null;
     try {
       regresar= new HashMap<>();	
-      params= new HashMap<>();	
+      params  = new HashMap<>();	
       params.put("idEmpresa", this.idEmpresa);	
       datosEmpresa = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
-      if(datosEmpresa != null){
+      if(datosEmpresa != null) {
         regresar.put("REPORTE_EMPRESA",datosEmpresa.toString("nombre")!=null? datosEmpresa.toString("nombre"):" ");
         regresar.put("REPORTE_EMPRESA_DIRECCION", datosEmpresa.toString("empresaDireccion")!=null?datosEmpresa.toString("empresaDireccion"):" ");
         regresar.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia")!=null?datosEmpresa.toString("colonia"):" ");

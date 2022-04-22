@@ -343,7 +343,7 @@
           tc_keet_estimaciones.importe,
           tc_keet_estimaciones.facturar,
           (tc_keet_estimaciones.importe- sum(tc_keet_estimaciones_detalles.importe)) as estimado,
-          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as semana,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
           tc_keet_nominas_periodos.inicio,
           tc_keet_nominas_periodos.termino,
           if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_anticipo,
@@ -378,7 +378,7 @@
         select
           tc_keet_estimaciones.id_estimacion as id_key,
           tc_keet_estimaciones.id_estimacion,
-          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as semana,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
           tc_keet_nominas_periodos.inicio,
           tc_keet_nominas_periodos.termino,
           tc_keet_estimaciones.importe as estimado,

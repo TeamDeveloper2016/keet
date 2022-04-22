@@ -46,7 +46,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value = "kajoolTemplateReporte")
 @ViewScoped
-public class Reporte extends BaseReportes implements Serializable{
+public class Reporte extends BaseReportes implements Serializable {
   
   private static final long serialVersionUID = -741532999302110919L;
   private IJuntar ijuntar;	
@@ -155,6 +155,42 @@ public class Reporte extends BaseReportes implements Serializable{
 		this.doAceptarSimple(JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
 	} // doAceptarSimple
 	
+	public void toLocalFiles(String path) throws Exception {
+		this.toLocalSimple(path.concat(this.ireporte.getJrxml().concat(".jasper")), path.concat(Constantes.RUTA_IMAGENES).concat(File.separator), path);
+	} // doAceptarSimple
+	
+	public void toLocalSimple(String source, String imagenes, String path) throws Exception {
+		mx.org.kaana.libs.reportes.scriptlets.Reporte reporteGenerar= null;		
+		InputStream input= null;
+		try {
+			this.toLoadResourceJasper(path, this.ireporte.getParametros());        
+      if(this.nombre.equals("")) {
+        this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
+        this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      
+      } // if
+			String sql= Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
+			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
+			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
+			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
+			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, imagenes);
+			this.ireporte.getParametros().put(Constantes.REPORTE_LOGO, imagenes.concat(Configuracion.getInstance().getEmpresa("logo")));
+			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
+      this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
+			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
+			if (ireporte instanceof IReporteDataSource) 
+				reporteGenerar= this.reporteDataSource(source, this.fileName);
+			else 
+				reporteGenerar= this.reporteConnection(source, this.fileName, path);
+			if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
+				reporteGenerar.procesar(this.idFormato, input);
+			else 
+				reporteGenerar.procesar(this.idFormato);			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch    
+  }
+  
 	public void doAceptarSimple(String source, String imagenes, String path) throws Exception {
 		mx.org.kaana.libs.reportes.scriptlets.Reporte reporteGenerar= null;		
 		InputStream input= null;

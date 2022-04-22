@@ -149,6 +149,29 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 		} // finally
   }
 
+	protected void toLoadResourceJasper(String path, Map<String, Object> parametros) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params= new HashMap<>();
+			for(String key: parametros.keySet()) {						
+				if(key.startsWith(Constantes.TILDE)) {	
+          InputStream recurso = new FileInputStream(new File(path.concat((String)parametros.get(key))));
+          JasperReport subreport= (JasperReport)JRLoader.loadObject(recurso);
+          params.put(key.substring(1), subreport);        
+				} // if				
+			} // for			
+			for(String key: params.keySet())
+				parametros.remove(Constantes.TILDE.concat(key));
+			parametros.putAll(params);			
+		} // try
+		catch(Exception e) {
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+  }
+
 	public String getArchivo() {
 		return this.nombre.substring(this.nombre.lastIndexOf(File.separatorChar)+ 1);
 	}
