@@ -149,7 +149,7 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 		} // finally
   }
 
-	protected void toLoadResourceJasper(String path, Map<String, Object> parametros) throws Exception {
+	protected void toLoadResourceLocalJasper(String path, Map<String, Object> parametros) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params= new HashMap<>();

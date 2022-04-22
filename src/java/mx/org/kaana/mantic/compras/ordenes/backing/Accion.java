@@ -144,7 +144,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  else 
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa())));
 			} // if	
-  		params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa());
       this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {

@@ -99,16 +99,24 @@ public class Balance implements Job, Serializable {
 	} // execute
   
   private void toReporte() {
-		Parametros comunes           = null;
 		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     String path                  = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
     try {   
       path= path.substring(0, path.indexOf("WEB-INF/"));
-      System.out.println(path.concat("/resources/iktan/icon/acciones/"));
-      params.put("idDesarrollo", -1L);	
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);	
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("idDesarrollo", -1L);	
+          break;
+        case "gylvi": 
+          params.put("idDesarrollo", 3L);	
+          break;
+        case "triana":
+          params.put("idDesarrollo", -1L);	
+          break;
+      } // swtich
       reporteSeleccion= EReportes.CONTRATO_RESUMEN;
       this.reporte= new Reporte();	
       parametros= (new Parametros(1L)).getComunes();

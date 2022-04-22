@@ -163,7 +163,7 @@ public class Reporte extends BaseReportes implements Serializable {
 		mx.org.kaana.libs.reportes.scriptlets.Reporte reporteGenerar= null;		
 		InputStream input= null;
 		try {
-			this.toLoadResourceJasper(path, this.ireporte.getParametros());        
+			this.toLoadResourceLocalJasper(path, this.ireporte.getParametros());        
       if(this.nombre.equals("")) {
         this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
         this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      

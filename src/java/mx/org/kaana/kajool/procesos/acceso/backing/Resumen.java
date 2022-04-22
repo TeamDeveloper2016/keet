@@ -367,7 +367,6 @@ public class Resumen extends Respaldos implements Serializable {
   }
   
   private void toReporte(Boolean email) {
-		Parametros comunes           = null;
 		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
@@ -382,9 +381,8 @@ public class Resumen extends Respaldos implements Serializable {
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);	
       } // if  
       reporteSeleccion= EReportes.CONTRATO_RESUMEN;
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
-      parametros= comunes.getComunes();
+      parametros= (new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa())).getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());			
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
