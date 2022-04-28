@@ -239,14 +239,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doLoadDesarrollos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
-		UISelectEntity empresa    = null;
+//		UISelectEntity empresa    = null;
     try {
 			params= new HashMap<>();			
-			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
-			if(empresa.getKey()>= 1L)
-        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
-			else
-				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+//			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+//			if(empresa.getKey()>= 1L)
+//        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+//			else
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

@@ -161,10 +161,14 @@ public class Repercusion extends TcManticIncidentesDto implements Serializable {
   public Repercusion clone() throws CloneNotSupportedException {
     Repercusion regresar= new Repercusion(); 
     regresar.setIncidencia(this.incidencia);
+    regresar.setIdEmpresaPersona(this.getIdEmpresaPersona());
+    regresar.setNombre(this.getNombre());
+    regresar.setRfc(this.getRfc());
+    regresar.setPuesto(this.getPuesto());
     regresar.setIdTipoIncidente(this.getIdTipoIncidente());
     regresar.setInicio(this.getTermino());
     regresar.setTermino(this.getTermino());
-    regresar.setCosto(0D);
+    regresar.setCosto(regresar.getCosto());
     return regresar;
   }
   

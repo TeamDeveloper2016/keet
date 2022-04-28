@@ -279,9 +279,12 @@ public class Incidencia extends IBaseAttribute implements Serializable {
     Boolean regresar= Boolean.TRUE;
     try {
       for (Repercusion item: this.incidentes) {
-        if(Objects.equals(item.getIdEmpresaPersona(), this.repercusion.getIdEmpresaPersona()) &&
-          (item.getInicio().isEqual(this.repercusion.getInicio()) || item.getInicio().isBefore(this.repercusion.getInicio()) ||
-           item.getTermino().isEqual(this.repercusion.getTermino()) || item.getTermino().isAfter(this.repercusion.getTermino()))) {
+        if(
+            Objects.equals(item.getIdEmpresaPersona(), this.repercusion.getIdEmpresaPersona()) &&
+           (((item.getInicio().isEqual(this.repercusion.getInicio()) || item.getTermino().isEqual(this.repercusion.getTermino()))
+            && item.getInicio().isBefore(this.repercusion.getInicio())
+            && item.getTermino().isAfter(this.repercusion.getTermino())))
+          ) {
     		  JsfBase.addMessage("El empleado ya tiene una incidencia ".concat(item.getIncidencia()).concat(" registrada del ").concat(item.getIniciox()).concat(" al ").concat(item.getTerminox()), ETipoMensaje.ERROR);
           regresar= Boolean.FALSE;
           break;

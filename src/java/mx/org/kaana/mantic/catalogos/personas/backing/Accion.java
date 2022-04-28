@@ -258,8 +258,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("contratistas", contratistas);
       if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion")))
   			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
-      else
-        this.attrs.put("idContratista", contratistas.get(contratistas.indexOf(new UISelectEntity(this.registroPersona.getIdContratista()))));
+      else {
+        int index= contratistas.indexOf(new UISelectEntity(this.registroPersona.getIdContratista()));
+        if(index>= 0)
+          this.attrs.put("idContratista", contratistas.get(index));
+      } // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
