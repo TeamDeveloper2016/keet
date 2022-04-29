@@ -627,9 +627,11 @@ public final class Cafu implements Serializable {
           } // if  
           else {
             params.put("numero", count++);
-            params.put("contratista", key);
             params.put("reporte", this.contratistas.get(key));
             params.put("url", this.url);
+            if(key.indexOf("-")> 0)
+              key= key.substring(key.indexOf("-")+ 1);
+            params.put("contratista", key);
             archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
           } // else  
         } // for

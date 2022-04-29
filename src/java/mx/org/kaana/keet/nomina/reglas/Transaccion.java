@@ -1015,9 +1015,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       params.put("idNomina", this.idNomina);
       params.put("idEmpresaPersona", figura.toLong("idEmpresaPersona"));
       params.put("idProveedor", figura.getKey());
-      params.put("idDesarrollo", figura.toLong("idDesarrollo"));
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar(""+ figura.getKey(), 5, '0', true)+ "-"+ figura.toString("nomina");
+      params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo= "+ figura.toLong("idDesarrollo"));
+      String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar(""+ figura.getKey(), 5, '0', true)+ "-"+ Cadena.rellenar(""+ figura.toLong("idDesarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
       String name= JsfBase.getRealPath(jasper.getNombre());
@@ -1348,7 +1347,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             contratistas.put("Desarrollo_"+ item.toLong("idDesarrollo"), "*".concat(item.toString("desarrollo")).concat("*\\n"));
             idDesarrollo= item.toLong("idDesarrollo");
           } // for
-          contratistas.put(item.toString("contratista"), this.toReporte(sesion, jasper, item));
+          contratistas.put(Cadena.rellenar(""+ item.toLong("idDesarrollo"), 3, '0', true)+ "-"+ item.toString("contratista"), this.toReporte(sesion, jasper, item));
         } // for
         // NOTIFICAR A TODOS LOS SUPERVISORES CON LOS REPORTES GENERADOS DE TODOS LOS CONTRATISTAS O SUBCONTRATISTAS
         this.toNotificarSupervisor(sesion, contratistas, items.get(0));
