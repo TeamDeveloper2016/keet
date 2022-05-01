@@ -396,7 +396,7 @@
                                 <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                                 <p:inputText id="locks" value="0" style="display:none"/>
                                 <p:inputText id="multiplos" value="#{row['multiplo']}" style="display:none"/>
-                                <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+                                <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" autocomplete="off">
                                   <p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
                                   <f:facet name="itemtip">
                                     <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-300" columnClasses="janal-wid-20, janal-wid-80">
