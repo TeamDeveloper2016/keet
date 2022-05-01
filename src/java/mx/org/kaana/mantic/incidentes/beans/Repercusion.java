@@ -168,7 +168,8 @@ public class Repercusion extends TcManticIncidentesDto implements Serializable {
     regresar.setIdTipoIncidente(this.getIdTipoIncidente());
     regresar.setInicio(this.getTermino());
     regresar.setTermino(this.getTermino());
-    regresar.setCosto(regresar.getCosto());
+    regresar.setCosto(this.getCosto());
+    regresar.setObservaciones(this.getObservaciones());
     return regresar;
   }
   

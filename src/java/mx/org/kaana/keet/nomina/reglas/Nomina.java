@@ -219,11 +219,27 @@ public class Nomina implements Serializable {
     } // switch
   }
   
+  private Integer toMaximoFaltas(ECodigosIncidentes incidente) {
+    Integer regresar= incidente.max();
+    if(Objects.equals(ECodigosIncidentes.FALTA, incidente))
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          break;
+        case "gylvi":
+          break;
+        case "triana":
+          regresar= 5;
+          break;
+      } // switch
+    return regresar;
+  }
+  
 	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente, Long dias) throws CloneNotSupportedException {
-		int count= 0;
+		int count = 0;
+    int maximo= this.toMaximoFaltas(incidente);
 		for (TcManticIncidentesDto item: incidentes) {
-			// BUSCAR LOS INCIDENTES QUE COINCIDAN EN LA LISTA QUE SE TIENE DE CONCEPTOS, SOLO SE COBRAN 3 FALTAS PERO SI SE DESEAN QUE SEAN TODAS CAMBIAR POR size()
-			if(Objects.equals(item.getIdTipoIncidente(), incidente.idTipoIncidente()) && count< incidente.max() && (dias== -1L || count< dias)) {
+			// BUSCAR LOS INCIDENTES QUE COINCIDAN EN LA LISTA QUE SE TIENE DE CONCEPTOS, SOLO SE COBRAN 3 FALTAS, PARA TRIANA SON 5 PERO SI SE DESEAN QUE SEAN TODAS CAMBIAR POR size()
+			if(Objects.equals(item.getIdTipoIncidente(), incidente.idTipoIncidente()) && count< maximo && (dias== -1L || count< dias)) {
 				item.setIdNomina(this.nomina.getIdNomina());
 				int index= this.personales.indexOf(new Concepto(incidente.celdas()[count]));
 				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE

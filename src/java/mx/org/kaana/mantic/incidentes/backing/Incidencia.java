@@ -115,7 +115,10 @@ public class Incidencia extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
 			String nombreEmpleado= (String)this.attrs.get("nombreEmpleado"); 
-			nombreEmpleado= !Cadena.isVacio(nombreEmpleado)? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
+      if(Cadena.isVacio(nombreEmpleado))
+        nombreEmpleado= "WXYZ";
+      else 
+  			nombreEmpleado= nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");		
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			else

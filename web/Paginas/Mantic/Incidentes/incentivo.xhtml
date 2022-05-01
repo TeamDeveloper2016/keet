@@ -175,7 +175,7 @@
               </f:facet>
               <h:outputText value="#{row['iniciox']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8">
+            <p:column class="MarAuto Responsive janal-column-right janal-color-black janal-wid-8">
               <f:facet name="header">
                 <h:outputText value="Costo/Horas"/>
               </f:facet>
@@ -183,7 +183,7 @@
               <h:outputText value="NO APLICA" rendered="#{not(row.idTipoIncidente eq 16 or row.idTipoIncidente eq 22)}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
-              <p:commandButton icon="fa fa-trash" process="@this tabla" update="contenedorGrupos" actionListener="#{manticIncidentesIncentivo.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
+              <p:commandButton icon="fa fa-trash" process="@this tabla" update="tabla contenedorGrupos" actionListener="#{manticIncidentesIncentivo.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticIncidentesIncentivo.incidentes.size()}] registros"/>

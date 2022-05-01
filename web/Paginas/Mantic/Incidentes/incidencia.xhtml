@@ -175,7 +175,7 @@
               <h:outputText value="#{row['terminox']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
-              <p:commandButton icon="fa fa-trash" process="@this tabla" update="contenedorGrupos" actionListener="#{manticIncidentesIncidencia.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
+              <p:commandButton icon="fa fa-trash" process="@this tabla" update="tabla contenedorGrupos" actionListener="#{manticIncidentesIncidencia.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticIncidentesIncidencia.incidentes.size()}] registros"/>
