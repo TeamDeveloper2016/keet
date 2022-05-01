@@ -12,11 +12,14 @@
     <script type="text/javascript">
       //<![CDATA[
       Janal.Control.fields = {
-        'tipoIncidente': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'inicio'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'termino'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'nombre'       : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}             
+        'tipoIncidente': {validaciones: 'requerido', mascara: 'libre', grupo: 'dia'},
+        'inicio'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'dia'},
+        'termino'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'dia'},
+        'nombre'       : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dia'},
+        'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dia'},        
+        'incidente'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'semana'},
+        'empleado'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'semana'},
+        'comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'semana'}
       };					
     
 			$(document).ready(function() {
@@ -33,106 +36,151 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">          	
-          <p:defaultCommand target="automatico"/>
-					<p:panelGrid id="contenedorGrupos" columns="1" styleClass="janal-wid-100">
-            <p:panelGrid id="panelGenerales" columns="1" styleClass="janal-wid-100">
-              <p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-60, janal-wid-10 janal-column-center">
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100">
-                    <p:outputLabel for="inicio" value="Inicio:" styleClass="termino" style="display: #{not(manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23)? '': 'none'}"/>
-                    <p:outputLabel for="inicio" value="Fecha:" styleClass="termino" style="display: #{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23? '': 'none'}"/>
+          <p:defaultCommand target="contenedorGrupos:automatico"/>
+          <p:tabView id="contenedorGrupos" onTabChange="janal.refresh();">
+            <p:tab title="Por día">		
+              <p:panelGrid id="panelGenerales" columns="1" styleClass="janal-wid-100">
+                <p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-60, janal-wid-10 janal-column-center">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:panelGrid columns="2" styleClass="janal-wid-100">
+                      <p:outputLabel for="inicio" value="Inicio:" styleClass="termino" style="display: #{not(manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23)? '': 'none'}"/>
+                      <p:outputLabel for="inicio" value="Fecha:" styleClass="termino" style="display: #{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23? '': 'none'}"/>
+                    </p:panelGrid>  
+                    <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.inicio}" pattern="dd/MM/yyyy" locale="es">
+                      <p:ajax event="dateSelect" process="@this" update="@(.termino)" listener="#{manticIncidentesIncidencia.doChangeInicio()}"/>
+                    </p:calendar>  
                   </p:panelGrid>  
-                  <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.inicio}" pattern="dd/MM/yyyy" locale="es">
-                    <p:ajax event="dateSelect" process="@this" update="@(.termino)" listener="#{manticIncidentesIncidencia.doChangeInicio()}"/>
-                  </p:calendar>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="termino" value="Termino:" styleClass="termino"/>
+                    <p:calendar id="termino" inputStyleClass="janal-wid-100-txt termino" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.termino}" pattern="dd/MM/yyyy" locale="es" disabled="#{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23}">
+                      <p:ajax event="dateSelect" process="@this" update="@(.inicio)" listener="#{manticIncidentesIncidencia.doChangeTermino()}"/>
+                    </p:calendar>  
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="tipoIncidente" value="Tipo:"/>
+                    <p:selectOneMenu id="tipoIncidente" value="#{manticIncidentesIncidencia.repercusion.idTipoIncidente}" styleClass="janal-wid-100-txt">
+                      <p:ajax event="change" process="@this" update="tabla @(.termino)" listener="#{manticIncidentesIncidencia.doChangeTipo()}"/>
+                      <f:selectItems value="#{manticIncidentesIncidencia.attrs.tipos}"/>
+                    </p:selectOneMenu>																		
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel value="Pase autómatico:"/>
+                    <p:selectBooleanCheckbox id="automatico" value="#{manticIncidentesIncidencia.attrs.automatico}">
+                      <p:ajax event="change" process="@this" update="persona"/>
+                    </p:selectBooleanCheckbox>  
+                  </p:panelGrid>  
                 </p:panelGrid>  
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel for="termino" value="Termino:" styleClass="termino"/>
-                  <p:calendar id="termino" inputStyleClass="janal-wid-100-txt termino" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.termino}" pattern="dd/MM/yyyy" locale="es" disabled="#{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23}">
-                    <p:ajax event="dateSelect" process="@this" update="@(.inicio)" listener="#{manticIncidentesIncidencia.doChangeTermino()}"/>
-                  </p:calendar>  
-                </p:panelGrid>  
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel for="tipoIncidente" value="Tipo:"/>
-                  <p:selectOneMenu id="tipoIncidente" value="#{manticIncidentesIncidencia.repercusion.idTipoIncidente}" styleClass="janal-wid-100-txt">
-                    <p:ajax event="change" process="@this" update="tabla @(.termino)" listener="#{manticIncidentesIncidencia.doChangeTipo()}"/>
-                    <f:selectItems value="#{manticIncidentesIncidencia.attrs.tipos}"/>
-                  </p:selectOneMenu>																		
-                </p:panelGrid>  
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel value="Pase autómatico:"/>
-                  <p:selectBooleanCheckbox id="automatico" value="#{manticIncidentesIncidencia.attrs.automatico}">
-                    <p:ajax event="change" process="@this" update="persona"/>
-                  </p:selectBooleanCheckbox>  
-                </p:panelGrid>  
-              </p:panelGrid>  
-              <p:panelGrid columns="2" styleClass="janal-wid-100">
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel for="nombre" value="Empleado:"/>							
-                  <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-97, janal-wid-3 janal-column-right">
-                    <p:autoComplete id="persona" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesIncidencia.attrs.nombre}" completeMethod="#{manticIncidentesIncidencia.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100">
-                      <p:ajax event="itemSelect" listener="#{manticIncidentesIncidencia.doLoadNombres}" process="@this" update="tabla @(.nombre)" oncomplete="janal.refresh()"/>
-                    </p:autoComplete>  
-                    <p:commandButton id="buscar" styleClass="janal-text-white" icon="fa fa-plus" onstart="return janal.execute()" process="@this panelGenerales" actionListener="#{manticIncidentesIncidencia.doAdd}" oncomplete="janal.desbloquear(); janal.refresh()" update="tabla @(.nombre)"/>
+                <p:panelGrid columns="2" styleClass="janal-wid-100">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="nombre" value="Empleado:"/>							
+                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-97, janal-wid-3 janal-column-right">
+                      <p:autoComplete id="persona" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesIncidencia.attrs.nombre}" completeMethod="#{manticIncidentesIncidencia.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100">
+                        <p:ajax event="itemSelect" listener="#{manticIncidentesIncidencia.doLoadNombres}" process="@this" update="tabla @(.nombre)" oncomplete="janal.refresh()"/>
+                      </p:autoComplete>  
+                      <p:commandButton id="buscar" styleClass="janal-text-white" icon="fa fa-plus" onstart="return .partial('dia')" process="@this panelGenerales" actionListener="#{manticIncidentesIncidencia.doAddDia}" oncomplete="janal.desbloquear(); janal.refresh()" update="tabla @(.nombre)"/>
+                    </p:panelGrid>
+                    <p:inputText id="nombre" value="#{manticIncidentesIncidencia.repercusion.idEmpresaPersona}" styleClass="janal-display-none nombre"/>
                   </p:panelGrid>
-                  <p:inputText id="nombre" value="#{manticIncidentesIncidencia.repercusion.idEmpresaPersona}" styleClass="janal-display-none nombre"/>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="observaciones" value="Observaciones:"/>						
+                    <p:inputTextarea id="observaciones" rows="1" value="#{manticIncidentesIncidencia.repercusion.observaciones}" styleClass="janal-wid-100-txt nombre"/>
+                  </p:panelGrid>
                 </p:panelGrid>
+              </p:panelGrid>				
+            </p:tab>
+            <p:tab title="Por semana">		
+              <p:panelGrid id="panelSemana" columns="1" styleClass="janal-wid-100">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="incidente" value="Tipo:"/>
+                    <p:selectOneMenu id="incidente" value="#{manticIncidentesIncidencia.repercusion.idTipoIncidente}" styleClass="janal-wid-100-txt semana">
+                      <p:ajax event="change" process="@this" update="@(.activar)" listener="#{manticIncidentesIncidencia.doChangeTipo()}"/>
+                      <f:selectItems value="#{manticIncidentesIncidencia.attrs.tipos}"/>
+                    </p:selectOneMenu>																		
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="comentarios" value="Observaciones:"/>						
+                    <p:inputTextarea id="comentarios" rows="1" value="#{manticIncidentesIncidencia.repercusion.observaciones}" styleClass="janal-wid-100-txt semana"/>
+                  </p:panelGrid>
+                </p:panelGrid>  
+                <table class="ui-datatable ui-widget ui-datatable-reflow janal-wid-100">
+                  <tbody>
+                    <tr class="janal-wid-100">
+                      <p:repeat value="#{manticIncidentesIncidencia.dias}" var="row" varStatus="status">
+                        <td>
+                        <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
+                          <p:outputLabel value="#{row.dia}"/>
+                          <p:selectBooleanCheckbox value="#{row.activo}" styleClass="semana"> 
+                            <p:ajax event="change" process="@this"/>
+                          </p:selectBooleanCheckbox>  
+                        </p:panelGrid>  
+                        </td>  
+                      </p:repeat>  
+                    </tr>
+                  </tbody>
+                </table>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel for="observaciones" value="Observaciones:"/>						
-                  <p:inputTextarea id="observaciones" rows="1" value="#{manticIncidentesIncidencia.repercusion.observaciones}" styleClass="janal-wid-100-txt"/>
+                 <p:outputLabel for="empleado" value="Empleado:"/>							
+                  <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-97, janal-fix-3 janal-column-right">
+                    <p:autoComplete id="encontrar" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesIncidencia.attrs.nombre}" completeMethod="#{manticIncidentesIncidencia.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100">
+                      <p:ajax event="itemSelect" listener="#{manticIncidentesIncidencia.doLoadEmpleado}" process="@this" update="@(.semana)" oncomplete="janal.refresh()"/>
+                    </p:autoComplete>  
+                    <p:commandButton styleClass="janal-text-white activar" icon="fa fa-plus" onstart="return janal.partial('semana')" process="@this panelSemana" actionListener="#{manticIncidentesIncidencia.doAddSemana}" oncomplete="janal.desbloquear(); janal.refresh()" update="tabla @(.semana)"/>
+                  </p:panelGrid>
+                  <p:inputText id="empleado" value="#{manticIncidentesIncidencia.repercusion.idEmpresaPersona}" styleClass="janal-display-none semana"/>
                 </p:panelGrid>
-              </p:panelGrid>
-            </p:panelGrid>				
-            <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{manticIncidentesIncidencia.incidentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{manticIncidentesIncidencia.incidentes.size() gt 15}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" style="#{manticIncidentesIncidencia.incidentes ne null and manticIncidentesIncidencia.incidentes.size() gt 0}">
+              </p:panelGrid>				
+            </p:tab>
+          </p:tabView>
+          <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{manticIncidentesIncidencia.incidentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{manticIncidentesIncidencia.incidentes.size() gt 15}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" style="#{manticIncidentesIncidencia.incidentes ne null and manticIncidentesIncidencia.incidentes.size() gt 0}">
+            <f:facet name="header">
+              <div style="display: flex;">
+                <p:outputLabel value="Incidencias a registrar" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>  
+            <p:column styleClass="MarAuto Responsive janal-wid-2">
               <f:facet name="header">
-                <div style="display: flex;">
-                  <p:outputLabel value="Incidencias a registrar" styleClass="janal-text-white"/>
-                </div>  
-              </f:facet>  
-              <p:column styleClass="MarAuto Responsive janal-wid-2">
-                <f:facet name="header">
-                  <h:outputText value="No."/>
-                </f:facet>
-                <h:outputText value="#{index+ 1}.-"/>
-              </p:column>					
-              <p:column class="janal-column-left MarAuto Responsive janal-wid-10">
-                <f:facet name="header">
-                  <h:outputText value="RFC"/>
-                </f:facet>
-                <h:outputText value="#{row['rfc']}"/>
-              </p:column>		
-              <p:column class="janal-column-left MarAuto Responsive">
-                <f:facet name="header">
-                  <h:outputText value="Nombres"/>
-                </f:facet>
-                <h:outputText value="#{row['nombre']}"/>
-              </p:column>														            
-              <p:column class="MarAuto Responsive janal-wid-10">
-                <f:facet name="header">
-                  <h:outputText value="Tipo"/>
-                </f:facet>
-                <h:outputText value="#{row['incidencia']}"/>
-              </p:column>		
-              <p:column class="MarAuto Responsive janal-column-center janal-wid-8">
-                <f:facet name="header">
-                  <h:outputText value="Inicio"/>
-                </f:facet>
-                <h:outputText value="#{row['iniciox']}"/>
-              </p:column>		
-              <p:column class="MarAuto Responsive janal-column-center janal-wid-8">
-                <f:facet name="header">
-                  <h:outputText value="Termino"/>
-                </f:facet>
-                <h:outputText value="#{row['terminox']}"/>
-              </p:column>		
-              <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
-                <p:commandButton icon="fa fa-trash" process="@this tabla" update="contenedorGrupos" actionListener="#{manticIncidentesIncidencia.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
-              </p:column>		
-              <f:facet name="footer">
-  							<p:outputLabel value="Total [#{manticIncidentesIncidencia.incidentes.size()}] registros"/>
+                <h:outputText value="No."/>
               </f:facet>
-            </p:dataTable>         
-          </p:panelGrid>
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10">
+              <f:facet name="header">
+                <h:outputText value="RFC"/>
+              </f:facet>
+              <h:outputText value="#{row['rfc']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombres"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>														            
+            <p:column class="MarAuto Responsive janal-wid-10">
+              <f:facet name="header">
+                <h:outputText value="Tipo"/>
+              </f:facet>
+              <h:outputText value="#{row['incidencia']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Inicio"/>
+              </f:facet>
+              <h:outputText value="#{row['iniciox']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Termino"/>
+              </f:facet>
+              <h:outputText value="#{row['terminox']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
+              <p:commandButton icon="fa fa-trash" process="@this tabla" update="contenedorGrupos" actionListener="#{manticIncidentesIncidencia.doDelete(row)}" title="Eliminar" onstart="return eliminar('#{row.nombre}', '#{row.incidencia}', '#{row.iniciox}')" oncomplete="janal.refresh()"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticIncidentesIncidencia.incidentes.size()}] registros"/>
+            </f:facet>
+          </p:dataTable>         
         </div>
       </div>
     </div>	

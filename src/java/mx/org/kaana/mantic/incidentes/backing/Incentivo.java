@@ -31,6 +31,8 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
 import mx.org.kaana.mantic.incidentes.beans.Repercusion;
 import java.time.LocalDate;
+import mx.org.kaana.mantic.incidentes.beans.Dia;
+import mx.org.kaana.mantic.incidentes.reglas.Semana;
 
 @Named(value = "manticIncidentesIncentivo")
 @ViewScoped
@@ -39,6 +41,7 @@ public class Incentivo extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
   private Repercusion repercusion;
 	private List<Repercusion> incidentes;
+  private Semana dias;
 
   public Repercusion getRepercusion() {
     return repercusion;
@@ -56,6 +59,14 @@ public class Incentivo extends IBaseAttribute implements Serializable {
     this.incidentes = incidentes;
   }
 
+  public Semana getDias() {
+    return dias;
+  }
+
+  public void setDias(Semana dias) {
+    this.dias = dias;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -65,6 +76,7 @@ public class Incentivo extends IBaseAttribute implements Serializable {
       this.toDefaultPersona();
       this.incidentes= new ArrayList<>();
 			this.toLoadTiposIncidentes();
+      this.toLoadSemana();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -166,7 +178,7 @@ public class Incentivo extends IBaseAttribute implements Serializable {
 		} // catch		
   }
   
-  public void doAdd() {
+  public void doAddDia() {
     try {
       if(!Objects.equals(this.repercusion.getNombre(), null) && this.repercusion.getNombre().length()> 0) {
         int index= this.incidentes.indexOf(this.repercusion);
@@ -176,7 +188,7 @@ public class Incentivo extends IBaseAttribute implements Serializable {
             this.incidentes.add(this.repercusion);   
         } // if  
         else 
-          JsfBase.addMessage("El empleado ya tiene una incidencia del mismo tipo en el mismo día", ETipoMensaje.ERROR);
+          JsfBase.addMessage("El empleado ya tiene una ["+ this.repercusion.getIncidencia()+ "] el día ["+ this.repercusion.getIniciox()+ "]", ETipoMensaje.ERROR);
         this.toDefaultPersona();
       } // if  
     } // try
@@ -185,6 +197,34 @@ public class Incentivo extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
+  
+  public void doAddSemana() {
+    try {
+      if(!Objects.equals(this.repercusion.getNombre(), null) && this.repercusion.getNombre().length()> 0) {
+        for (Dia dia: this.dias) {
+          if(((Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)) && dia.getActivo())
+         || (!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)) && dia.getCosto()> 0D)) {
+            this.repercusion.setInicio(dia.getFecha());
+            this.repercusion.setTermino(dia.getFecha());
+            if(!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)))
+              this.repercusion.setCosto(dia.getCosto());
+            int index= this.incidentes.indexOf(this.repercusion);
+            if(index< 0) {
+              if(this.toCheckLocal() && this.toCheckIncidencia())
+                this.incidentes.add(this.repercusion);   
+            } // if  
+            else 
+              JsfBase.addMessage("El empleado ya tiene una ["+ this.repercusion.getIncidencia()+ "] el día ["+ this.repercusion.getIniciox()+ "]", ETipoMensaje.ERROR);
+            this.toDefaultPersona();
+          } // if  
+        } // for
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
   
   public void doDelete(Repercusion row) {
     this.incidentes.remove(row);
@@ -209,7 +249,25 @@ public class Incentivo extends IBaseAttribute implements Serializable {
           this.repercusion.setPuesto(persona.toString("puesto"));
           this.repercusion.setContacto(persona.toString("contacto"));
           if((Boolean)this.attrs.get("automatico"))
-            this.doAdd();
+            this.doAddDia();
+        } // if  
+      } // if
+    } // if
+  }
+ 
+  public void doLoadEmpleado() {
+    UISelectEntity persona= (UISelectEntity)this.attrs.get("nombre");  
+    if(persona!= null) {
+      List<UISelectEntity> personas= (List<UISelectEntity>)this.attrs.get("nombres");
+      if(personas!= null && !persona.isEmpty()) {
+        int index= personas.indexOf(persona);
+        if(index>= 0) {
+          persona= personas.get(index);
+          this.repercusion.setIdEmpresaPersona(persona.toLong("idEmpresaPersona"));
+          this.repercusion.setRfc(persona.toString("rfc"));
+          this.repercusion.setNombre(persona.toString("nombreCompleto"));
+          this.repercusion.setPuesto(persona.toString("puesto"));
+          this.repercusion.setContacto(persona.toString("contacto"));
         } // if  
       } // if
     } // if
@@ -248,7 +306,7 @@ public class Incentivo extends IBaseAttribute implements Serializable {
       Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaIncidenciasDto", "incentivo", params);
       if(entity!= null) {
         UIBackingUtilities.toFormatEntity(entity, columns);
-			  JsfBase.addMessage("El empleado ya tiene una incidencia ".concat(entity.toString("incidencia")).concat(" registrada del ").concat(entity.toString("inicio")).concat(" al ").concat(entity.toString("termino")), ETipoMensaje.ERROR);
+			  JsfBase.addMessage("El empleado ya tiene una [".concat(entity.toString("incidencia")).concat("] registrada del ").concat(entity.toString("inicio")).concat(" al ").concat(entity.toString("termino")), ETipoMensaje.ERROR);
       } // if  
       else
         regresar= Boolean.TRUE;
@@ -286,5 +344,25 @@ public class Incentivo extends IBaseAttribute implements Serializable {
     } // catch	
     return regresar;
   }  
+ 
+  private void toLoadSemana() {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idTipoNomina", 1L);      
+      Entity entity = (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+      if(entity!= null && !entity.isEmpty())
+        this.dias= new Semana(entity.toDate("inicio"));
+      else
+        this.dias= new Semana(LocalDate.now());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }
