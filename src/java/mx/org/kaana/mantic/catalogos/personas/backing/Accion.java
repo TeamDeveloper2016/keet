@@ -665,7 +665,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoadDomicilios
 
-	public void doAsignaDomicilio(){
+	public void doAsignaDomicilio() {
 		List<UISelectEntity> domicilios        = null;
 		List<UISelectEntity> domiciliosBusqueda= null;
 		UISelectEntity domicilio               = null;
@@ -677,12 +677,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("domicilios", domicilios);			
 			this.registroPersona.getDomicilio().setDomicilio(domicilio);
       this.registroPersona.getDomicilio().setIdDomicilio(domicilio.getKey());
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();			
-			loadAtributosComplemento();			
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();			
+			this.loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

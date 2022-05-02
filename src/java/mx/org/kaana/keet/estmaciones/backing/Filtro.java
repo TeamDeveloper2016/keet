@@ -102,6 +102,17 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+  public String doEstimacion(String accion) {
+    Long idEstimacion= -1L;
+    EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
+    if(!EAccion.AGREGAR.equals(eaccion))
+      idEstimacion= ((Entity)this.attrs.get("seleccionado")).getKey();
+    JsfBase.setFlashAttribute("idEstimacion", idEstimacion);
+    JsfBase.setFlashAttribute("accion", eaccion);
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/filtro");
+    return "/Paginas/Keet/Estimaciones/accion".concat(Constantes.REDIRECIONAR);
+  } // doEstimacion  
+	
   public String doAccion(String accion) {
     JsfBase.setFlashAttribute("idEstimacion", ((Entity) this.attrs.get("seleccionado")).toLong("idEstimacion"));
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).toLong("idContrato"));
@@ -353,8 +364,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doExtras() {
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).toLong("idContrato"));
     JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
-    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
-    return "extras".concat(Constantes.REDIRECIONAR);
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/filtro");
+    return "/Paginas/Keet/Catalogos/Contratos/extras".concat(Constantes.REDIRECIONAR);
   }
   
 }

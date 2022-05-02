@@ -260,6 +260,7 @@
 										</p:selectOneMenu>	
   									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 									</p:panelGrid>
+                  <p:outputLabel value="Cuando finalice la captura por favor dar clic en + agregar domicilio" styleClass="janal-color-black janal-font-bold"/>
                   <p:separator/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
@@ -318,7 +319,7 @@
               </p:panelGrid>
             </p:tab>
 						<p:tab title="Beneficiarios">
-              <p:panelGrid id="panelTablaBeneficiarios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-80">
+              <p:panelGrid id="panelTablaBeneficiarios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-12, janal-wid-88">
                 <p:dataList id="tablaBeneficiarios" value="#{manticCatalogosPersonasAccion.registroPersona.personasBeneficiarios}" var="beneficiario" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:nacimientoB contenedorGrupos:parentesco" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarBeneficiario}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{beneficiario}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiarioSeleccion}" />
@@ -338,7 +339,9 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioBeneficiario" columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-150, janal-wid-100-txt">                                                      
+                <p:panelGrid id="formularioBeneficiario" columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel value="Cuando finalice la captura por favor dar clic en + agregar beneficiario" styleClass="janal-color-black janal-font-bold"/>
+                  <p:separator/>
                   <p:outputLabel for="nombreB" value="Nombre:"/>
                   <p:inputText id="nombreB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.nombre}" />
                   <p:outputLabel for="paternoB" value="1er apellido:"/>
@@ -346,7 +349,7 @@
                   <p:outputLabel for="maternoB" value="2do apellido:"/>
                   <p:inputText id="maternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.paterno}"/>	
                   <p:outputLabel for="nacimientoB" value="Fecha de nacimiento:"/>
-									<p:calendar id="nacimientoB" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>									
+									<p:calendar id="nacimientoB" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode"/>
                   <p:outputLabel for="parentesco" value="Parentesco:"/>
                   <p:selectOneMenu id="parentesco" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.idTipoParentesco}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.parentescos}"/>
