@@ -298,7 +298,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="26" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{ENCUESTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="186" y="113" width="129" height="10" uuid="82bfae16-2475-41dd-803a-1db4c812ef9a"/>

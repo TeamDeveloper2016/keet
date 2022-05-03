@@ -32,7 +32,7 @@ public class Demo implements Job, Serializable {
 		try {
 		  tareaServidor=Especial.getInstance().getTareaServidor();
 			LOG.info("Ejecutó la tarea demo en el servidor");
-		  for (TareaServidor recordTarea : tareaServidor) {
+		  for (TareaServidor recordTarea: tareaServidor) {
         detalleConfiguracion=recordTarea.toDetalleConfiguracion();
         LOG.info("Entidades a procesar en el servidor ["+detalleConfiguracion.getEntidades()+"]");
 		  }// for					

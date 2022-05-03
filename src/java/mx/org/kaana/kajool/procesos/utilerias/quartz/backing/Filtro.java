@@ -56,7 +56,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String server      = null;
 		try {
 			scheduler= Especial.getInstance().getScheduler();			
-			if(scheduler!= null){				
+			if(scheduler!= null) {				
 				regresar= new ArrayList<>();				
 				for (String groupName : scheduler.getJobGroupNames()) { 
 					for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) { 																							
@@ -77,10 +77,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doLoad() {
     List<Jobs>search= null;		
     try {			
-			if(Especial.getInstance().getScheduler()!= null){				
+			if(Especial.getInstance().getScheduler()!= null) {				
 				search= doLoadInit();
 				this.attrs.put("size", search.size());
-				this.attrs.put("paginator", search.size() > Constantes.REGISTROS_POR_PAGINA);
+				this.attrs.put("paginator", search.size()> Constantes.REGISTROS_POR_PAGINA);
 				this.attrs.put("listJobs", search);
 				UIBackingUtilities.resetDataTable();
 			} // if			
@@ -91,7 +91,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // doLoad
 	
-	public void doProcesarJob(String proceso){
+	public void doProcesarJob(String proceso) {
 		Jobs seleccionado  = null;
 		EAccionJob accion  = null;
 		Scheduler scheduler= null;
@@ -101,7 +101,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			accion= EAccionJob.valueOf(proceso);
 			scheduler= Especial.getInstance().getScheduler();
 			jobKey= seleccionado.getJobKey();			
-			switch(accion){
+			switch(accion) {
 				case ACTIVAR:
 					scheduler.resumeJob(jobKey);
 					break;
@@ -120,10 +120,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doPausar 
 	
-	private String toSemaforo(Trigger.TriggerState state){
+	private String toSemaforo(Trigger.TriggerState state) {
 		String regresar= ESemaforos.VERDE.getNombre();
 		try {
-			switch(state){				
+			switch(state) {				
 				case BLOCKED:
 				case ERROR:
 					regresar= ESemaforos.ROJO.getNombre();
@@ -139,14 +139,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toSemaforo
 	
-	public boolean isMostrarCaptura(){
+	public boolean isMostrarCaptura() {
 		boolean regresar          = false;	
 		Jobs seleccionado         = null;
 		Scheduler scheduler       = null;
 		Trigger.TriggerState state= null;
 		try {
 			seleccionado= (Jobs) this.attrs.get("seleccionado");
-			if(seleccionado!= null){
+			if(seleccionado!= null) {
 				scheduler= Especial.getInstance().getScheduler();
 				state= scheduler.getTriggerState(scheduler.getTriggersOfJob(seleccionado.getJobKey()).get(0).getKey());
 				regresar= state.equals(Trigger.TriggerState.PAUSED) || state.equals(Trigger.TriggerState.BLOCKED) || state.equals(Trigger.TriggerState.ERROR);
@@ -162,14 +162,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // isMostrarCaptura
 	
-	public void doAceptar(){
+	public void doAceptar() {
 		Jobs seleccionado            = null;
 		Scheduler scheduler          = null;
 		Trigger trigger              = null;
 		TriggerBuilder triggerBuilder= null;
 		try {			
 			seleccionado= (Jobs) this.attrs.get("seleccionado");
-			if(validarExpresion()){				
+			if(validarExpresion()) {				
 				scheduler= Especial.getInstance().getScheduler();
 				trigger= scheduler.getTriggersOfJob(seleccionado.getJobKey()).get(0);
 				triggerBuilder = TriggerBuilder.newTrigger().withIdentity(trigger.getKey()).withSchedule(CronScheduleBuilder.cronSchedule(this.attrs.get("expresion").toString()));
@@ -192,10 +192,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     Scheduler scheduler      = null;    
     try {      
 			scheduler= Especial.getInstance().getScheduler();
-			if(scheduler== null){
+			if(scheduler== null) {
 				event= new ServletContextEvent(JsfBase.getApplication());
 				Loader.getInstance(event).loadScheduler(event);
-				doLoad();
+				this.doLoad();
 			} // if      
     } // try
     catch (Exception e) {
@@ -207,7 +207,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return CronExpression.isValidExpression(this.attrs.get("expresion").toString());
 	} // validarExpresion
   
-  public boolean isMostrarActivar(){
+  public boolean isMostrarActivar() {
     boolean regresar= false;
     try {
       regresar=JsfBase.isAdminEncuestaOrAdmin();
@@ -219,7 +219,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   } // isMostrarActivar
   
-  public boolean doAplicarEstilo(String pathJob){
+  public boolean doAplicarEstilo(String pathJob) {
     return Especial.getInstance().getPath().equals(pathJob) || pathJob.equals("*");
   } // doAplicarEstilo	
 }

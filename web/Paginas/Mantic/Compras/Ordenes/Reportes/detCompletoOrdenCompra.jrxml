@@ -440,7 +440,7 @@
 				<textFieldExpression><![CDATA["TELS. "+$P{REPORTE_EMPRESA_TELEFONOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="135" y="0" width="374" height="39" uuid="9b1691bb-caef-44e7-be9c-443d1539bc3d"/>
+				<reportElement mode="Transparent" x="135" y="0" width="473" height="39" uuid="9b1691bb-caef-44e7-be9c-443d1539bc3d"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
@@ -451,7 +451,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="26" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{ENCUESTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="186" y="113" width="129" height="10" uuid="0976d28f-5306-4f6a-9bf0-8585b913e8a6"/>

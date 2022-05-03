@@ -168,12 +168,12 @@ public class Incidencia extends IBaseAttribute implements Serializable {
       if(this.repercusion== null) {
         this.repercusion= new Repercusion(-1L);
         this.toChangeTipo(Boolean.TRUE);
+        UISelectEntity persona= new UISelectEntity(-1L);
+        persona.put("idEmpresaPesona", new Value("idEmpresaPersona", -1L));
+        this.attrs.put("nombre", persona);
       } // if  
       else
         this.repercusion= this.repercusion.clone();
-      UISelectEntity persona= new UISelectEntity(-1L);
-      persona.put("idEmpresaPesona", new Value("idEmpresaPersona", -1L));
-      this.attrs.put("nombre", persona);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -57,7 +57,7 @@ public class SessionListener implements HttpSessionListener {
       usuarios.add(session.getId());
       if (Configuracion.getInstance().isFreeAccess()) {
         LOG.warn("Acceso libre cargando usuario ".concat(Configuracion.getInstance().getPropiedad("sistema.autenticar.cuenta")));
-        loadUser(session);
+        this.loadUser(session);
       }	// if
     } // try
     catch (Exception e) {

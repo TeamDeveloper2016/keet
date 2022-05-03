@@ -59,8 +59,9 @@ public final class Loader {
     try {
       startOnLoad = Configuracion.getInstance().getPropiedadServidor("sistema.quartz");
       if (startOnLoad.equals("true")) {
-        loadEspecialScheduler(servletContextEvent);
-      } 
+        LOG.error("Scheduler has been started. verify configuration.properties");
+        this.loadEspecialScheduler(servletContextEvent);
+      } // if
 			else {
         Especial.getInstance().refreshPath(servletContextEvent);
         LOG.info("Scheduler has not been started. verify configuration.properties");
@@ -80,7 +81,7 @@ public final class Loader {
       factory = new StdSchedulerFactory(toParameter(servletContextEvent, "quartz-config-file"));
       scheduler = factory.getScheduler();
       scheduler.start();
-      addParameters(servletContextEvent);
+      this.addParameters(servletContextEvent);
       servletContextEvent.getServletContext().setAttribute(QUARTZ_FACTORY_KEY, factory);
       servletContextEvent.getServletContext().log("Scheduler has been started...");
     } // try

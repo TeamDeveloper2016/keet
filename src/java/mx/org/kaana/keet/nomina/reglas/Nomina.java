@@ -301,6 +301,7 @@ public class Nomina implements Serializable {
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA, dias);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.DIAFESTIVO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.TRIPLE);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.DOBLE);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXCEDENTE);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.PRESTAMO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.ABONO);
@@ -316,6 +317,7 @@ public class Nomina implements Serializable {
           if(!(Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.FALTA.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.DIAFESTIVO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.TRIPLE.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.DOBLE.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.EXCEDENTE.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.PRESTAMO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente()) ||

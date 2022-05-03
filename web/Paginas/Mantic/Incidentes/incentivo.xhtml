@@ -112,14 +112,12 @@
                         <td>
                         <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
                           <p:outputLabel for="valor" value="#{row.dia}" title="Costo/Hora"/>
-                          <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-90 janal-column-center, janal-fix-10 janal-column-center">
-                            <p:inputNumber id="valor" value="#{row.costo}" styleClass="semana activar" inputStyleClass="janal-wid-100-txt costo activar" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p" disabled="#{manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17}">
-                              <p:ajax event="change" process="@this"/>
-                            </p:inputNumber>  
-                            <p:selectBooleanCheckbox value="#{row.activo}" styleClass="semana activar" disabled="#{not (manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17)}"> 
-                              <p:ajax event="change" process="@this"/>
-                            </p:selectBooleanCheckbox>  
-                          </p:panelGrid>  
+                          <p:inputNumber id="valor" value="#{row.costo}" styleClass="semana activar" inputStyleClass="janal-wid-100-txt janal-column-center costo activar" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p" style="display: #{manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 24? 'none': ''}" disabled="#{manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 24}">
+                            <p:ajax event="change" process="@this"/>
+                          </p:inputNumber>  
+                          <p:selectBooleanCheckbox value="#{row.activo}" styleClass="semana activar" style="display: #{manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 24? '': 'none'}" disabled="#{not (manticIncidentesIncentivo.repercusion.idTipoIncidente eq 15 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 17 or manticIncidentesIncentivo.repercusion.idTipoIncidente eq 24)}"> 
+                            <p:ajax event="change" process="@this"/>
+                          </p:selectBooleanCheckbox>  
                         </p:panelGrid>  
                         </td>  
                       </p:repeat>  
@@ -127,7 +125,7 @@
                   </tbody>
                 </table>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100">
-                 <p:outputLabel for="empleado" value="Empleado:"/>							
+                  <p:outputLabel for="empleado" value="Empleado:"/>							
                   <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-97, janal-fix-3 janal-column-right">
                     <p:autoComplete id="encontrar" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesIncentivo.attrs.nombre}" completeMethod="#{manticIncidentesIncentivo.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100">
                       <p:ajax event="itemSelect" listener="#{manticIncidentesIncentivo.doLoadEmpleado}" process="@this" update="@(.semana)" oncomplete="janal.refresh()"/>

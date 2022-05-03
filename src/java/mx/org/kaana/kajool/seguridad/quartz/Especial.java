@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
 import mx.org.kaana.libs.Constantes;
@@ -122,8 +121,8 @@ public final class Especial implements Serializable {
 	
 	public void refreshPath(ServletContextEvent servletContextEvent) {				
 	  this.registro = LocalDateTime.now();
-		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
-		this.path=Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
+		this.path= servletContextEvent.getServletContext().getRealPath("");		
+		this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
 		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
 	}
 	
@@ -134,25 +133,24 @@ public final class Especial implements Serializable {
 		this.tareaServidor= null;
 		try {
 			this.tareaServidor= new ArrayList<>();
-			LOG.info("Iniciando validación de Quartz");
-			realPath=servletContextEvent.getServletContext().getRealPath("").concat(File.separator);						
-			LOG.info("Path recuperado [".concat(realPath).concat("]"));
+			LOG.error("Iniciando validación de Quartz");
+			realPath=servletContextEvent.getServletContext().getRealPath("");						
+			LOG.error("Path recuperado [".concat(realPath).concat("]"));
 			pos = realPath.lastIndexOf(Constantes.NOMBRE_DE_APLICACION.toUpperCase());			
 			this.registro= LocalDateTime.now();
-			if (pos>-1) {				
-				this.path= realPath.substring(0, pos+Constantes.NOMBRE_DE_APLICACION.length()).concat(File.separator);
+			if (pos>= 0) {				
+				this.path= realPath.substring(0, pos+ Constantes.NOMBRE_DE_APLICACION.length()).concat(File.separator);
 				this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);
 				this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
-				LOG.info("Path server [".concat(this.path).concat("]"));
+				LOG.error("Path server [".concat(this.path).concat("]"));
 				//regresar= Configuracion.getInstance().getPropiedad("sistema.quartz.tareas").equals("true")?asignaServidor():asignaLocalServidor();									
-				regresar= asignaLocalServidor();									
-				LOG.info("MultiProcesamiento  server [".concat(String.valueOf(regresar).concat("]")));
-			}// if		
-			else {
-				refreshPath(servletContextEvent);	
-			}	
+				regresar= this.asignaLocalServidor();									
+				LOG.info("MultiProcesamiento server [".concat(String.valueOf(regresar).concat("]")));
+			} // if		
+			else 
+				this.refreshPath(servletContextEvent);	
 			this.servletContextEvent = servletContextEvent;
-			
+			LOG.error("-------------- Quartz a sido inicializado ------------------------");
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
@@ -172,11 +170,11 @@ public final class Especial implements Serializable {
 	
 	public void init() {
 		try {						
-			SchedulerFactory sf=new StdSchedulerFactory(toParameter(servletContextEvent, "quartz-config-file"));
+			SchedulerFactory sf=new StdSchedulerFactory(this.toParameter(servletContextEvent, "quartz-config-file"));
 			this.setScheduler(sf.getScheduler());						
 			this.getScheduler().start();
 			this.addParameters(this.servletContextEvent);			
-			LOG.info("Ejecutando quartz");
+			LOG.error("--------------- Ejecutando quartz en el servidor -----------------");
 			this.load();
 		} // try
 		catch (Exception e) {
@@ -193,4 +191,5 @@ public final class Especial implements Serializable {
 		  throw e;
 		} // catch
 	}
+  
 }

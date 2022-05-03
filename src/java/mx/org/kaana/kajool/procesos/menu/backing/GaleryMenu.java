@@ -198,12 +198,12 @@ public class GaleryMenu implements Serializable {
       this.systemInfo.put("browser", Cadena.letraCapital(JsfBase.getBrowser().name()));
       this.systemInfo.put("jasperReport", Cadena.letraCapital(net.sf.jasperreports.util.CastorUtil.class.getPackage().getImplementationVersion()));
       this.systemInfo.put("date", Fecha.formatear(Fecha.FECHA_HORA_CORTA, Especial.getInstance().getRegistro()));
-      loadMemoryInfo();
-      loadDiskInfo();
+      this.loadMemoryInfo();
+      this.loadDiskInfo();
       if (valida) {
-        loadDataBaseInfo();
-        loadJobs();
-        loadProperties();
+        this.loadDataBaseInfo();
+        this.loadJobs();
+        this.loadProperties();
       } // if
     } // try
     catch (Exception e) {

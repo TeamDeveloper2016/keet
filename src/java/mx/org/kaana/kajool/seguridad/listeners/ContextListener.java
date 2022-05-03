@@ -33,7 +33,7 @@ public class ContextListener implements ServletContextListener {
     System.setProperty("java.awt.headless", "true");
     LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
     try {
-      editors();
+      this.toLoadEditors();
       usuarios= new UsuariosEnLinea();
       context.setAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO, usuarios);
       context.setAttribute(Constantes.ATRIBUTO_BLOQUEO_USUARIOS, new LockUser());
@@ -61,7 +61,7 @@ public class ContextListener implements ServletContextListener {
     context.removeAttribute(Constantes.ATRIBUTO_BLOQUEO_USUARIOS);
   } // contextDestroyed
 
-  private void editors() {
+  private void toLoadEditors() {
     /* Registro de las clases no wrappers Map, List, Time, Date, Timestamp */
     PropertyEditorManager.registerEditor(java.util.Map.class, mx.org.kaana.libs.editor.MapEditor.class);
     PropertyEditorManager.registerEditor(java.util.List.class, mx.org.kaana.libs.editor.ListEditor.class);

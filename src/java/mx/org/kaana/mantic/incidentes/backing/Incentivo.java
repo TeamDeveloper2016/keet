@@ -168,12 +168,12 @@ public class Incentivo extends IBaseAttribute implements Serializable {
       if(this.repercusion== null) {
         this.repercusion= new Repercusion(-1L);
         this.toChangeTipo(Boolean.TRUE);
+        UISelectEntity persona= new UISelectEntity(-1L);
+        persona.put("idEmpresaPesona", new Value("idEmpresaPersona", -1L));
+        this.attrs.put("nombre", persona);
       } // if  
       else
         this.repercusion= this.repercusion.clone();
-      UISelectEntity persona= new UISelectEntity(-1L);
-      persona.put("idEmpresaPesona", new Value("idEmpresaPersona", -1L));
-      this.attrs.put("nombre", persona);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -205,11 +205,11 @@ public class Incentivo extends IBaseAttribute implements Serializable {
     try {
       if(!Objects.equals(this.repercusion.getNombre(), null) && this.repercusion.getNombre().length()> 0) {
         for (Dia dia: this.dias) {
-          if(((Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)) && dia.getActivo())
-         || (!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)) && dia.getCosto()> 0D)) {
+          if(((Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 24L)) && dia.getActivo())
+         || (!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 24L)) && dia.getCosto()> 0D)) {
             this.repercusion.setInicio(dia.getFecha());
             this.repercusion.setTermino(dia.getFecha());
-            if(!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L)))
+            if(!(Objects.equals(this.repercusion.getIdTipoIncidente(), 15L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 17L) || Objects.equals(this.repercusion.getIdTipoIncidente(), 24L)))
               this.repercusion.setCosto(dia.getCosto());
             int index= this.incidentes.indexOf(this.repercusion);
             if(index< 0) {
