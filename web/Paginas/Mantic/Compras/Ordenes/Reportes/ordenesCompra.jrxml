@@ -67,6 +67,7 @@
 	<field name="ESTATUS" class="java.lang.String"/>
 	<field name="REGISTRO" class="java.util.Date"/>
 	<field name="NOMBRE_EMPRESA" class="java.lang.String"/>
+	<field name="IMAGEN" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -181,7 +182,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_ICON}+ $F{IMAGEN}]]></imageExpression>
 			</image>
 			<textField pattern="">
 				<reportElement x="619" y="83" width="133" height="10" uuid="6d795015-13ef-42fd-b15f-2fcb28cb4452"/>

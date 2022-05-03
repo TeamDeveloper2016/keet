@@ -103,6 +103,7 @@
 	<field name="CANTIDADES" class="java.lang.String"/>
 	<field name="PRECIOS" class="java.lang.String"/>
 	<field name="USUARIO" class="java.lang.String"/>
+	<field name="IMAGEN" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -418,7 +419,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_ICON}+ $F{IMAGEN}]]></imageExpression>
 			</image>
 			<textField pattern="">
 				<reportElement x="375" y="68" width="230" height="10" uuid="0c1a4cbc-78db-4bf2-a0d8-e35b28bf5203"/>

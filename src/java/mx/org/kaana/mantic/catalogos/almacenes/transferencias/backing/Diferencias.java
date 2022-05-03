@@ -186,7 +186,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, this.attrs, parametros));		
       this.doVerificarReporte();
       this.reporte.doAceptar();			

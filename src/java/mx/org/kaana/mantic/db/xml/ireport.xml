@@ -151,6 +151,7 @@
 			<select id="reporteOrden">
 				select
           tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_imagenes.nombre as imagen,
 					tc_keet_desarrollos.nombres as centro_costos,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
 					tc_mantic_bancos.nombre as banco,
@@ -236,6 +237,8 @@
 					tr_mantic_persona_tipo_contacto telefono on tc_mantic_personas.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
 				left join 
 					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+        left join
+          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
 				where
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
 			</select>
@@ -243,6 +246,7 @@
         select
           tc_mantic_ordenes_compras.id_orden_compra as id_key,
           tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_imagenes.nombre as imagen,
           tc_mantic_empresas.clave as clave_empresa,
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_empresas.titulo as titulo_empresa,
@@ -311,6 +315,8 @@
 					tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
         inner join
 					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario          
+        left join
+          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
       </select>
@@ -318,6 +324,7 @@
          select
           tc_mantic_ordenes_compras.id_orden_compra as id_key,
           tc_mantic_ordenes_compras.id_empresa,  
+          tc_mantic_imagenes.nombre as imagen,
 				  tc_mantic_empresas.clave as clave_empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_ordenes_compras.consecutivo,
@@ -359,6 +366,8 @@
 					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        left join
+          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
          where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} 
           and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.importes &lt;&gt; 0)
@@ -367,6 +376,7 @@
         select
 					tc_mantic_ordenes_compras.id_orden_compra as id_key,
 					tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_imagenes.nombre as imagen,
           tc_mantic_empresas.nombre as nombre_empresa,
 				  tc_mantic_empresas.clave as empresa,  
 					tc_mantic_ordenes_compras.consecutivo,  
@@ -392,6 +402,8 @@
 					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        left join
+          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
 				where
 					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
 					and {condicion}
@@ -401,6 +413,7 @@
         select
           tc_mantic_ordenes_compras.id_orden_compra,
           tc_mantic_ordenes_compras.id_empresa,  
+          tc_mantic_imagenes.nombre as imagen,
           tc_mantic_empresas.clave as clave_empresa,
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_empresas.titulo as titulo_empresa,
@@ -454,6 +467,8 @@
           tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
         left join 
           tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
+        left join
+          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
       </select>

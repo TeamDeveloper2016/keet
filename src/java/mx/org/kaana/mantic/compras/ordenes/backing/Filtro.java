@@ -322,7 +322,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       reporteSeleccion= EReportes.valueOf(nombre);
       if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)) {
         params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
-        //comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
         comunes= new Parametros(seleccionado.toLong("idEmpresa"), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
       }
       else
@@ -331,7 +330,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
       if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE)) 
         parametros.put("REPORTE_FIRMA", JsfBase.getRealPath("/Paginas/Mantic/Catalogos/Empleados/Firmas/"));
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					

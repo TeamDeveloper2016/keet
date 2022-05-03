@@ -65,9 +65,9 @@ public final class Parametros implements Serializable {
   }
 
   private Map<String, Object> toDatosEmpresa() throws Exception {
-    Map<String, Object>regresar = null;
-		Map<String, Object>params   = null;
-    Entity datosEmpresa         = null;
+    Map<String, Object>regresar= null;
+		Map<String, Object>params  = null;
+    Entity datosEmpresa        = null;
     try {
       regresar= new HashMap<>();	
       params  = new HashMap<>();	
@@ -79,12 +79,10 @@ public final class Parametros implements Serializable {
         regresar.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia")!=null?datosEmpresa.toString("colonia"):" ");
         regresar.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("nombre")!=null?datosEmpresa.toString("codigoPostal"):" ");
         regresar.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("codigoPostal")!=null?datosEmpresa.toString("responsableEmpresa"):" ");
-        //regresar.put("REPORTE_EMPRESA_CONTACTO", "JOSE ANTONIO DAVALOS PADILLA");
         regresar.put("REPORTE_EMPRESA_TELEFONOS", datosEmpresa.toString("telefonosEmpresa")!=null?datosEmpresa.toString("telefonosEmpresa"):" ");
         regresar.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa")!=null?datosEmpresa.toString("emailsEmpresa"):" ");
         regresar.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion")!=null?datosEmpresa.toString("empresaRegion"):" ");
         regresar.put("REPORTE_EMPRESA_RFC", datosEmpresa.toString("rfcEmpresa")!=null?datosEmpresa.toString("rfcEmpresa"):" ");
-        //regresar.put("REPORTE_EMPRESA_RFC", "DAPA580118TK4");
         regresar.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave")!=null?datosEmpresa.toString("clave"):" ");
       }
     } // try
@@ -98,8 +96,8 @@ public final class Parametros implements Serializable {
 	}
   
   public void toComplementarAlmacen(Long idKeyAlmacen, boolean isOrigen) throws Exception {
-		Map<String, Object>params   = null;
-    Entity datosAlmacen         = null;
+		Map<String, Object>params= null;
+    Entity datosAlmacen      = null;
 		try {
       params= new HashMap<>();	
       params.put("idAlmacen", idKeyAlmacen);	
@@ -134,8 +132,8 @@ public final class Parametros implements Serializable {
 	} // toComplementarAlmacen
   
   public void toComplementarProveedor() throws Exception {
-		Map<String, Object>params   = null;
-    Entity datosProveedor         = null;
+		Map<String, Object>params= null;
+    Entity datosProveedor    = null;
 		try {
       params= new HashMap<>();	
       params.put("idProveedor", this.idProveedor);	
@@ -162,8 +160,8 @@ public final class Parametros implements Serializable {
 	} // toComplementarProveedor
   
   public void toComplementarSubContratistas() throws Exception {
-		Map<String, Object>params   = null;
-    Entity datosProveedor         = null;
+		Map<String, Object>params= null;
+    Entity datosProveedor    = null;
 		try {
       params= new HashMap<>();	
       params.put("idProveedor", this.idProveedor);	
@@ -190,8 +188,8 @@ public final class Parametros implements Serializable {
 	} // toComplementarSubContratistas
   
   public void toComplementarCliente() throws Exception {
-		Map<String, Object>params   = null;
-    Entity datosCiente          = null;
+		Map<String, Object>params= null;
+    Entity datosCiente       = null;
 		try {
       params= new HashMap<>();	
       params.put("idCliente", this.idCliente);	
@@ -207,7 +205,7 @@ public final class Parametros implements Serializable {
         this.comunes.put("REPORTE_CLIENTE_RFC", datosCiente.toString("rfc")!=null? datosCiente.toString("rfc"):" ");
         this.comunes.put("REPORTE_CLIENTE_CLAVE", datosCiente.toString("clave")!=null? datosCiente.toString("clave"):" ");
       }
-		} // try // try
+		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch	

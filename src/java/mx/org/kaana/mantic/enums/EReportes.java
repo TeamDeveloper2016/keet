@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.enums;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.reportes.IReportAttribute;
 
-public enum EReportes implements IReportAttribute{
+public enum EReportes implements IReportAttribute {
 
 	ORDEN_COMPRA              ("VistaReportesOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/Ordenes/filtro"),
 	ORDENES_COMPRA            ("VistaReportesOrdenesComprasDto", "ordenesCompra", "Ordenes de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/ordenesCompra", EFormatos.PDF, "ordenes_de_compra", "/Paginas/Mantic/Compras/Ordenes/filtro"),
