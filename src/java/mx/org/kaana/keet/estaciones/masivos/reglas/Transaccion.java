@@ -479,7 +479,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Estacion concepto       = null;
 		Estacion parcial        = null;
 		Estacion estacion       = null; 
-		TcManticMasivasBitacoraDto bitacora= null;
+    TcKeetContratosLotesDto contratoLote= null;
+		TcManticMasivasBitacoraDto bitacora = null;
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
@@ -494,6 +495,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				Entity contrato= this.toContratoDatos(sesion);
+        contratoLote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
+        contratoLote.setIdEstacion(null);
+        DaoFactory.getInstance().update(sesion, contratoLote);
+        sesion.flush();
+        
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
@@ -635,9 +641,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
   					DaoFactory.getInstance().update(sesion, concepto);
 	  				if(Cadena.isVacio(contrato.toLong("idEstacion"))) {
-    					TcKeetContratosLotesDto lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
-							lote.setIdEstacion(concepto.getIdEstacion());
-							DaoFactory.getInstance().update(sesion, lote);
+    					contratoLote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
+							contratoLote.setIdEstacion(concepto.getIdEstacion());
+							DaoFactory.getInstance().update(sesion, contratoLote);
 						} // if
 					} // if
 				} // if

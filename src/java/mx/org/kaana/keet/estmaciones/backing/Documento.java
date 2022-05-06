@@ -569,7 +569,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           params.put(Constantes.SQL_CONDICION, "tc_mantic_unidades_medidas.clave is not null");
           conceptos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaIngresosDto", "articulos", params);
         } // if
-        if(conceptos!= null) {
+        if(conceptos!= null && !conceptos.isEmpty()) {
           int count= 0;
           for (Concepto concepto: this.getFactura().getConceptos()) {
             Articulo item= conceptos.get(count);

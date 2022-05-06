@@ -148,7 +148,7 @@
 							</f:facet>
               <h:outputText value="#{row['codigo']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>	
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+						<p:column class="janal-column-left janal-wid-20 MarAuto Responsive" sortBy="#{row.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Concepto"/>
 							</f:facet>
@@ -158,6 +158,7 @@
 							<f:facet name="header">
 								<h:outputText value="Porcentaje"/>
 							</f:facet>
+              <i class="fa fa-user janal-float-left janal-color-blue" title="Destajo registrado por [#{row['usuario']}]"></i>
 							<h:outputText value="#{row['porcentaje']} %" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>	
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
