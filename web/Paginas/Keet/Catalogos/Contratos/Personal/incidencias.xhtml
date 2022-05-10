@@ -13,7 +13,8 @@
       Janal.Control.fields = {        
 				'tabla\\:puesto'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				        
       };							
 			
 			function validateCriterios() {
@@ -152,6 +153,8 @@
 							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idIncidenteEstatus}" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{keetCatalogosContratosPersonalIncidencias.attrs.allEstatus}"/>							
 							</p:selectOneMenu>
+							<p:outputLabel for="observaciones" value="Observaciones:"/>
+							<p:inputText id="observaciones" value="#{keetCatalogosContratosPersonalIncidencias.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
             </p:panelGrid>						
 						<p:separator/>
 						<div class="janal-line-button">
@@ -168,10 +171,10 @@
 						</div>	
           </p:panel>        
 					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" styleClass="janal-column-center" >
-						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
-						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow();"/>
-						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalIncidencias.onEventMove}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
-						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalIncidencias.onEventResize}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
+						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
+						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow(); janal.refresh()"/>
+						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalIncidencias.onEventMove}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
+						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalIncidencias.onEventResize}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
 					</p:schedule>	
 					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idSelectionEvent}" style="display: none !important"/>
 					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>

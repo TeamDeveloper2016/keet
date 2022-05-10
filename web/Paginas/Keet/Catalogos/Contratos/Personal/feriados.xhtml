@@ -11,7 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        				
-				'costo': {validaciones: 'requerido|min-valor({"cuanto": 1})', mascara: 'flotante'}				
+				'costo': {validaciones: 'requerido|min-valor({"cuanto": 1})', mascara: 'flotante'},
+				'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };							
 			
 			function validateCriterios(){
@@ -134,8 +135,10 @@
 							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalFeriados.attrs.idIncidenteEstatus}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{keetCatalogosContratosPersonalFeriados.attrs.allEstatus}"/>							
 							</p:selectOneMenu>
-							<p:outputLabel for="costo" value="Costo:" class="class-costo" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' ? '' : 'display: none'}"/>
-							<p:inputText id="costo" value="#{keetCatalogosContratosPersonalFeriados.attrs.costo}" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' ? '' : 'display:none'}" styleClass="janal-wid-100-txt"/>
+							<p:outputLabel for="costo" value="Costo/Horas:" class="class-costo" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' or keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '22' ? '' : 'display: none'}"/>
+							<p:inputText id="costo" value="#{keetCatalogosContratosPersonalFeriados.attrs.costo}" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' or keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '22'? '' : 'display:none'}" styleClass="janal-wid-100-txt"/>
+							<p:outputLabel for="observaciones" value="Observaciones:"/>
+							<p:inputText id="observaciones" value="#{keetCatalogosContratosPersonalFeriados.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
             </p:panelGrid>						
 						<p:separator/>
 						<div class="janal-line-button">
@@ -152,10 +155,10 @@
 						</div>	
           </p:panel>        
 					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalFeriados.eventModel}" widgetVar="myschedule" styleClass="janal-column-center">
-						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalFeriados.onDateSelect}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
-						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalFeriados.onEventSelect}" update="panelIncidencia idSelectionEvent costo" oncomplete="findSelectEventShow();"/>
-						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalFeriados.onEventMove}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
-						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalFeriados.onEventResize}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
+						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalFeriados.onDateSelect}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent(); janal.refresh();"/>
+						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalFeriados.onEventSelect}" update="panelIncidencia idSelectionEvent costo" oncomplete="findSelectEventShow(); janal.refresh();"/>
+						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalFeriados.onEventMove}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent(); janal.refresh();"/>
+						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalFeriados.onEventResize}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent(); janal.refresh();"/>
 					</p:schedule>	
 					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalFeriados.attrs.idSelectionEvent}" style="display: none !important"/>
 					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>

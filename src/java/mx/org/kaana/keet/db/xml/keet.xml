@@ -3922,7 +3922,7 @@
       </select>
       <select id="existe">
         select      
-          tc_keet_contratos_personal.id_contrato_persona as id_key,
+          tc_keet_contratos_personal.id_contratos_personal as id_key,
           tc_keet_contratos_personal.*
         from      
           tc_keet_contratos_personal
@@ -4492,7 +4492,7 @@
         where 
           id_estacion= {idEstacion}
 				  and id_contrato_lote_contratista= {idContratoLoteContratista}
-          and id_nomina is null
+          and (id_nomina is null or id_nomina= {idNomina})
       </select>
       <update id="nomina">
 				update 
@@ -4552,8 +4552,8 @@
           tc_keet_contratos_destajos_proveedores
         where 
           id_estacion= {idEstacion}
-				  and id_contrato_destajo_proveedor= {idContratoLoteProveedor}
-          and id_nomina is null
+				  and id_contrato_lote_proveedor= {idContratoLoteProveedor}
+          and (id_nomina is null or id_nomina= {idNomina})
       </select>
 			<update id="nomina">
 				update 

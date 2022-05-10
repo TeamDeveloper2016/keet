@@ -523,8 +523,6 @@
           and tc_keet_contratos_destajos_contratistas.id_estacion_estatus in (2, 3)
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}		
           and {condicion}
-       group by 
-          tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote, tc_keet_estaciones.codigo          
 				order by 
           tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>
@@ -587,8 +585,6 @@
           and tc_keet_contratos_destajos_proveedores.id_estacion_estatus in (2, 3)
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
           and {condicion}
-       group by 
-          tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote, tc_keet_estaciones.codigo          
 				order by 
           tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>		

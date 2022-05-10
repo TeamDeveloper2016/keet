@@ -83,6 +83,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		Long idDesarrollo        = null;
 		Long idContratoPersona   = null;
     try {
+			this.attrs.put("observaciones", "");			
 			this.count= 10000;
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -314,6 +315,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idTipoIncidente", seleccionado.getIdTipoIncidente());
+			this.attrs.put("observaciones", seleccionado.getObservaciones());
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(seleccionado.getIdIncidente().toString()));
 			this.attrs.put("isDelete", seleccionado.getIdIncidenteEstatus().equals(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()));
 		} // try
@@ -351,6 +353,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 				((Incidente)this.event.getData()).setIdIncidenteEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).getIdEstatusInicidente());			
 				((Incidente)this.event.getData()).setIdTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getKey());
 				((Incidente)this.event.getData()).setTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getNombre());			
+				((Incidente)this.event.getData()).setObservaciones((String)this.attrs.get("observaciones"));			
 				String icon= this.toShowIcon((Incidente)this.event.getData());
 				defaultEvent= DefaultScheduleEvent.builder()
 									.id(this.event.getId())
@@ -372,6 +375,9 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
+    finally {
+ 			this.attrs.put("observaciones", "");
+    } // finally
 	} // doApplyChange
 	
 	public void doDelete(){					
@@ -473,4 +479,5 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }

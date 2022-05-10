@@ -6,27 +6,30 @@ import java.util.Map;
 
 public enum ETiposIncidentes {
 	
-	FALTA            ("FALTA", "incidencia-rojo"),
-	VACACIONES       ("VACACIONES", "incidencia-verde"),
-	PERMISO          ("PERMISO", "incidencia-amarilla"),
-	LICENCIA_MEDICA  ("LICENCIA MEDICA", "incidencia-naranja"),
-	LICENCIA_MATERNA ("LICENCIA MATERNA", "incidencia-naranja"),
-	LICENCIA_PATERNA ("LICENCIA PATERNA", "incidencia-naranja"),
-	OMISION_ENTRADA  ("OMISION ENTRADA", "incidencia-azul"),
-	OMISION_SALIDA   ("OMISION SALIDA", "incidencia-azul"),
-	ONOMASTICO       ("ONOMASTICO", "incidencia-verde"),
-	ALTA             ("ALTA", "incidencia-verde"),
-	BAJA             ("BAJA", "incidencia-rojo"),
-	REINGRESO        ("REINGRESO", "incidencia-verde"),
-	DEPOSITO         ("DEPOSITO", "incidencia-rojo"),
-	NO_DEPOSITO      ("NO DEPOSITO", "incidencia-verde"),
-	DIA_FESTIVO      ("DIA FESTIVO", "incidencia-verde"),
-	EXEDENTE_NOMINA  ("EXCEDENTE NOMINA", "incidencia-amarilla"),
-	DIA_TRIPLE       ("DIA TRIPLE", "incidencia-rojo"),
-	PRESTAMO_NOMINA  ("PRESTAMO NOMINA", "incidencia-rojo"),
-	ABONO_NOMINA     ("ABONO PRESTAMO", "incidencia-rojo"),
-	APERTURA_CAJA    ("APERTURA DE CAJA CHICA", "incidencia-verde"),
-	SALDO_CAJA       ("SALDO DE CAJA CHICA", "incidencia-verde");
+	FALTA            ("FALTA", "incidencia-rojo"), // 1
+	VACACIONES       ("VACACIONES", "incidencia-verde"), // 2
+	PERMISO          ("PERMISO", "incidencia-amarilla"), // 3
+	LICENCIA_MEDICA  ("LICENCIA MEDICA", "incidencia-naranja"), // 4
+	LICENCIA_MATERNA ("LICENCIA MATERNA", "incidencia-naranja"), // 5
+	LICENCIA_PATERNA ("LICENCIA PATERNA", "incidencia-naranja"), // 6
+	OMISION_ENTRADA  ("OMISION ENTRADA", "incidencia-azul"), // 7
+	OMISION_SALIDA   ("OMISION SALIDA", "incidencia-azul"), // 8
+	ONOMASTICO       ("ONOMASTICO", "incidencia-verde"), // 9
+	ALTA             ("ALTA", "incidencia-verde"), // 10
+	BAJA             ("BAJA", "incidencia-rojo"), // 11
+	REINGRESO        ("REINGRESO", "incidencia-verde"), // 12
+	DEPOSITO         ("DEPOSITO", "incidencia-rojo"), // 13
+	NO_DEPOSITO      ("NO DEPOSITO", "incidencia-verde"), // 14
+	DIA_FESTIVO      ("DIA FESTIVO", "incidencia-verde"), // 15
+	EXEDENTE_NOMINA  ("EXCEDENTE NOMINA", "incidencia-amarilla"), // 16
+	DIA_TRIPLE       ("DIA TRIPLE", "incidencia-rojo"), // 17
+	PRESTAMO_NOMINA  ("PRESTAMO NOMINA", "incidencia-rojo"), // 18
+	ABONO_NOMINA     ("ABONO PRESTAMO", "incidencia-rojo"), // 19
+	APERTURA_CAJA    ("APERTURA DE CAJA CHICA", "incidencia-verde"), // 20
+	SALDO_CAJA       ("SALDO DE CAJA CHICA", "incidencia-verde"), // 21
+	HORAS_EXTRAS     ("HORAS EXTRAS", "incidencia-amarilla"), // 22
+	MEDIO_DIA        ("MEDIO_DIA", "incidencia-rojo"), // 23
+  DIA_DOBLE        ("DIA FESTIVO", "incidencia-verde"); // 24
 	
 	private static final Map<Long, ETiposIncidentes> lookup= new HashMap<>();		
 	private String nombre;	

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -85,6 +86,7 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		Long idContratoPersona   = null;
     try {
 			this.attrs.put("costo", 0D);			
+			this.attrs.put("observaciones", "");			
 			this.count= 10000;
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -329,6 +331,8 @@ public class Feriados extends IBaseAttribute implements Serializable {
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idTipoIncidente", seleccionado.getIdTipoIncidente());
+			this.attrs.put("costo", seleccionado.getCosto());
+			this.attrs.put("observaciones", seleccionado.getObservaciones());
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(seleccionado.getIdIncidente().toString()));
 			this.attrs.put("isDelete", seleccionado.getIdIncidenteEstatus().equals(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()));
 		} // try
@@ -361,13 +365,18 @@ public class Feriados extends IBaseAttribute implements Serializable {
 			Incidente incidente              = null;
 		try {		
 			incidente= ((Incidente)this.event.getData());		
-			if(!ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.EXEDENTE_NOMINA) || (ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.EXEDENTE_NOMINA) && (Double.valueOf(this.attrs.get("costo").toString())>0)) && !isDiaFestivo(incidente.getVigenciaInicio())){
-				if(!ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.DIA_FESTIVO) || (DAYS.between(incidente.getVigenciaInicio(), incidente.getVigenciaFin())== 0 && ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.DIA_FESTIVO) && isDiaFestivo(incidente.getVigenciaInicio()))){
+      if(
+         (!Objects.equals(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))), ETiposIncidentes.EXEDENTE_NOMINA) && Objects.equals(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))), ETiposIncidentes.HORAS_EXTRAS))
+         ||
+         (Double.valueOf(this.attrs.get("costo").toString())> 0D && !isDiaFestivo(incidente.getVigenciaInicio()))
+        ) {
+				if(!ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.DIA_FESTIVO) || (DAYS.between(incidente.getVigenciaInicio(), incidente.getVigenciaFin())== 0 && ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.DIA_FESTIVO) && isDiaFestivo(incidente.getVigenciaInicio()))) {
 					((Incidente)this.event.getData()).setEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).name());
 					((Incidente)this.event.getData()).setIdIncidenteEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).getIdEstatusInicidente());			
 					((Incidente)this.event.getData()).setIdTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getKey());
 					((Incidente)this.event.getData()).setTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getNombre());			
 					((Incidente)this.event.getData()).setCosto(Double.valueOf((String)this.attrs.get("costo")));			
+					((Incidente)this.event.getData()).setObservaciones((String)this.attrs.get("observaciones"));			
 					defaultEvent= DefaultScheduleEvent.builder()
 										.id(this.event.getId())
 										.allDay(this.event.isAllDay())
@@ -393,6 +402,7 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		} // catch		
 		finally{
 			this.attrs.put("costo", 0D);
+			this.attrs.put("observaciones", "");
 		} // finally
 	} // doApplyChange
 	
@@ -454,7 +464,7 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // onEventResize
 
-	private void updateEvent(){
+	private void updateEvent() {
 		DefaultScheduleEvent defaultEvent= null;
 		try {
 			((Incidente)this.event.getData()).setVigenciaInicio(this.event.getStartDate().toLocalDate());
@@ -515,4 +525,5 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }
