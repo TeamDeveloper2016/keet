@@ -29,8 +29,8 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_contratos_personal")
-  private Long idContratosPersonal;
+	@Column (name="id_contrato_persona")
+  private Long idContratoPersona;
   @Column (name="id_desarrollo")
   private Long idDesarrollo;
   @Column (name="id_usuario")
@@ -53,8 +53,8 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetContratosPersonalDto(Long idContratosPersonal, Long idDesarrollo, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idVigente) {
-    setIdContratosPersonal(idContratosPersonal);
+  public TcKeetContratosPersonalDto(Long idContratoPersona, Long idDesarrollo, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idVigente) {
+    setIdContratoPersona(idContratoPersona);
     setIdDesarrollo(idDesarrollo);
     setIdUsuario(idUsuario);    
     setIdEmpresaPersona(idEmpresaPersona);
@@ -63,12 +63,12 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdContratosPersonal(Long idContratosPersonal) {
-    this.idContratosPersonal = idContratosPersonal;
+  public void setIdContratoPersona(Long idContratoPersona) {
+    this.idContratoPersona = idContratoPersona;
   }
 
-  public Long getIdContratosPersonal() {
-    return idContratosPersonal;
+  public Long getIdContratoPersona() {
+    return idContratoPersona;
   }
 
   public void setIdDesarrollo(Long idDesarrollo) {
@@ -122,19 +122,19 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdContratosPersonal();
+  	return getIdContratoPersona();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idContratosPersonal = key;
+  	this.idContratoPersona = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdContratosPersonal());
+		regresar.append(getIdContratoPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
@@ -154,7 +154,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idContratosPersonal", getIdContratosPersonal());
+		regresar.put("idContratoPersona", getIdContratoPersona());
 		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idUsuario", getIdUsuario());		
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
@@ -167,7 +167,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdContratosPersonal(), getIdDesarrollo(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdVigente(), getRegistro()
+			getIdContratoPersona(), getIdDesarrollo(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdVigente(), getRegistro()
     };
     return regresar;
   }
@@ -181,8 +181,8 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idContratosPersonal~");
-    regresar.append(getIdContratosPersonal());
+    regresar.append("idContratoPersona~");
+    regresar.append(getIdContratoPersona());
     regresar.append("|");
     return regresar.toString();
   }
@@ -190,7 +190,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdContratosPersonal());
+    regresar.append(getIdContratoPersona());
     return regresar.toString();
   }
 
@@ -201,7 +201,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-  	return getIdContratosPersonal()!= null && getIdContratosPersonal()!=-1L;
+  	return getIdContratoPersona()!= null && getIdContratoPersona()!=-1L;
   }
 
   @Override
@@ -213,7 +213,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
       return false;
     }
     final TcKeetContratosPersonalDto other = (TcKeetContratosPersonalDto) obj;
-    if (getIdContratosPersonal() != other.idContratosPersonal && (getIdContratosPersonal() == null || !getIdContratosPersonal().equals(other.idContratosPersonal))) {
+    if (getIdContratoPersona() != other.idContratoPersona && (getIdContratoPersona() == null || !getIdContratoPersona().equals(other.idContratoPersona))) {
       return false;
     }
     return true;
@@ -222,7 +222,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdContratosPersonal() != null ? getIdContratosPersonal().hashCode() : 0);
+    hash = 67 * hash + (getIdContratoPersona() != null ? getIdContratoPersona().hashCode() : 0);
     return hash;
   }
 }

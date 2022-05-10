@@ -3905,7 +3905,7 @@
 		<unit id="TcKeetContratosPersonalDto">
       <select id="row">
         select      
-					tc_keet_contratos_personal.id_contratos_personal as id_key,
+					tc_keet_contratos_personal.id_contrato_persona as id_key,
           tc_keet_contratos_personal.*
         from      
           tc_keet_contratos_personal
@@ -3922,7 +3922,7 @@
       </select>
       <select id="existe">
         select      
-          tc_keet_contratos_personal.id_contratos_personal as id_key,
+          tc_keet_contratos_personal.id_contrato_persona as id_key,
           tc_keet_contratos_personal.*
         from      
           tc_keet_contratos_personal
