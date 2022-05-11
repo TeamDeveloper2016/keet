@@ -649,14 +649,14 @@ $.mask.masks = $.extend($.mask.masks, {
 		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
-        if(typeof(params.cual)=== 'undefined') {
-					janal.programmer([{summary: 'Funci\u00F3n: diferente-a', detail: 'falta el parametro {cual}'}]);
+        if(typeof(params.valor)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: diferente', detail: 'falta el parametro {valor}'}]);
           return false;
 				}	// if
         else 
-  			  return janal.double(janal.cleanToken(value), 0)!== janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
+  			  return janal.double(janal.cleanToken(value), 0)!== params.valor;
 		}, function(params, element) {
-      return 'El valor '+ janal.parser(element)+ ' tiene que ser diferente a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.parser(element)+ ' tiene que ser diferente a '+ params.valor+ '.';
     });
 
 	$.validator.addMethod('asterisco', function(value, element, params) {
