@@ -57,6 +57,7 @@ public class Importar extends IBaseImportar implements Serializable {
   private TcKeetContratosLotesDto contratoLote;		
 	private List<Evidencia> importados;
 	private List<Evidencia> documentos;
+  private String pathImage;
 
   public TcKeetContratosLotesDto getContratoLote() {
     return contratoLote;
@@ -80,6 +81,10 @@ public class Importar extends IBaseImportar implements Serializable {
 
   public void setImportados(List<Evidencia> importados) {
     this.importados = importados;
+  }
+
+  public String getPathImage() {
+    return pathImage;
   }
 	
 	@PostConstruct
@@ -106,6 +111,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.documentos= new ArrayList<>();
 			this.toLoadContrato();
       this.doLoad();
+      this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);

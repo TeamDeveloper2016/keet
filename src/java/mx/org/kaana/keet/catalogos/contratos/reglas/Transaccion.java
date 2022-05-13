@@ -431,8 +431,8 @@ public class Transaccion extends IBaseTnx {
       TcKeetContratosDto item= (TcKeetContratosDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosDto.class, this.fondo.getIdContrato());      
       item.setIdContratoEstatus(EContratosEstatus.LIQUIDADO.getKey());
       DaoFactory.getInstance().update(sesion, item);
-      TcKeetContratosBitacoraDto evidencia= new TcKeetContratosBitacoraDto("CONTRATO LIQUIDADO EL FONDO DE GARANTÍA", item.getIdContratoEstatus(), JsfBase.getIdUsuario(), -1L, item.getIdContrato());
-      DaoFactory.getInstance().insert(sesion, evidencia);
+      TcKeetContratosBitacoraDto registro= new TcKeetContratosBitacoraDto("CONTRATO LIQUIDÓ EL FONDO DE GARANTÍA", item.getIdContratoEstatus(), JsfBase.getIdUsuario(), -1L, item.getIdContrato());
+      DaoFactory.getInstance().insert(sesion, registro);
     } // try
     catch (Exception e) {
 			throw e;
