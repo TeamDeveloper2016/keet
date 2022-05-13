@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Importar evidencia del lote terminado"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:entrega': {validaciones: 'fecha', mascara: 'libre'},
+				'contenedorGrupos\\:recibio': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};						
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{keetCatalogosContratosEntregasImportar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos" styleClass="janal-wid-100-txt">
+            <p:ajax event="tabChange" listener="#{keetCatalogosContratosEntregasImportar.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">		
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                    <p:outputLabel value="Lote:"/>
+                    <p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.descripcionLote}" styleClass="janal-wid-100-txt" disabled="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                    <p:outputLabel value="Contrato:"/>
+                    <p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.nombreContrato}" styleClass="janal-wid-100-txt" disabled="true"/>								
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                    <p:outputLabel value="Etapa:"/>																		
+                    <p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.etapaContrato}" styleClass="janal-wid-100-txt" disabled="true"/>								
+                  </p:panelGrid>  
+                </p:panelGrid>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">		
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                    <p:outputLabel value="Inicio:"/>
+                    <p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.inicio}" styleClass="janal-wid-100-txt janal-column-center" disabled="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                    <p:outputLabel value="Termino:"/>																		
+                    <p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.termino}" styleClass="janal-wid-100-txt janal-column-center" disabled="true"/>
+                  </p:panelGrid>
+                </p:panelGrid>
+								<p:outputLabel value="Prototipo:"/>
+								<p:inputText value="#{keetCatalogosContratosEntregasImportar.attrs.seleccionado.prototipo}" styleClass="janal-wid-100-txt" disabled="true"/>
+								<p:outputLabel for="entrega" value="Fecha entrega:"/>
+ 							  <p:calendar id="entrega" inputStyleClass="janal-wid-100-txt janal-color-blue" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosEntregasImportar.contratoLote.entrega}" pattern="dd/MM/yyyy" locale="es"/>
+								<p:outputLabel for="recibio" value="Recibio:"/>
+								<p:inputText id="recibio" value="#{keetCatalogosContratosEntregasImportar.contratoLote.recibio}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="comentarios" value="Observaciones:"/>
+                <p:inputTextarea id="comentarios" rows="2" value="#{keetCatalogosContratosEntregasImportar.contratoLote.observaciones}" styleClass="janal-wid-100-txt"/>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Archivos">
+              <p:dataTable id="importados" var="row" value="#{keetCatalogosContratosEntregasImportar.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{keetCatalogosContratosEntregasImportar.doRegistro(row.registro)}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="@(.cargados)" actionListener="#{keetCatalogosContratosEntregasImportar.doRecuperar(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.cargados)" actionListener="#{keetCatalogosContratosEntregasImportar.doEliminar(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{keetCatalogosContratosEntregasImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetCatalogosContratosEntregasImportar.importados.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosEntregasImportar.attrs.observaciones}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:observaciones"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{keetCatalogosContratosEntregasImportar.doFileUpload}" onstart="return janal.execute()" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{keetCatalogosContratosEntregasImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosContratosEntregasImportar.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{keetCatalogosContratosEntregasImportar.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{keetCatalogosContratosEntregasImportar.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="limpiar" value="Limpiar" icon="fa fa-eraser" accesskey="a" process="@form" action="#{keetCatalogosContratosEntregasImportar.doLimpiar}" onstart="return true" oncomplete="janal.desbloquear()" disabled="#{empty keetCatalogosContratosEntregasImportar.contratoLote.entrega}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosEntregasImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosEntregasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarLimpiar" title="Limpiar" icon="fa fa-eraser" process="@form" action="#{keetCatalogosContratosEntregasImportar.doLimpiar}" onstart="return true" oncomplete="janal.desbloquear()" disabled="#{empty keetCatalogosContratosEntregasImportar.contratoLote.entrega}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosEntregasImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosEntregasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

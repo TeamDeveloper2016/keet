@@ -29,8 +29,10 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.keet.enums.EArchivosContratos;
 import mx.org.kaana.keet.catalogos.contratos.beans.Retencion;
+import mx.org.kaana.keet.catalogos.contratos.entregas.beans.Evidencia;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRetencionesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -47,6 +49,8 @@ public class Transaccion extends IBaseTnx {
 	private TcKeetContratosBitacoraDto bitacora;
   private List<Garantia> garantias;
   private Fondo fondo;
+  private TcKeetContratosLotesDto lote;
+  private List<Evidencia> evidencia;
 	
 	public Transaccion(RegistroContrato contrato) {
 		this(contrato, EArchivosContratos.DOCUMENTOS);
@@ -73,7 +77,12 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Fondo fondo) {
 		this.fondo = fondo;
 	}	
-	
+
+  public Transaccion(TcKeetContratosLotesDto lote, List<Evidencia> evidencia) {
+    this.lote = lote;
+    this.evidencia = evidencia;
+  }
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar   = false;
@@ -155,6 +164,12 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case MOVIMIENTOS:
           regresar= this.toFondoGarantia(sesion);
+					break;
+				case DESACTIVAR:
+          regresar= this.toEvidencias(sesion);
+					break;
+				case COMPLETO:
+          regresar= DaoFactory.getInstance().update(sesion, this.lote)> 0L;          
 					break;
 			} // switch
 		} // try
@@ -424,5 +439,32 @@ public class Transaccion extends IBaseTnx {
     } // catch	
     return regresar;
   }
-  
+ 
+  private Boolean toEvidencias(Session sesion) throws Exception {
+    Boolean regresar= this.evidencia.size()<= 0;
+    try {   
+      regresar= DaoFactory.getInstance().update(sesion, this.lote)> 0L;
+      for (Evidencia item: this.evidencia) {
+        switch(item.getSql()) {
+          case SELECT:
+            regresar= Boolean.TRUE;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
+  }
+
 }

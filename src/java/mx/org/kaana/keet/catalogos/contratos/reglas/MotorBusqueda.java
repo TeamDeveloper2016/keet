@@ -76,7 +76,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	} // toLotes
 	
 	public List<ContratoPersonal> toPersonas() throws Exception {
-		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal", Constantes.SQL_VERDADERO, Constantes.SQL_VERDADERO);
+		return toPersonasCondicion("tc_keet_contratos_personal.id_contrato_persona", Constantes.SQL_VERDADERO, Constantes.SQL_VERDADERO);
 	} // toPersonas
 	
 	public List<ContratoPersonal> toPersonasAsignadas(String condicion, String departamento) throws Exception {

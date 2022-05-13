@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosLotesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_archivos
+        where      
+          id_contrato_lote = {idContratoLote} and nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKeetContratosVecimientosDto">
       <select id="row">
         select      
@@ -3918,7 +3936,7 @@
         from      
           tc_keet_contratos_personal
         where      
-          id_contratos_personal = {idContratosPersonal}
+          id_contrato_persona = {idContratoPersona}
       </select>
       <select id="existe">
         select      
@@ -3931,7 +3949,7 @@
       </select>
       <select id="desarrollo">
         select      
-          tc_keet_contratos_personal.id_contratos_personal as id_key,
+          tc_keet_contratos_personal.id_contrato_persona as id_key,
           tc_keet_contratos_personal.*
         from      
           tc_keet_contratos_personal
@@ -3942,7 +3960,7 @@
       </select>
 			<select id="maximo">
 				select      
-          max(id_contratos_personal) maximo
+          max(id_contrato_persona) maximo
         from      
           tc_keet_contratos_personal
 			</select>

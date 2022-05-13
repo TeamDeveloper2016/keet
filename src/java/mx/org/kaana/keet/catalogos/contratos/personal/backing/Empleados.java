@@ -133,7 +133,7 @@ public class Empleados extends IBaseFilter implements Serializable {
     try {			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, this.toPrepare());
-			params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
+			params.put("campoLlave", "tc_keet_contratos_personal.id_contrato_persona");
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));

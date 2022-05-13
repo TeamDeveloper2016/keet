@@ -76,6 +76,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   private String numero;
   @Column (name="entrega")
   private LocalDate entrega;
+	@Column (name="id_entrego")
+  private Long idEntrego;
+	@Column (name="recibio")
+  private String recibio;
+	@Column (name="observaciones")
+  private String observaciones;
 
   public TcKeetContratosLotesDto() {
     this(new Long(-1L));
@@ -91,6 +97,10 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   }
   
   public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero, LocalDate entrega) {
+    this(manzana, clave, inicio, lote, termino, idUsuario, idContrato, idContratoLoteEstatus, idContratoLote, idTipoFachada, diasConstruccion, idPrototipo, orden, atributos, latitud, longitud, arranque, idEstacion, costo, calle, numero, entrega, -1L, null, null);
+  }
+  
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero, LocalDate entrega, Long idEntrego, String recibio, String observaciones) {
     setManzana(manzana);
     setClave(clave);
     setInicio(inicio);
@@ -114,6 +124,9 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     this.calle= calle;
     this.numero= numero;
     this.entrega= entrega;
+    this.idEntrego= idEntrego;
+    this.recibio= recibio;
+    this.observaciones= observaciones;
   }
 	
   public void setManzana(String manzana) {
@@ -299,6 +312,30 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   public void setEntrega(LocalDate entrega) {
     this.entrega = entrega;
   }
+
+  public Long getIdEntrego() {
+    return idEntrego;
+  }
+
+  public void setIdEntrego(Long idEntrego) {
+    this.idEntrego = idEntrego;
+  }
+
+  public String getRecibio() {
+    return recibio;
+  }
+
+  public void setRecibio(String recibio) {
+    this.recibio = recibio;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
   
   @Transient
   @Override
@@ -360,6 +397,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.append(getNumero());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEntrega());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEntrego());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRecibio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -390,13 +433,16 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.put("calle", getCalle());
 		regresar.put("numero", getNumero());
 		regresar.put("entrega", getEntrega());
+		regresar.put("idEntrego", getIdEntrego());
+		regresar.put("recibio", getRecibio());
+		regresar.put("observaciones", getObservaciones());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getManzana(), getClave(), getInicio(), getLote(), getTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud(), getArranque(), getIdEstacion(), getCosto(), getCalle(), getNumero(), getEntrega()
+			getManzana(), getClave(), getInicio(), getLote(), getTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud(), getArranque(), getIdEstacion(), getCosto(), getCalle(), getNumero(), getEntrega(), getIdEntrego(), getRecibio(), getObservaciones()
     };
     return regresar;
   }

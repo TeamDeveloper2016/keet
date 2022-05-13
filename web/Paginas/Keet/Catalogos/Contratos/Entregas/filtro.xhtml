@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Entrega de lotes terminados" />
+  <ui:define name="librerias">
+		<style type="text/css">
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.2vw !important;
+				font-weight: bold !important;
+			}
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    	
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
+						<p:tab title="Desarrollo [ #{keetCatalogosContratosEntregasFiltro.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosEntregasFiltro.registroDesarrollo.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                <p:outputLabel value="Descripcion:" rendered="false"/>
+								<p:inputText value="#{keetCatalogosContratosEntregasFiltro.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
+                <p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosEntregasFiltro.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                    <p:outputLabel for="contratos" value="Contratos:"/>
+                    <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosEntregasFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoadManzanas}" update="manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes(); reload();"/>
+                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                    <p:outputLabel for="manzanas" value="Manzanas:"/>
+                    <p:selectOneMenu id="manzanas" value="#{keetCatalogosContratosEntregasFiltro.attrs.manzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoadCasas}" update="lotes destajo" oncomplete="janal.desbloquear(); reloadLotes(); reload();"/>
+                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.manzana or element.manzana eq ''? '': '|'} #{element.manzana}"/>
+                      <p:column headerText="Contato">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                      <p:column headerText="Manzana">
+                        <h:outputText value="#{item.manzana}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                    <p:outputLabel for="lotes" value="Lotes:"/>
+                    <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosEntregasFiltro.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoad}" update="destajo" oncomplete="janal.desbloquear(); reload();"/>
+                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+                      <p:column headerText="Lote">
+                        <h:outputText value="#{item.descripcionLote}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>  
+  							</p:panelGrid>	
+							</p:panelGrid>
+              <p:remoteCommand name="reloadManzanas" process="@this" update="manzanas"/>
+              <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
+              <p:remoteCommand name="reload" process="@this" update="destajo"/>
+						</p:tab>					
+					</p:accordionPanel>						
+					<p:spacer height="3px"/>
+					<p:dataGrid id="destajo" var="row" value="#{keetCatalogosContratosEntregasFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosEntregasFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
+							<h:panelGrid columns="1" style="width:100%">
+								<p:commandLink process="@this" update="destajo" title="Ver detalle del lote" action="#{keetCatalogosContratosEntregasFiltro.doEvidencia}">
+									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
+									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosEntregasFiltro.attrs.seleccionado}"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
+                  <p:outputLabel value="&lt;b&gt;#{row.nombreContrato}&lt;/b&gt; | Etapa: #{row.etapaContrato}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-orange"/>
+									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
+									<p:outputLabel value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
+									<p:outputLabel value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.termino eq '-' ? '' : 'none'}"/>
+									<p:outputLabel value="&lt;b&gt;Recibió:&lt;/b&gt; #{row.recibio}" escape="false" style="display: #{row.entregada eq '1'? '': 'none'}" styleClass="janal-color-black"/>
+									<p:spacer style="display: #{row.diasConstruccion eq '-' ? '' : 'none'}"/>
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+                <div class="janal-column-right">
+									<span style="display: #{row.entregada eq '1'? '': 'none'}" class="janal-color-black janal-float-left">Entregada: #{row.entrega}</span>									
+                  <span>Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" title="#{row.entregada eq '1'? 'Entregada': 'No entregada'}"/>
+								</div>	
+							</f:facet>
+						</p:panel>						
+					</p:dataGrid>	 
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" accesskey="r" process="@this" action="#{keetCatalogosContratosEntregasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" process="@this" action="#{keetCatalogosContratosEntregasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

@@ -26,7 +26,8 @@ public enum EOpcionesResidente {
 	HISTORIAL       ("Historial de destajos realizados por lote", "2e3fc953e8758e999bd5", "/Paginas/Keet/Catalogos/Contratos/Destajos/historia.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
 	SEGUIMIENTO     ("Seguimiento a los destajos realizados por lote", "c451d751e97e82858beb708f", "/Paginas/Keet/Catalogos/Contratos/Destajos/seguimiento.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
 	CONTROL         ("Control en los pagos de los destajos", "323cca57e47a8082", "/Paginas/Keet/Catalogos/Contratos/Destajos/control.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
-	RESUMEN         ("Detalle de los destajos realizados", "ba44c852e87b8999", "/Paginas/Keet/Catalogos/Contratos/Destajos/resumen.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L);
+	RESUMEN         ("Detalle de los destajos realizados", "ba44c852e87b8999", "/Paginas/Keet/Catalogos/Contratos/Destajos/resumen.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
+	ENTREGAS        ("Entrega de lotes terminados", "ba49d665f873f37b8f", "/Paginas/Keet/Catalogos/Contratos/Entregas/filtro.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L);
   
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;

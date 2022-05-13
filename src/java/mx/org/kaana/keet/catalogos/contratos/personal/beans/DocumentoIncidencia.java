@@ -88,4 +88,5 @@ public class DocumentoIncidencia extends TcManticIncidentesArchivosDto {
 	public void setTipoIncidente(String tipoIncidente) {
 		this.tipoIncidente = tipoIncidente;
 	}	
+  
 }

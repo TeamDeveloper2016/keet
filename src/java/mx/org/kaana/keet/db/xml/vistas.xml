@@ -5172,7 +5172,7 @@
 				left join 
 					tc_keet_contratos_personal on tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona
 				where 
-					tc_keet_contratos_personal.id_contratos_personal = {idContratoPersona}
+					tc_keet_contratos_personal.id_contrato_persona = {idContratoPersona}
 				  or tr_mantic_empresa_personal.id_empresa_persona = {idEmpresaPersona}												
 			</select>
 			<select id="incidencia">
@@ -5656,7 +5656,7 @@
 			</select>
 			<select id="findContratoPersona">
 				select      
-					tc_keet_contratos_personal.id_contratos_personal as id_key,									
+					tc_keet_contratos_personal.id_contrato_persona as id_key,									
 					tc_keet_departamentos.nombre as departamento,
 					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_empresa_personal.id_activo,
@@ -5684,7 +5684,7 @@
 				inner join 
 					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
         where 
-          tc_keet_contratos_personal.id_contratos_personal= {idContratoPersona}
+          tc_keet_contratos_personal.id_contrato_persona= {idContratoPersona}
         group by
           tc_mantic_personas.id_persona
 				order by 
@@ -5704,7 +5704,7 @@
 					tc_mantic_personas.rfc,					
 					tc_mantic_personas.curp,
 					tc_keet_contratos_personal.id_desarrollo,					
-					tc_keet_contratos_personal.id_contratos_personal,					
+					tc_keet_contratos_personal.id_contrato_persona,					
 					tc_keet_desarrollos.clave as clave_desarrollo,
 					tc_keet_desarrollos.nombres as nombre_desarrollo          
         from                
@@ -7918,7 +7918,58 @@
         inner join
           tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				where 
-					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+          and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
+          and tc_keet_contratos_lotes.entrega is null
+				  and {condicion}
+        order by
+          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
+          convert(tc_keet_contratos_lotes.lote, unsigned integer)
+			</select>
+			<select id="evidencias">
+        select
+          tc_keet_contratos_lotes_archivos.id_contrato_lote_archivo as id_key,
+          tc_keet_contratos_lotes_archivos.id_contrato_lote_archivo as id,
+          -1 as id_archivo,
+          tc_keet_contratos_lotes_archivos.*,
+          tc_mantic_tipos_archivos.nombre as tipo,
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario
+        from
+          tc_keet_contratos_lotes_archivos
+        inner join 
+          tc_janal_usuarios on tc_keet_contratos_lotes_archivos.id_usuario= tc_janal_usuarios.id_usuario
+        inner join 
+          tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        inner join
+          tc_mantic_tipos_archivos on tc_keet_contratos_lotes_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+        where
+          id_contrato_lote= {idContratoLote}        
+      </select>
+			<select id="lotesDisponibles">
+				select 
+					tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_proyectos.id_empresa,
+					tc_keet_contratos_lotes.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.clave clave_contrato,
+          tc_keet_contratos.nombre nombre_contrato,
+					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_contratos.orden orden_contrato,
+          tc_keet_prototipos.nombre as prototipo,
+          if(tc_keet_contratos_lotes.entrega is null, 2, 1) as entregada,
+          tc_keet_contratos.ejercicio
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
 				  and {condicion}
         order by
           convert(tc_keet_contratos_lotes.manzana, unsigned integer),
@@ -7949,7 +8000,9 @@
         inner join
           tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				where 
-					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+          and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
+          and tc_keet_contratos_lotes.entrega is null
 				  and {condicion}
         order by
           convert(tc_keet_contratos_lotes.manzana, unsigned integer),
@@ -9219,7 +9272,7 @@
 			</select>
 			<select id="residentes">				
 				select      
-					tc_keet_contratos_personal.id_contratos_personal as id_key,									
+					tc_keet_contratos_personal.id_contrato_persona as id_key,									
 					tc_keet_departamentos.nombre as departamento,
 					tc_keet_departamentos.id_departamento,
 					tc_mantic_puestos.nombre as puesto,
