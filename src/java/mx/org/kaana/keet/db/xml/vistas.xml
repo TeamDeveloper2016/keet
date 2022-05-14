@@ -8700,27 +8700,33 @@
         left join
           tc_keet_contratos_puntos_contratistas on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_contratistas.id_punto_paquete     
         where
-            tc_keet_puntos_grupos.id_departamento= {idDepartamento}             
-            and tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}       
-            and (concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista) in (
-                select
-                  concat(tc_keet_contratos_puntos_contratistas.id_punto_paquete, '-', tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista)       
-                from
-                  tc_keet_contratos_destajos_contratistas       
-                inner join
-                  tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista       
-                where
-                  tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion})
-                or
-                concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor) in (
-                select
-                  concat(tc_keet_contratos_puntos_proveedores.id_punto_paquete, '-', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor)       
-                from
-                  tc_keet_contratos_destajos_proveedores       
-                inner join
-                  tc_keet_contratos_puntos_proveedores on tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor 
-                where
-                  tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}))           
+          tc_keet_puntos_grupos.id_departamento= {idDepartamento}             
+          and tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}       
+          and (
+           concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista) in (
+						select
+							concat(tc_keet_contratos_puntos_contratistas.id_punto_paquete, '-', tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista)       
+						from
+							tc_keet_contratos_destajos_contratistas       
+						inner join
+							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista       
+						inner join
+							tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista 
+						where
+							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion} and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona})
+           or
+						concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor) in (
+						select
+							concat(tc_keet_contratos_puntos_proveedores.id_punto_paquete, '-', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor)       
+						from
+							tc_keet_contratos_destajos_proveedores       
+						inner join
+							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor 
+						inner join
+							tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor 
+						where
+							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion} and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor})
+				)
 			</select>
 			<select id="puntosRechazosResidentes">
 				select

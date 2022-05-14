@@ -1,8 +1,6 @@
 package mx.org.kaana.keet.estaciones.backing;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +112,7 @@ public class Costos extends IBaseAttribute implements Serializable {
           Partida item= this.estaciones.get(count);
           if(item.isCostoEditable()) {
             item.setAccion(ESql.SELECT);
+            item.setOrden(new Long(count));
             count++;
           } //   
           else
@@ -180,14 +179,14 @@ public class Costos extends IBaseAttribute implements Serializable {
  
   public void doReplicarCosto(Partida row) {
     for (Partida item : this.estaciones) {
-      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
+      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()) && item.getOrden()> row.getOrden())      
         item.setCosto(row.getCosto()); 
     } // for
   }
   
   public void doReplicarAnticipo(Partida row) {
     for (Partida item : this.estaciones) {
-      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()))      
+      if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()) && item.getOrden()> row.getOrden())
         item.setAnticipo(row.getAnticipo()); 
     } // for
   }

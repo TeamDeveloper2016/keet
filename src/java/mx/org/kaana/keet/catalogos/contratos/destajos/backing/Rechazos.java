@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -89,8 +90,16 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
   public void doLoad() {
 		Map<String, Object>params= null;
     List<Columna> columns    = null;				
+    Entity figura            = (Entity)this.attrs.get("figura");
     try {      			
 			params= this.toPrepare();
+      params.put("idProveedor", -1L);
+      params.put("idEmpresaPersona", -1L);
+      if(figura!= null)
+        if(Objects.equals(figura.toLong("tipo"), 1L))
+          params.put("idEmpresaPersona", new Long(figura.getKey().toString().substring(4)));
+        else
+          params.put("idProveedor", new Long(figura.getKey().toString().substring(4)));
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  

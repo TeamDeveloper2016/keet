@@ -142,9 +142,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
       params.put("idEmpresaPersona", -1L);
       if(figura!= null)
         if(Objects.equals(figura.toLong("tipo"), 1L))
-          params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+          params.put("idEmpresaPersona", new Long(figura.getKey().toString().substring(4)));
         else
-          params.put("idProveedor", figura.getKey().toString().substring(4));
+          params.put("idProveedor", new Long(figura.getKey().toString().substring(4)));
       else
         JsfBase.addMessage("Figura", "No se tiene un contratista o subcontratita seleccionado");
 	    this.lazyModelExtras= new FormatLazyModel("VistaCapturaDestajosDto", "conceptosExtras", params, columns);			

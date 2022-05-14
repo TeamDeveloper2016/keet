@@ -280,7 +280,7 @@ public class Transaccion extends IBaseTnx {
 					dto.setIdEstacionEstatus(dto.getCosto()<= 0D? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 						params.clear();
-						params.put("idEstacionEstatus", dto.getPorcentaje()<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
+						params.put("idEstacionEstatus", (estacion.getCargo()- calculo)<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
             String columna= "cargo".concat(dto.getSemana().toString());
             params.put("cargo", estacion.getCargo()- calculo);
             params.put("retencion", estacion.getRetencion()- retencion);
@@ -335,7 +335,7 @@ public class Transaccion extends IBaseTnx {
 					dto.setIdEstacionEstatus(dto.getCosto()<= 0D? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 						params= new HashMap<>();
-						params.put("idEstacionEstatus", dto.getPorcentaje()<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
+						params.put("idEstacionEstatus", (estacion.getCargo()- calculo)<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
             String columna= "cargo".concat(dto.getSemana().toString());
             params.put("cargo", estacion.getCargo()- calculo);
             params.put("retencion", estacion.getRetencion()- retencion);
