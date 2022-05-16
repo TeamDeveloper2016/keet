@@ -228,6 +228,7 @@
             <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem actionListener="#{keetNominasFiltro.doNotifica()}" icon="fa fa-envelope-open-text" value="Notificar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem actionListener="#{keetNominasFiltro.doWhatsup()}" icon="fa fa-whatsapp" value="Whatsapp" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem actionListener="#{keetNominasFiltro.doResumen()}" icon="fa fa-whatsapp" value="Resumen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
 						<p:menuitem value="Contratistas" icon="fa fa-download" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina contratistas" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
 	  					<p:fileDownload value="#{keetNominasFiltro.documento}" />

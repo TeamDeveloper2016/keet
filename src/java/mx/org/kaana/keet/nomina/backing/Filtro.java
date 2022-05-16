@@ -127,7 +127,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private void loadEmpresas() {
+	private void toLoadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
@@ -245,7 +245,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
-			this.loadEmpresas();
+			this.toLoadEmpresas();
 			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -407,6 +407,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
  			transaccion = new Transaccion(seleccionado.getKey());
 			if(transaccion.ejecutar(EAccion.MOVIMIENTOS)) 			
+			  JsfBase.addMessage("Notificar", "Se notificó por whatsapp de forma correcta", ETipoMensaje.INFORMACION);			
+      else
+			  JsfBase.addMessage("Notificar", "Error", ETipoMensaje.INFORMACION);			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doResumen() {
+		Entity seleccionado      = null;
+		Transaccion transaccion  = null;
+	  try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+ 			transaccion = new Transaccion(seleccionado.getKey());
+			if(transaccion.ejecutar(EAccion.RESTAURAR)) 			
 			  JsfBase.addMessage("Notificar", "Se notificó por whatsapp de forma correcta", ETipoMensaje.INFORMACION);			
       else
 			  JsfBase.addMessage("Notificar", "Error", ETipoMensaje.INFORMACION);			

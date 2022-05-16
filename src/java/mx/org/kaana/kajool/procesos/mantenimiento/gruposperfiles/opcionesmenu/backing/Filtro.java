@@ -63,7 +63,7 @@ public class Filtro extends IBaseAttribute implements Serializable{
       this.attrs.put("idGrupo", idGrupo);
       this.attrs.put("titulo", this.isPerfiles? "del perfil: ".concat(((TcJanalPerfilesDto)DaoFactory.getInstance().findById(TcJanalPerfilesDto.class, idPerfil)).getDescripcion()): "del grupo: ".concat(((TcJanalGruposDto)DaoFactory.getInstance().findById(TcJanalGruposDto.class, idGrupo)).getDescripcion()));
       this.attrs.put("idPerfil", idPerfil);
-      doLoad();
+      this.doLoad();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -77,7 +77,6 @@ public class Filtro extends IBaseAttribute implements Serializable{
       List<OpcionMenu> nuevos       = null;
       Transaccion transaccion       = null;
     try {
-      //JsfBase.setFlashAttribute("idGrupo", this.attrs.get("idGrupo"));
       originales = getOriginales();
       seleccionados= getSeleccionados();
       nuevos = getSeleccionados();
@@ -91,26 +90,25 @@ public class Filtro extends IBaseAttribute implements Serializable{
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    finally{
+    finally {
       Methods.clean(originales);
       Methods.clean(seleccionados);
       Methods.clean(nuevos);
     } // finally
    return doRegresar();
-  }//doGuardar
+  } // doGuardar
 
-  private Map getParams(){
+  private Map getParams() {
     Map regresar = new HashMap();
     if (this.isPerfiles){
       regresar.put("idPerfil", this.attrs.get("idPerfil"));
       regresar.put("llaveXml", "VistaPerfilesMenusDto") ;
      } // if
-     else{
+     else 
       regresar.put("llaveXml", "VistaGruposMenusDto") ;
-    }
     regresar.put("idGrupo", this.attrs.get("idGrupo"));
     return regresar;
-  }//getParams
+  } // getParams
 
   public String doRegresar(){
     String regresar = null;
@@ -119,19 +117,19 @@ public class Filtro extends IBaseAttribute implements Serializable{
     else{
        JsfBase.setFlashAttribute("idGrupo", Long.valueOf(this.attrs.get("idGrupo").toString()));
        regresar = "/Paginas/Mantenimiento/GruposPerfiles/Perfiles/filtro".concat(Constantes.REDIRECIONAR);
-    }//else
+    } // else
     return regresar;
-  }//doRegresar
+  } // doRegresar
 	
 	
   public void onNodeUnselect(NodeUnselectEvent event) {
     seleccionarPadres(event.getTreeNode());
     event.getTreeNode().setSelected(false);
-  }  //onNodeSelect
+  } // onNodeSelect
 
   public void onNodeSelect(NodeSelectEvent event) {
       seleccionarPadres(event.getTreeNode());
-   }//onNodeUnselect
+   } // onNodeUnselect
 
   private List<OpcionMenu> getSeleccionados(){
     List<OpcionMenu> regresar = new ArrayList();
@@ -144,7 +142,7 @@ public class Filtro extends IBaseAttribute implements Serializable{
         regresar.add(new OpcionMenu(entity.toLong("idMenu"), entity.toString("descripcion"), entity.toLong("idMenuGrupo"),entity.toLong("idMenuPerfil")));
     } // for
     return regresar;
-  }//getSeleccionados
+  } // getSeleccionados
 
   private List<OpcionMenu> getOriginales(){
     List<OpcionMenu> regresar = new ArrayList();
@@ -162,7 +160,7 @@ public class Filtro extends IBaseAttribute implements Serializable{
     } // catch
     finally{
       Methods.clean(params);
-    }
+    } // finally
     return regresar;
   }//getOriginales
 
@@ -178,17 +176,17 @@ public class Filtro extends IBaseAttribute implements Serializable{
 			} // for
 			padre = padre.getParent();
 		} // while
-  }//seleccionarPadres
+  } // seleccionarPadres
 
   public void doLoad() {
     try {
       Map params = getParams();
-      this.attrs.put("treeMenu", new TreeMenu(((DefaultTreeNode)this.attrs.get("root")), params.get("llaveXml").toString(), params, this.isPerfiles, true));
+      this.attrs.put("treeMenu", new TreeMenu(((DefaultTreeNode)this.attrs.get("root")), params.get("llaveXml").toString(), params, Boolean.FALSE, true));
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     } // catch
-  }//doLoad
+  } // doLoad
 	
 }

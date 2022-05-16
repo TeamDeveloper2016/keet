@@ -219,6 +219,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				case MOVIMIENTOS:
           this.notificarResidentes(sesion);
 					break;
+				case RESTAURAR:
+          this.notificarResumenDestajos(sesion);
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
