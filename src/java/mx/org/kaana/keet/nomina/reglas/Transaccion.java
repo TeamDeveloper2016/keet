@@ -694,7 +694,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         this.nomina.setIva(0D);
         this.nomina.setTotal(0D);
       } // if
-      
 		} // try
 		finally {
 			Methods.clean(params);
@@ -1002,17 +1001,17 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Parametros comunes           = null;
     try {
       params = new HashMap<>();  
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      comunes= new Parametros(this.autentifica.getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       seleccion= figura.toLong("idTipoFigura").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
       parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("idTipoFigura").equals(1L)? "DESTAJO CONTRATISTA": "DESTAJO SUBCONTRATISTA"); 
       parametros.put("REPORTE_FIGURA", figura.toString("contratista"));
       parametros.put("REPORTE_DEPARTAMENTO", figura.toString("departamento"));
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
-      parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
+      parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       params.put("loNuevo", "");
       params.put("idNomina", this.idNomina);
@@ -1371,6 +1370,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Cafu notificar                = null;
     Map<String, Object> residentes= new HashMap<>();
 		try {
+      LOG.error("-------------- ENTRO AL PROCESO DE NOTIFICAR --------------------------");
+      LOG.error("Con un total de contratistas: "+ contratistas.size());
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       Encriptar encriptar= new Encriptar();
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {

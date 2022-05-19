@@ -58,7 +58,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistoria.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistoria.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosHistoria.doColor(row)}">
+          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosHistoria.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistoria.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosHistoria.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="3">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Resumen de conceptos por lotes" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -68,7 +68,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>	
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-2">
+            <p:column headerText="Usr" footerText="Usr" class="janal-column-center MarAuto Responsive janal-wid-col-50">
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
@@ -76,25 +76,25 @@
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
               </p:commandLink>
 						</p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-5">
+            <p:column headerText="Código" footerText="Código" class="janal-column-left MarAuto Responsive janal-wid-col-50">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
               <h:outputText value="#{row.codigo}" title="#{row.nombre}"/>
             </p:column>  
-            <p:column class="janal-column-left MarAuto Responsive">
+            <p:column headerText="Nombre" footerText="Nombre" class="janal-column-left MarAuto Responsive janal-wid-col-250">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
               <h:outputText value="#{row.nombre}" title="#{row.nombre}" style="white-space: nowrap;"/>
             </p:column>  
-            <p:columns value="#{keetCatalogosContratosDestajosHistoria.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
+            <p:columns headerText="#{column.name}" footerText="#{column.name}" value="#{keetCatalogosContratosDestajosHistoria.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
               <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" styleClass="janal-float-left" rendered="#{keetCatalogosContratosDestajosHistoria.isConcepto(row)}"/>
               <h:outputText value="#{row[column.field]['estatus']}" styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosHistoria.isConcepto(row)}"/>
-              <h:outputText value="#{row[column.field]['titulo']}" styleClass=""/>
+              <h:outputText value="#{empty(row[column.field]['titulo'])? '|': row[column.field]['titulo']}" styleClass="#{empty(row[column.field]['titulo'])? 'janal-color-cell': ''}"/>
             </p:columns>            
 						<f:facet name="footer">
               <p:outputLabel value="[-] Es sin iniciar, [*] Pago parcial" styleClass="janal-color-black janal-font-bold janal-float-left"/>
@@ -200,19 +200,17 @@
           </h:commandLink>
           <h:commandLink id="datasXls">
             <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-          </h:commandLink>	              
+          </h:commandLink>	
         </div>
       </div>
     </div>		           				
   </ui:define>      
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" styleClass="janal-bottom-button" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" styleClass="janal-bottom-button" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosHistoria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">

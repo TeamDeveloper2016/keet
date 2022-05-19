@@ -63,12 +63,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionResidente", opcionResidente);
       this.attrs.put("idContratoEstatus", opcionResidente.getIdContratoEstatus());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
-				this.attrs.put("idDesarrolloProcess", JsfBase.getFlashAttribute("idDesarrolloProcess"));
-				this.doLoad();
-				this.attrs.put("idDesarrolloProcess", null);
-			} // if
-			else
+//			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
+//				this.attrs.put("idDesarrolloProcess", JsfBase.getFlashAttribute("idDesarrolloProcess"));
+//				this.doLoad();
+//				this.attrs.put("idDesarrolloProcess", null);
+//			} // if
+//			else
 				this.doLoad();
     } // try
     catch (Exception e) {

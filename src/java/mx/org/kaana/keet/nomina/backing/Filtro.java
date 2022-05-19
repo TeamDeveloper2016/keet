@@ -417,12 +417,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch	
   }
   
-  public void doResumen() {
+  public void doListado() {
 		Entity seleccionado      = null;
 		Transaccion transaccion  = null;
 	  try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
- 			transaccion = new Transaccion(seleccionado.getKey());
+ 			transaccion = new Transaccion(seleccionado.getKey(), JsfBase.getAutentifica());
 			if(transaccion.ejecutar(EAccion.RESTAURAR)) 			
 			  JsfBase.addMessage("Notificar", "Se notificó por whatsapp de forma correcta", ETipoMensaje.INFORMACION);			
       else

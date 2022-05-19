@@ -830,6 +830,7 @@ div.ui-panelgrid-content {
 .janal-color-black{color: black;}
 .janal-color-yellow{color: yellow;}
 .janal-color-cyan{color: cyan;}
+.janal-color-cell{color: #ABEBC6;}
 .jana-bar-top { filter:alpha(opacity=80); opacity:0.8; padding:10px 0 0 50px; z-index: 1000; height: 120px !important; }
 .janal-padding-cero { padding-bottom: 0 !important; padding-left:  0 !important; padding-right: 0 !important;	padding-top: 0 !important; }
 .janal-wid-100-txt { width: -webkit-fill-available; width: -moz-available;}

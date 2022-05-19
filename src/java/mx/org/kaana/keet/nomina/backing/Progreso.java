@@ -46,7 +46,8 @@ public class Progreso extends IBaseAttribute implements Serializable {
     try {
       params= new HashMap<>(); 
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
-			this.accion  = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			// this.accion  = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			this.accion  = EAccion.AGREGAR;
 			this.attrs.put("idNomina", idNomina);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
@@ -56,7 +57,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
 				params.put("idNomina", idNomina);
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);			
-				Value value= DaoFactory.getInstance().toField("VistaNominaDto", Objects.equals(nomina.getIdCompleta(), 2L)? "personalPorDia": Objects.equals(nomina.getIdTipoNomina(), 1L)? "ordinaria": "complementaria", params, "tuplas");
+				Value value= DaoFactory.getInstance().toField("VistaNominaDto", Objects.equals(nomina.getIdTipoNomina(), 1L)? "ordinaria": "complementaria", params, "tuplas");
 				if(value!= null && value.getData()!= null)
 					this.attrs.put("tuplas", value.toLong());
 				UIBackingUtilities.execute("procesar();");

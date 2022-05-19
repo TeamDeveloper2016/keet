@@ -97,7 +97,7 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   }
   
   public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero, LocalDate entrega) {
-    this(manzana, clave, inicio, lote, termino, idUsuario, idContrato, idContratoLoteEstatus, idContratoLote, idTipoFachada, diasConstruccion, idPrototipo, orden, atributos, latitud, longitud, arranque, idEstacion, costo, calle, numero, entrega, -1L, null, null);
+    this(manzana, clave, inicio, lote, termino, idUsuario, idContrato, idContratoLoteEstatus, idContratoLote, idTipoFachada, diasConstruccion, idPrototipo, orden, atributos, latitud, longitud, arranque, idEstacion, costo, calle, numero, entrega, null, null, null);
   }
   
   public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero, LocalDate entrega, Long idEntrego, String recibio, String observaciones) {
