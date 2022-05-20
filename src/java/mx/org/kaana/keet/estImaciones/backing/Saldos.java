@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estmaciones.backing;
+package mx.org.kaana.keet.estImaciones.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;

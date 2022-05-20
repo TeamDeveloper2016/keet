@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import com.google.common.base.Objects;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
@@ -22,11 +24,13 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticulo;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLoteFamilia;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -222,22 +226,57 @@ public class Transaccion extends Inventarios implements Serializable {
 
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaOrdenesComprasDto", "detalle", this.orden.toMap());
-		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item.toOrdenDetalle());
-		for (Articulo articulo: this.articulos) {
-			if(articulo.isValid()){
-				TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
-				item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-				if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
-					DaoFactory.getInstance().insert(sesion, item);
-				else
-					if(articulo.isModificado())
-						DaoFactory.getInstance().update(sesion, item);
-				articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-				DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
-			} // if
-		} // for
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      for (Articulo item: todos) 
+        if(this.articulos.indexOf(item)< 0)
+          DaoFactory.getInstance().delete(sesion, item.toOrdenDetalle());
+      for (Articulo articulo: this.articulos) {
+        if(articulo.isValid()) {
+          TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
+          item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+          if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
+            DaoFactory.getInstance().insert(sesion, item);
+          else
+            if(articulo.isModificado())
+              DaoFactory.getInstance().update(sesion, item);
+          articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+          DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
+          // ACTUALIZAR EL PRECIOS BASE Y EL PRECIO DEL PROVEEDOR CON BASE AL PRECIO CAPTURADO EN LA ORDEN DE COMPRA
+          params.put("idArticulo", articulo.getIdArticulo());      
+          params.put("precio", articulo.getCosto());      
+          DaoFactory.getInstance().updateAll(sesion, TcManticArticulosDto.class, params, "precios");
+          params.put("idProveedor", this.orden.getIdProveedor());      
+          TcKeetArticulosProveedoresDto precio= (TcKeetArticulosProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetArticulosProveedoresDto.class, "TcKeetArticulosProveedoresDto", "identically", params);
+          if(precio== null) {
+            precio= new TcKeetArticulosProveedoresDto(
+              this.orden.getIdProveedor(), // Long idProveedor, 
+              articulo.getCosto(), // Double precioLista, 
+              JsfBase.getIdUsuario(), // Long idUsuario, 
+              -1L, // Long idArticuloProveedor, 
+              articulo.getIdArticulo(), // Long idArticulo, 
+              articulo.getCosto(), // Double precioEspecial, 
+              articulo.getCosto(), // Double precioBase, 
+              LocalDateTime.now() // LocalDateTime actualizado
+            );
+            DaoFactory.getInstance().insert(sesion, precio);
+          } // if
+          else {
+            precio.setPrecioBase(articulo.getCosto());
+            precio.setPrecioLista(articulo.getCosto());
+            precio.setPrecioBase(articulo.getCosto());
+            precio.setActualizado(LocalDateTime.now());
+            DaoFactory.getInstance().update(sesion, precio);
+          } // else
+        } // if
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	}
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {

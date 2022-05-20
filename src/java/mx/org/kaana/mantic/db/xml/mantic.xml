@@ -3475,14 +3475,6 @@
 				  id_imagen= {idImagen}
 				  and id_articulo!= {idArticulo}
 			</select>	
-			<update id="rows">
-				update 
-				  tc_mantic_articulos
-				set
-				  iva= {iva}
-				where
-				  id_empresa in ({sucursales}) and id_iva= 1
-			</update>
 			<select id="findImage">
 				select 
 					tc_mantic_articulos.id_articulo as id_key,
@@ -3492,8 +3484,27 @@
 				where 
 					id_imagen= {idImagen}
 			</select>
+			<update id="rows">
+				update 
+				  tc_mantic_articulos
+				set
+				  iva= {iva}
+				where
+				  id_empresa in ({sucursales}) and id_iva= 1
+			</update>
 			<update id="cleanImage">
 				update tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+			</update>
+			<update id="precios">
+				update 
+          tc_mantic_articulos 
+        set 
+          precio= {precio},
+          menudeo= {precio},
+          medio_mayoreo= {precio},
+          mayoreo= {precio}
+        where 
+          id_articulo= {idArticulo}
 			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">

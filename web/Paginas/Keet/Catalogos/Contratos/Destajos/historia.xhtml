@@ -68,7 +68,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>	
-            <p:column headerText="Usr" footerText="Usr" class="janal-column-center MarAuto Responsive janal-wid-col-55">
+            <p:column headerText="." styleClass="janal-column-center MarAuto Responsive janal-col-18">
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
@@ -76,19 +76,19 @@
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
               </p:commandLink>
 						</p:column>		
-            <p:column headerText="Código" footerText="Código" class="janal-column-left MarAuto Responsive janal-wid-col-55">
+            <p:column headerText="Código" styleClass="janal-column-left MarAuto Responsive janal-col-50">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
               <h:outputText value="#{row.codigo}" title="#{row.nombre}"/>
             </p:column>  
-            <p:column headerText="Nombre" footerText="Nombre" class="janal-column-left MarAuto Responsive janal-wid-col-250">
+            <p:column headerText="Nombre" styleClass="janal-column-left MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-col-180': 'janal-col-210'}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
               <h:outputText value="#{row.nombre}" title="#{row.nombre}" style="white-space: nowrap;"/>
             </p:column>  
-            <p:columns headerText="#{column.name}" footerText="#{column.name}" value="#{keetCatalogosContratosDestajosHistoria.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
+            <p:columns headerText="#{column.name}" value="#{keetCatalogosContratosDestajosHistoria.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>

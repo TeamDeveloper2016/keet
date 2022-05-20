@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estmaciones.backing;
+package mx.org.kaana.keet.estImaciones.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
+import mx.org.kaana.keet.estImaciones.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 

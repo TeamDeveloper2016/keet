@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estmaciones.reglas;
+package mx.org.kaana.keet.estImaciones.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.estmaciones.beans.Estimacion;
-import mx.org.kaana.keet.estmaciones.beans.Retencion;
+import mx.org.kaana.keet.estImaciones.beans.Estimacion;
+import mx.org.kaana.keet.estImaciones.beans.Retencion;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -77,7 +77,7 @@ public class Estimaciones implements Serializable {
           for (Retencion item: this.estimacion.getRetenciones()) {
             item.setSql(ESql.SELECT);
             if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu") && item.getKey()< 0L) 
-              item.setIdTipoRetencion(2L);
+              item.setIdDeduccion(2L);
           } // if  
         } // if
       } // else
@@ -99,7 +99,7 @@ public class Estimaciones implements Serializable {
       for (Retencion item: this.estimacion.getRetenciones()) {
         item.setSql(ESql.INSERT);
         if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu") && item.getKey()< 0L) 
-          item.setIdTipoRetencion(2L);
+          item.setIdDeduccion(2L);
       } // for
     } // try
     catch (Exception e) {

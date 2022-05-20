@@ -1723,6 +1723,17 @@
         from      
           tc_keet_articulos_proveedores
 			</select>
+			<update id="rows">
+        update 
+          tc_keet_articulos_proveedores 
+        set
+          precio_base= {precio},
+          precio_lista= {precio},
+          precio_especial= {precio}
+        where 
+          id_proveedor= {idProveedor}
+          and id_articulo= {idArticulo}
+      </update>
 			<delete id="rows">
         delete from tc_keet_articulos_proveedores where id_proveedor={idProveedor}
       </delete>

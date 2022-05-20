@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estmaciones.reglas;
+package mx.org.kaana.keet.estImaciones.reglas;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,8 +17,8 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
-import mx.org.kaana.keet.estmaciones.beans.EEstatusEstimaciones;
-import mx.org.kaana.keet.estmaciones.beans.Retencion;
+import mx.org.kaana.keet.estImaciones.beans.EEstatusEstimaciones;
+import mx.org.kaana.keet.estImaciones.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;

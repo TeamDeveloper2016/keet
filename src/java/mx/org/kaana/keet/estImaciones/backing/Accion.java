@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estmaciones.backing;
+package mx.org.kaana.keet.estImaciones.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.estmaciones.reglas.Estimaciones;
-import mx.org.kaana.keet.estmaciones.beans.Retencion;
+import mx.org.kaana.keet.estImaciones.reglas.Estimaciones;
+import mx.org.kaana.keet.estImaciones.beans.Retencion;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.estmaciones.reglas.Transaccion;
+import mx.org.kaana.keet.estImaciones.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
