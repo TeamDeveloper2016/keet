@@ -71,10 +71,10 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
       this.model  = new ArrayList<>();
 			this.initBase();
       this.fields = new ArrayList<>();
-			// opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-			// idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			opcion      = EOpcionesResidente.HISTORIAL;
-		  idDesarrollo= 3L;			
+			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			// opcion      = EOpcionesResidente.HISTORIAL;
+		  // idDesarrollo= 3L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -200,7 +200,7 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
             Concepto concepto= this.model.get(index);
             concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
             if(!Objects.equal(lote, anterior)) {
-              this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-col-80"));
+              this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-col-85"));
               anterior= lote;
             } // if  
           } // if

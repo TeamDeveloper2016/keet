@@ -85,15 +85,19 @@
 										<h:outputText value="#{item.semana}"/>
 									</p:column>   
 								</p:selectOneMenu>
-  							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-90, janal-wid-10">
-                  <p:outputLabel for="estatus" value="Estatus:"/>
-                  <p:outputLabel for="completa" value="Completa:"/>
-                  <p:inputText id="estatus" value="#{keetNominasAccion.attrs.nomina.estatus}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
-                  <p:selectOneMenu id="completa" value="#{keetNominasAccion.attrs.nomina.idCompleta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" oncomplete="janal.desbloquear();"/>
-                    <f:selectItem itemValue="1" itemLabel="SI"/>
-                    <f:selectItem itemValue="2" itemLabel="NO"/>
-                  </p:selectOneMenu>																	
+  							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
+  							  <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="estatus" value="Estatus:"/>
+                    <p:inputText id="estatus" value="#{keetNominasAccion.attrs.nomina.estatus}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
+                  </p:panelGrid>  
+  							  <p:panelGrid layout="grid" columns="1" styleClass="janal-display-none">
+                    <p:outputLabel for="completa" value="Completa:"/>
+                    <p:selectOneMenu id="completa" value="#{keetNominasAccion.attrs.nomina.idCompleta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" oncomplete="janal.desbloquear();"/>
+                      <f:selectItem itemValue="1" itemLabel="SI"/>
+                      <f:selectItem itemValue="2" itemLabel="NO"/>
+                    </p:selectOneMenu>																	
+                  </p:panelGrid>  
                 </p:panelGrid>  
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center">
                   <p:outputLabel for="inicio" value="Inicio:"/>

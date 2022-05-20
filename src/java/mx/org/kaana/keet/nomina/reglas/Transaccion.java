@@ -349,7 +349,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
-			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
+			// params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
         this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " persona(s) ";
@@ -379,8 +380,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						break;
 				} // for
 				this.toTakeOutPersonas(sesion);
-        if(Objects.equals(this.nomina.getIdCompleta(), 1L))
-				  this.reprocesarProveedores(sesion, monitoreo);
+        // if(Objects.equals(this.nomina.getIdCompleta(), 1L))
+				this.reprocesarProveedores(sesion, monitoreo);
 				if(count> 0 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey()) {
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
         } // if
@@ -403,12 +404,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
-			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
+			// params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "todos", params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
-			  Long proveedores= 0L;
-        if(Objects.equals(this.nomina.getIdCompleta(), 1L))
-          proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
+			  Long proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
+        // if(Objects.equals(this.nomina.getIdCompleta(), 1L))
+        //   proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
   			monitoreo.setTotal(proveedores+ personal.size());
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
 				int count= 1;

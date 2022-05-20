@@ -212,7 +212,7 @@
               <p:panel styleClass="overview-inner-box">
                 <div class="Container100 Responsive keet-chart-title janal-box-title-red">
                   <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>
-                  <p:outputLabel value="Datos del avance semana #{kajoolResumen.attrs.idNomina.semana}" styleClass="contrato"/>
+                  <p:outputLabel value="Datos del avance a la semana #{kajoolResumen.attrs.idNomina.semana}" styleClass="contrato"/>
                 </div>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                   <p:outputLabel value="Periodo:"/>
@@ -261,7 +261,7 @@
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
                 <div class="Container100 Responsive keet-chart-title janal-box-title-red">
-                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Datos acumulados del contrato (Totales)
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Datos acumulados del contrato (totales)
                 </div>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                   <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-wid-45, janal-wid-10, janal-wid-45">
@@ -277,7 +277,6 @@
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por estimar&lt;/strong&gt;:" escape="false"/>
                       <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porEstimar}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
-                    
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Amortizado de anticipo:"/>
                       <p:inputText value="$ #{kajoolResumen.attrs.acumulado.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
@@ -335,7 +334,7 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
                   <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Historial de semanas
                 </div>
-                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolResumen.semanas}" paginator="#{kajoolResumen.semanas.size() gt (kajoolUtilAplicacion.isMobile? 3: 9)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 9}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 9}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolResumen.attrs.seleccionado}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolResumen.semanas}" paginator="#{kajoolResumen.semanas.size() gt (kajoolUtilAplicacion.isMobile? 3: 9)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 9}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 9}" styleClass="janal-content-table contrato" selectionMode="single" selection="#{kajoolResumen.attrs.seleccionado}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
                   <p:column styleClass="janal-column-center Responsive">
                     <f:facet name="header">
                       <h:outputText value="Semana"/>

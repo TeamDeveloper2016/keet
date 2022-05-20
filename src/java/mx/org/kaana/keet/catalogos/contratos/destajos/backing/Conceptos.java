@@ -281,6 +281,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 		JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
+  	JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+  	JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+	  JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
 	} // toSetFlash
 	
 	public String doCancelar() {

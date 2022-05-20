@@ -409,10 +409,10 @@
           sum(tc_keet_estimaciones.facturar) as facturado,
           ifnull(tt_keet_retenciones.anticipo, 0) as anticipo,
           (tc_keet_contratos.anticipo- ifnull(tt_keet_retenciones.anticipo, 0)) as por_anticipo,
-          round(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2) as porcentaje_anticipado,
+          round(ifnull(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2), 0) as porcentaje_anticipado,
           ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
           (tc_keet_contratos.fondo_garantia- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_fondo,
-          round(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2) as porcentaje_fondeado,
+          round(ifnull(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2), 0) as porcentaje_fondeado,
           ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
           sum(ifnull(tc_mantic_clientes_deudas.importe, 0)- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as pagado
         from
