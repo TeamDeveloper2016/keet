@@ -1025,8 +1025,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       regresar= jasper.getAlias();
       String name= JsfBase.getRealPath(jasper.getNombre());
       File file= new File(name);
-      if(!file.exists())
-        jasper.toProcess(sesion);
+      if(file.exists())
+        file.delete();
+      jasper.toProcess(sesion);
       LOG.info("Reporte generado: "+ name);
     } // try
     catch(Exception e) {

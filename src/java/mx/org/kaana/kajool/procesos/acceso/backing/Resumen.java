@@ -83,7 +83,6 @@ public class Resumen extends Respaldos implements Serializable {
   public void doLoad() {
     try {
       this.toLoadEmpresas();
-      this.doLoadDataConfronta();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -154,6 +153,7 @@ public class Resumen extends Respaldos implements Serializable {
       this.attrs.put("idContrato", idContrato);
       if(idContrato.size()> 1)
         UIBackingUtilities.toFormatUIEntitySet(contratos, columns);
+      this.doLoadDataConfronta();      
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -240,19 +240,19 @@ public class Resumen extends Respaldos implements Serializable {
   }
   
 	public void doLoadDataConfronta() {
-    Map<String, Object> params = new HashMap<>();
-    try {      
+    String contrato           = "";
+    Map<String, Object> params= new HashMap<>();
+    try {   
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());    
       List<UISelectEntity> contratos= (List<UISelectEntity>)attrs.get("contratos");
       if(contratos!= null && !contratos.isEmpty()) {
         int index= contratos.indexOf((UISelectEntity)this.attrs.get("idContrato"));
-        if(index>= 0)
+        if(index>= 0) {
           this.attrs.put("idContrato", contratos.get(index));
-        else
-          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: ''}}});");
+          contrato= contratos.get(index).toString("nombre")+ "-"+ contratos.get(index).toString("etapa");
+        } // if  
       } // if
-      else
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: ''}}});");
+      UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: '".concat(contrato).concat("'}}});"));
       this.toLoadNomina();
       this.toLoadAcumulado();
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "pagado", params));

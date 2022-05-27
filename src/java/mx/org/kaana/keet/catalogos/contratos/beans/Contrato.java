@@ -177,7 +177,12 @@ public class Contrato extends TcKeetContratosDto {
 	} // removeLote	
 	
 	public void doAddLote() throws Exception{
-		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)*(-1L)));
+    Long orden= 1L;
+    for (Lote item: lotes) {
+      if(orden< item.getOrden())
+        orden= item.getOrden()+ 1L;
+    } // if
+		this.addLote(new Lote(ESql.INSERT, orden*(-1L), orden));
 	} // doAddLote
 	
 	public boolean validaPrototipos(List<UISelectItem> lista) throws Exception{
@@ -197,14 +202,14 @@ public class Contrato extends TcKeetContratosDto {
 		return regresar;
 	} // removeLote	
 	
-	public void doCalculateFecha(Lote lote){
+	public void doCalculateFecha(Lote lote) {
 		TcKeetPrototiposDto tcKeetPrototiposDto= null;
 		List<DiaHabil> diasHabiles             = null;
 		Map<String, Object>params              = null;
 	  try {
 			params= new HashMap<>();
-			params.put("idPrototipo",  lote.getIdPrototipo());
-			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()>0L){
+			params.put("idPrototipo", lote.getIdPrototipo());
+			if(lote.getIdPrototipo()> 0L) {
 			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
 				lote.setDiasConstruccion(tcKeetPrototiposDto.getDiasConstruccion());
 				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
@@ -213,7 +218,6 @@ public class Contrato extends TcKeetContratosDto {
 					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
 					lote.setTermino(this.addWorkingDays(lote.getInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
-				//lote.getFechaInicio().
 			} // if
     } // try
     catch (Exception e) {

@@ -35,10 +35,15 @@ public class Zip {
 
   /** Creates a new instance of Zip */
   public Zip() {
+    this(Boolean.FALSE, Boolean.FALSE);
+  }
+  
+  public Zip(boolean debug, boolean eliminar) {
     nombre = "archivo.zip";
     patron = ".";
     salida = "/";
-    eliminar = false;
+    this.debug   = debug;
+    this.eliminar= eliminar;
   }
 
   /**
@@ -386,8 +391,8 @@ public class Zip {
  */
 
   public void compactar(String nombre, int token, String[] archivos) throws Exception {
-    setNombre(nombre);
-    compactar(token, archivos);
+    this.setNombre(nombre);
+    this.compactar(token, archivos);
   }
 
 /**

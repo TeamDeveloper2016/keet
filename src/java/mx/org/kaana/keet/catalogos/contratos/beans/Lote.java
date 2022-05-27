@@ -13,11 +13,12 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable {
 	private ESql accion;
 
 	public Lote() {
-		this(ESql.UPDATE, -1L);
+		this(ESql.UPDATE, -1L, 1L);
 	}
 
-	public Lote(ESql accion, Long key) {
+	public Lote(ESql accion, Long key, Long orden) {
 		super(key);
+    this.setOrden(orden);
 		this.accion= accion;		
 	}
 	

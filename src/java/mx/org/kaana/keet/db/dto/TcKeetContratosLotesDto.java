@@ -88,7 +88,7 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetContratosLotesDto(Long key) {
-    this(null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, new Long(-1L), null, 1L, null, null, null, null, null, null, null, 0D);
     setKey(key);
   }
 

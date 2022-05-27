@@ -5,14 +5,19 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import mx.org.kaana.libs.formato.Error;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EEtapaServidor;
+import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -613,10 +618,24 @@ public final class Cafu implements Serializable {
       LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
+	private String toZipFile(List<String> destajos) throws Exception {
+		String regresar= Archivo.toFormatNameFile("CONCENTRADO.").concat(EFormatos.ZIP.name().toLowerCase());
+    String[] files = destajos.toArray(new String[0]);
+		try {
+			Zip zip= new Zip(Boolean.TRUE, Boolean.FALSE);
+			zip.compactar(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(regresar)), JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath())).length()+ 1, files);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+    return regresar; 
+	}
+  
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
-      Map<String, Object> params = null;
+      Map<String, Object> params= null;
+      List<String> files        = new ArrayList<>();
       try {        
         params= new HashMap<>();        
         int count= 1;
@@ -626,6 +645,7 @@ public final class Cafu implements Serializable {
             count= 1;
           } // if  
           else {
+            files.add(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat((String)this.contratistas.get(key))));
             params.put("numero", count++);
             params.put("reporte", this.contratistas.get(key));
             params.put("url", this.url);
@@ -635,12 +655,19 @@ public final class Cafu implements Serializable {
             archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
           } // else  
         } // for
+        String concentado= this.toZipFile(files);
+        params.put("numero", "_#_");
+        params.put("reporte", concentado);
+        params.put("url", this.url);
+        params.put("contratista", "*Concentrado*:");
+        archivos.append("\\n".concat(Cadena.replaceParams(PATH_REPORT, params, true)));
       } // try
       catch (Exception e) {
         Error.mensaje(e);
       } // catch	
       finally {
         Methods.clean(params);
+        Methods.clean(files);
       } // finally
       this.reporte= archivos.toString();
     } // if  

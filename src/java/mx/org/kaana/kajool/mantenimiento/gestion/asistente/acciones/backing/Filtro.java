@@ -417,12 +417,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		String zipName          = null;
 		String path             = null;
 		try {
-			doAceptar();
-      zip= new Zip();
+			this.doAceptar();
+      zip= new Zip(Boolean.TRUE, Boolean.TRUE);
 			zipName= EFormatos.TXT.toPath().concat(Constantes.ARCHIVO_PATRON_SEPARADOR).concat(this.attrs.get("patron").toString()).concat("Accion.").concat(EFormatos.ZIP.name().toLowerCase());
 			zipName= Cadena.reemplazarCaracter(zipName, '/' , File.separatorChar);
-			zip.setDebug(true);
-			zip.setEliminar(true);
 			path = JsfUtilities.getRealPath(EFormatos.TXT.toPath()).concat(File.separator);
       zip.compactar(JsfUtilities.getRealPath(zipName), path, this.attrs.get("patron").toString().concat("?"));
 			this.attrs.put("archivo", zipName);

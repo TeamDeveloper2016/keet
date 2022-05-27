@@ -43,6 +43,12 @@ public class Costos extends IBaseAttribute implements Serializable {
     try {
       if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("ikEmpresa", JsfBase.getFlashAttribute("ikEmpresa"));
+      this.attrs.put("ikDesarrollo", JsfBase.getFlashAttribute("ikDesarrollo"));
+      this.attrs.put("ikContrato", JsfBase.getFlashAttribute("ikContrato"));
+      this.attrs.put("ikLote", JsfBase.getFlashAttribute("ikLote"));
+      this.attrs.put("seleccionado", JsfBase.getFlashAttribute("seleccionado"));
+      
       this.accion= (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idEstacion", JsfBase.getFlashAttribute("idEstacion"));
@@ -138,7 +144,7 @@ public class Costos extends IBaseAttribute implements Serializable {
           transacion= new Transaccion((Long)this.attrs.get("idContratoLote"), this.estaciones);
           if(transacion.ejecutar(EAccion.DESTRANSFORMACION)) {
             JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
-            regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);				
+            regresar= this.doCancelar();				
             JsfBase.addMessage("Se actualizaron los costos de forma correcta", ETipoMensaje.ALERTA);
           } // if
           else  
@@ -158,6 +164,11 @@ public class Costos extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
+    JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("ikEmpresa"));
+    JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("ikDesarrollo"));
+    JsfBase.setFlashAttribute("idContrato", this.attrs.get("ikContrato"));
+    JsfBase.setFlashAttribute("idLote", this.attrs.get("ikLote"));      
+    JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionado"));      
 		JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar	

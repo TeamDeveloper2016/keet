@@ -487,7 +487,7 @@
           tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
         where  
           tc_keet_estimaciones.id_contrato= {idContrato}
-          and datediff(now(), tc_mantic_facturas.timbrado)+ 1&gt; 11        
+          and (datediff(now(), tc_mantic_facturas.timbrado)+ 1)&gt; 11        
           and tc_mantic_clientes_deudas.saldo&gt; 0
       </select>  
 		</unit>
@@ -1362,7 +1362,7 @@
         where
           tc_keet_proyectos.id_desarrollo= {idDesarrollo}
         order by
-          tc_keet_contratos.nombre desc       
+          tc_keet_contratos.clave desc       
       </select>  
       <select id="manzanas">
         select

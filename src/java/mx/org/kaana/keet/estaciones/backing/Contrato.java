@@ -2,6 +2,7 @@ package mx.org.kaana.keet.estaciones.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,8 +40,13 @@ public class Contrato extends Filtro implements Serializable {
     try {
 			this.estaciones= new Estaciones();
 			this.estaciones.cleanLevels();
-      this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
-			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
+      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")!= null? JsfBase.getFlashAttribute("idEmpresa"): new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
+      this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo")!= null? JsfBase.getFlashAttribute("idDesarrollo"): null);
+      this.attrs.put("idContrato",  JsfBase.getFlashAttribute("idContrato")!= null? JsfBase.getFlashAttribute("idContrato"): null);
+      this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")!= null? JsfBase.getFlashAttribute("idLote"): null);
+      this.attrs.put("seleccionado", JsfBase.getFlashAttribute("seleccionado")!= null? JsfBase.getFlashAttribute("seleccionado"): null);
+      this.attrs.put("fistTime", JsfBase.getFlashAttribute("estacionProcess")== null);
+			if(JsfBase.getFlashAttribute("estacionProcess")!= null) {
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
 				this.actualizarChildren(1);
 			} // if
@@ -53,7 +61,7 @@ public class Contrato extends Filtro implements Serializable {
       this.attrs.put("filtroReporte","%");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } // init
@@ -114,7 +122,7 @@ public class Contrato extends Filtro implements Serializable {
       this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
@@ -123,10 +131,9 @@ public class Contrato extends Filtro implements Serializable {
 	protected void loadCombos() {
 		try {
 			this.loadEmpresas();
-      this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 	} // loadCombos
@@ -143,11 +150,13 @@ public class Contrato extends Filtro implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
+      if((Boolean)this.attrs.get("fistTime"))
+	      this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
+      this.doLoadDesarrollos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
     finally {
       Methods.clean(params);
@@ -164,14 +173,17 @@ public class Contrato extends Filtro implements Serializable {
 			else
 				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
       List<UISelectEntity> lotes= UIEntity.seleccione("TcKeetContratosLotesDto", "row", this.attrs, "clave");
-      if(lotes!= null && !lotes.isEmpty())
-        this.attrs.put("idLote", lotes.get(0));
+      if((Boolean)this.attrs.get("fistTime"))
+        if(lotes!= null && !lotes.isEmpty())
+          this.attrs.put("idLote", lotes.get(0));
+        else
+          this.attrs.put("idLote", new UISelectEntity(-1L)); 
       else
-        this.attrs.put("idLote", new UISelectEntity(-1L)); 
+        this.doActualizarChildren();
       this.attrs.put("lotes", lotes);
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 	} // doLoadLotes
@@ -208,7 +220,7 @@ public class Contrato extends Filtro implements Serializable {
 			} // swicth
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
@@ -234,7 +246,7 @@ public class Contrato extends Filtro implements Serializable {
       this.attrs.put("idContrato", new UISelectEntity(contrato));
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
@@ -244,25 +256,46 @@ public class Contrato extends Filtro implements Serializable {
   }
 
   public void doLoadDesarrollos() {
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = null;
     try {
-     Catalogos.toLoadDesarrollosEmpresa(this.attrs);
-     this.doLoadContratos();
+      params = new HashMap<>();
+      params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
+  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("desarrollos", desarrollos);
+      if((Boolean)this.attrs.get("fistTime"))
+        this.attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
+      this.doLoadContratos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
   }
 
   public void doLoadContratos() {
+		List<UISelectEntity>contratos= null;
+    Map<String, Object> params   = null;
     try {
-     Catalogos.toLoadContratos(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), attrs);
-     this.doLoadLotes();
+      params = new HashMap<>();
+      params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("contratos", contratos);
+      if((Boolean)this.attrs.get("fistTime"))
+        this.attrs.put("idContrato", contratos!= null? UIBackingUtilities.toFirstKeySelectEntity(contratos): new UISelectEntity(-1L));
+      this.doLoadLotes();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally    
   }
 
   @Override
@@ -276,6 +309,12 @@ public class Contrato extends Filtro implements Serializable {
   public String doCheckDates(Entity row) {
     String regresar= null;
     try {      
+      JsfBase.setFlashAttribute("ikEmpresa", this.attrs.get("idEmpresa"));
+      JsfBase.setFlashAttribute("ikDesarrollo", this.attrs.get("idDesarrollo"));
+      JsfBase.setFlashAttribute("ikContrato", this.attrs.get("idContrato"));
+      JsfBase.setFlashAttribute("ikLote", this.attrs.get("idLote"));      
+      JsfBase.setFlashAttribute("seleccionado", this.current!= null? this.current: row);    
+      
       JsfBase.setFlashAttribute("idEstacion", row.toLong("idEstacion"));
       JsfBase.setFlashAttribute("idContrato", row.toLong("idContrato"));
       JsfBase.setFlashAttribute("idContratoLote", row.toLong("idContratoLote"));
@@ -295,6 +334,12 @@ public class Contrato extends Filtro implements Serializable {
   public String doCheckCostos(Entity row) {
     String regresar= null;
     try {      
+      JsfBase.setFlashAttribute("ikEmpresa", this.attrs.get("idEmpresa"));
+      JsfBase.setFlashAttribute("ikDesarrollo", this.attrs.get("idDesarrollo"));
+      JsfBase.setFlashAttribute("ikContrato", this.attrs.get("idContrato"));
+      JsfBase.setFlashAttribute("ikLote", this.attrs.get("idLote"));    
+      JsfBase.setFlashAttribute("seleccionado", this.current!= null? this.current: row);    
+      
       JsfBase.setFlashAttribute("idEstacion", row.toLong("idEstacion"));
       JsfBase.setFlashAttribute("idContrato", row.toLong("idContrato"));
       JsfBase.setFlashAttribute("idContratoLote", row.toLong("idContratoLote"));

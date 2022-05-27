@@ -108,7 +108,7 @@
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                   <p:outputLabel for="idEmpresa" value="Empresa:" rendered="#{kajoolResumen.attrs.isMatriz}"/>
                   <p:selectOneMenu id="idEmpresa" value="#{kajoolResumen.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" listener="#{kajoolResumen.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato" oncomplete="reloadDesarrollos(); reloadContratos();"/>
+                    <p:ajax event="change" listener="#{kajoolResumen.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato @(.contrato)" oncomplete="reloadDesarrollos(); reloadContratos();"/>
                     <f:selectItems value="#{kajoolResumen.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                     <p:column headerText="Clave">
                       <h:outputText value="#{item.clave}"/>
@@ -119,7 +119,7 @@
                   </p:selectOneMenu>
                   <p:outputLabel for="idDesarrollo" value="Obra:"/>
                   <p:selectOneMenu id="idDesarrollo" value="#{kajoolResumen.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" listener="#{kajoolResumen.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
+                    <p:ajax event="change" listener="#{kajoolResumen.doLoadContratos}" update="idContrato @(.contrato)" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
                     <f:selectItems value="#{kajoolResumen.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                     <p:column headerText="Clave">
                       <h:outputText value="#{item.clave}"/>
