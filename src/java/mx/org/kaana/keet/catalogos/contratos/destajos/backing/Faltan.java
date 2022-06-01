@@ -29,9 +29,7 @@ import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -417,7 +415,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         params.put("idTipoNomina", "1");
         params.put("nombreConcepto", "");
-        params.put("estatus", EEstacionesEstatus.INICIAR.getKey() + "," + EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());
+        params.put("estatus", EEstacionesEstatus.INICIAR.getKey()+ ","+ EEstacionesEstatus.EN_PROCESO.getKey()+ "," + EEstacionesEstatus.TERMINADO.getKey());
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
         Entity semana= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
         if(semana!= null)
@@ -440,7 +438,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
             index= this.model.indexOf(new Concepto(item.toString("codigo")));
             if(index>= 0) {
               Concepto concepto= this.model.get(index);
-              concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
+              concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
               if(!com.google.common.base.Objects.equal(lote, anterior)) {
                 this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-col-85"));
                 anterior= lote;
@@ -518,75 +516,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     return regresar.toString();
   }  
   
-	private Entity toLoteDefault() {
-		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
-		regresar.put("clave", new Value("clave", "EVIDENCIAS"));
-		regresar.put("idEmpresa", new Value("idEmpresa", 0L));
-		regresar.put("manzana", new Value("manzana", "00N"));
-		regresar.put("lote", new Value("lote", "N"));
-		regresar.put("inicio", new Value("inicio", "-"));
-		regresar.put("termino", new Value("termino", "-"));
-		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
-		regresar.put("contratistas", new Value("contratistas", ""));
-		regresar.put("orden", new Value("orden", ""));
-		regresar.put("latitud", new Value("latitud", 21.890563));
-		regresar.put("longitud", new Value("longitud", -102.252030));
-		regresar.put("ordenContrato", new Value("ordenContrato", ""));
-		regresar.put("claveContrato", new Value("claveContrato", ""));
-		regresar.put("ejercicio", new Value("ejercicio", Fecha.getAnioActual()));
-		return regresar;
-	} // toLoteDefault
-	
-	private String toClaveEstacion(Entity lote) {
-		StringBuilder regresar= null;
-		try {			
-			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
-			regresar.append(lote.toString("ejercicio"));
-			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar.toString();
-	} // toClaveEstacion
-	
-	public String doConceptos() {
-    String regresar             = null;    		
-		Entity seleccionado         = null;
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
-    try {			
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
-			if(this.attrs.get("opcionAdicional")!= null)
-				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
-			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
-			JsfBase.setFlashAttribute("figura", figura);									
-			JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
-			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
-			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
-			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");			
-			JsfBase.setFlashAttribute("nombreConcepto", "");			
-			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
-			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
-			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
-			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
-				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
-			else
-				regresar= "conceptos".concat(Constantes.REDIRECIONAR);										
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-    return regresar;
-  } // doConceptos
-	
 	public String doCancelar() {
     String regresar                   = null;    
 		EOpcionesResidente opcion         = null;		
@@ -835,31 +764,31 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 		List<UISelectEntity> figuras= null;
 		UISelectEntity figura       = null;
     try {			
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
-			if(this.attrs.get("opcionAdicional")!= null)
-				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
-//			JsfBase.setFlashAttribute("seleccionado", row);												
-			JsfBase.setFlashAttribute("figura", figura);									
-			JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
-			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
-			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
-			JsfBase.setFlashAttribute("georreferencia", new Point(21.890563, -102.252030));				
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/faltan");			
-//      if(row!= null) {
-//        JsfBase.setFlashAttribute("total", row.containsKey("importe")? row.toDouble("importe"): 0L);
-//        JsfBase.setFlashAttribute("anticipo", row.containsKey("retencion")? row.toDouble("retencion"): 0L);
-//      } // if  
-//      else {
-        JsfBase.setFlashAttribute("total", 0D);
-        JsfBase.setFlashAttribute("anticipo", 0D);
-//      } // else
-			JsfBase.setFlashAttribute("nombreConcepto", "");			
-			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
-			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
-			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
-			regresar= "puntos".concat(Constantes.REDIRECIONAR);			
+      Criterio criterio= (Criterio)row.get(key);
+      if(Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.INICIAR.getKey()) || Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.EN_PROCESO.getKey())) {
+        figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+        figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
+        JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
+        JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
+        JsfBase.setFlashAttribute("figura", figura);									
+        JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
+        JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
+        JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
+        JsfBase.setFlashAttribute("georreferencia", new Point(21.890563, -102.252030));				
+        JsfBase.setFlashAttribute("concepto", criterio.getDatos());
+        JsfBase.setFlashAttribute("seleccionado", criterio.getDatos());
+        JsfBase.setFlashAttribute("claveEstacion", criterio.getDatos().toString("clave"));
+        JsfBase.setFlashAttribute("total", criterio.getDatos().toDouble("importe"));
+        JsfBase.setFlashAttribute("anticipo", criterio.getDatos().toDouble("retencion"));
+        JsfBase.setFlashAttribute("nombreConcepto", "");			
+        JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+        JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+        JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
+        JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/faltan");			
+        regresar= "puntos".concat(Constantes.REDIRECIONAR);			
+      } // if
+      else 
+        JsfBase.addMessage("  Este concepto ya esta pagado, favor de verificarlo !", ETipoMensaje.ALERTA);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Fecha;
 
 /**
@@ -30,6 +32,7 @@ public class Criterio implements Serializable {
   private Long actual;
   private String semaforo;
   private String titulo;
+  private Entity datos;
 
   public Criterio(String lote, LocalDate inicio, LocalDate termino, LocalDate entrega, Long idEstacionEstatus, String estatus) {
     this.lote   = lote; 
@@ -57,6 +60,10 @@ public class Criterio implements Serializable {
   }
 
   public Criterio(String lote, LocalDate inicio, LocalDate termino, Long idEstacionEstatus, String estatus, Long idNomina, String semana, Long actual) {
+    this(lote, inicio, termino, idEstacionEstatus, estatus, idNomina, semana, actual, new Entity());
+  }
+  
+  public Criterio(String lote, LocalDate inicio, LocalDate termino, Long idEstacionEstatus, String estatus, Long idNomina, String semana, Long actual, Entity datos) {
     this.lote   = lote; 
     this.inicio = inicio;
     this.termino= termino;
@@ -67,6 +74,7 @@ public class Criterio implements Serializable {
     this.semana = semana;
     this.actual = actual;
     this.toHistorial();
+    this.datos= datos;
   }
 
   public String getLote() {
@@ -139,6 +147,14 @@ public class Criterio implements Serializable {
 
   public void setActual(Long actual) {
     this.actual = actual;
+  }
+
+  public Entity getDatos() {
+    return datos;
+  }
+
+  public void setDatos(Entity datos) {
+    this.datos = datos;
   }
 
   private long dias(LocalDate uno, LocalDate dos) {

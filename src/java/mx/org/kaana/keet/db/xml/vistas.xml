@@ -791,7 +791,10 @@
       </select>  
       <select id="contratistas">
         select
+          tc_keet_estaciones.id_estacion as id_key,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_estaciones.id_estacion,
+          tc_keet_estaciones.clave,
           tc_keet_estaciones.codigo,
           tc_keet_estaciones.nombre,
           tc_keet_estaciones.inicio,
@@ -799,7 +802,18 @@
           tc_keet_estaciones.entrega,
           tc_keet_estaciones.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus,
+          tc_keet_estaciones.costo as importe,
+          tc_keet_estaciones.anticipo as retencion,
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.ejercicio,
+          tc_keet_contratos.orden as orden_contrato,
+          tc_keet_contratos_lotes.orden,
+          tc_keet_contratos_lotes.id_contrato_lote,
+          tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
           tt_destajo_nomina.id_nomina,
+          tt_keet_rubros.id_punto_grupo,
+          tt_keet_rubros.descripcion,
           concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
           if(substring(tc_keet_estaciones.codigo, 1, 1)= '#', 4, if(tt_destajo_nomina.id_nomina is null, 3, if(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden)= '{semana}', 1, 2))) as actual
         from
@@ -815,7 +829,9 @@
         inner join (
 					select
 						tc_keet_rubros.id_rubro,
-						tc_keet_rubros.codigo
+            tc_keet_puntos_grupos.id_punto_grupo,
+						tc_keet_rubros.codigo,
+						tc_keet_puntos_grupos.descripcion
 					from  
 						tc_keet_puntos_paquetes     
 					inner join
@@ -874,7 +890,10 @@
       </select>
       <select id="proveedores">
         select
+          tc_keet_estaciones.id_estacion as id_key,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_estaciones.id_estacion,
+          tc_keet_estaciones.clave,
           tc_keet_estaciones.codigo,
           tc_keet_estaciones.nombre,
           tc_keet_estaciones.inicio,
@@ -882,7 +901,18 @@
           tc_keet_estaciones.entrega,
           tc_keet_estaciones.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus,
+          tc_keet_estaciones.costo as importe,
+          tc_keet_estaciones.anticipo as retencion,
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.ejercicio,
+          tc_keet_contratos.orden as orden_contrato,
+          tc_keet_contratos_lotes.orden,
+          tc_keet_contratos_lotes.id_contrato_lote,
+          tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor,
           tt_destajo_nomina.id_nomina,
+          tt_keet_rubros.id_punto_grupo,
+          tc_keet_puntos_grupos.descripcion,
           concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
           if(substring(tc_keet_estaciones.codigo, 1, 1)= '#', 4, if(tt_destajo_nomina.id_nomina is null, 3, if(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden)= '{semana}', 1, 2))) as actual
         from
@@ -898,7 +928,9 @@
         inner join (
 					select
 						tc_keet_rubros.id_rubro,
-						tc_keet_rubros.codigo
+            tc_keet_puntos_grupos.id_punto_grupo,
+						tc_keet_rubros.codigo,
+						tc_keet_rubros.descripcion
 					from  
 						tc_keet_puntos_paquetes     
 					inner join

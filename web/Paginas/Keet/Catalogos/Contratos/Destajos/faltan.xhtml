@@ -160,7 +160,7 @@
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
-              <p:commandLink process="@this" title="Registrar" action="#{keetCatalogosContratosDestajosFaltan.doRegistrar(row, column.field)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}">
+              <p:commandLink process="@this" title="Registrar" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}">
                 <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" styleClass="janal-float-left" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
               </p:commandLink>  
               <h:outputText value="#{row[column.field]['estatus']}" styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>

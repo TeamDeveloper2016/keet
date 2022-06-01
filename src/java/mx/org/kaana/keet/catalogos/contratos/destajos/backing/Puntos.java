@@ -29,12 +29,16 @@ import mx.org.kaana.libs.pagina.IBaseFilterMultiple;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Named(value = "keetCatalogosContratosDestajosPuntos")
 @ViewScoped
 public class Puntos extends IBaseFilterMultiple implements Serializable {
-
+  
+  private static final Log LOG = LogFactory.getLog(Puntos.class);
 	private static final long serialVersionUID = 154600879172477099L;
+  
 	private FormatLazyModel lazyModelRechazos;
 
 	public FormatLazyModel getLazyModelRechazos() {
@@ -53,6 +57,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     try {
       if(JsfBase.getFlashAttribute("seleccionado")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "conceptos": JsfBase.getFlashAttribute("retorno"));		
+      LOG.info("---------------->"+ this.attrs.get("retorno"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());		
 			this.attrs.put("latitud", "21.890563");
   		this.attrs.put("longitud", "-102.252030");
@@ -138,7 +144,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     } // finally			
   } // doLoad	
 	
-	private Map<String, Object> toPrepare(){
+	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= null;
 		try {
 			regresar= new HashMap<>();
@@ -230,7 +236,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
 			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
 			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
-			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
+			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -238,4 +244,5 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }
