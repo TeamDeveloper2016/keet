@@ -159,7 +159,7 @@ public final class Encriptar {
     //pass.setFijar(true);
 		//String texto= encriptado.encriptar("directa", encriptado._CLAVE);
     //String texto = encriptado.encriptar("jdbc:oracle:thin:@10.1.8.41:1521:bddesa", _CLAVE);
-    String texto = encriptado.encriptar("ENTREGAS", _CLAVE);
+    String texto = encriptado.encriptar("PROPUESTA", _CLAVE);
     //LOG.debug("encriptado: " + texto);
     //LOG.debug(texto);
     //String texto= encriptado.desencriptar("e661f7021e3dcf64e41a5392d5", _CLAVE);

@@ -118,7 +118,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     } // finally			
   } // doLoad	
 	
-	protected Map<String, Object> toPrepare(){
+	protected Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= null;
 		try {
 			regresar= new HashMap<>();

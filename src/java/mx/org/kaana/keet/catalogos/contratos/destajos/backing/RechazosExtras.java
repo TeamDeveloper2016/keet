@@ -2,6 +2,8 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -12,6 +14,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCatalogosContratosDestajosRechazosExtras")
 @ViewScoped
@@ -25,15 +28,15 @@ public class RechazosExtras extends Rechazos implements Serializable {
 		Transaccion transaccion= null;	
 		List<Entity>puntos     = null;
     try {						
-			puntos= toPuntos();
+			puntos= this.toPuntos();
 			this.selecteds= new Entity[puntos.size()];
 			for(int count=0; count<puntos.size(); count++)
 				this.selecteds[count]= puntos.get(count);
-			if(this.selecteds.length>=1){				
+			if(this.selecteds.length>=1) {				
 				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
-				if(transaccion.ejecutar(EAccion.ELIMINAR)){
+				if(transaccion.ejecutar(EAccion.ELIMINAR)) {
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
-					regresar= doCancelar();
+					regresar= this.doCancelar();
 				} // if
 				else
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision.", ETipoMensaje.ERROR);
@@ -49,13 +52,26 @@ public class RechazosExtras extends Rechazos implements Serializable {
   } // doPagina
 	
 	private List<Entity> toPuntos() throws Exception{
-		List<Entity> regresar= null;
+		List<Entity> regresar     = null;
+		Map<String, Object> params= null;
 		try {
-			regresar= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRechazos", toPrepare());
+      params= this.toPrepare();
+      Entity figura= (Entity)this.attrs.get("figura");
+      params.put("idProveedor", -1L);
+      params.put("idEmpresaPersona", -1L);
+      if(figura!= null)
+        if(Objects.equals(figura.toLong("tipo"), 1L))
+          params.put("idEmpresaPersona", new Long(figura.getKey().toString().substring(4)));
+        else
+          params.put("idProveedor", new Long(figura.getKey().toString().substring(4)));
+			regresar= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRechazos", params);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 		return regresar;
 	} // toPuntos
   
