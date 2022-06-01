@@ -103,7 +103,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 //			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 //			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			opcion      = EOpcionesResidente.PROPUESTA;
-			idDesarrollo= 4L;			
+			idDesarrollo= 3L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -334,6 +334,12 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 
   public String toLoadCondicion() {
     StringBuilder regresar = new StringBuilder();
+    if(this.attrs.get("contrato") instanceof Entity)
+      this.attrs.put("contrato", new UISelectEntity((Entity)this.attrs.get("contrato")));
+    if(this.attrs.get("manzana") instanceof Entity)
+      this.attrs.put("manzana", new UISelectEntity((Entity)this.attrs.get("manzana")));
+    if(this.attrs.get("casa") instanceof Entity)
+      this.attrs.put("casa", new UISelectEntity((Entity)this.attrs.get("casa")));
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
 		UISelectEntity manzana = (UISelectEntity)this.attrs.get("manzana");
 		UISelectEntity lote    = (UISelectEntity)this.attrs.get("casa");
