@@ -260,7 +260,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			      this.attrs.put("figura", figuras.get(index));
         } // if  
         else
-         this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+          this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
       this.doLoadCasas();
 		} // try
 		catch (Exception e) {
@@ -371,10 +371,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
         casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
         this.attrs.put("casas", casas);
-//        if(casas!= null && casas.size()> 0)
-//          this.attrs.put("casa", casas.size()- 1);
-//        else
-          this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
+        this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
       } // if  
       else {
         this.attrs.put("casas", new ArrayList<>());

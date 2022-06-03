@@ -5,11 +5,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UISelectItem;
 
 /**

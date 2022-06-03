@@ -58,7 +58,6 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
       if(JsfBase.getFlashAttribute("seleccionado")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "conceptos": JsfBase.getFlashAttribute("retorno"));		
-      LOG.info("---------------->"+ this.attrs.get("retorno"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());		
 			this.attrs.put("latitud", "21.890563");
   		this.attrs.put("longitud", "-102.252030");

@@ -210,7 +210,8 @@ public abstract class IAdminArticulos implements Serializable {
 	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
 			this.totales.addArticulo(articulo);
 		} // for
-		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
+    if(this.articulos.size()> 0)
+		  this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
 		this.totales.removeTotal();
 		this.setAjusteDeuda(this.totales.getTotal());
 	}

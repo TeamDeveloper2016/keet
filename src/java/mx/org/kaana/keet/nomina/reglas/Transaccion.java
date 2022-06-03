@@ -1185,8 +1185,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           group= Cafu.IMOX_GROUP_TRIANA;
           break;
       } // switch
-			Semanas semanas= new Semanas();
-			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
+			TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
       Cafu notificar= new Cafu("compañero(s)", group, this.texto, 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
@@ -1216,8 +1215,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           group= Cafu.IMOX_GROUP_TRIANA;
           break;
       } // switch
-			Semanas semanas= new Semanas();
-			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
+			TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
       Cafu notificar= new Cafu("compañero(s)", group, "", 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 

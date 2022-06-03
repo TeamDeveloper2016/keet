@@ -100,10 +100,10 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
       this.fields       = new ArrayList<>();
       this.costoTotal   = "$ 0.00";
       this.costoAnticipo= "$ 0.00";
-//			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-//			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			opcion      = EOpcionesResidente.PROPUESTA;
-			idDesarrollo= 3L;			
+  		opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			// opcion      = EOpcionesResidente.PROPUESTA;
+			// idDesarrollo= 3L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);

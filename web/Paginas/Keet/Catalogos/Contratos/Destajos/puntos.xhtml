@@ -127,23 +127,23 @@
               </f:facet>
               <h:outputText value="#{index+1}.- #{row.nombre}" styleClass="janal-color-black FontBold"/>
             </p:column>		                        						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-60" sortBy="#{row.factor}">
+            <p:column class="janal-column-right MarAuto Responsive janal-col-55">
               <f:facet name="header">
                 <h:outputText value="Factor"/>
               </f:facet>
               <h:outputText value="#{row.factor} %"/>
             </p:column>		                        						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-70" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-col-55">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputText value="$#{row.importe}" styleClass="janal-color-blue"/>
+              <h:outputText value="#{row.importe}" styleClass="janal-color-blue"/>
             </p:column>		                        						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-70" sortBy="#{row.anticipo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-col-55">
               <f:facet name="header">
                 <h:outputText value="Anticipo"/>
               </f:facet>
-              <h:outputText value="$#{row.anticipo}" styleClass="janal-color-blue"/>
+              <h:outputText value="#{row.anticipo}" styleClass="janal-color-blue"/>
             </p:column>		                        						
             <f:facet name="footer">
               <p:outputLabel value="Importe total: #{keetCatalogosContratosDestajosPuntos.attrs.total}" styleClass="janal-color-blue" style="float: left;"/>
