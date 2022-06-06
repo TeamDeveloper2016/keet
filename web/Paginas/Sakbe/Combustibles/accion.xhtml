@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{sakbeComprasAccion.attrs.nombreAccion} un ticket de combustible"/>
+  <ui:param name="janalBackingPage" value="#{sakbeComprasAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">
+	   Janal.Control.fields = {				 				
+				'contenedorGrupos\\:consecutivo'      : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:ticket'           : {validaciones: 'requerido|letras', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:lugar'            : {validaciones: 'requerido|letras', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:fecha'            : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:litros'           : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:precioLitro'      : {validaciones: 'requerido|flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:idTipoCombustible': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idBanco'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+			};	
+			
+    	$(document).ready(function() {
+				janal.decimals= 4;
+      });
+			
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			} // execute		
+		</script>   
+		<style type="text/css">
+		</style>			
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="EL TICKET DE COMPRA [#{sakbeComprasAccion.combustible.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeComprasAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeComprasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+					</div>
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{sakbeComprasAccion.doTabChange}" process="@this" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent();"/>
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeComprasAccion.agregar}" styleClass="recalculo"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{sakbeComprasAccion.combustible.consecutivo}" readonly="true" style="display: #{sakbeComprasAccion.agregar}"/>
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+								<p:selectOneMenu id="idSucursal" value="#{sakbeComprasAccion.combustible.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{sakbeComprasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="ticket" value="Ticket:"/>
+								<p:inputText id="ticket" value="#{sakbeComprasAccion.combustible.ticket}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="lugar" value="Lugar:"/>
+								<p:inputText id="lugar" value="#{sakbeComprasAccion.combustible.lugar}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="fecha" value="Fecha:"/>
+								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeComprasAccion.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
+								<p:outputLabel for="litros" value="Litros:"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeComprasAccion.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center janal-color-blue" minValue="0"/>
+								<p:outputLabel for="precio" value="Precio:"/>
+								<p:inputNumber id="precio" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeComprasAccion.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center janal-color-blue" minValue="0"/>
+                <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
+                <p:selectOneMenu id="idTipoMedioPago" value="#{sakbeComprasAccion.combustible.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                  <p:ajax event="change" process="@this" listener="#{sakbeComprasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
+                  <f:selectItems value="#{sakbeComprasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
+                <p:selectOneMenu id="idBanco" value="#{sakbeComprasAccion.combustible.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not sakbeComprasAccion.attrs.isBanco}">
+                  <f:selectItems value="#{sakbeComprasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Razón social">
+                    <h:outputText value="#{item.razonSocial}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
+                <p:inputText id="referencia" value="#{sakbeComprasAccion.combustible.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not sakbeComprasAccion.attrs.isBanco}"/>
+                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeComprasAccion.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeComprasAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="observaciones" value="observaciones:"/>
+  							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeComprasAccion.combustible.observaciones}"/>
+              </p:panelGrid>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeComprasAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeComprasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeComprasAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeComprasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

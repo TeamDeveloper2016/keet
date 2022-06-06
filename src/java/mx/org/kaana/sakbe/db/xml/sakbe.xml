@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las tablas de SAKBE
+-->
+<process>
+  <model>    
+  </model>
+
+  <dml>
+    <unit id="TcSakbeCombustiblesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles_bitacora
+        where      
+          id_combustible_bitacora = {idCombustibleBitacora}
+      </select>
+    </unit>    
+    <unit id="TrSakbeMaquinariaGrupoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_sakbe_maquinaria_grupo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_sakbe_maquinaria_grupo
+        where      
+          id_maquinaria = {idMaquinaria} and id_tipo_grupo = {idTipoGrupo}
+      </select>
+    </unit>    
+    <unit id="TcSakbeTiposGruposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_grupos
+        where      
+          descripcion = '{descripcion}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeCombustibleAusenciasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_combustible_ausencias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_combustible_ausencias
+        where      
+          id_combustible_ausente = {idCombustibleAusente}
+      </select>
+    </unit>    
+    <unit id="TcSakbeCombustiblesEstatusDto">
+      <select id="row">
+        select      
+				  tc_sakbe_combustibles_estatus.id_combustible_estatus as id_key,
+          tc_sakbe_combustibles_estatus.*
+        from      
+          tc_sakbe_combustibles_estatus
+        where 
+          {condicion} 
+        order by
+          id_combustible_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit> 
+    <unit id="TcSakbeSuministrosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>       
+    <unit id="TcSakbeCombustiblesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_sakbe_combustibles
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+    </unit>
+    <unit id="TcSakbeSuministrosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_suministros
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_suministros
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_sakbe_suministros
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+    </unit>
+    <unit id="TcSakbeCombustiblesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_combustibles_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeMaquinariasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias
+        where      
+          clave = '{clave}' and id_empresa = {idEmpresa}
+      </select>
+    </unit>    
+    <unit id="TcSakbeSuministrosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeTiposCombustiblesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_combustibles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_combustibles
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TrSakbeMaquinariaDesarrolloDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_sakbe_maquinaria_desarrollo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_sakbe_maquinaria_desarrollo
+        where      
+          id_maquinaria = {idMaquinaria} and id_desarrollo = {idDesarrollo}
+      </select>
+    </unit>    
+  </dml>    
+</process>

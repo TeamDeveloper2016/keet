@@ -31,12 +31,12 @@
      <file-xml>mx/org/kaana/keet/db/xml/ireport.xml</file-xml>
      <file-xml>mx/org/kaana/keet/db/xml/josql.xml</file-xml> 
    </module>
-   <module id="triana" load="true" mapping="true" backing="false" dto="mx.org.kaana.keet.db.dto" msg="/mx/org/kaana/keet/msg">
-     <file-xml>mx/org/kaana/triana/db/xml/triana.xml</file-xml>
-     <file-xml>mx/org/kaana/triana/db/xml/vistas.xml</file-xml>
-     <file-xml>mx/org/kaana/triana/db/xml/foxpro.xml</file-xml>
-     <file-xml>mx/org/kaana/triana/db/xml/ireport.xml</file-xml>
-     <file-xml>mx/org/kaana/triana/db/xml/josql.xml</file-xml> 
+   <module id="sakbe" load="true" mapping="true" backing="false" dto="mx.org.kaana.sakbe.db.dto" msg="/mx/org/kaana/sakbe/msg">
+     <file-xml>mx/org/kaana/sakbe/db/xml/sakbe.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/vistas.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/foxpro.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/ireport.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/josql.xml</file-xml> 
    </module>
 
 </modulos>

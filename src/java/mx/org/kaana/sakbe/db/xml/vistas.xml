@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+		Relación de consultas para las vistas de SAKBE
+-->
+<process>
+	<dml> 
+    <unit id="VistaCompraCombistiblesDto">
+      <select id="lazy">
+        select
+          tc_sakbe_combustibles.id_combustible as id_key,
+          tc_sakbe_combustibles.id_empresa,
+				  tc_mantic_empresas.nombre as empresa,  
+          tc_sakbe_combustibles.consecutivo,
+          tc_sakbe_combustibles.ticket,
+          tc_sakbe_combustibles.lugar,
+          tc_sakbe_combustibles.litros,
+          tc_sakbe_tipos_combustibles.nombre as combustible,
+          tc_sakbe_combustibles_estatus.nombre as estatus,
+          tc_sakbe_combustibles.fecha,
+          tc_sakbe_combustibles.saldo,
+          tc_mantic_tipos_medios_pagos.nombre as medio,
+          round(tc_sakbe_combustibles.saldo* 100/ tc_sakbe_combustibles.litros, 0) as porcentaje,
+          tc_sakbe_combustibles_estatus.id_combustible_estatus,
+          tc_sakbe_combustibles_estatus.estatus_asociados,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+          tc_sakbe_combustibles.registro
+        from
+          tc_sakbe_combustibles
+        inner join
+          tc_sakbe_combustibles_estatus on tc_sakbe_combustibles.id_combustible_estatus= tc_sakbe_combustibles_estatus.id_combustible_estatus
+        inner join
+          tc_sakbe_tipos_combustibles on tc_sakbe_combustibles.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+        inner join
+          tc_mantic_tipos_medios_pagos on tc_sakbe_combustibles.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				inner join 
+					tc_mantic_empresas on tc_sakbe_combustibles.id_empresa= tc_mantic_empresas.id_empresa
+        inner join
+					tc_janal_usuarios on tc_sakbe_combustibles.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        where
+          tc_sakbe_combustibles.id_empresa in ({idEmpresa})
+          and {condicion}        
+        {sortOrder}
+      </select>  
+      <select id="row">
+        select      
+          tc_sakbe_maquinarias.id_maquinaria as id_key,
+          tc_sakbe_maquinarias.*
+        from      
+          tc_sakbe_maquinarias
+        inner join
+          tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
+        where      
+          tr_sakbe_maquinaria_desarrollo.id_desarrollo = {idDesarrollo}
+      </select>
+    </unit>    
+	</dml>    
+</process>
