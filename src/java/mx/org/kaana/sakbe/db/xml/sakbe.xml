@@ -135,13 +135,23 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+      <select id="igual">
+        select      
+          tc_sakbe_combustibles.id_combustible as id_key,
+          tc_sakbe_combustibles.*
+        from      
+          tc_sakbe_combustibles
+        where      
+          id_combustible= {idCombustible}
+      </select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
 				from 
 					tc_sakbe_combustibles
 				where				  
-				  ejercicio = {ejercicio}			
+          id_empresa= {idEmpresa}
+				  and ejercicio= {ejercicio}
 			</select>			
     </unit>
     <unit id="TcSakbeSuministrosDto">
@@ -185,7 +195,7 @@
         from      
           tc_sakbe_combustibles_archivos
         where      
-          nombre = '{nombre}'
+          archivo = '{archivo}'
       </select>
     </unit>    
     <unit id="TcSakbeMaquinariasDto">
@@ -221,13 +231,14 @@
         from      
           tc_sakbe_suministros_archivos
         where      
-          nombre = '{nombre}'
+          archivo = '{archivo}'
       </select>
     </unit>    
     <unit id="TcSakbeTiposCombustiblesDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_tipos_combustibles.id_tipo_combustible as id_key,
+          tc_sakbe_tipos_combustibles.*
         from      
           tc_sakbe_tipos_combustibles
         where 

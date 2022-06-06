@@ -111,7 +111,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.documentos= new ArrayList<>();
 			this.toLoadContrato();
       this.doLoad();
-      this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
+      this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -248,6 +248,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
+    finally {
+      Methods.clean(todos);
+    } // finally
     return regresar;
 	} // doAceptar
 	
@@ -271,7 +274,7 @@ public class Importar extends IBaseImportar implements Serializable {
     return regresar;
 	} // doLimpiar
 	
-	private EFormatos getFileType(String fileName){
+	private EFormatos getFileType(String fileName) {
 		EFormatos regresar= EFormatos.JPG;
 		try {
 			if(fileName.contains(".")) {

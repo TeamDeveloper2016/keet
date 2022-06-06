@@ -6,8 +6,8 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Tickets de compra de combustibles" />
-  <ui:param name="janalBackingPage" value="#{sakbeCombustiblesFiltro}"/>
+  <ui:param name="titulo" value="Tickets de compra de combustibles registrados" />
+  <ui:param name="janalBackingPage" value="#{sakbeCombustiblesVisor}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -44,171 +44,87 @@
       };
     </script>		
 		<style>
-      .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
+      .manzana-lote-font {font-size: 2.5vw !important;}
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
-    <div class="janal-align-right xs-pantalla janal-wid-100">
-      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
-    </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
-        <div id="collapse-find" class="ui-grid-col-3">
-          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
-						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{sakbeCombustiblesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{sakbeCombustiblesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{sakbeCombustiblesFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-              </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="Folio:"/>
-              <p:inputText id="consecutivo" value="#{sakbeCombustiblesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="ticket" value="No. ticket:"/>
-              <p:inputText id="ticket" value="#{sakbeCombustiblesFiltro.attrs.ticket}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="lugar" value="Lugar compra:"/>
-              <p:inputText id="lugar" value="#{sakbeCombustiblesFiltro.attrs.lugar}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{sakbeCombustiblesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
-              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{sakbeCombustiblesFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
-              <p:outputLabel for="idCombustibleEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idCombustibleEstatus" value="#{sakbeCombustiblesFiltro.attrs.idCombustibleEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{sakbeCombustiblesFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-              </p:selectOneMenu>
-							<p:separator/>
-            </p:panelGrid>
-						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
-						</div>
-          </p:panel>
-        </div>
-				<p:spacer/>
-        <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCombustiblesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{sakbeCombustiblesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{sakbeCombustiblesFiltro.lazyModel.rowCount gt sakbeCombustiblesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-            <f:facet name="header">
-							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem value="Agregar" action="#{sakbeCombustiblesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-								<p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" action="#{sakbeCombustiblesFiltro.doAccion('AGREGAR')}" title="Agregar" onstart="return janal.bloquear()"/>						
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-            </f:facet>	            
-						<p:column styleClass="janal-column-icon">
-							<p:commandButton icon="fa fa-chevron-circle-right" title="Suministros" action="#{sakbeCombustiblesFiltro.doSuministros}" rendered="#{fn:contains('|2|3|4|', filtro['idCombustibleEstatus'].toInteger)}">
-								<f:setPropertyActionListener value="#{row['idKey']}" target="#{sakbeCombustiblesFiltro.attrs.idCombustible}" />
-							</p:commandButton>
-						</p:column>
-            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
-              <f:facet name="header">
-                <h:outputText value="Sucursal"/>
-              </f:facet>
-              <h:outputText value="#{row['empresa']}"/>
-            </p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
-              <f:facet name="header">
-                <h:outputText value="Consecutivo"/>
-              </f:facet>
-              <h:outputText value="#{row['consecutivo']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ticket}">
-              <f:facet name="header">
-                <h:outputText value="Ticket"/>
-              </f:facet>
-              <h:outputText value="#{row['ticket']}"/>
-            </p:column>	
-            <p:column styleClass="MarAuto Responsive" sortBy="#{row.lugar}">
-              <f:facet name="header">
-                <h:outputText value="Lugar"/>
-              </f:facet>
-              <h:outputText value="#{row['lugar']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.litros}">
-              <f:facet name="header">
-                <h:outputText value="Litros"/>
-              </f:facet>
-              <h:outputText value="#{row['litros']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.porcentaje}">
-              <f:facet name="header">
-                <h:outputText value="Saldo"/>
-              </f:facet>
-              <h:outputText value="#{row['saldo']} [#{row['porcentaje']}%]"/>
-            </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
-              <f:facet name="header">
-                <h:outputText value="Estatus"/>
-              </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
-              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
-            </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
-              <f:facet name="header">
-                <h:outputText value="Fecha"/>
-              </f:facet>
-              <h:outputText value="#{row['fecha']}"/>
-            </p:column>		
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
+						<p:tab title="Busqueda:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{sakbeCombustiblesVisor.attrs.isMatriz}" styleClass="janal-display-none"/>
+                <p:selectOneMenu id="idEmpresa" value="#{sakbeCombustiblesVisor.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-display-none" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="consecutivo" value="Folio:"/>
+                <p:inputText id="consecutivo" value="#{sakbeCombustiblesVisor.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="ticket" value="No. ticket:"/>
+                <p:inputText id="ticket" value="#{sakbeCombustiblesVisor.attrs.ticket}" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="lugar" value="Lugar compra:"/>
+                <p:inputText id="lugar" value="#{sakbeCombustiblesVisor.attrs.lugar}" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+                <p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesVisor.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+                <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+                <p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesVisor.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+                <p:outputLabel for="idCombustibleEstatus" value="Estatus:"/>
+                <p:selectOneMenu id="idCombustibleEstatus" value="#{sakbeCombustiblesVisor.attrs.idCombustibleEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+              </p:panelGrid>
+              <p:separator/>
+              <div class="janal-align-right">
+                <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+                <p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+              </div>
+						</p:tab>
+					</p:accordionPanel>           					
+          <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCombustiblesVisor.lazyModel}" styleClass="detalle" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesVisor.lazyModel.rowCount gt sakbeCombustiblesVisor.lazyModel.pageSize}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorPosition="bottom" rowIndexVar="index">
+						<p:panel header="TICKET: #{row.ticket}" style="text-align:center; border: 0px;">
+							<h:panelGrid columns="1" style="width:100%">
+								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministro(row)}">
+									<p:outputLabel value="#{row.consecutivo}" title="Lugar: #{row.lugar}" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>
+									<f:setPropertyActionListener value="#{row}" target="#{sakbeCombustiblesVisor.attrs.seleccionado}"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
+                  <p:outputLabel value="Litros: &lt;b&gt;#{row.litros}&lt;/b&gt; | Precio por litro: &lt;b&gt;$ #{row.precioLitro}&lt;/b&gt;" escape="false" styleClass="janal-color-blue"/>
+									<p:outputLabel value="&lt;b&gt;Lugar compra:&lt;/b&gt; #{row.lugar}" escape="false"/>
+									<p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha} | &lt;b&gt;Importe total:&lt;/b&gt; $ #{row.total}" escape="false"/>
+									<p:spacer/>
+									<p:progressBar value="#{row.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
+									<p:spacer/>
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+								<div class="janal-column-right">
+                  <span class="janal-float-left janal-wid-20">
+                    <p:commandButton title="Agregar" icon="fa fa-plus" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
+                    <p:commandButton title="Modificar" icon="fa fa-edit" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doModificar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '1' or row['idCombustibleEstatus'] eq '2' or row['saldo'] eq '100'? '': 'none'}"/>
+                    <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeCombustiblesVisor.doEliminar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '1' or row['saldo'] eq '100'? '': 'none'}"/>
+                    <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeCombustiblesVisor.doRecuperar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '6'? '': 'none'}"/>
+                  </span>  
+                  <span>Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo}.png" title="Estatus: #{row.estatus}"/>
+								</div>	
+							</f:facet>
+						</p:panel>	            
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{sakbeCombustiblesFiltro.lazyModel== null? 0: sakbeCombustiblesFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{sakbeCombustiblesVisor.lazyModel== null? 0: sakbeCombustiblesVisor.lazyModel.rowCount}] registros"/>
             </f:facet>
-          </p:dataTable>
-          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{sakbeCombustiblesFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
-            <p:menuitem id="modificar" action="#{sakbeCombustiblesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '1'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '1'}"/>
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{sakbeCombustiblesFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus)}"/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{sakbeCombustiblesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus)}"/>
-          </p:contextMenu>
+          </p:dataGrid>
         </div>
       </div>
     </div>		    
   </ui:define>   
-  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el ticket de compra ?" />
-  <ui:param name="accionConfirmacion" value="#{sakbeCombustiblesFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="componenteBloqueo" value="panelBusqueda:buscar panelBusqueda:buscarIcon tabla"/>
   <ui:param name="lineaSeparacion" value="false"/>	
-  <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
-      <p:outputLabel value="Folio:"/>
-      <p:outputLabel value="#{sakbeCombustiblesFiltro.attrs.seleccionado.consecutivo}"/>
-    </p:panelGrid>			
-  </ui:define>
-	<ui:define name="dialogos">		
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
-			<h:form id="formDialogoEstatus" prependId="false">
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{sakbeCombustiblesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
-						<f:selectItems value="#{sakbeCombustiblesFiltro.attrs.allEstatus}"/>					
-					</p:selectOneMenu>
-				</h:panelGrid>
-				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
-				<p:inputTextarea id="justificacion" value="#{sakbeCombustiblesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
-				<hr class="ui-widget-content"/>
-				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{sakbeCombustiblesFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
-				</div>
-			</h:form>
-		</p:dialog>
-	</ui:define>
 </ui:composition>

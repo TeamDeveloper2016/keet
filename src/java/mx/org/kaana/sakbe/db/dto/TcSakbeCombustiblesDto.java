@@ -64,17 +64,23 @@ public class TcSakbeCombustiblesDto implements IBaseDto, Serializable {
   private Long idCombustible;
 	@Column (name="observaciones")
   private String observaciones;
+	@Column (name="id_banco")
+  private Long idBanco;
+	@Column (name="referencia")
+  private String referencia;
+	@Column (name="total")
+  private double total;
 
   public TcSakbeCombustiblesDto() {
     this(new Long(-1L));
   }
 
   public TcSakbeCombustiblesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, new Long(-1L), null, -1L, null, 0D);
     setKey(key);
   }
 
-  public TcSakbeCombustiblesDto(Long idEmpresa, Long idTipoMedioPago, String ticket, String lugar, Double saldo, Long idTipoCombustible, Long idCombustibleEstatus, Long ejercicio, String consecutivo, LocalDate fecha, Double precioLitro, Long idUsuario, Double litros, Long orden, Long idCombustible, String observaciones) {
+  public TcSakbeCombustiblesDto(Long idEmpresa, Long idTipoMedioPago, String ticket, String lugar, Double saldo, Long idTipoCombustible, Long idCombustibleEstatus, Long ejercicio, String consecutivo, LocalDate fecha, Double precioLitro, Long idUsuario, Double litros, Long orden, Long idCombustible, String observaciones, Long idBanco, String referencia, Double total) {
     setIdEmpresa(idEmpresa);
     setIdTipoMedioPago(idTipoMedioPago);
     setTicket(ticket);
@@ -92,6 +98,9 @@ public class TcSakbeCombustiblesDto implements IBaseDto, Serializable {
     setOrden(orden);
     setIdCombustible(idCombustible);
     setObservaciones(observaciones);
+    setIdBanco(idBanco);
+    setReferencia(referencia);
+    setTotal(total);
   }
 
   public Long getIdEmpresa() {
@@ -230,6 +239,30 @@ public class TcSakbeCombustiblesDto implements IBaseDto, Serializable {
     this.observaciones = observaciones;
   }
 
+  public Long getIdBanco() {
+    return idBanco;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public double getTotal() {
+    return total;
+  }
+
+  public void setTotal(double total) {
+    this.total = total;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -278,6 +311,12 @@ public class TcSakbeCombustiblesDto implements IBaseDto, Serializable {
 		regresar.append(getIdCombustible());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -302,13 +341,16 @@ public class TcSakbeCombustiblesDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idCombustible", getIdCombustible());
 		regresar.put("observaciones", getObservaciones());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("referencia", getReferencia());
+		regresar.put("total", getTotal());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEmpresa(), getIdTipoMedioPago(), getTicket(), getLugar(), getSaldo(), getIdTipoCombustible(), getIdCombustibleEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getFecha(), getPrecioLitro(), getIdUsuario(), getLitros(), getOrden(), getIdCombustible(), getObservaciones()
+      getIdEmpresa(), getIdTipoMedioPago(), getTicket(), getLugar(), getSaldo(), getIdTipoCombustible(), getIdCombustibleEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getFecha(), getPrecioLitro(), getIdUsuario(), getLitros(), getOrden(), getIdCombustible(), getObservaciones(), getIdBanco(), getReferencia(), getTotal()
     };
     return regresar;
   }

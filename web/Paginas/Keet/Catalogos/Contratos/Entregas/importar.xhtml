@@ -34,7 +34,6 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:remoteCommand name="viewDocument" actionListener="#{keetCatalogosContratosEntregasImportar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -103,7 +102,7 @@
 									<h:outputText value="#{keetCatalogosContratosEntregasImportar.doRegistro(row.registro)}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-                  <a data-magnify="gallery" href="#{keetCatalogosContratosEntregasImportar.pathImage}entregas/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver más grande la imagen">
+                  <a data-magnify="gallery" href="#{keetCatalogosContratosEntregasImportar.pathImage}entregas/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver la imagen">
                     <p:graphicImage url="#{keetCatalogosContratosEntregasImportar.pathImage}entregas/#{row.ruta}#{row.archivo}" width="30" height="30" style="cursor:zoom-in;"/>
                   </a>
 								</p:column>   

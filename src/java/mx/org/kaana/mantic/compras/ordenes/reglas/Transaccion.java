@@ -24,7 +24,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticulo;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
@@ -219,7 +218,10 @@ public class Transaccion extends Inventarios implements Serializable {
 			Error.mensaje(e);
 			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
-		if(this.orden!= null)
+	  finally {
+      Methods.clean(params);
+    } // finally
+	if(this.orden!= null)
 			LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar

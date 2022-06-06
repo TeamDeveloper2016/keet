@@ -14,16 +14,19 @@
 		<script type="text/javascript">
 	   Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'      : {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:ticket'           : {validaciones: 'requerido|letras', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:lugar'            : {validaciones: 'requerido|letras', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:ticket'           : {validaciones: 'requerido|texto|longitud({"min":3, "max":50})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:lugar'            : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fecha'            : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:litros'           : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:precioLitro'      : {validaciones: 'requerido|flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:litros'           : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:precio'           : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'            : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoCombustible': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idBanco'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:observaciones'    : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:evidencias'       : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -35,8 +38,21 @@
 				janal.desbloquear();
 				return ok;
 			} // execute		
+      
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
 		</script>   
 		<style type="text/css">
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
 		</style>			
 	</ui:define>
 	<ui:define name="contenido">
@@ -48,13 +64,13 @@
 						<p:outputLabel value="EL TICKET DE COMPRA [#{sakbeComprasAccion.combustible.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeComprasAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeComprasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{sakbeComprasAccion.doTabChange}" process="@this" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent();"/>
+            <p:ajax event="tabChange" listener="#{sakbeComprasAccion.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
 								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeComprasAccion.agregar}" styleClass="recalculo"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{sakbeComprasAccion.combustible.consecutivo}" readonly="true" style="display: #{sakbeComprasAccion.agregar}"/>
-								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-								<p:selectOneMenu id="idSucursal" value="#{sakbeComprasAccion.combustible.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}" styleClass="janal-display-none"/>
+								<p:selectOneMenu id="idSucursal" value="#{sakbeComprasAccion.combustible.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-display-none" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{sakbeComprasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -70,9 +86,11 @@
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeComprasAccion.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
 								<p:outputLabel for="litros" value="Litros:"/>
-								<p:inputNumber id="litros" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeComprasAccion.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center janal-color-blue" minValue="0"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeComprasAccion.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
 								<p:outputLabel for="precio" value="Precio:"/>
-								<p:inputNumber id="precio" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeComprasAccion.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center janal-color-blue" minValue="0"/>
+								<p:inputNumber id="precio" styleClass="janal-wid-100-txt" value="#{sakbeComprasAccion.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
+								<p:outputLabel for="total" value="Total"/>
+								<p:inputNumber id="total" styleClass="janal-wid-100-txt" value="#{sakbeComprasAccion.combustible.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0"/>
                 <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{sakbeComprasAccion.combustible.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
                   <p:ajax event="change" process="@this" listener="#{sakbeComprasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
@@ -84,8 +102,8 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
-                <p:selectOneMenu id="idBanco" value="#{sakbeComprasAccion.combustible.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not sakbeComprasAccion.attrs.isBanco}">
+                <p:outputLabel for="idBanco" value="Banco:" styleClass="janal-display-none banco"/>
+                <p:selectOneMenu id="idBanco" value="#{sakbeComprasAccion.combustible.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-display-none janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not sakbeComprasAccion.attrs.isBanco}">
                   <f:selectItems value="#{sakbeComprasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
@@ -94,26 +112,95 @@
                     <h:outputText value="#{item.razonSocial}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
-                <p:inputText id="referencia" value="#{sakbeComprasAccion.combustible.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not sakbeComprasAccion.attrs.isBanco}"/>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="janal-display-none banco"/>
+                <p:inputText id="referencia" value="#{sakbeComprasAccion.combustible.referencia}" styleClass="janal-wid-100-txt janal-display-none banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not sakbeComprasAccion.attrs.isBanco}"/>
                 <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeComprasAccion.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{sakbeComprasAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="observaciones" value="observaciones:"/>
+                <p:outputLabel for="observaciones" value="Observaciones:"/>
   							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeComprasAccion.combustible.observaciones}"/>
+                <p:outputLabel for="evidencias" value="Evidencia(s):"/>
+                <p:inputNumber id="evidencias" styleClass="janal-wid-100-txt janal-color-black cargados" value="#{sakbeComprasAccion.attrs.evidencias}" converter="javax.faces.Long" decimalPlaces="0" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-color-black" minValue="0" readonly="true"/>
               </p:panelGrid>
 						</p:tab>
-					</p:tabView>
+						<p:tab title="Evidencia">
+              <p:dataTable id="importados" var="row" value="#{sakbeComprasAccion.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{sakbeComprasAccion.doRegistro(row.registro)}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <a data-magnify="gallery" href="#{sakbeComprasAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver la imagen">
+                    <p:graphicImage url="#{sakbeComprasAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" width="30" height="30" style="cursor:zoom-in;"/>
+                  </a>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="@(.cargados)" actionListener="#{sakbeComprasAccion.doRecuperar(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.cargados)" actionListener="#{sakbeComprasAccion.doEliminar(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{sakbeComprasAccion.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{sakbeComprasAccion.importados.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeComprasAccion.attrs.comentarios}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{sakbeComprasAccion.doFileUpload}" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{sakbeComprasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeComprasAccion.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{sakbeComprasAccion.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeComprasAccion.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>
+						</p:tab>
+          </p:tabView>
 				</div>
 			</div>
 		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">

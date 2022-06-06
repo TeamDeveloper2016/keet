@@ -27,7 +27,6 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
   private UISelectEntity ikTipoCombustible;
   private UISelectEntity ikTipoMedioPago;
   private UISelectEntity ikBanco;
-  private String referencia;
 
   public Combustible() {
     this(-1L);
@@ -50,11 +49,14 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
       0D, // litros, 
       0L, // orden, 
       -1L, // idCombustible
-      null // observaciones
+      null, // observaciones
+      -1L, // idBanco
+      null, // referencia
+      0D // total
     );    
   }
   
-  public Combustible(Long idEmpresa, Long idTipoMedioPago, String ticket, String lugar, Double saldo, Long idTipoCombustible, Long idCombustibleEstatus, Long ejercicio, String consecutivo, LocalDate fecha, Double precioLitro, Long idUsuario, Double litros, Long orden, Long idCombustible, String observaciones) {
+  public Combustible(Long idEmpresa, Long idTipoMedioPago, String ticket, String lugar, Double saldo, Long idTipoCombustible, Long idCombustibleEstatus, Long ejercicio, String consecutivo, LocalDate fecha, Double precioLitro, Long idUsuario, Double litros, Long orden, Long idCombustible, String observaciones, Long idBanco, String referencia, Double total) {
     super(
       idEmpresa, // idEmpresa
       idTipoMedioPago, // idTipoMedioPago, 
@@ -71,10 +73,15 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
       litros, // litros, 
       orden, // orden, 
       -1L, // idCombustible
-      observaciones
+      observaciones, // observaciones
+      idBanco, // idBanco
+      referencia, // referencia
+      total // total
     );
+    this.ikEmpresa= new UISelectEntity(idEmpresa);
     this.ikTipoCombustible= new UISelectEntity(idTipoCombustible);
-    this.ikTipoMedioPago  = new UISelectEntity(idTipoMedioPago);
+    this.ikTipoMedioPago= new UISelectEntity(idTipoMedioPago);
+    this.ikBanco= new UISelectEntity(idBanco);
   }
 
   public UISelectEntity getIkEmpresa() {
@@ -113,18 +120,12 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
 
   public void setIkBanco(UISelectEntity ikBanco) {
     this.ikBanco = ikBanco;
-  }
-
-  public String getReferencia() {
-    return referencia;
-  }
-
-  public void setReferencia(String referencia) {
-    this.referencia = referencia;
+    if(this.ikBanco!= null)
+		  this.setIdBanco(this.ikBanco.getKey());    
   }
 
   public Boolean isComplete() {
-    return Cadena.isVacio(this.getTicket()) && Cadena.isVacio(this.getPrecioLitro()) && Cadena.isVacio(this.getLitros()) && Cadena.isVacio(this.getFecha());
+    return Cadena.isVacio(this.getTicket()) && Cadena.isVacio(this.getPrecioLitro()) && Cadena.isVacio(this.getLitros()) && Cadena.isVacio(this.getFecha()) && Cadena.isVacio(this.getTotal());
   }
   
 }

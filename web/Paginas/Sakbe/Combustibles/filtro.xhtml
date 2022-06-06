@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Tickets de compra de combustibles" />
+  <ui:param name="titulo" value="Tickets de compra de combustibles registrados" />
   <ui:param name="janalBackingPage" value="#{sakbeCombustiblesFiltro}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
@@ -44,7 +44,6 @@
       };
     </script>		
 		<style>
-      .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
@@ -169,7 +168,7 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem id="consultar" action="#{sakbeCombustiblesFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{sakbeCombustiblesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '1'}"/>					
+            <p:menuitem id="modificar" action="#{sakbeCombustiblesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '1' or (sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '2' and sakbeCombustiblesFiltro.attrs.seleccionado.porcentaje eq '0')}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus eq '1'}"/>
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{sakbeCombustiblesFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|1|2|', sakbeCombustiblesFiltro.attrs.seleccionado.idCombustibleEstatus)}"/>

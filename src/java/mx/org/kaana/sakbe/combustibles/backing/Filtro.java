@@ -28,9 +28,11 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.sakbe.combustibles.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.sakbe.combustibles.beans.Combustible;
+import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -85,11 +87,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precioLitro", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaCompraCombistiblesDto", params, columns);
-      UIBackingUtilities.resetDataTable();
+      this.lazyModel = new FormatCustomLazy("VistaCombustiblesDto", params, columns);
 			this.attrs.put("idCombustible", null);
+      this.reset();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,12 +106,21 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+  protected void reset() {
+    UIBackingUtilities.resetDataTable();
+  }
+  
+  public String doModificar(Entity seleccionado) {
+    this.attrs.put("seleccionado", seleccionado);
+    return this.doAccion("MODIFICAR");
+  }
+  
   public String doAccion(String accion) {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/filtro");		
+			JsfBase.setFlashAttribute("retorno", this.toPagina());		
 			JsfBase.setFlashAttribute("idCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
@@ -116,28 +130,64 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Sakbe/Combustibles/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
+  public String toPagina() {
+    return "/Paginas/Sakbe/Combustibles/filtro";
+  }
+  
+  public void doEliminar(Entity seleccionado) {
+    this.attrs.put("seleccionado", seleccionado);
+    this.doEliminar();
+  }
+  
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion   = null;
+		Entity seleccionado       = null;
+	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey()));
+      params.put("idCombustible", seleccionado.getKey());
+			transaccion= new Transaccion((Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El ticket de compra se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar ticket de compra", ETipoMensaje.ALERTA);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el ticket de compra", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
+    finally {
+      Methods.clean(params);
+    } // finally
   } // doEliminar
 
-	private Map<String, Object> toPrepare() {
+  public void doRecuperar(Entity seleccionado) {
+		Transaccion transaccion   = null;
+	  Map<String, Object> params= new HashMap<>();	
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+      params.put("idCombustible", seleccionado.getKey());
+      Combustible combustible= (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params);
+			transaccion= new Transaccion(combustible);
+			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+				JsfBase.addMessage("Eliminar", "El ticket de compra se recuperó correctamente", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al recuperar el ticket de compra", ETipoMensaje.ALERTA);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doRecuperar
+
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idCombustible")) && !this.attrs.get("idCombustible").toString().equals("-1"))
-  		sb.append("(tc_sakbe_combustibles.idCombustible=").append(this.attrs.get("idCombustible")).append(") and ");
+  		sb.append("(tc_sakbe_combustibles.id_combustible=").append(this.attrs.get("idCombustible")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_sakbe_combustibles.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
@@ -207,13 +257,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion            = null;
-		TcManticOrdenesBitacoraDto bitacora= null;
-		Entity seleccionado                = null;
+		Transaccion transaccion                = null;
+    TcSakbeCombustiblesBitacoraDto bitacora= null;
+		Entity seleccionado       = null;
+	  Map<String, Object> params= new HashMap<>();	
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
-			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+      params.put("idCombustible", seleccionado.toMap());
+			Combustible orden= (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params);
+  	  bitacora= new TcSakbeCombustiblesBitacoraDto((String) this.attrs.get("justificacion"), -1L, JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
@@ -227,6 +279,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally{
 			this.attrs.put("justificacion", "");
+			Methods.clean(params);
 		} // finally
 	}	// doActualizaEstatus
 	
@@ -234,6 +287,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA ["+ isViewException+ "]");
 	}
 
+  public String doSuministros(Entity seleccionado) {
+    this.attrs.put("seleccionado", seleccionado);
+    return this.doSuministros();
+  }
+  
   public String doSuministros() {
 		JsfBase.setFlashAttribute("idCombustible", this.attrs.get("idCombustible"));
 		return "/Paginas/Sakbe/Suministros/filtro".concat(Constantes.REDIRECIONAR);

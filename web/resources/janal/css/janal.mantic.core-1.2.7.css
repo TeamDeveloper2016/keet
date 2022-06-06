@@ -469,6 +469,7 @@ div.ui-panelgrid-content {
   text-align: center;  
 }
 .janal-logo-mini {width: 97px;}
+.manzana-lote-font {font-size: 2.5vw !important;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {

@@ -8,7 +8,7 @@
   
   <context-param>
     <param-name>primefaces.UPLOADER</param-name>
-    <param-value>commons</param-value>
+    <param-value>auto</param-value>
   </context-param>
 	
   <context-param>
