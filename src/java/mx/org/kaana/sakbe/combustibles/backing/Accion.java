@@ -328,7 +328,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     try {			
 			transaccion= new Transaccion(this.combustible);
 			if (transaccion.ejecutar(EAccion.AGREGAR)) {
-   			UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 orden de compra', '"+ this.combustible.getConsecutivo()+ "');");
+   			UIBackingUtilities.execute("janal.back('guard\\u00F3 el ticket de combustible', '"+ this.combustible.getConsecutivo()+ "');");
 				this.accion= EAccion.MODIFICAR;
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	

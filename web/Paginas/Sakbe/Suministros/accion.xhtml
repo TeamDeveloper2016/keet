@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{sakbeSuministrosAccion.attrs.nombreAccion} un suministro"/>
+	<ui:param name="titulo" value="#{sakbeSuministrosAccion.attrs.nombreAccion} un suministro de combustible"/>
   <ui:param name="janalBackingPage" value="#{sakbeSuministrosAccion}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
@@ -17,9 +17,9 @@
 				'contenedorGrupos\\:idMaquinaria' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:lecturaActual': {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:lecturaNueva' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:litros'       : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto":#{sakbeSuministrosAccion.combustible.saldo}})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:recibio'      : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:horas'        : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto":24})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:litros'       : {validaciones: 'requerido|flotante|rango({"min":1,"max":#{sakbeSuministrosAccion.attrs.porcentaje.saldo}})', mascara: 'libre', grupo: 'general', individual: true},
+				'contenedorGrupos\\:recibio'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:horas'        : {validaciones: 'requerido|flotante|rango({"min":1,"max":24})', mascara: 'libre', grupo: 'general', individual: true},
 				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:evidencias'   : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'}
 			};	
@@ -69,11 +69,10 @@
 			} // localization
 		</script>   
 		<style type="text/css">
-			.janal-upload-frame {
-        border: solid 1px #D1D3D4;
-        margin-bottom: 6px;
-        border-radius: 5px;				
-			}
+			.janal-upload-frame {border: solid 1px #D1D3D4;margin-bottom: 6px;border-radius: 5px;}
+      .ui-progressbar {height: 25px !important;}
+      .ui-progressbar-value {background-image:none !important;background-color: green !important;}
+      .ui-progressbar-label {font-size: 16px;color:yellow;padding-top: 4px;}
 		</style>			
 	</ui:define>
 	<ui:define name="contenido">
@@ -89,24 +88,23 @@
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 						<p:outputLabel value="EL SUMINISTRO DE COMBUSTIBLE [#{sakbeSuministrosAccion.suministro.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeSuministrosAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeSuministrosAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
-          <p:accordionPanel activeIndex="0" multiple="true" dynamic="true">
-						<p:tab title="Ticket:">
-							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-								<p:outputLabel for="ticket" value="Ticket:"/>
-                <p:inputText id="ticket" value="#{sakbeSuministrosAccion.combustible.ticket}" styleClass="janal-wid-100-txt" readonly="true"/>  
-                <p:panelGrid columns="2" styleClass="janal-wid-100">              
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                    <p:outputLabel for="litros" value="Litros:"/>
-                    <p:inputText id="litros" value="#{sakbeSuministrosAccion.combustible.litros} [#{sakbeSuministrosAccion.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
-                  </p:panelGrid>
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                    <p:outputLabel for="saldo" value="Saldo:"/>
-                    <p:inputText id="saldo" value="#{sakbeSuministrosAccion.combustible.saldo} [#{sakbeSuministrosAccion.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
-                  </p:panelGrid>
-                </p:panelGrid>
-  							<p:spacer/>
-								<p:progressBar value="#{sakbeSuministrosAccion.attrs.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
-              </p:panelGrid>
+          <p:accordionPanel id="criterio" activeIndex="0" multiple="true" dynamic="true">
+						<p:tab id="avance" title="Litros disponibles:">
+              <p:panelGrid columns="3" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Litro(s):"/>
+                  <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Saldo:"/>
+                  <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Tickets:"/>
+                  <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:progressBar value="#{sakbeSuministrosAccion.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeSuministrosAccion.attrs.porcentaje.saldo} LTS #{sakbeSuministrosAccion.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
 						</p:tab>
 					</p:accordionPanel>           					
 					<p:tabView id="contenedorGrupos">
@@ -131,13 +129,15 @@
 										<h:outputText value="#{item.rendimiento}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                <p:outputLabel for="lecturaActual" value="Lectura actual:" styleClass="janal-display-none"/>
-								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt janal-display-none" value="#{sakbeSuministrosAccion.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
-								<p:outputLabel for="lecturaNueva" value="Lectura nueva:" styleClass="janal-display-none"/>
-								<p:inputNumber id="lecturaNueva" styleClass="janal-wid-100-txt janal-display-none" value="#{sakbeSuministrosAccion.suministro.lecturaNueva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
+                <p:outputLabel for="lecturaActual" value="Lectura actual:" styleClass=""/>
+								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
+								<p:outputLabel for="lecturaNueva" value="Lectura nueva:" styleClass=""/>
+								<p:inputNumber id="lecturaNueva" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.suministro.lecturaNueva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
 								<p:outputLabel for="litros" value="Litros:"/>
-								<p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.suministro.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0"/>
-								<p:outputLabel for="recibio" value="Recibio:"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-txt avance" value="#{sakbeSuministrosAccion.suministro.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0">
+                  <p:ajax event="change" process="@this" update="criterio:avance @(.avance)" listener="#{sakbeSuministrosAccion.doUpdateLitros}"/>
+                </p:inputNumber>								
+                <p:outputLabel for="recibio" value="Recibio:"/>
 								<p:inputText id="recibio" value="#{sakbeSuministrosAccion.suministro.recibio}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="horas" value="Horas trabajada(s):"/>
 								<p:inputNumber id="horas" styleClass="janal-wid-100-" value="#{sakbeSuministrosAccion.suministro.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
@@ -224,12 +224,14 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton value="Continuar" icon="fa fa-plus" accesskey="a" process="@form" update="criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh()"/>
+			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton title="Continuar" icon="fa fa-plus" process="@form" update="criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh()"/>
+			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

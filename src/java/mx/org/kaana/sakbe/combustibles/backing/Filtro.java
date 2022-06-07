@@ -31,6 +31,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.combustibles.reglas.Transaccion;
 import mx.org.kaana.sakbe.combustibles.beans.Combustible;
 import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
+import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,6 +67,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
+      this.toLoadTiposCombustibles();
 			this.toLoadCatalog();
       if(this.attrs.get("idCombustible")!= null) 
 			  this.doLoad();
@@ -288,20 +290,57 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 
   public String doSuministros(Entity row) {
-    this.attrs.put("combustible", row);
+    this.attrs.put("combustible", row.clone());
     return this.doSuministros();
   }
   
   public String doSuministros() {
     String regresar= null;
-    Map<String, Object> params = new HashMap<>();
     try {      
-      params.put("idCombustible", ((Entity)this.attrs.get("combustible")).getKey());
-      JsfBase.setFlashAttribute("idCombustible", ((Entity)this.attrs.get("combustible")).getKey());
-      JsfBase.setFlashAttribute("porcentaje", this.attrs.get("combustible"));
-      JsfBase.setFlashAttribute("combustible", (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params));
       JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
-      return "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=3bc75ce77e818398ad32b135".concat(Constantes.REDIRECIONAR_AMPERSON);
+      return "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+	}
+
+	private void toLoadTiposCombustibles() throws Exception {
+		List<UISelectEntity> tiposCombustibles= null;
+		Map<String, Object>params             = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			this.attrs.put("tiposCombustibles", tiposCombustibles);
+			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));
+      if(!tiposCombustibles.isEmpty()) 
+  			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));
+      else  
+  			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
+      this.doLoadPorcentajes();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadTiposCombustibles 
+  
+  public void doLoadPorcentajes() throws Exception {
+    this.attrs.put("porcentaje", this.toLoadCombustible());
+  }
+  
+  private Entity toLoadCombustible() throws Exception {
+    Entity regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));      
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -311,7 +350,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
-	}
+  }
   
 	@Override
 	protected void finalize() throws Throwable {

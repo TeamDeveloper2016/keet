@@ -5,19 +5,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.sakbe.combustibles.beans.Combustible;
+import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesDto;
 import mx.org.kaana.sakbe.suministros.beans.Evidencia;
 import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
+import mx.org.kaana.sakbe.db.dto.TcSakbeTicketsSaldosDto;
 import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import mx.org.kaana.sakbe.enums.ESuministrosEstatus;
 import mx.org.kaana.sakbe.suministros.beans.Suministro;
@@ -63,7 +68,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                       = false;
+		boolean regresar                      = false;
 		TcSakbeSuministrosBitacoraDto registro= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para el suministro de combustible");
@@ -77,32 +82,38 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					DaoFactory.getInstance().insert(sesion, this.suministro);
 					registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
 					DaoFactory.getInstance().insert(sesion, registro);
-          regresar= this.toEvidencias(sesion);
+          this.toEvidencias(sesion);
+          regresar= this.toAddCombustibles(sesion);
 					break;
 				case MODIFICAR:
           this.suministro.setIdSuministroEstatus(ESuministrosEstatus.TERMINADO.getKey());
 					DaoFactory.getInstance().update(sesion, this.suministro);
   			  registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
 				  DaoFactory.getInstance().insert(sesion, registro);
-          regresar= this.toEvidencias(sesion);
+          this.toEvidencias(sesion);
+          regresar= this.toAddCombustibles(sesion);
 					break;				
 				case ELIMINAR:
 					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.ELIMINADO.getKey());
           DaoFactory.getInstance().update(sesion, this.suministro);
   			  registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
-          regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+          DaoFactory.getInstance().insert(sesion, registro);
+          regresar= this.toRemoveCombustibles(sesion);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.suministro.setIdSuministroEstatus(this.bitacora.getIdSuministroEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.suministro)>= 1L;
+						DaoFactory.getInstance().update(sesion, this.suministro);
+            // regresar= this.toCombustibles(sesion);
 					} // if
 					break;
 				case COMPLEMENTAR: 
 					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.TERMINADO.getKey());
 					DaoFactory.getInstance().update(sesion, this.suministro);
+  				this.suministro.setIdSuministroEstatus(this.bitacora.getIdSuministroEstatus());
   			  registro= new TcSakbeSuministrosBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), this.suministro.getIdCombustible());
-          regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+          DaoFactory.getInstance().insert(sesion, registro);
+          regresar= this.toAddCombustibles(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -163,6 +174,77 @@ public class Transaccion extends IBaseTnx implements Serializable {
     catch (Exception e) {
 			throw e;
     } // catch	
+    return regresar;
+  }
+  
+  private Boolean toAddCombustibles(Session sesion) throws Exception {
+    Boolean regresar                         = Boolean.TRUE;
+    Map<String, Object> params               = new HashMap<>();
+    List<TcSakbeCombustiblesDto> combustibles= null;
+    TcSakbeTicketsSaldosDto saldos           = null;
+    try {      
+      double total     = this.suministro.getLitros();
+      double diferencia= 0D;
+      params.put("idTipoCombustible", this.suministro.getIdTipoCombustible());      
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      combustibles= (List<TcSakbeCombustiblesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcSakbeCombustiblesDto.class, params, Constantes.SQL_TODOS_REGISTROS, "abiertos");
+      for (TcSakbeCombustiblesDto item: combustibles) {
+        if(total> item.getSaldo())
+          diferencia= item.getSaldo();
+        else
+          diferencia= total;
+        item.setSaldo(item.getSaldo()- diferencia);
+        if(item.getSaldo()<= 0D)
+          item.setIdCombustibleEstatus(ECombustiblesEstatus.TERMINADO.getKey());
+        else  
+          item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
+        DaoFactory.getInstance().update(sesion, item);
+        saldos= new TcSakbeTicketsSaldosDto(
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          diferencia, // Double litros, 
+          -1L, // Long idTicketSaldo, 
+          this.suministro.getIdSuministro(), // Long idSuministro, 
+          item.getIdCombustible() // Long idCombustible
+        );
+        regresar= DaoFactory.getInstance().update(sesion, saldos)>= 1L;
+        total-= diferencia;
+        if(total<= 0)
+          break;
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toRemoveCombustibles(Session sesion) throws Exception {
+    Boolean regresar              = Boolean.TRUE;
+    Map<String, Object> params    = new HashMap<>();
+    List<Combustible> combustibles= null;
+    try {      
+      params.put("idTipoCombustible", this.suministro.getIdTipoCombustible());      
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      combustibles= (List<Combustible>)DaoFactory.getInstance().findViewCriteria(sesion, Combustible.class, params, Constantes.SQL_TODOS_REGISTROS, "depurar");
+      for (Combustible item: combustibles) {
+        item.setSaldo(item.getSaldo()+ item.getLitrox());
+        if(Objects.equals(item.getLitros(), item.getSaldo()))
+          item.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());
+        else
+          item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
+        DaoFactory.getInstance().update(sesion, item);
+        regresar= DaoFactory.getInstance().delete(sesion, TcSakbeTicketsSaldosDto.class, item.getIdTicketSaldo())>= 1L;
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
     return regresar;
   }
   

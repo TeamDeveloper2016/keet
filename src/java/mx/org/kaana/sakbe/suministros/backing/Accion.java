@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -20,7 +22,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.comun.gps.Point;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.sakbe.suministros.beans.Evidencia;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -38,7 +40,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import mx.org.kaana.sakbe.combustibles.beans.Combustible;
+import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import mx.org.kaana.sakbe.suministros.beans.Suministro;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +58,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private static final long serialVersionUID= 327393488565639367L;
 	
   private EAccion accion;
-  private Combustible combustible;
   private Suministro suministro;
 	private List<Evidencia> importados;
 	private List<Evidencia> documentos;
@@ -65,14 +66,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	public String getAgregar() {
 		return Objects.equals(this.accion, EAccion.AGREGAR)? "none": "";
 	}
-
-  public Combustible getCombustible() {
-    return combustible;
-  }
-
-  public void setCombustible(Combustible combustible) {
-    this.combustible = combustible;
-  }
 
   public Suministro getSuministro() {
     return suministro;
@@ -107,11 +100,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   protected void init() {		
     try {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.combustible= (Combustible)JsfBase.getFlashAttribute("combustible");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
-      this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
       this.attrs.put("porcentaje", JsfBase.getFlashAttribute("porcentaje"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("evidencias", 0L);
@@ -148,7 +139,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaCombustiblesDto", "constatar", params);
           break;
       } // switch
-      this.suministro.setIdCombustible(this.combustible.getIdCombustible());
+      this.suministro.setIdTipoCombustible(Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);
       if(this.importados== null)
         this.importados= new ArrayList<>();
       else
@@ -175,6 +166,26 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     }
 	} // doTabChange
   
+	public void doContinuar() {  
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      this.doAceptar();
+      this.setFile(new Importado());
+      this.documentos= new ArrayList<>();
+			this.attrs.put("evidencias", 0L);
+			this.attrs.put("file", ""); 
+      this.attrs.put("porcentaje", toLoadCombustible());
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
 	public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -185,10 +196,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			transaccion = new Transaccion(this.suministro, todos);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) 
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 el suministro', '"+ this.combustible.getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("janal.back('gener\\u00F3 el suministro', '"+ this.suministro.getConsecutivo()+ "');");
         else 
  				  if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el suministro"), ETipoMensaje.INFORMACION);
+    			  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó" : "modificó").concat(" el suministro"), ETipoMensaje.INFORMACION);
    			regresar= this.doCancelar();
 			} // if
 			else 
@@ -205,13 +216,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   } // doAccion
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idCombustible", this.combustible.getIdCombustible());
     JsfBase.setFlashAttribute("idDessarrollo", this.attrs.get("idDessarrollo"));
-    JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
-    JsfBase.setFlashAttribute("combustible", this.attrs.get("combustible"));
-    JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));			
+    JsfBase.setFlashAttribute("opcion", this.attrs.get("opcionResidente"));			
     JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");			
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    return (String)this.attrs.get("retorno");
   } // doCancelar
  
 	private void toLoadMaquinarias() {
@@ -249,7 +257,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     try {			
 			transaccion= new Transaccion(this.suministro);
 			if (transaccion.ejecutar(EAccion.AGREGAR)) {
-   			UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 suministro', '"+ this.combustible.getConsecutivo()+ "');");
+   			UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 suministro', '"+ this.suministro.getConsecutivo()+ "');");
 				this.accion= EAccion.MODIFICAR;
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	
@@ -275,13 +283,13 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		Long idArchivo    = 0L;			
 		try {			
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("suministros"));
-      temp.append(this.combustible.getIdEmpresa());
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       temp.append("/");			
       temp.append(Fecha.getAnioActual());
       temp.append("/");      
       temp.append(this.suministro.getIdDesarrollo());
       temp.append("/");      
-      temp.append(this.combustible.getIdUsuario());
+      temp.append(this.suministro.getIdUsuario());
       temp.append("/");      
       temp.append(Fecha.getHoyEstandar());
       temp.append("/");      
@@ -426,5 +434,35 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		  this.suministro.setLongitud(longitud);
     } // if  
 	} // doAsignaGeoreferencia
+ 
+  public void doUpdateLitros() {
+    Entity porcentaje= (Entity)this.attrs.get("porcentaje");
+    if(porcentaje!= null) {
+      int calculo= (int)Numero.toRedondearSat(this.suministro.getLitros()* 100/ porcentaje.toDouble("litros"));
+      if(calculo< 0) {
+        calculo= 0;
+        this.suministro.setLitros(porcentaje.toDouble("saldo"));
+      } // if  
+      porcentaje.get("porcentaje").setData(new BigDecimal(calculo));
+    } // if  
+  }
+ 
+  private Entity toLoadCombustible() throws Exception {
+    Entity regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoCombustible", Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);      
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 }

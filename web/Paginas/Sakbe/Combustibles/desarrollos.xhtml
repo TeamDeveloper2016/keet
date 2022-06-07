@@ -17,13 +17,16 @@
       };
     </script>		
 		<style type="text/css">			
+      .ui-progressbar {height: 25px !important;}
+      .ui-progressbar-value {background-image:none !important;background-color: green !important;}
+      .ui-progressbar-label {font-size: 16px;color:yellow;padding-top: 4px;}
 		</style>
   </ui:define>
   <ui:define name="contenido">    		
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
-					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true" dynamic="true">
 						<p:tab title="Busqueda:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
 								<p:outputLabel for="nombres" value="Clave ó nombre del desarrollo:"/>
@@ -48,23 +51,22 @@
 								<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{sakbeCombustiblesDesarrollos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 							</div>
 						</p:tab>
-						<p:tab title="Ticket:">
-							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-								<p:outputLabel for="ticket" value="Ticket:"/>
-                <p:inputText id="ticket" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.ticket}" styleClass="janal-wid-100-txt" readonly="true"/>  
-                <p:panelGrid columns="2" styleClass="janal-wid-100">              
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                    <p:outputLabel for="litros" value="Litros:"/>
-                    <p:inputText id="litros" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.litros} [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
-                  </p:panelGrid>
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                    <p:outputLabel for="saldo" value="Saldo:"/>
-                    <p:inputText id="saldo" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.saldo} [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
-                  </p:panelGrid>
-                </p:panelGrid>
-  							<p:spacer/>
-								<p:progressBar value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
-              </p:panelGrid>
+						<p:tab title="Litros disponibles:">
+              <p:panelGrid columns="3" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Litro(s):"/>
+                  <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Saldo:"/>
+                  <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Tickets:"/>
+                  <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:progressBar value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.saldo} LTS #{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
 						</p:tab>
 					</p:accordionPanel>           					
           <p:dataGrid id="tabla" var="item" value="#{sakbeCombustiblesDesarrollos.desarrollos}" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesDesarrollos.desarrollos.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">

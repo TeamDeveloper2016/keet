@@ -1,9 +1,7 @@
 package mx.org.kaana.sakbe.suministros.beans;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import mx.org.kaana.kajool.db.dto.TcSakbeSuministrosDto;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -25,6 +23,8 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
   
   private UISelectEntity ikDesarrollo;
   private UISelectEntity ikMaquinaria;
+  private Long idTipoCombustible;
+  private Double litrox;
 
   public Suministro() {
     this(-1L);
@@ -52,6 +52,8 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
     );
     this.ikDesarrollo= new UISelectEntity(this.getIdDesarrollo());
     this.ikMaquinaria= new UISelectEntity(this.getIdMaquinaria());
+    this.litrox= this.getLitros();
+    this.idTipoCombustible= 1L;
   }
 
   public UISelectEntity getIkDesarrollo() {
@@ -73,7 +75,23 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
 		if(this.ikMaquinaria!= null)
 		  this.setIdMaquinaria(this.ikMaquinaria.getKey());
   }
-      
+
+  public Double getLitrox() {
+    return litrox;
+  }
+
+  public void setLitrox(Double litrox) {
+    this.litrox = litrox;
+  }
+
+  public Long getIdTipoCombustible() {
+    return idTipoCombustible;
+  }
+
+  public void setIdTipoCombustible(Long idTipoCombustible) {
+    this.idTipoCombustible = idTipoCombustible;
+  }
+  
   public Boolean isComplete() {
     return Boolean.FALSE;
   }

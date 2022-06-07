@@ -3,7 +3,6 @@ package mx.org.kaana.sakbe.db.dto;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,40 +23,40 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_sakbe_combustible_ausencias")
-public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
+@Table(name="tc_sakbe_tickets_saldos")
+public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="litros")
+  private Double litros;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_combustible_ausente")
-  private Long idCombustibleAusente;
-  @Column (name="id_ausente")
-  private Long idAusente;
-  @Column (name="id_repartidor")
-  private Long idRepartidor;
-  @Column (name="limite")
-  private LocalDate limite;
+	@Column (name="id_ticket_saldo")
+  private Long idTicketSaldo;
+  @Column (name="id_suministro")
+  private Long idSuministro;
+  @Column (name="id_combustible")
+  private Long idCombustible;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcSakbeCombustibleAusenciasDto() {
+  public TcSakbeTicketsSaldosDto() {
     this(new Long(-1L));
   }
 
-  public TcSakbeCombustibleAusenciasDto(Long key) {
-    this(null, new Long(-1L), null, null, LocalDate.now());
+  public TcSakbeTicketsSaldosDto(Long key) {
+    this(null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcSakbeCombustibleAusenciasDto(Long idUsuario, Long idCombustibleAusente, Long idAusente, Long idRepartidor, LocalDate limite) {
+  public TcSakbeTicketsSaldosDto(Long idUsuario, Double litros, Long idTicketSaldo, Long idSuministro, Long idCombustible) {
     setIdUsuario(idUsuario);
-    setIdCombustibleAusente(idCombustibleAusente);
-    setIdAusente(idAusente);
-    setIdRepartidor(idRepartidor);
-    setLimite(limite);
+    setLitros(litros);
+    setIdTicketSaldo(idTicketSaldo);
+    setIdSuministro(idSuministro);
+    setIdCombustible(idCombustible);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -69,36 +68,36 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdCombustibleAusente(Long idCombustibleAusente) {
-    this.idCombustibleAusente = idCombustibleAusente;
+  public void setLitros(Double litros) {
+    this.litros = litros;
   }
 
-  public Long getIdCombustibleAusente() {
-    return idCombustibleAusente;
+  public Double getLitros() {
+    return litros;
   }
 
-  public void setIdAusente(Long idAusente) {
-    this.idAusente = idAusente;
+  public void setIdTicketSaldo(Long idTicketSaldo) {
+    this.idTicketSaldo = idTicketSaldo;
   }
 
-  public Long getIdAusente() {
-    return idAusente;
+  public Long getIdTicketSaldo() {
+    return idTicketSaldo;
   }
 
-  public void setIdRepartidor(Long idRepartidor) {
-    this.idRepartidor = idRepartidor;
+  public void setIdSuministro(Long idSuministro) {
+    this.idSuministro = idSuministro;
   }
 
-  public Long getIdRepartidor() {
-    return idRepartidor;
+  public Long getIdSuministro() {
+    return idSuministro;
   }
 
-  public void setLimite(LocalDate limite) {
-    this.limite = limite;
+  public void setIdCombustible(Long idCombustible) {
+    this.idCombustible = idCombustible;
   }
 
-  public LocalDate getLimite() {
-    return limite;
+  public Long getIdCombustible() {
+    return idCombustible;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -112,12 +111,12 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdCombustibleAusente();
+  	return getIdTicketSaldo();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idCombustibleAusente = key;
+  	this.idTicketSaldo = key;
   }
 
   @Override
@@ -126,13 +125,13 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCombustibleAusente());
+		regresar.append(getLitros());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAusente());
+		regresar.append(getIdTicketSaldo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdRepartidor());
+		regresar.append(getIdSuministro());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getLimite());
+		regresar.append(getIdCombustible());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -143,10 +142,10 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idCombustibleAusente", getIdCombustibleAusente());
-		regresar.put("idAusente", getIdAusente());
-		regresar.put("idRepartidor", getIdRepartidor());
-		regresar.put("limite", getLimite());
+		regresar.put("litros", getLitros());
+		regresar.put("idTicketSaldo", getIdTicketSaldo());
+		regresar.put("idSuministro", getIdSuministro());
+		regresar.put("idCombustible", getIdCombustible());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -154,7 +153,7 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getIdCombustibleAusente(), getIdAusente(), getIdRepartidor(), getLimite(), getRegistro()
+    getIdUsuario(), getLitros(), getIdTicketSaldo(), getIdSuministro(), getIdCombustible(), getRegistro()
     };
     return regresar;
   }
@@ -168,8 +167,8 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idCombustibleAusente~");
-    regresar.append(getIdCombustibleAusente());
+    regresar.append("idTicketSaldo~");
+    regresar.append(getIdTicketSaldo());
     regresar.append("|");
     return regresar.toString();
   }
@@ -177,18 +176,18 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdCombustibleAusente());
+    regresar.append(getIdTicketSaldo());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcSakbeCombustibleAusenciasDto.class;
+    return TcSakbeTicketsSaldosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdCombustibleAusente()!= null && getIdCombustibleAusente()!=-1L;
+  	return getIdTicketSaldo()!= null && getIdTicketSaldo()!=-1L;
   }
 
   @Override
@@ -199,8 +198,8 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcSakbeCombustibleAusenciasDto other = (TcSakbeCombustibleAusenciasDto) obj;
-    if (getIdCombustibleAusente() != other.idCombustibleAusente && (getIdCombustibleAusente() == null || !getIdCombustibleAusente().equals(other.idCombustibleAusente))) {
+    final TcSakbeTicketsSaldosDto other = (TcSakbeTicketsSaldosDto) obj;
+    if (getIdTicketSaldo() != other.idTicketSaldo && (getIdTicketSaldo() == null || !getIdTicketSaldo().equals(other.idTicketSaldo))) {
       return false;
     }
     return true;
@@ -209,7 +208,7 @@ public class TcSakbeCombustibleAusenciasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdCombustibleAusente() != null ? getIdCombustibleAusente().hashCode() : 0);
+    hash = 67 * hash + (getIdTicketSaldo() != null ? getIdTicketSaldo().hashCode() : 0);
     return hash;
   }
 

@@ -14,8 +14,8 @@
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
-        'ticket'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'lugar'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'ticket'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'lugar'          : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idCombustibleEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
@@ -45,14 +45,47 @@
     </script>		
 		<style>
       .manzana-lote-font {font-size: 2.5vw !important;}
+      .ui-commandlink {color: white !important;}
+      .ui-progressbar {height: 25px !important;}
+      .ui-progressbar-value {background-image:none !important;background-color: green !important;}
+      .ui-progressbar-label {font-size: 16px;color:yellow;padding-top: 4px;}
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
-					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
-						<p:tab title="Busqueda:">
+					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
+						<p:tab id="avance" title="Litros disponibles:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesVisor.doLoadPorcentajes}"/>
+                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:panelGrid columns="3" styleClass="janal-wid-100">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Litro(s):"/>
+                    <p:inputText value="#{sakbeCombustiblesVisor.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Saldo:"/>
+                    <p:inputText value="#{sakbeCombustiblesVisor.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Tickets:"/>
+                    <p:inputText value="#{sakbeCombustiblesVisor.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                </p:panelGrid>  
+ 								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministros()}">
+                  <p:progressBar value="#{sakbeCombustiblesVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesVisor.attrs.porcentaje.saldo} LTS #{sakbeCombustiblesVisor.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+                </p:commandLink>  
+              </p:panelGrid>   
+						</p:tab>
+						<p:tab title="Criterios:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
                 <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{sakbeCombustiblesVisor.attrs.isMatriz}" styleClass="janal-display-none"/>
                 <p:selectOneMenu id="idEmpresa" value="#{sakbeCombustiblesVisor.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-display-none" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -64,10 +97,6 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="consecutivo" value="Folio:"/>
-                <p:inputText id="consecutivo" value="#{sakbeCombustiblesVisor.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
-                <p:outputLabel for="ticket" value="No. ticket:"/>
-                <p:inputText id="ticket" value="#{sakbeCombustiblesVisor.attrs.ticket}" styleClass="janal-wid-100-txt"/>              
                 <p:outputLabel for="lugar" value="Lugar compra:"/>
                 <p:inputText id="lugar" value="#{sakbeCombustiblesVisor.attrs.lugar}" styleClass="janal-wid-100-txt"/>              
                 <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
@@ -82,9 +111,24 @@
                   </p:column>   
                 </p:selectOneMenu>
               </p:panelGrid>
+						</p:tab>
+						<p:tab title="Busqueda:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                <p:panelGrid columns="2" styleClass="janal-wid-100">              
+    							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                     <p:outputLabel for="consecutivo" value="Folio:"/>
+                     <p:inputText id="consecutivo" value="#{sakbeCombustiblesVisor.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                    <p:outputLabel for="ticket" value="No. ticket:"/>
+                    <p:inputText id="ticket" value="#{sakbeCombustiblesVisor.attrs.ticket}" styleClass="janal-wid-100-txt"/>              
+                  </p:panelGrid>
+                </p:panelGrid>
+              </p:panelGrid>
               <p:separator/>
               <div class="janal-wid-100">
                 <span class="janal-float-left">
+                  <p:commandButton title="Suministrar" icon="fa fa-gas-pump" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doSuministros()}" process="@this" styleClass="janal-text-white"/>
                   <p:commandButton title="Agregar" icon="fa fa-plus" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
                 </span>  
                 <span class="janal-align-right">  
@@ -102,13 +146,12 @@
 									<f:setPropertyActionListener value="#{row}" target="#{sakbeCombustiblesVisor.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-                  <p:outputLabel value="Litros: &lt;b&gt;#{row.litros}&lt;/b&gt; | Precio por litro: &lt;b&gt;$ #{row.precioLitro}&lt;/b&gt;" escape="false" styleClass="janal-color-blue"/>
+                  <p:outputLabel value="Litros: &lt;b&gt;#{row.litros} #{row.combustible}&lt;/b&gt; | Precio por litro: &lt;b&gt;$ #{row.precioLitro}&lt;/b&gt;" escape="false" styleClass="janal-color-blue"/>
 									<p:outputLabel value="&lt;b&gt;Lugar compra:&lt;/b&gt; #{row.lugar}" escape="false"/>
                   <p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha}" styleClass="janal-color-purple Fs16" escape="false"/>
 									<p:outputLabel value="&lt;b&gt;Saldo litro(s):&lt;/b&gt; #{row.saldo} | &lt;b&gt;Importe total:&lt;/b&gt; $#{row.total}" escape="false"/>
-									<p:outputLabel value="&lt;b&gt;Combustible:&lt;/b&gt; #{row.combustible}" escape="false"/>
 									<p:spacer/>
-									<p:progressBar value="#{row.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
+									<p:progressBar value="#{row.porcentaje.toLong}" labelTemplate="{value}% #{row.saldo} LTS #{row.combustible}" displayOnly="true" style="background:red;"/>
 									<p:spacer/>
 								</p:panelGrid>								
 							</h:panelGrid>

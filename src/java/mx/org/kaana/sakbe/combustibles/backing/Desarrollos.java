@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,6 +24,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 
 @Named(value = "sakbeCombustiblesDesarrollos")
 @ViewScoped
@@ -60,13 +64,10 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
+			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
-      this.attrs.put("idContratoEstatus", opcionResidente.getIdContratoEstatus());
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
-      this.attrs.put("porcentaje", JsfBase.getFlashAttribute("porcentaje"));
-      this.attrs.put("combustible", JsfBase.getFlashAttribute("combustible"));
+      this.attrs.put("porcentaje", this.toLoadCombustible());
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "visor": JsfBase.getFlashAttribute("retorno"));
   		this.doLoad();
     } // try
@@ -173,10 +174,8 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
     	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
-    	JsfBase.setFlashAttribute("idCombustible", this.attrs.get("idCombustible"));
       JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
-  	  JsfBase.setFlashAttribute("combustible", this.attrs.get("combustible"));
-  	  JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=3bc75ce77e818398ad32b135");
+  	  JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
 		} // try
@@ -209,6 +208,24 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
   	JsfBase.setFlashAttribute("combustible", this.attrs.get("combustible"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  }
+ 
+  private Entity toLoadCombustible() throws Exception {
+    Entity regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoCombustible", Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);      
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 }

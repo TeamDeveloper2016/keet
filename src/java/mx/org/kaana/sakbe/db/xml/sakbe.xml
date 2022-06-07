@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeTicketsSaldosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_tickets_saldos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_tickets_saldos
+        where      
+          id_suministro = {idSuministro} and id_combustible = {idCombustible}
+      </select>
+    </unit>    
     <unit id="TcSakbeCombustiblesBitacoraDto">
       <select id="row">
         select      
@@ -59,24 +77,6 @@
           tc_sakbe_tipos_grupos
         where      
           descripcion = '{descripcion}'
-      </select>
-    </unit>    
-    <unit id="TcSakbeCombustibleAusenciasDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_sakbe_combustible_ausencias
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_sakbe_combustible_ausencias
-        where      
-          id_combustible_ausente = {idCombustibleAusente}
       </select>
     </unit>    
     <unit id="TcSakbeCombustiblesEstatusDto">
@@ -139,11 +139,39 @@
       <select id="igual">
         select      
           tc_sakbe_combustibles.id_combustible as id_key,
+          tc_sakbe_combustibles.litros as litrox,
           tc_sakbe_combustibles.*
         from      
           tc_sakbe_combustibles
         where      
           id_combustible= {idCombustible}
+      </select>
+      <select id="abiertos">
+        select      
+          tc_sakbe_combustibles.id_combustible as id_key,
+          tc_sakbe_combustibles.*
+        from      
+          tc_sakbe_combustibles
+        where      
+          id_tipo_combustible= {idTipoCombustible}
+          and id_combustible_estatus in ({disponibles})
+        order by
+          registro desc
+      </select>
+      <select id="depurar">
+        select      
+          tc_sakbe_combustibles.id_combustible as id_key,
+          tc_sakbe_tickets_saldos.id_ticket_saldo,
+          tc_sakbe_tickets_saldos.litros as litrox,
+          tc_sakbe_combustibles.*
+        from      
+          tc_sakbe_combustibles
+        inner join
+          tc_sakbe_tickets_saldos on tc_sakbe_combustibles.id_combustible= tc_sakbe_tickets_saldos.id_combustible
+        where      
+          tc_sakbe_tickets_saldos.id_suministro= {idSuministro}
+        order by
+          tc_sakbe_combustibles.registro desc
       </select>
 			<select id="siguiente">
         select
