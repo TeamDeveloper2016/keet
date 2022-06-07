@@ -52,7 +52,7 @@
 								</p:selectOneMenu>																									
 								<p:outputLabel for="concepto" value="Nombre del concepto:"/>
 								<p:autoComplete id="concepto" var="custom" placeholder="ejemplo: Articulo..." itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCajaChicaConsulta.attrs.conceptoCriterio}" completeMethod="#{keetCajaChicaConsulta.doCompleteConcepto}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replace').click();"/>
+									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replaceConcepto').click();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
 											<h:outputText value="Codigo:" />
@@ -64,7 +64,7 @@
 								</p:autoComplete>																	
 								<p:outputLabel for="gastos" value="Folio del gasto:"/>
 								<p:autoComplete id="gastos" var="custom" placeholder="ejemplo: 2020000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCajaChicaConsulta.attrs.gastoCriterio}" completeMethod="#{keetCajaChicaConsulta.doCompleteGasto}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replaceg').click();"/>
+									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replaceGasto').click();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
 											<h:outputText value="Consecutivo:" />
@@ -76,8 +76,8 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>																																		
-								<p:commandButton id="replace" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
-								<p:commandButton id="replaceg" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+								<p:commandButton id="replaceConcepto" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+								<p:commandButton id="replaceGasto" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
               </p:panelGrid>										
 							<div class="lg-pantalla">
 								<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">

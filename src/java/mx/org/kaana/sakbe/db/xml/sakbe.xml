@@ -103,7 +103,8 @@
     <unit id="TcSakbeSuministrosEstatusDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_suministros_estatus.id_suministro_estatus as id_key,
+          tc_sakbe_suministros_estatus.*
         from      
           tc_sakbe_suministros_estatus
         where 
@@ -171,6 +172,15 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+      <select id="igual">
+        select      
+          tc_sakbe_suministros.id_suministro as id_key,
+          tc_sakbe_suministros.*
+        from      
+          tc_sakbe_suministros
+        where      
+          id_suministro= {idSuministro}
+      </select>      
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -232,6 +242,24 @@
           tc_sakbe_suministros_archivos
         where      
           archivo = '{archivo}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeSuministrosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_suministros_bitacora
+        where      
+          id_suministro_bitacora = {idSuministroBitacora}
       </select>
     </unit>    
     <unit id="TcSakbeTiposCombustiblesDto">

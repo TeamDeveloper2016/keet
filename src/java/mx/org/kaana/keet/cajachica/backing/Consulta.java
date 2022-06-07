@@ -295,7 +295,7 @@ public class Consulta extends IBaseFilter implements Serializable {
     return regresar;
   } // doCancelar		
 	
-	public List<UISelectEntity> doCompleteGasto(String gasto){
+	public List<UISelectEntity> doCompleteGasto(String gasto) {
 		List<UISelectEntity> regresar= null;		
 		Map<String, Object> params   = null;
 		List<Columna> campos         = null;		

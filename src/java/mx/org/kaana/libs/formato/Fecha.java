@@ -53,6 +53,7 @@ public class Fecha {
   public static final int FECHA_NOMBRE_MES_CORTO = 24;
   public static final int DIA_FECHA = 25;
   public static final int DIA_CORTO_FECHA = 26;
+  public static final int DIA_FECHA_CORTA = 27;
 
 	protected Fecha (){
 	}
@@ -213,6 +214,11 @@ public class Fecha {
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
             fecha.substring(0, 4)).concat(" ").concat(fecha.substring(8,10)).concat(":").concat(
             fecha.substring(10,12));
+        break;
+      case DIA_FECHA_CORTA: // Fecha en Dia, dd/mmm/yyyy Miercoles, 03/12/2007
+        fecha =
+					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))+ ", "+
+            fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(0, 4));
         break;
       } // switch
     }

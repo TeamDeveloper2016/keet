@@ -1,6 +1,5 @@
-package mx.org.kaana.sakbe.combustibles.reglas;
+package mx.org.kaana.sakbe.suministros.reglas;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,14 +13,14 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.sakbe.combustibles.beans.Combustible;
-import mx.org.kaana.sakbe.combustibles.beans.Evidencia;
-import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
+import mx.org.kaana.sakbe.suministros.beans.Evidencia;
+import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
 import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
+import mx.org.kaana.sakbe.enums.ESuministrosEstatus;
+import mx.org.kaana.sakbe.suministros.beans.Suministro;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,23 +38,23 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
 	private static final long serialVersionUID=-3186367186737673670L;
  
-	private Combustible combustible;	
+	private Suministro suministro;	
 	private String messageError;
-	private TcSakbeCombustiblesBitacoraDto bitacora;
+	private TcSakbeSuministrosBitacoraDto bitacora;
   private List<Evidencia> evidencia;
 
-	public Transaccion(Combustible combustible, TcSakbeCombustiblesBitacoraDto bitacora) {
-		this(combustible);
+	public Transaccion(Suministro suministro, TcSakbeSuministrosBitacoraDto bitacora) {
+		this(suministro);
 		this.bitacora= bitacora;
 	} // Transaccion
 	
-	public Transaccion(Combustible combustible) {
-		this(combustible, Collections.EMPTY_LIST);
+	public Transaccion(Suministro suministro) {
+		this(suministro, Collections.EMPTY_LIST);
 	} // Transaccion
 
-  public Transaccion(Combustible combustible, List<Evidencia> evidencia) {
-    this.combustible= combustible;
-    this.evidencia  = evidencia;
+  public Transaccion(Suministro suministro, List<Evidencia> evidencia) {
+    this.suministro= suministro;
+    this.evidencia = evidencia;
   }
   
 	public String getMessageError() {
@@ -65,49 +64,44 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                       = false;
-		TcSakbeCombustiblesBitacoraDto registro= null;
+		TcSakbeSuministrosBitacoraDto registro= null;
 		try {
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para el ticket de compra");
-			if(this.combustible!= null && Objects.equal(-1L, this.combustible.getIdBanco())) 
-        this.combustible.setIdBanco(null);
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para el suministro de combustible");
 			switch(accion) {
 				case AGREGAR:
 					Siguiente consecutivo= this.toSiguiente(sesion);
-					this.combustible.setConsecutivo(consecutivo.getConsecutivo());
-					this.combustible.setOrden(consecutivo.getOrden());
-					this.combustible.setEjercicio(new Long(Fecha.getAnioActual()));
-          this.combustible.setSaldo(this.combustible.getLitros());
-          this.combustible.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());
-					DaoFactory.getInstance().insert(sesion, this.combustible);
-					registro= new TcSakbeCombustiblesBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.combustible.getIdCombustibleEstatus(), this.combustible.getIdCombustible());
+					this.suministro.setConsecutivo(consecutivo.getConsecutivo());
+					this.suministro.setOrden(consecutivo.getOrden());
+					this.suministro.setEjercicio(new Long(Fecha.getAnioActual()));
+          this.suministro.setIdSuministroEstatus(ESuministrosEstatus.TERMINADO.getKey());
+					DaoFactory.getInstance().insert(sesion, this.suministro);
+					registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
 					DaoFactory.getInstance().insert(sesion, registro);
           regresar= this.toEvidencias(sesion);
 					break;
 				case MODIFICAR:
-          double diferencia= Numero.toRedondearSat(this.combustible.getLitros()- this.combustible.getSaldo());
-          this.combustible.setSaldo(Numero.toRedondearSat(this.combustible.getSaldo()+ diferencia));
-          this.combustible.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());
-					DaoFactory.getInstance().update(sesion, this.combustible);
-  			  registro= new TcSakbeCombustiblesBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.combustible.getIdCombustibleEstatus(), this.combustible.getIdCombustible());
+          this.suministro.setIdSuministroEstatus(ESuministrosEstatus.TERMINADO.getKey());
+					DaoFactory.getInstance().update(sesion, this.suministro);
+  			  registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
 				  DaoFactory.getInstance().insert(sesion, registro);
           regresar= this.toEvidencias(sesion);
 					break;				
 				case ELIMINAR:
-					this.combustible.setIdCombustibleEstatus(ECombustiblesEstatus.ELIMINADO.getKey());
-          DaoFactory.getInstance().update(sesion, this.combustible);
-  			  registro= new TcSakbeCombustiblesBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.combustible.getIdCombustibleEstatus(), this.combustible.getIdCombustible());
+					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.ELIMINADO.getKey());
+          DaoFactory.getInstance().update(sesion, this.suministro);
+  			  registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
           regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.combustible.setIdCombustibleEstatus(this.bitacora.getIdCombustibleEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.combustible)>= 1L;
+						this.suministro.setIdSuministroEstatus(this.bitacora.getIdSuministroEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.suministro)>= 1L;
 					} // if
 					break;
 				case COMPLEMENTAR: 
-					this.combustible.setIdCombustibleEstatus(ECombustiblesEstatus.ELABORADO.getKey());
-					DaoFactory.getInstance().update(sesion, this.combustible);
-  			  registro= new TcSakbeCombustiblesBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.combustible.getIdCombustibleEstatus(), this.combustible.getIdCombustible());
+					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.TERMINADO.getKey());
+					DaoFactory.getInstance().update(sesion, this.suministro);
+  			  registro= new TcSakbeSuministrosBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), this.suministro.getIdCombustible());
           regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
 					break;
 			} // switch
@@ -118,8 +112,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			Error.mensaje(e);
 			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
-		if(this.combustible!= null)
-			LOG.info("Se generó de forma correcta el folio: "+ this.combustible.getConsecutivo());
+		if(this.suministro!= null)
+			LOG.info("Se generó de forma correcta el folio: "+ this.suministro.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
@@ -129,9 +123,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
-			params.put("idEmpresa", this.combustible.getIdEmpresa());
 		  params.put("operador", this.getCurrentSign());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcSakbeCombustiblesDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcSakbeSuministrosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
@@ -155,7 +148,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= Boolean.TRUE;
             break;
           case INSERT:
-            item.setIdCombustible(this.combustible.getIdCombustible());
+            item.setIdSuministro(this.suministro.getIdSuministro());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
           case UPDATE:

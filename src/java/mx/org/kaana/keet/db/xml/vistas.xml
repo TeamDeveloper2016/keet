@@ -6789,35 +6789,6 @@
 		    order by
 		      tc_keet_desarrollos.nombres
 			</select>	
-			<select id="lazy">
-				select
-          tc_keet_desarrollos.id_desarrollo as id_key,
-          tc_keet_desarrollos.clave,
-          tc_keet_desarrollos.nombres,
-          tc_keet_desarrollos.registro,
-          tc_keet_desarrollos.descripcion,
-          tc_mantic_clientes.id_cliente,
-          tc_mantic_clientes.razon_social,
-          concat(tc_mantic_domicilios.calle, ', ', tc_mantic_domicilios.numero_exterior, if(tc_mantic_domicilios.numero_interior is null, '', concat(',', tc_mantic_domicilios.numero_interior)), if(tc_mantic_domicilios.codigo_postal is NULL, '', concat(', C.P.', tc_mantic_domicilios.codigo_postal))) domicilio,
-					tc_mantic_clientes.id_empresa
-        from
-          tc_keet_desarrollos
-        inner join 
-          tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_desarrollos.id_cliente
-        inner join 
-          tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio
-        left join 
-          tc_keet_proyectos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        left join 
-          tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-				where
-          tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
-          and {condicion}
-        group by
-          tc_keet_desarrollos.id_desarrollo
-		    order by
-		      tc_keet_desarrollos.nombres
-			</select>	
 			<select id="residentes">
 				select
 					tc_keet_desarrollos.id_desarrollo as id_key,

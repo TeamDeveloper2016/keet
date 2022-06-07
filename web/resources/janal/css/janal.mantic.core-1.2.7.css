@@ -849,13 +849,13 @@ div.ui-panelgrid-content {
 .janal-back-color {
   background-color: azure;
 }
-.janal-back-normal {background-color: initial;}
-.janal-field-error {color: red;}
-.janal-color-red {color: red;}
-.janal-color-orange {color: orange;}
-.janal-color-purple {color: purple;}
-.janal-color-green {color: green;}
-.janal-color-blue {color: blue;}
+.janal-back-normal{background-color: initial;}
+.janal-field-error{color: red;}
+.janal-color-red{color: red;}
+.janal-color-orange{color: orange;}
+.janal-color-purple{color: purple;}
+.janal-color-green{color: green;}
+.janal-color-blue{color: blue;}
 .janal-color-white{color: white;}
 .janal-color-black{color: black;}
 .janal-color-yellow{color: yellow;}

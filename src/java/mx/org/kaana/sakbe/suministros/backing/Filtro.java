@@ -1,4 +1,4 @@
-package mx.org.kaana.sakbe.combustibles.backing;
+package mx.org.kaana.sakbe.suministros.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -33,8 +33,9 @@ import mx.org.kaana.sakbe.combustibles.beans.Combustible;
 import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.SelectEvent;
 
-@Named(value = "sakbeCombustiblesFiltro")
+@Named(value = "sakbeSuministrosFiltro")
 @ViewScoped 
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -66,8 +67,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
+      this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idCombustible")!= null) 
+      if(this.attrs.get("idSuministro")!= null) 
 			  this.doLoad();
     } // try
     catch (Exception e) {
@@ -81,19 +83,17 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("isAdministrador", JsfBase.isAdminEncuestaOrAdmin()? Constantes.SQL_VERDADERO: Constantes.SQL_FALSO);
-      params.put("idUsuario", JsfBase.getIdUsuario());
-      params.put("sortOrder", "order by tc_sakbe_combustibles.registro desc");
+      params.put("sortOrder", "order by tc_sakbe_suministros.registro desc");
       columns = new ArrayList<>();
+      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("recibio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("precioLitro", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("fecha", EFormatoDinamicos.DIA_FECHA_CORTA));      
+      columns.add(new Columna("horas", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaCombustiblesDto", params, columns);
-			this.attrs.put("idCombustible", null);
+      this.lazyModel = new FormatCustomLazy("VistaCombustiblesDto", "suministros", params, columns);
+			this.attrs.put("idSuministro", null);
       this.reset();
     } // try
     catch (Exception e) {
@@ -127,11 +127,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Sakbe/Combustibles/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Sakbe/Suministros/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public String toPagina() {
-    return "/Paginas/Sakbe/Combustibles/filtro";
+    return "/Paginas/Sakbe/Suministros/filtro";
   }
   
   public void doEliminar(Entity seleccionado) {
@@ -148,9 +148,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idCombustible", seleccionado.getKey());
 			transaccion= new Transaccion((Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El ticket de compra se ha eliminado correctamente", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar", "El suministro se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el ticket de combustible", ETipoMensaje.ALERTA);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el suministro", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -170,9 +170,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       Combustible combustible= (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params);
 			transaccion= new Transaccion(combustible);
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-				JsfBase.addMessage("Eliminar", "El ticket de compra se recuperó correctamente", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar", "El suministro se recuperó correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al recuperar el ticket de compra", ETipoMensaje.ALERTA);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al recuperar el suministro", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -216,18 +216,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeCombustiblesEstatusDto", "row", params, columns, "nombre"));
-			this.attrs.put("idCombustibleEstatus", new UISelectEntity("-1"));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeSuministrosEstatusDto", "row", params, columns, "nombre"));
+			this.attrs.put("idSuministroEstatus", new UISelectEntity("-1"));
+      this.doLoadDesarrollos();
     } // try
     finally {
       Methods.clean(columns);
@@ -235,6 +228,88 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
 	}
 	
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();	
+  		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, columns, "clave"));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+      this.doLoadMaquinarias();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos	
+  
+	public void doLoadMaquinarias() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();	
+  		params.put("idDesarrollo", this.attrs.get("idDesarrollo"));			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("maquinarias", (List<UISelectEntity>) UIEntity.seleccione("VistaCombustiblesDto", "maquinarias", params, columns, "clave"));			
+			this.attrs.put("idMaquinaria", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinarias")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadMaquinarias
+
+	public List<UISelectEntity> doCompleteCombustible(String ticket) {
+		List<UISelectEntity> regresar= null;		
+		Map<String, Object> params   = new HashMap<>();
+		List<Columna> columns        = null;		
+		try {			
+			columns= new ArrayList<>();
+			columns.add(new Columna("consecutivo", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			params.put("consecutivo", ticket);
+			regresar= UIEntity.build("VistaCombustiblesDto", "combustibles", params, columns, 30L);						
+      this.attrs.put("combustibles", regresar);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(columns);
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doCompleteCombustible
+  
+	public void doAsignaCombustible(SelectEvent event) {
+		UISelectEntity seleccionado = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos = (List<UISelectEntity>) this.attrs.get("combustibles");
+			seleccionado= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("idCombustible", seleccionado);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCombustible
+  
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
@@ -287,30 +362,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA ["+ isViewException+ "]");
 	}
 
-  public String doSuministros(Entity row) {
-    this.attrs.put("combustible", row);
+  public String doSuministros(Entity seleccionado) {
+    this.attrs.put("seleccionado", seleccionado);
     return this.doSuministros();
   }
   
   public String doSuministros() {
-    String regresar= null;
-    Map<String, Object> params = new HashMap<>();
-    try {      
-      params.put("idCombustible", ((Entity)this.attrs.get("combustible")).getKey());
-      JsfBase.setFlashAttribute("idCombustible", ((Entity)this.attrs.get("combustible")).getKey());
-      JsfBase.setFlashAttribute("porcentaje", this.attrs.get("combustible"));
-      JsfBase.setFlashAttribute("combustible", (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params));
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
-      return "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=3bc75ce77e818398ad32b135".concat(Constantes.REDIRECIONAR_AMPERSON);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
-    return regresar;
+		JsfBase.setFlashAttribute("idCombustible", this.attrs.get("idCombustible"));
+		return "/Paginas/Sakbe/Suministros/filtro".concat(Constantes.REDIRECIONAR);
 	}
   
 	@Override

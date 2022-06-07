@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Tickets de compra de combustibles registrados" />
+  <ui:param name="titulo" value="Tickets de combustibles registrados" />
   <ui:param name="janalBackingPage" value="#{sakbeCombustiblesVisor}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
@@ -83,23 +83,30 @@
                 </p:selectOneMenu>
               </p:panelGrid>
               <p:separator/>
-              <div class="janal-align-right">
-                <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-                <p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+              <div class="janal-wid-100">
+                <span class="janal-float-left">
+                  <p:commandButton title="Agregar" icon="fa fa-plus" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
+                </span>  
+                <span class="janal-align-right">  
+                  <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+                  <p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+                </span>  
               </div>
 						</p:tab>
 					</p:accordionPanel>           					
           <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCombustiblesVisor.lazyModel}" styleClass="detalle" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesVisor.lazyModel.rowCount gt sakbeCombustiblesVisor.lazyModel.pageSize}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorPosition="bottom" rowIndexVar="index">
 						<p:panel header="TICKET: #{row.ticket}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministro(row)}">
-									<p:outputLabel value="#{row.consecutivo}" title="Lugar: #{row.lugar}" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>
+								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministros(row)}">
+									<p:outputLabel value="#{row.consecutivo}" title="Click para registrar un suministro" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{sakbeCombustiblesVisor.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
                   <p:outputLabel value="Litros: &lt;b&gt;#{row.litros}&lt;/b&gt; | Precio por litro: &lt;b&gt;$ #{row.precioLitro}&lt;/b&gt;" escape="false" styleClass="janal-color-blue"/>
 									<p:outputLabel value="&lt;b&gt;Lugar compra:&lt;/b&gt; #{row.lugar}" escape="false"/>
-									<p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha} | &lt;b&gt;Importe total:&lt;/b&gt; $ #{row.total}" escape="false"/>
+                  <p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha}" styleClass="janal-color-purple Fs16" escape="false"/>
+									<p:outputLabel value="&lt;b&gt;Saldo litro(s):&lt;/b&gt; #{row.saldo} | &lt;b&gt;Importe total:&lt;/b&gt; $#{row.total}" escape="false"/>
+									<p:outputLabel value="&lt;b&gt;Combustible:&lt;/b&gt; #{row.combustible}" escape="false"/>
 									<p:spacer/>
 									<p:progressBar value="#{row.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
 									<p:spacer/>
@@ -107,8 +114,7 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right">
-                  <span class="janal-float-left janal-wid-20">
-                    <p:commandButton title="Agregar" icon="fa fa-plus" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
+                  <span class="janal-float-left janal-column-left janal-wid-20">
                     <p:commandButton title="Modificar" icon="fa fa-edit" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doModificar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '1' or row['idCombustibleEstatus'] eq '2' or row['saldo'] eq '100'? '': 'none'}"/>
                     <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeCombustiblesVisor.doEliminar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '1' or row['saldo'] eq '100'? '': 'none'}"/>
                     <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeCombustiblesVisor.doRecuperar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idCombustibleEstatus'] eq '6'? '': 'none'}"/>

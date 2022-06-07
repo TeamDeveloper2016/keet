@@ -33,7 +33,7 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
   }
   
   public Combustible(Long idCombustible) {
-    this(
+    super(
       JsfBase.getAutentifica().getPersona().getIdEmpresaPersona(), // idEmpresa      
       1L, // idTipoMedioPago, 
       null, // ticket, 
@@ -54,36 +54,12 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
       null, // referencia
       0D // total
     );    
+    this.ikEmpresa= new UISelectEntity(this.getIdEmpresa());
+    this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
+    this.ikTipoMedioPago= new UISelectEntity(this.getIdTipoMedioPago());
+    this.ikBanco= new UISelectEntity(this.getIdBanco());
   }
   
-  public Combustible(Long idEmpresa, Long idTipoMedioPago, String ticket, String lugar, Double saldo, Long idTipoCombustible, Long idCombustibleEstatus, Long ejercicio, String consecutivo, LocalDate fecha, Double precioLitro, Long idUsuario, Double litros, Long orden, Long idCombustible, String observaciones, Long idBanco, String referencia, Double total) {
-    super(
-      idEmpresa, // idEmpresa
-      idTipoMedioPago, // idTipoMedioPago, 
-      ticket, // ticket, 
-      lugar, // lugar, 
-      saldo, // saldo, 
-      idTipoCombustible, // idTipoCombustible, 
-      idTipoCombustible, // idCombustibleEstatus, 
-      new Long(Fecha.getAnioActual()), // ejercicio, 
-      consecutivo, // consecutivo, 
-      LocalDate.now(), // fecha, 
-      precioLitro, // precioLitro, 
-      JsfBase.getIdUsuario(), // idUsuario, 
-      litros, // litros, 
-      orden, // orden, 
-      -1L, // idCombustible
-      observaciones, // observaciones
-      idBanco, // idBanco
-      referencia, // referencia
-      total // total
-    );
-    this.ikEmpresa= new UISelectEntity(idEmpresa);
-    this.ikTipoCombustible= new UISelectEntity(idTipoCombustible);
-    this.ikTipoMedioPago= new UISelectEntity(idTipoMedioPago);
-    this.ikBanco= new UISelectEntity(idBanco);
-  }
-
   public UISelectEntity getIkEmpresa() {
     return ikEmpresa;
   }

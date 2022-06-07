@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{sakbeCombustiblesDesarrollos.attrs.titulo}" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombres'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };
+    </script>		
+		<style type="text/css">			
+		</style>
+  </ui:define>
+  <ui:define name="contenido">    		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+						<p:tab title="Busqueda:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+								<p:outputLabel for="nombres" value="Clave ó nombre del desarrollo:"/>
+								<p:inputText id="nombres" value="#{sakbeCombustiblesDesarrollos.attrs.nombres}" styleClass="janal-wid-100-txt"/>  
+								<p:outputLabel for="razonSocial" value="Razón social del cliente:"/>
+								<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{sakbeCombustiblesDesarrollos.attrs.cliente}" completeMethod="#{sakbeCombustiblesDesarrollos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+											<h:outputText value="Clave:" />
+											<h:outputText value="#{custom.clave}" />
+											<h:outputText value="RFC:" />
+											<h:outputText value="#{custom.rfc}" />
+											<h:outputText value="Razón social:" />
+											<h:outputText value="#{custom.razonSocial}" />
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>
+							</p:panelGrid>
+							<p:separator/>
+							<div class="janal-align-right">
+								<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{sakbeCombustiblesDesarrollos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+								<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{sakbeCombustiblesDesarrollos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							</div>
+						</p:tab>
+						<p:tab title="Ticket:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+								<p:outputLabel for="ticket" value="Ticket:"/>
+                <p:inputText id="ticket" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.ticket}" styleClass="janal-wid-100-txt" readonly="true"/>  
+                <p:panelGrid columns="2" styleClass="janal-wid-100">              
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                    <p:outputLabel for="litros" value="Litros:"/>
+                    <p:inputText id="litros" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.litros} [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                    <p:outputLabel for="saldo" value="Saldo:"/>
+                    <p:inputText id="saldo" value="#{sakbeCombustiblesDesarrollos.attrs.combustible.saldo} [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>  
+                  </p:panelGrid>
+                </p:panelGrid>
+  							<p:spacer/>
+								<p:progressBar value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.toLong}" labelTemplate="{value}%" displayOnly="true"/>
+              </p:panelGrid>
+						</p:tab>
+					</p:accordionPanel>           					
+          <p:dataGrid id="tabla" var="item" value="#{sakbeCombustiblesDesarrollos.desarrollos}" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesDesarrollos.desarrollos.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{item.nombres}" style="width:100%;" >
+							<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">										
+								<p:commandLink id="ayuda" action="#{sakbeCombustiblesDesarrollos.doPagina}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
+									<f:setPropertyActionListener value="#{item}" target="#{sakbeCombustiblesDesarrollos.seleccionado}"  />
+								</p:commandLink>										                    
+								<h:outputText value="Clave: #{item.clave}" styleClass="FontBold Fs18 janal-color-blue"/>
+								<p:outputLabel value="Domicilio:" styleClass="FontBold"/>
+								<h:outputText value="#{item.domicilio}" />
+								<p:outputLabel value="Cliente:" styleClass="FontBold"/>
+								<h:outputText value="#{item.razonSocial}" />								
+							</p:panelGrid>
+							<f:facet name="footer" >
+								<div class="janal-line-button">
+									<p:commandButton iconPos="left" title="Georeferencia" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" action="#{sakbeCombustiblesDesarrollos.doGeoreferencia}">
+										<f:setPropertyActionListener value="#{item}" target="#{sakbeCombustiblesDesarrollos.seleccionado}"  />
+									</p:commandButton>
+								</div>
+							</f:facet>
+						</p:panel>
+					</p:dataGrid>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" accesskey="r" process="@this" action="#{sakbeCombustiblesDesarrollos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" styleClass="#{kajoolUtilAplicacion.isMobile? '': 'janal-bottom-button'}" process="@this" action="#{sakbeCombustiblesDesarrollos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
