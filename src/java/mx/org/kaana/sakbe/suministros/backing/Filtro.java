@@ -29,9 +29,9 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
 import mx.org.kaana.sakbe.suministros.beans.Suministro;
-import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
 import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
 import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import org.apache.commons.logging.Log;
@@ -96,7 +96,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel= new FormatCustomLazy("VistaCombustiblesDto", "suministros", params, columns);
+      this.lazyModel= new FormatCustomLazy("VistaSuministrosDto", "suministros", params, columns);
       this.reset();
     } // try
     catch (Exception e) {
@@ -120,14 +120,15 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public String doAccion(String accion) {
 		try {
-			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
       Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+      this.attrs.put("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
+			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
       JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
       JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
-      JsfBase.setFlashAttribute("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      JsfBase.setFlashAttribute("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
       JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
       JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
-      JsfBase.setFlashAttribute("retorno", this.toPagina());		
+      JsfBase.setFlashAttribute("retorno", this.toPagina().concat(Constantes.REDIRECIONAR));		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -271,7 +272,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("maquinarias", (List<UISelectEntity>) UIEntity.seleccione("VistaCombustiblesDto", "maquinarias", params, columns, "clave", Constantes.SQL_TODOS_REGISTROS));
+      this.attrs.put("maquinarias", (List<UISelectEntity>) UIEntity.seleccione("VistaSuministrosDto", "maquinarias", params, columns, "clave", Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("idMaquinaria", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinarias")));			
     } // try
     catch (Exception e) {
@@ -381,13 +382,14 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doSuministros() {
     try {      
       Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+      this.attrs.put("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
 			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
       JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
       JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
-      JsfBase.setFlashAttribute("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      JsfBase.setFlashAttribute("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
       JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
       JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
-      JsfBase.setFlashAttribute("retorno", this.toPagina());		
+      JsfBase.setFlashAttribute("retorno", this.toPagina().concat(Constantes.REDIRECIONAR));		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -413,7 +415,14 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   }
-  
+
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.SUMINISTROS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.SUMINISTROS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Sakbe/Suministros/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

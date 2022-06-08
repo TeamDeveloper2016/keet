@@ -138,7 +138,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.suministro= (Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params);
           this.suministro.setIkDesarrollo(new UISelectEntity(this.suministro.getIdDesarrollo()));
           this.suministro.setIkMaquinaria(new UISelectEntity(this.suministro.getIdMaquinaria()));
-    		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaCombustiblesDto", "constatar", params);
+    		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaSuministrosDto", "evidencias", params);
           break;
       } // switch
       this.suministro.setIdTipoCombustible((Long)this.attrs.get("idTipoCombustible"));
@@ -235,7 +235,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			maquinarias= UIEntity.seleccione("VistaCombustiblesDto", "maquinarias", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
+			maquinarias= UIEntity.seleccione("VistaSuministrosDto", "maquinarias", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("maquinarias", maquinarias);
       if(!maquinarias.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))

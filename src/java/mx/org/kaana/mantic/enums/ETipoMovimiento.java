@@ -18,7 +18,9 @@ public enum ETipoMovimiento {
 	NOTAS_CREDITOS("nota(s) de credito(s)", "tc_mantic_creditos_notas", "idCreditoNota", "VistaNotasCreditosDto"),
 	CIERRES_CAJA("cierre(s) de caja", "tc_mantic_cierres", "idCierre", "VistaCierresCajasDto"),
 	FACTURAS_FICTICIAS("factura(s)", "tc_mantic_ficticias", "idVenta", "VistaFicticiasDto"),
-	TRANSFERENCIAS("transferencia(s)", "tc_mantic_transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto");
+	TRANSFERENCIAS("transferencia(s)", "tc_mantic_transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto"),
+	COMBUSTIBLES("combustible(s)", "tc_mantic_transferencias", "idCombustible", "VistaCombustiblesDto"),
+	SUMINISTROS("suministro(s)", "tc_sakbe_suministros", "idSuministro", "VistaSuministrosDto");
 	 
 	private final String title;
 	private final String table;

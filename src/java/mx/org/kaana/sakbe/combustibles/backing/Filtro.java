@@ -28,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.sakbe.combustibles.reglas.Transaccion;
 import mx.org.kaana.sakbe.combustibles.beans.Combustible;
 import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
@@ -352,6 +353,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   }
+
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.COMBUSTIBLES);
+		JsfBase.setFlashAttribute(ETipoMovimiento.COMBUSTIBLES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Sakbe/Suministros/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
   
 	@Override
 	protected void finalize() throws Throwable {
