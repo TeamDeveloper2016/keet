@@ -30,9 +30,14 @@
 			};	
 			
     	$(document).ready(function() {
+        disabledComponent();
 				janal.decimals= 4;
       });
 			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+      }      
+      
 			function execute() {
 				var ok= janal.execute();
 				janal.desbloquear();
@@ -64,7 +69,7 @@
 						<p:outputLabel value="EL TICKET DE COMPRA [#{sakbeCombustiblesAccion.combustible.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeCombustiblesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeCombustiblesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{sakbeCombustiblesAccion.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:ajax event="tabChange" listener="#{sakbeCombustiblesAccion.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); disabledComponent()"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
 								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeCombustiblesAccion.agregar}" styleClass="recalculo"/>
@@ -204,11 +209,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeCombustiblesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeCombustiblesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeCombustiblesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeCombustiblesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeCombustiblesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeCombustiblesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

@@ -25,11 +25,16 @@
 			};	
 			
     	$(document).ready(function() {
+        disabledComponent();
 				janal.decimals= 4;
         initLocalization();
 				setTimeout('localization();', 1000);        
       });
 			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+      }      
+      
 			function execute() {
 				var ok= janal.execute();
 				janal.desbloquear();
@@ -108,7 +113,7 @@
 						</p:tab>
 					</p:accordionPanel>           					
           <p:tabView id="contenedorGrupos" widgetVar="wcontenedor" activeIndex="#{sakbeSuministrosAccion.attrs.index}">
-            <p:ajax event="tabChange" listener="#{sakbeSuministrosAccion.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:ajax event="tabChange" listener="#{sakbeSuministrosAccion.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); disabledComponent()"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
 								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeSuministrosAccion.agregar}" styleClass="recalculo"/>
@@ -226,12 +231,12 @@
 		<div class="lg-pantalla">
       <p:commandButton value="Continuar" icon="fa fa-gas-pump" accesskey="a" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(1)"/>
 			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton title="Continuar" icon="fa fa-gas-pump" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(1)"/>
 			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

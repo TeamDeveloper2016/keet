@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -28,9 +29,11 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.sakbe.combustibles.reglas.Transaccion;
-import mx.org.kaana.sakbe.combustibles.beans.Combustible;
+import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
+import mx.org.kaana.sakbe.suministros.beans.Suministro;
 import mx.org.kaana.sakbe.db.dto.TcSakbeCombustiblesBitacoraDto;
+import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
+import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
@@ -66,11 +69,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
       this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
+      this.attrs.put("idTipoCombustible", 1L);
 			this.toLoadCatalog();
-      if(this.attrs.get("idSuministro")!= null) 
+      if(this.attrs.get("idSuministro")!= null) {
 			  this.doLoad();
+        this.attrs.put("idSuministro", null);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,10 +95,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("recibio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("horas", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaCombustiblesDto", "suministros", params, columns);
-			this.attrs.put("idSuministro", null);
+      this.lazyModel= new FormatCustomLazy("VistaCombustiblesDto", "suministros", params, columns);
       this.reset();
     } // try
     catch (Exception e) {
@@ -112,16 +115,19 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public String doModificar(Entity seleccionado) {
     this.attrs.put("seleccionado", seleccionado);
-    return this.doAccion("MODIFICAR");
+    return this.doAccion("CONSULTAR");
   }
   
   public String doAccion(String accion) {
-    EAccion eaccion= null;
 		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", this.toPagina());		
-			JsfBase.setFlashAttribute("idCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+      JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
+      JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+      JsfBase.setFlashAttribute("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
+      JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
+      JsfBase.setFlashAttribute("retorno", this.toPagina());		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -145,8 +151,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      params.put("idCombustible", seleccionado.getKey());
-			transaccion= new Transaccion((Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params));
+      params.put("idSuministro", seleccionado.getKey());
+			transaccion= new Transaccion((Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El suministro se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
@@ -166,9 +172,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      params.put("idCombustible", seleccionado.getKey());
-      Combustible combustible= (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params);
-			transaccion= new Transaccion(combustible);
+      params.put("idSuministro", seleccionado.getKey());
+      Suministro suministro= (Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params);
+			transaccion= new Transaccion(suministro);
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 				JsfBase.addMessage("Eliminar", "El suministro se recuperó correctamente", ETipoMensaje.INFORMACION);
 			else
@@ -186,20 +192,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idCombustible")) && !this.attrs.get("idCombustible").toString().equals("-1"))
-  		sb.append("(tc_sakbe_combustibles.id_combustible=").append(this.attrs.get("idCombustible")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idSuministro")) && !this.attrs.get("idSuministro").toString().equals("-1"))
+  		sb.append("(tc_sakbe_suministros.id_suministro= ").append(this.attrs.get("idSuministro")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
+  		sb.append("(tc_sakbe_suministros.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idMaquinaria")) && !this.attrs.get("idMaquinaria").toString().equals("-1"))
+  		sb.append("(tc_sakbe_suministros.id_maquinaria=").append(this.attrs.get("idMaquinaria")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_sakbe_combustibles.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_sakbe_suministros.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_sakbe_combustibles.fecha, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_sakbe_suministros.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_sakbe_combustibles.fecha, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("ticket")))
-  		sb.append("(tc_sakbe_combustibles.ticket=").append(((UISelectEntity)this.attrs.get("ticket")).getKey()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("lugar")))
-  		sb.append("(tc_sakbe_combustibles.lugar like '%").append(this.attrs.get("lugar")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("idCombustibleEstatus")) && !this.attrs.get("idCombustibleEstatus").toString().equals("-1"))
-  		sb.append("(tc_sakbe_combustibles.id_combustible_estatus= ").append(this.attrs.get("idCombustibleEstatus")).append(") and ");
+		  sb.append("(date_format(tc_sakbe_suministros.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("litros")))
+  		sb.append("(tc_sakbe_suministros.litros= '").append(this.attrs.get("litros")).append("') and ");
+		if(!Cadena.isVacio(this.attrs.get("recibio")))
+  		sb.append("(tc_sakbe_suministros.recibio like '%").append(((UISelectEntity)this.attrs.get("recibio")).getKey()).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("idSuministroEstatus")) && !this.attrs.get("idSuministroEstatus").toString().equals("-1"))
+  		sb.append("(tc_sakbe_suministros.id_suministro_estatus= ").append(this.attrs.get("idSuministroEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -215,9 +225,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
+			params.put(Constantes.SQL_CONDICION, "id_suministro_estatus in (2,3,4)");
 			columns= new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeSuministrosEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idSuministroEstatus", new UISelectEntity("-1"));
       this.doLoadDesarrollos();
@@ -260,7 +271,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("maquinarias", (List<UISelectEntity>) UIEntity.seleccione("VistaCombustiblesDto", "maquinarias", params, columns, "clave"));			
+      this.attrs.put("maquinarias", (List<UISelectEntity>) UIEntity.seleccione("VistaCombustiblesDto", "maquinarias", params, columns, "clave", Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("idMaquinaria", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinarias")));			
     } // try
     catch (Exception e) {
@@ -317,8 +328,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_combustible_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcSakbeCombustiblesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			params.put(Constantes.SQL_CONDICION, "id_suministro_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcSakbeSuministrosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
 		} // try
@@ -332,15 +343,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion                = null;
-    TcSakbeCombustiblesBitacoraDto bitacora= null;
+		Transaccion transaccion               = null;
+    TcSakbeSuministrosBitacoraDto bitacora= null;
 		Entity seleccionado       = null;
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      params.put("idCombustible", seleccionado.toMap());
-			Combustible orden= (Combustible)DaoFactory.getInstance().toEntity(Combustible.class, "TcSakbeCombustiblesDto", "igual", params);
-  	  bitacora= new TcSakbeCombustiblesBitacoraDto((String) this.attrs.get("justificacion"), -1L, JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+      params.put("idSuministro", seleccionado.toMap());
+			Suministro orden= (Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params);
+  	  bitacora= new TcSakbeSuministrosBitacoraDto((String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), -1L, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
@@ -368,9 +379,40 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String doSuministros() {
-		JsfBase.setFlashAttribute("idCombustible", this.attrs.get("idCombustible"));
+    try {      
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
+      JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
+      JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+      JsfBase.setFlashAttribute("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
+      JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
+      JsfBase.setFlashAttribute("retorno", this.toPagina());		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
 		return "/Paginas/Sakbe/Suministros/filtro".concat(Constantes.REDIRECIONAR);
 	}
+  
+  private Entity toLoadCombustible() throws Exception {
+    Entity regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 	@Override
 	protected void finalize() throws Throwable {

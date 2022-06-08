@@ -6,14 +6,13 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Suministro de combustibles a la maquinaria" />
+  <ui:param name="titulo" value="Listado de suministro de combustibles" />
   <ui:param name="janalBackingPage" value="#{sakbeSuministrosFiltro}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
         'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'idCombustible'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         'idMaquinaria'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'litros'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -60,7 +59,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{sakbeSuministrosFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-  							<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{sakbeSuministrosFiltro.doLoadMaquinaria}" update="idMaquinaria" oncomplete="janal.desbloquear();"/>
+  							<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{sakbeSuministrosFiltro.doLoadMaquinarias}" update="idMaquinaria" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{sakbeSuministrosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -69,8 +68,8 @@
                   <h:outputText value="#{item.nombres}"/>
                 </p:column>                   
               </p:selectOneMenu>
-              <p:outputLabel for="idCombustible" value="Folio compra:"/>
-              <p:autoComplete id="idCombustible" var="custom" placeholder="ejemplo: 2022000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{sakbeSuministrosFiltro.attrs.idCombustible}" completeMethod="#{sakbeSuministrosFiltro.doCompleteCombustible}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:outputLabel for="idCombustible" value="Folio compra:" styleClass="janal-display-none"/>
+              <p:autoComplete id="idCombustible" var="custom" placeholder="ejemplo: 2022000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt janal-display-none key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{sakbeSuministrosFiltro.attrs.idCombustible}" completeMethod="#{sakbeSuministrosFiltro.doCompleteCombustible}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
                 <p:ajax event="itemSelect" process="@this" listener="#{sakbeSuministrosFiltro.doAsignaCombustible}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:facet name="itemtip">
                   <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
@@ -93,20 +92,23 @@
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
+                <p:column headerText="Tipo">
+                  <h:outputText value="#{item.tipo}"/>
+                </p:column>                   
                 <p:column headerText="Marca">
                   <h:outputText value="#{item.marca}"/>
                 </p:column>                   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="Folio:"/>
+              <p:outputLabel for="consecutivo" value="Folio suministro:"/>
               <p:inputText id="consecutivo" value="#{sakbeSuministrosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="litros" value="Litros:"/>
+              <p:outputLabel for="litros" value="Litros depositados:"/>
               <p:inputText id="litros" value="#{sakbeSuministrosFiltro.attrs.litros}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="recibio" value="Recibio:"/>
+              <p:outputLabel for="recibio" value="Recibio combustible:"/>
               <p:inputText id="recibio" value="#{sakbeSuministrosFiltro.attrs.recibio}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{sakbeSuministrosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeSuministrosFiltro.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{sakbeSuministrosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeSuministrosFiltro.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
               <p:outputLabel for="idSuministroEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idSuministroEstatus" value="#{sakbeSuministrosFiltro.attrs.idSuministroEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{sakbeSuministrosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -129,12 +131,9 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem value="Agregar" action="#{sakbeSuministrosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" action="#{sakbeSuministrosFiltro.doAccion('AGREGAR')}" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
@@ -144,19 +143,31 @@
               </f:facet>
               <h:outputText value="#{row['desarrollo']}"/>
             </p:column>
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Suministro"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+              <f:facet name="header">
+                <h:outputText value="Tipo"/>
+              </f:facet>
+              <h:outputText value="#{row['tipo']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Maquinaria"/>
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
               <f:facet name="header">
-                <h:outputText value="Consecutivo"/>
+                <h:outputText value="Marca"/>
               </f:facet>
-              <h:outputText value="#{row['consecutivo']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{row.litros}">
+              <h:outputText value="#{row['marca']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.litros}">
               <f:facet name="header">
                 <h:outputText value="Litros"/>
               </f:facet>
@@ -167,12 +178,6 @@
                 <h:outputText value="Recibio"/>
               </f:facet>
               <h:outputText value="#{row['recibio']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.horas}">
-              <f:facet name="header">
-                <h:outputText value="Horas"/>
-              </f:facet>
-              <h:outputText value="#{row['horas']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
@@ -192,20 +197,19 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{sakbeSuministrosFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="consultar" action="#{sakbeSuministrosFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{sakbeSuministrosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus eq '1' or (sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus eq '2' and sakbeSuministrosFiltro.attrs.seleccionado.porcentaje eq '0')}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus eq '1'}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus eq '3'}"/>
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{sakbeSuministrosFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus)}"/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{sakbeSuministrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|3|4|', sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus)}"/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{sakbeSuministrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|3|4|', sakbeSuministrosFiltro.attrs.seleccionado.idSuministroEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
     </div>		    
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el ticket de compra ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el suministro ?" />
   <ui:param name="accionConfirmacion" value="#{sakbeSuministrosFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"/>	

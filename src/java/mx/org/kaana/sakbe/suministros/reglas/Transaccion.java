@@ -104,7 +104,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.suministro.setIdSuministroEstatus(this.bitacora.getIdSuministroEstatus());
 						DaoFactory.getInstance().update(sesion, this.suministro);
-            // regresar= this.toCombustibles(sesion);
+            if(Objects.equals(this.suministro.getIdSuministroEstatus(), ESuministrosEstatus.CANCELADO))
+              regresar= this.toRemoveCombustibles(sesion);
+            else
+              if(Objects.equals(this.suministro.getIdSuministroEstatus(), ESuministrosEstatus.TERMINADO))
+                regresar= this.toAddCombustibles(sesion);
 					} // if
 					break;
 				case COMPLEMENTAR: 

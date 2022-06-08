@@ -22,7 +22,6 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.sakbe.suministros.beans.Evidencia;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -103,6 +102,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
+      this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible"));
+      this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
       this.attrs.put("porcentaje", JsfBase.getFlashAttribute("porcentaje"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("evidencias", 0L);
@@ -140,7 +141,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaCombustiblesDto", "constatar", params);
           break;
       } // switch
-      this.suministro.setIdTipoCombustible(Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);
+      this.suministro.setIdTipoCombustible((Long)this.attrs.get("idTipoCombustible"));
       if(this.importados== null)
         this.importados= new ArrayList<>();
       else
@@ -219,6 +220,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
   public String doCancelar() {   
     JsfBase.setFlashAttribute("idDessarrollo", this.attrs.get("idDessarrollo"));
+    JsfBase.setFlashAttribute("idSuministro", this.attrs.get("idSuministro"));
     JsfBase.setFlashAttribute("opcion", this.attrs.get("opcionResidente"));			
     JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");			
     return (String)this.attrs.get("retorno");
@@ -457,7 +459,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);      
+      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try

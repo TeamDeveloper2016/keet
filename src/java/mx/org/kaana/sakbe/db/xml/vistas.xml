@@ -153,13 +153,18 @@
           tc_sakbe_maquinarias.nombre,
           tc_sakbe_maquinarias.marca,
           tc_sakbe_maquinarias.litros,
-          tc_sakbe_maquinarias.rendimiento
+          tc_sakbe_maquinarias.rendimiento,
+          tc_sakbe_tipos_maquinarias.nombre as tipo
         from      
           tc_sakbe_maquinarias
         inner join
           tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
+        inner join
+          tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
         where 
-          tr_sakbe_maquinaria_desarrollo.id_desarrollo= {idDesarrollo}
+          (tr_sakbe_maquinaria_desarrollo.id_desarrollo= {idDesarrollo} or {idDesarrollo}=-1)
+        order by
+          tc_sakbe_maquinarias.clave
       </select>
       <select id="combustibles">
         select      
@@ -176,14 +181,20 @@
       </select>
       <select id="suministros">
         select      
-          tc_sakbe_maquinarias.id_maquinaria as id_key,
+          tc_sakbe_suministros.id_suministro as id_key,
+          tc_sakbe_suministros.id_suministro,
           tc_sakbe_maquinarias.id_maquinaria,
+          tc_sakbe_suministros.consecutivo,
           tc_sakbe_maquinarias.clave,
           tc_sakbe_maquinarias.nombre,
           tc_sakbe_maquinarias.marca,
+          tc_sakbe_tipos_maquinarias.nombre as tipo,
+          tc_sakbe_suministros.recibio,
+          tc_keet_desarrollos.id_desarrollo,
           tc_keet_desarrollos.nombres as desarrollo,
           tc_sakbe_suministros.litros,
           tc_sakbe_suministros_estatus.id_suministro_estatus,
+          tc_sakbe_suministros_estatus.nombre as estatus,
           tc_sakbe_suministros_estatus.estatus_asociados,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
           tc_sakbe_suministros.registro
@@ -194,6 +205,8 @@
         inner join
           tc_sakbe_maquinarias on tc_sakbe_suministros.id_maquinaria= tc_sakbe_maquinarias.id_maquinaria
         inner join
+          tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
+        inner join
           tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
         inner join
           tc_keet_desarrollos on tr_sakbe_maquinaria_desarrollo.id_desarrollo= tc_keet_desarrollos.id_desarrollo
@@ -203,6 +216,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona        
         where
           {condicion}        
+        group by
+          tc_sakbe_suministros.consecutivo        
         {sortOrder}
       </select>  
     </unit>    
