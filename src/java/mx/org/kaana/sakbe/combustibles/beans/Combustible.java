@@ -27,7 +27,7 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
   private UISelectEntity ikTipoCombustible;
   private UISelectEntity ikTipoMedioPago;
   private UISelectEntity ikBanco;
-  private Long idTicketSaldo;
+  private Long idSuministroDetalle;
   private double litrox;
 
   public Combustible() {
@@ -60,7 +60,7 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
     this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
     this.ikTipoMedioPago= new UISelectEntity(this.getIdTipoMedioPago());
     this.ikBanco= new UISelectEntity(this.getIdBanco());
-    this.idTicketSaldo= -1L;
+    this.idSuministroDetalle= -1L;
     this.litrox= 0D;
   }
   
@@ -112,14 +112,14 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
     this.litrox = litrox;
   }
 
-  public Long getIdTicketSaldo() {
-    return idTicketSaldo;
+  public Long getIdSuministroDetalle() {
+    return idSuministroDetalle;
   }
 
-  public void setIdTicketSaldo(Long idTicketSaldo) {
-    this.idTicketSaldo = idTicketSaldo;
+  public void setIdSuministroDetalle(Long idSuministroDetalle) {
+    this.idSuministroDetalle = idSuministroDetalle;
   }
-  
+
   public Boolean isComplete() {
     return Cadena.isVacio(this.getTicket()) && Cadena.isVacio(this.getPrecioLitro()) && Cadena.isVacio(this.getLitros()) && Cadena.isVacio(this.getFecha()) && Cadena.isVacio(this.getTotal());
   }

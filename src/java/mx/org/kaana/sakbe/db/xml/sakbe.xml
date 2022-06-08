@@ -7,12 +7,12 @@
   </model>
 
   <dml>
-    <unit id="TcSakbeTicketsSaldosDto">
+    <unit id="TcSakbeSuministrosDetallesDto">
       <select id="row">
         select      
           *
         from      
-          tc_sakbe_tickets_saldos
+          tc_sakbe_suministros_detalles
         where 
           {condicion} 
       </select>
@@ -20,7 +20,7 @@
         select      
           *
         from      
-          tc_sakbe_tickets_saldos
+          tc_sakbe_suministros_detalles
         where      
           id_suministro = {idSuministro} and id_combustible = {idCombustible}
       </select>
@@ -161,7 +161,7 @@
       <select id="depurar">
         select      
           tc_sakbe_combustibles.id_combustible as id_key,
-          tc_sakbe_tickets_saldos.id_ticket_saldo,
+          tc_sakbe_tickets_saldos.id_suministro_detalle,
           tc_sakbe_tickets_saldos.litros as litrox,
           tc_sakbe_combustibles.*
         from      

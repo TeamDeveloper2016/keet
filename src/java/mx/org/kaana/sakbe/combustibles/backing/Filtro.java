@@ -297,6 +297,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doSuministros() {
     String regresar= null;
     try {      
+      JsfBase.setFlashAttribute("idTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
       return "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
     } // try

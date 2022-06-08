@@ -23,8 +23,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_sakbe_tickets_saldos")
-public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
+@Table(name="tc_sakbe_suministros_detalles")
+public class TcSakbeSuministrosDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_usuario")
@@ -33,8 +33,8 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   private Double litros;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_ticket_saldo")
-  private Long idTicketSaldo;
+	@Column (name="id_suministro_detalle")
+  private Long idSuministroDetalle;
   @Column (name="id_suministro")
   private Long idSuministro;
   @Column (name="id_combustible")
@@ -42,19 +42,19 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcSakbeTicketsSaldosDto() {
+  public TcSakbeSuministrosDetallesDto() {
     this(new Long(-1L));
   }
 
-  public TcSakbeTicketsSaldosDto(Long key) {
+  public TcSakbeSuministrosDetallesDto(Long key) {
     this(null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcSakbeTicketsSaldosDto(Long idUsuario, Double litros, Long idTicketSaldo, Long idSuministro, Long idCombustible) {
+  public TcSakbeSuministrosDetallesDto(Long idUsuario, Double litros, Long idSuministroDetalle, Long idSuministro, Long idCombustible) {
     setIdUsuario(idUsuario);
     setLitros(litros);
-    setIdTicketSaldo(idTicketSaldo);
+    setIdSuministroDetalle(idSuministroDetalle);
     setIdSuministro(idSuministro);
     setIdCombustible(idCombustible);
     setRegistro(LocalDateTime.now());
@@ -76,12 +76,12 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
     return litros;
   }
 
-  public void setIdTicketSaldo(Long idTicketSaldo) {
-    this.idTicketSaldo = idTicketSaldo;
+  public void setIdSuministroDetalle(Long idSuministroDetalle) {
+    this.idSuministroDetalle = idSuministroDetalle;
   }
 
-  public Long getIdTicketSaldo() {
-    return idTicketSaldo;
+  public Long getIdSuministroDetalle() {
+    return idSuministroDetalle;
   }
 
   public void setIdSuministro(Long idSuministro) {
@@ -111,12 +111,12 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdTicketSaldo();
+  	return getIdSuministroDetalle();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idTicketSaldo = key;
+  	this.idSuministroDetalle = key;
   }
 
   @Override
@@ -127,7 +127,7 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getLitros());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTicketSaldo());
+		regresar.append(getIdSuministroDetalle());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSuministro());
 		regresar.append(Constantes.SEPARADOR);
@@ -143,7 +143,7 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("litros", getLitros());
-		regresar.put("idTicketSaldo", getIdTicketSaldo());
+		regresar.put("idSuministroDetalle", getIdSuministroDetalle());
 		regresar.put("idSuministro", getIdSuministro());
 		regresar.put("idCombustible", getIdCombustible());
 		regresar.put("registro", getRegistro());
@@ -153,7 +153,7 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getLitros(), getIdTicketSaldo(), getIdSuministro(), getIdCombustible(), getRegistro()
+    getIdUsuario(), getLitros(), getIdSuministroDetalle(), getIdSuministro(), getIdCombustible(), getRegistro()
     };
     return regresar;
   }
@@ -167,8 +167,8 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idTicketSaldo~");
-    regresar.append(getIdTicketSaldo());
+    regresar.append("idSuministroDetalle~");
+    regresar.append(getIdSuministroDetalle());
     regresar.append("|");
     return regresar.toString();
   }
@@ -176,18 +176,18 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdTicketSaldo());
+    regresar.append(getIdSuministroDetalle());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcSakbeTicketsSaldosDto.class;
+    return TcSakbeSuministrosDetallesDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdTicketSaldo()!= null && getIdTicketSaldo()!=-1L;
+  	return getIdSuministroDetalle()!= null && getIdSuministroDetalle()!=-1L;
   }
 
   @Override
@@ -198,8 +198,8 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcSakbeTicketsSaldosDto other = (TcSakbeTicketsSaldosDto) obj;
-    if (getIdTicketSaldo() != other.idTicketSaldo && (getIdTicketSaldo() == null || !getIdTicketSaldo().equals(other.idTicketSaldo))) {
+    final TcSakbeSuministrosDetallesDto other = (TcSakbeSuministrosDetallesDto) obj;
+    if (getIdSuministroDetalle() != other.idSuministroDetalle && (getIdSuministroDetalle() == null || !getIdSuministroDetalle().equals(other.idSuministroDetalle))) {
       return false;
     }
     return true;
@@ -208,7 +208,7 @@ public class TcSakbeTicketsSaldosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdTicketSaldo() != null ? getIdTicketSaldo().hashCode() : 0);
+    hash = 67 * hash + (getIdSuministroDetalle() != null ? getIdSuministroDetalle().hashCode() : 0);
     return hash;
   }
 

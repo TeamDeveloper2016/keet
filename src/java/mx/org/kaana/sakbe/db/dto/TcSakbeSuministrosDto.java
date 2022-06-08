@@ -61,8 +61,6 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_suministro")
   private Long idSuministro;
-  @Column (name="id_combustible")
-  private Long idCombustible;
   @Column (name="observaciones")
   private String observaciones;
 
@@ -71,11 +69,11 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
   }
 
   public TcSakbeSuministrosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcSakbeSuministrosDto(Double lecturaActual, String latitud, Long idDesarrollo, String recibio, Long idSuministroEstatus, Long ejercicio, Long idMaquinaria, String consecutivo, Double horas, String longitud, Long idUsuario, Double litros, Double lecturaNueva, Long orden, Long idSuministro, Long idCombustible, String observaciones) {
+  public TcSakbeSuministrosDto(Double lecturaActual, String latitud, Long idDesarrollo, String recibio, Long idSuministroEstatus, Long ejercicio, Long idMaquinaria, String consecutivo, Double horas, String longitud, Long idUsuario, Double litros, Double lecturaNueva, Long orden, Long idSuministro, String observaciones) {
     setLecturaActual(lecturaActual);
     setLatitud(latitud);
     setIdDesarrollo(idDesarrollo);
@@ -92,7 +90,6 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
     setLecturaNueva(lecturaNueva);
     setOrden(orden);
     setIdSuministro(idSuministro);
-    setIdCombustible(idCombustible);
     setObservaciones(observaciones);
   }
 	
@@ -224,14 +221,6 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
     return idSuministro;
   }
 
-  public void setIdCombustible(Long idCombustible) {
-    this.idCombustible = idCombustible;
-  }
-
-  public Long getIdCombustible() {
-    return idCombustible;
-  }
-
   public String getObservaciones() {
     return observaciones;
   }
@@ -287,8 +276,6 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSuministro());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCombustible());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
     regresar.append("]");
   	return regresar.toString();
@@ -313,7 +300,6 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
 		regresar.put("lecturaNueva", getLecturaNueva());
 		regresar.put("orden", getOrden());
 		regresar.put("idSuministro", getIdSuministro());
-		regresar.put("idCombustible", getIdCombustible());
 		regresar.put("observaciones", getObservaciones());
   	return regresar;
   }
@@ -321,7 +307,7 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getLecturaActual(), getLatitud(), getIdDesarrollo(), getRecibio(), getIdSuministroEstatus(), getEjercicio(), getRegistro(), getIdMaquinaria(), getConsecutivo(), getHoras(), getLongitud(), getIdUsuario(), getLitros(), getLecturaNueva(), getOrden(), getIdSuministro(), getIdCombustible(), getObservaciones()
+      getLecturaActual(), getLatitud(), getIdDesarrollo(), getRecibio(), getIdSuministroEstatus(), getEjercicio(), getRegistro(), getIdMaquinaria(), getConsecutivo(), getHoras(), getLongitud(), getIdUsuario(), getLitros(), getLecturaNueva(), getOrden(), getIdSuministro(), getObservaciones()
     };
     return regresar;
   }

@@ -64,6 +64,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
+			this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible")== null || Objects.equals(EOpcionesResidente.DIESEL, opcionResidente)? 1L: JsfBase.getFlashAttribute("idTipoCombustible"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
@@ -214,7 +215,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", Objects.equals(EOpcionesResidente.DIESEL, (EOpcionesResidente)this.attrs.get("opcionResidente"))? 1L: 2L);      
+      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));      
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try

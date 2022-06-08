@@ -108,6 +108,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			this.attrs.put("evidencias", 0L);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("file", ""); 
+			this.attrs.put("index", 0); 
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
@@ -135,7 +136,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         case CONSULTAR:											
           this.suministro= (Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params);
           this.suministro.setIkDesarrollo(new UISelectEntity(this.suministro.getIdDesarrollo()));
-          this.suministro.setIkMaquinaria(new UISelectEntity(this.suministro.getIdCombustible()));
+          this.suministro.setIkMaquinaria(new UISelectEntity(this.suministro.getIdMaquinaria()));
     		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaCombustiblesDto", "constatar", params);
           break;
       } // switch
@@ -174,6 +175,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.documentos= new ArrayList<>();
 			this.attrs.put("evidencias", 0L);
 			this.attrs.put("file", ""); 
+			this.attrs.put("index", 0); 
       this.attrs.put("porcentaje", toLoadCombustible());
       this.doLoad();
     } // try
@@ -238,6 +240,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.suministro.setIkMaquinaria(maquinarias.get(0));
         else  
           this.suministro.setIkMaquinaria(maquinarias.get(maquinarias.indexOf(this.suministro.getIkMaquinaria())));
+      this.toCheckLitros();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -438,11 +441,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   public void doUpdateLitros() {
     Entity porcentaje= (Entity)this.attrs.get("porcentaje");
     if(porcentaje!= null) {
-      int calculo= (int)Numero.toRedondearSat(this.suministro.getLitros()* 100/ porcentaje.toDouble("litros"));
+      double dinamico= porcentaje.toDouble("saldo")- this.suministro.getLitros();
+      int calculo = (int)Numero.toRedondearSat(dinamico* 100/ porcentaje.toDouble("litros"));
       if(calculo< 0) {
-        calculo= 0;
+        dinamico= 0D;
+        calculo = 0;
         this.suministro.setLitros(porcentaje.toDouble("saldo"));
       } // if  
+      porcentaje.get("dinamico").setData(new BigDecimal(dinamico));
       porcentaje.get("porcentaje").setData(new BigDecimal(calculo));
     } // if  
   }
@@ -463,6 +469,25 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+ 
+  private void toCheckLitros() {
+    Entity porcentaje= (Entity)this.attrs.get("porcentaje");
+    Double saldo     = 80D; 
+    Double litros    = 80D; 
+    if(porcentaje!= null)
+      saldo= porcentaje.toDouble("saldo");
+  	List<UISelectEntity> maquinarias= (List<UISelectEntity>)this.attrs.get("maquinarias");
+    if(!maquinarias.isEmpty()) {
+      int index= maquinarias.indexOf(this.suministro.getIkMaquinaria());      
+      if(index>= 0 && this.suministro.getIkMaquinaria().getKey()> 0L) {
+        this.suministro.setIkMaquinaria(maquinarias.get(index));
+        litros= this.suministro.getIkMaquinaria().toDouble("litros");
+      } // if  
+    } // if
+    if(saldo> litros)
+      saldo= litros;
+    UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:litros', value: {validaciones: 'requerido|flotante|rango({\"min\":1,\"max\":"+ saldo+"})', mascara: 'libre', grupo: 'general', individual: true}}])");
   }
   
 }

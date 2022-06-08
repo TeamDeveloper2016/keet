@@ -12,6 +12,7 @@
           tc_sakbe_tipos_combustibles.nombre as combustible,
           sum(tc_sakbe_combustibles.litros) as litros,
           sum(tc_sakbe_combustibles.saldo) as saldo,
+          sum(tc_sakbe_combustibles.saldo) as dinamico,
           round(sum(tc_sakbe_combustibles.saldo)* 100/ sum(tc_sakbe_combustibles.litros), 0) as porcentaje,
           count(*) as tickets
         from
@@ -81,7 +82,8 @@
         inner join
           tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
         where      
-          tr_sakbe_maquinaria_desarrollo.id_desarrollo = {idDesarrollo}
+          tr_sakbe_maquinaria_desarrollo.id_desarrollo= {idDesarrollo}
+          and tc_sakbe_maquinarias.id_activo= 1
       </select>
 			<select id="evidencias">
         select
