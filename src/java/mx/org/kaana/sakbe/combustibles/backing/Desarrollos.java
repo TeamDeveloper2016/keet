@@ -65,6 +65,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
 			this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible")== null || Objects.equals(EOpcionesResidente.DIESEL, opcionResidente)? 1L: JsfBase.getFlashAttribute("idTipoCombustible"));
+			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null ? "/Paginas/Sakbe/Combustibles/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
@@ -176,6 +177,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
       JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
+      JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
   	  JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			

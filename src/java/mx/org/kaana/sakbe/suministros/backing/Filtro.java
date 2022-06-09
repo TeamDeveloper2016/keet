@@ -71,6 +71,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
       this.attrs.put("idTipoCombustible", 1L);
+      this.toLoadTiposCombustibles();
 			this.toLoadCatalog();
       if(this.attrs.get("idSuministro")!= null) {
 			  this.doLoad();
@@ -95,8 +96,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("recibio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel= new FormatCustomLazy("VistaSuministrosDto", "suministros", params, columns);
+      columns.add(new Columna("fecha", EFormatoDinamicos.DIA_FECHA_HORA));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      this.lazyModel= new FormatCustomLazy("VistaSuministrosDto", params, columns);
       this.reset();
     } // try
     catch (Exception e) {
@@ -113,20 +115,18 @@ public class Filtro extends IBaseFilter implements Serializable {
     UIBackingUtilities.resetDataTable();
   }
   
-  public String doModificar(Entity seleccionado) {
-    this.attrs.put("seleccionado", seleccionado);
-    return this.doAccion("CONSULTAR");
-  }
-  
   public String doAccion(String accion) {
+    EAccion eaccion= null;
 		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
       Entity seleccionado= (Entity)this.attrs.get("seleccionado");
       this.attrs.put("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
-			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
+			JsfBase.setFlashAttribute("accion", eaccion);		
       JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
       JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
       JsfBase.setFlashAttribute("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
       JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
+      JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Suministros/visor");
       JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
       JsfBase.setFlashAttribute("retorno", this.toPagina().concat(Constantes.REDIRECIONAR));		
 		} // try
@@ -201,6 +201,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_sakbe_suministros.id_maquinaria=").append(this.attrs.get("idMaquinaria")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_sakbe_suministros.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("clave")))
+  		sb.append("(tc_sakbe_maquinarias.clave like '%").append(((UISelectEntity)this.attrs.get("clave")).getKey()).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
 		  sb.append("(date_format(tc_sakbe_suministros.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
@@ -375,27 +377,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 
   public String doSuministros(Entity seleccionado) {
-    this.attrs.put("seleccionado", seleccionado);
+    this.attrs.put("suministro", seleccionado.clone());
     return this.doSuministros();
   }
   
   public String doSuministros() {
+    String regresar= null;
     try {      
-      Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-      this.attrs.put("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
-			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
-      JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.DIESEL);
-      JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
-      JsfBase.setFlashAttribute("idTipoCombustible", seleccionado.toLong("idTipoCombustible"));
-      JsfBase.setFlashAttribute("idSuministro", seleccionado.toLong("idSuministro"));
-      JsfBase.setFlashAttribute("porcentaje", this.toLoadCombustible());
-      JsfBase.setFlashAttribute("retorno", this.toPagina().concat(Constantes.REDIRECIONAR));		
+      JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Suministros/visor");
+      JsfBase.setFlashAttribute("idTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Suministros/visor");		
+      regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-		return "/Paginas/Sakbe/Suministros/filtro".concat(Constantes.REDIRECIONAR);
+		return regresar;
 	}
   
   private Entity toLoadCombustible() throws Exception {
@@ -423,6 +421,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 
+	private void toLoadTiposCombustibles() throws Exception {
+		List<UISelectEntity> tiposCombustibles= null;
+		Map<String, Object>params             = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			this.attrs.put("tiposCombustibles", tiposCombustibles);
+			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));
+      if(!tiposCombustibles.isEmpty()) 
+  			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));
+      else  
+  			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
+      this.doLoadPorcentajes();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadTiposCombustibles 
+  
+  public void doLoadPorcentajes() throws Exception {
+    this.attrs.put("porcentaje", this.toLoadCombustible());
+  }
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

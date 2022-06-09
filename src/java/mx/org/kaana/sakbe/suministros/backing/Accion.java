@@ -100,6 +100,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     try {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento"));
       this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
       this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible"));
@@ -222,7 +223,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     JsfBase.setFlashAttribute("idDessarrollo", this.attrs.get("idDessarrollo"));
     JsfBase.setFlashAttribute("idSuministro", this.attrs.get("idSuministro"));
     JsfBase.setFlashAttribute("opcion", this.attrs.get("opcionResidente"));			
-    JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");			
+    JsfBase.setFlashAttribute("retorno", this.attrs.get("seguimiento"));			
     return (String)this.attrs.get("retorno");
   } // doCancelar
  

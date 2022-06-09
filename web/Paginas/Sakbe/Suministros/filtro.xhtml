@@ -13,8 +13,9 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         'idMaquinaria'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+        'clave'          : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'litros'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'recibio'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -101,6 +102,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="Folio suministro:"/>
               <p:inputText id="consecutivo" value="#{sakbeSuministrosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="clave" value="Clave maquinaría:"/>
+              <p:inputText id="clave" value="#{sakbeSuministrosVisor.attrs.clave}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="litros" value="Litros depositados:"/>
               <p:inputText id="litros" value="#{sakbeSuministrosFiltro.attrs.litros}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="recibio" value="Recibio combustible:"/>

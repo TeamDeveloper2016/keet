@@ -141,7 +141,7 @@
           <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCombustiblesVisor.lazyModel}" styleClass="detalle" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesVisor.lazyModel.rowCount gt sakbeCombustiblesVisor.lazyModel.pageSize}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorPosition="bottom" rowIndexVar="index">
 						<p:panel header="TICKET: #{row.ticket}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministros(row)}">
+								<p:commandLink process="@this" update="tabla" title="Suministrar" action="#{sakbeCombustiblesVisor.doSuministros(row)}">
 									<p:outputLabel value="#{row.consecutivo}" title="Click para registrar un suministro" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{sakbeCombustiblesVisor.attrs.seleccionado}"/>
 								</p:commandLink>																	
@@ -152,7 +152,6 @@
 									<p:outputLabel value="&lt;b&gt;Saldo litro(s):&lt;/b&gt; #{row.saldo} | &lt;b&gt;Importe total:&lt;/b&gt; $#{row.total}" escape="false"/>
 									<p:spacer/>
 									<p:progressBar value="#{row.porcentaje.toLong}" labelTemplate="{value}% #{row.saldo} LTS #{row.combustible}" displayOnly="true" style="background:red;"/>
-									<p:spacer/>
 								</p:panelGrid>								
 							</h:panelGrid>
 							<f:facet name="footer">

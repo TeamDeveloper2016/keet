@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Listado de suministro de combustibles" />
+  <ui:param name="janalBackingPage" value="#{sakbeSuministrosVisor}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idMaquinaria'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+        'clave'          : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'litros'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'recibio'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idSuministroEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+      };
+			
+			fieldsDialog= {
+				'justificacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogo');
+				if(ok){
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
+      
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+    </script>		
+		<style>
+      .manzana-lote-font {font-size: 2.5vw !important;}
+      .ui-commandlink {color: white !important;}
+      .ui-progressbar {height: 25px !important;}
+      .ui-progressbar-value {background-image:none !important;background-color: green !important;}
+      .ui-progressbar-label {font-size: 16px;color: white; padding-top: 4px; font-weight: normal;}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
+						<p:tab id="avance" title="Litros disponibles:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeSuministrosVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeSuministrosVisor.doLoadPorcentajes}"/>
+                  <f:selectItems value="#{sakbeSuministrosVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:panelGrid columns="3" styleClass="janal-wid-100">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Litro(s):"/>
+                    <p:inputText value="#{sakbeSuministrosVisor.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Saldo:"/>
+                    <p:inputText value="#{sakbeSuministrosVisor.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+								    <p:outputLabel value="Tickets:"/>
+                    <p:inputText value="#{sakbeSuministrosVisor.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                  </p:panelGrid>  
+                </p:panelGrid>  
+ 								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeSuministrosVisor.doSuministros()}">
+                  <p:progressBar value="#{sakbeSuministrosVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeSuministrosVisor.attrs.porcentaje.saldo} LTS #{sakbeSuministrosVisor.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+                </p:commandLink>  
+              </p:panelGrid>   
+						</p:tab>
+						<p:tab title="Criterios:">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{sakbeSuministrosVisor.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+  							<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{sakbeSuministrosVisor.doLoadMaquinarias}" update="idMaquinaria" oncomplete="janal.desbloquear();"/>
+                <f:selectItems value="#{sakbeSuministrosVisor.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="idCombustible" value="Folio compra:" styleClass="janal-display-none"/>
+              <p:autoComplete id="idCombustible" var="custom" placeholder="ejemplo: 2022000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt janal-display-none key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{sakbeSuministrosVisor.attrs.idCombustible}" completeMethod="#{sakbeSuministrosVisor.doCompleteCombustible}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <p:ajax event="itemSelect" process="@this" listener="#{sakbeSuministrosVisor.doAsignaCombustible}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <f:facet name="itemtip">
+                  <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
+                    <h:outputText value="Consecutivo:" />
+                    <h:outputText value="#{custom.consecutivo}" />											
+                    <h:outputText value="Ticket:" />
+                    <h:outputText value="#{custom.ticket}" />											
+                    <h:outputText value="Litros:" />
+                    <h:outputText value="$#{custom.litros}" />											
+                    <h:outputText value="Fecha:" />
+                    <h:outputText value="$#{custom.fecha}" />											
+                    <h:outputText value="Importe:" />
+                    <h:outputText value="$#{custom.total}" />											
+                  </h:panelGrid>
+                </f:facet>
+              </p:autoComplete>																																		
+              <p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
+              <p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosVisor.attrs.idMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{sakbeSuministrosVisor.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Tipo">
+                  <h:outputText value="#{item.tipo}"/>
+                </p:column>                   
+                <p:column headerText="Marca">
+                  <h:outputText value="#{item.marca}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="litros" value="Litros depositados:"/>
+              <p:inputText id="litros" value="#{sakbeSuministrosVisor.attrs.litros}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="recibio" value="Recibio combustible:"/>
+              <p:inputText id="recibio" value="#{sakbeSuministrosVisor.attrs.recibio}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeSuministrosVisor.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeSuministrosVisor.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+              <p:outputLabel for="idSuministroEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idSuministroEstatus" value="#{sakbeSuministrosVisor.attrs.idSuministroEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{sakbeSuministrosVisor.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>
+						</p:tab>
+						<p:tab title="Busqueda:">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                <p:panelGrid columns="2" styleClass="janal-wid-100">              
+    							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                    <p:outputLabel for="consecutivo" value="Folio suministro:"/>
+                    <p:inputText id="consecutivo" value="#{sakbeSuministrosVisor.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
+                    <p:outputLabel for="clave" value="Clave maquinaría:"/>
+                    <p:inputText id="clave" value="#{sakbeSuministrosVisor.attrs.clave}" styleClass="janal-wid-100-txt"/>              
+                  </p:panelGrid>
+                </p:panelGrid>
+              </p:panelGrid>
+              <p:separator/>
+              <div class="janal-wid-100">
+                <span class="janal-float-left">
+                  <p:commandButton title="Suministrar" icon="fa fa-gas-pump" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" action="#{sakbeSuministrosVisor.doSuministros()}" process="@this" styleClass="janal-text-white"/>
+                </span>  
+                <span class="janal-align-right">  
+                  <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeSuministrosVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+                  <p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeSuministrosVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+                </span>  
+              </div>
+						</p:tab>
+					</p:accordionPanel>           					
+          <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeSuministrosVisor.lazyModel}" styleClass="detalle" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeSuministrosVisor.lazyModel.rowCount gt sakbeSuministrosVisor.lazyModel.pageSize}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorPosition="bottom" rowIndexVar="index">
+						<p:panel header="Maquinaría: #{row.clave} | #{row.tipo}" style="text-align:center; border: 0px;">
+							<h:panelGrid columns="1" style="width:100%">
+								<p:commandLink process="@this" update="tabla" title="Suministrar" action="#{sakbeSuministrosVisor.doSuministros(row)}">
+									<p:outputLabel value="#{row.consecutivo}" title="Click para registrar un suministro" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>
+									<f:setPropertyActionListener value="#{row}" target="#{sakbeSuministrosVisor.attrs.seleccionado}"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
+                  <p:outputLabel value="Litros: &lt;b&gt;#{row.litros} #{row.combustible}&lt;/b&gt; | #{row.marca}" escape="false" styleClass="janal-color-blue"/>
+									<p:outputLabel value="&lt;b&gt;Desarrollo:&lt;/b&gt; #{row.desarrollo}" escape="false"/>
+                  <p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha}" styleClass="janal-color-purple Fs16" escape="false"/>
+									<p:outputLabel value="&lt;b&gt;Recibió:&lt;/b&gt; #{row.recibio}" escape="false"/>
+									<p:spacer/>
+									<p:outputLabel value="#{sakbeSuministrosVisor.doUltimaVez(row)}" escape="false"/>
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+								<div class="janal-column-right">
+                  <span class="janal-float-left janal-column-left janal-wid-20">
+                    <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeSuministrosVisor.doEliminar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idSuministroEstatus'] eq '3'? '': 'none'}"/>
+                    <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{sakbeSuministrosVisor.doRecuperar(row)}" process="@this" update="@(.detalle)" style="display:#{row['idSuministroEstatus'] eq '4'? '': 'none'}"/>
+                  </span>  
+                  <span>Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo}.png" title="Estatus: #{row.estatus}"/>
+								</div>	
+							</f:facet>
+						</p:panel>	            
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{sakbeSuministrosVisor.lazyModel== null? 0: sakbeSuministrosVisor.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataGrid>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="panelBusqueda:buscar panelBusqueda:buscarIcon tabla"/>
+  <ui:param name="lineaSeparacion" value="false"/>	
+</ui:composition>
