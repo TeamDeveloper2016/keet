@@ -106,7 +106,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCatalogosMaquinariaFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{sakbeCatalogosMaquinariaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{sakbeCatalogosMaquinariaFiltro.lazyModel.rowCount gt sakbeCatalogosMaquinariaFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeCatalogosMaquinariaFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{sakbeCatalogosMaquinariaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{sakbeCatalogosMaquinariaFiltro.lazyModel.rowCount gt sakbeCatalogosMaquinariaFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" editInitEvent="dblclick" editable="true" editMode="cell">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
@@ -117,11 +117,11 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-color-blue" sortBy="#{row.clave}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
-              <h:outputText value="#{row['clave']}"/>
+              <h:outputText value="#{row['clave']}" styleClass="janal-color-blue"/>
             </p:column>
             <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.grupo}">
               <f:facet name="header">
@@ -157,14 +157,23 @@
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
-              <h:outputText value="#{row['desarrollo']}"/>
+              <p:cellEditor>
+                <f:facet name="output">
+                  <h:outputText value="#{row['desarrollo']}" title="DblClic para cambiar desarrollo"/>
+                </f:facet>
+                <f:facet name="input">
+                  <h:selectOneMenu value="#{row['desarrollo'].data}" style="width:100%" valueChangeListener="#{sakbeCatalogosMaquinariaFiltro.doValueChangeDesarrollo}">
+                    <p:ajax event="blur" process="@this" listener="#{sakbeCatalogosMaquinariaFiltro.doChangeDesarrollo(row)}"/>
+                    <f:selectItems value="#{sakbeCatalogosMaquinariaFiltro.attrs.obras}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+                  </h:selectOneMenu>
+                </f:facet>
+            </p:cellEditor>              
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
-              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
             </p:column>		
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
@@ -180,7 +189,7 @@
             <p:menuitem id="consultar" action="#{sakbeCatalogosMaquinariaFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
 						<p:separator/>
             <p:menuitem id="modificar" action="#{sakbeCatalogosMaquinariaFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{sakbeCatalogosMaquinariaFiltro.attrs.seleccionado.idSuministroEstatus eq '3'}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
             <p:separator/>
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{sakbeCatalogosMaquinariaFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus"/>
           </p:contextMenu>

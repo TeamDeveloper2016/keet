@@ -302,7 +302,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     String regresar= null;
     try {      
       JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Combustibles/visor");
-      JsfBase.setFlashAttribute("idTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      JsfBase.setFlashAttribute("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
       regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
     } // try
@@ -336,15 +336,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // toLoadTiposCombustibles 
   
-  public void doLoadPorcentajes() throws Exception {
-    this.attrs.put("porcentaje", this.toLoadCombustible());
-  }
-  
   private Entity toLoadCombustible() {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));      
+      params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));      
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try
@@ -358,6 +354,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   }
 
+  public void doLoadPorcentajes() throws Exception {
+    this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+    this.attrs.put("porcentaje", this.toLoadCombustible());
+  }
+  
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.COMBUSTIBLES);
 		JsfBase.setFlashAttribute(ETipoMovimiento.COMBUSTIBLES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());

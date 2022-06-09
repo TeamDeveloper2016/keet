@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -29,7 +30,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
 import mx.org.kaana.sakbe.suministros.beans.Suministro;
 import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
-import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
+import mx.org.kaana.sakbe.db.dto.TrSakbeMaquinariaDesarrolloDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
@@ -48,6 +49,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idMaquinaria", JsfBase.getFlashAttribute("idMaquinaria"));
+      this.attrs.put("obras", this.toLoadObras());
 			this.toLoadCatalog();
       if(this.attrs.get("idMaquinaria")!= null) {
 			  this.doLoad();
@@ -171,7 +173,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeMaquinariasEstatusDto", "row", params, columns, "nombre"));
-			this.attrs.put("idMaquinariaEstatus", new UISelectEntity("-1"));
+			this.attrs.put("idMaquinariaEstatus", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("catalogo")));
       this.doLoadDesarrollos();
     } // try
 		catch (Exception e) {
@@ -206,6 +208,32 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	} // doLoadDesarrollos	
   
+	private List<String> toLoadObras() {
+    List<String> regresar     = new ArrayList<>();
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+  		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.build("TcKeetDesarrollosDto", "row", params, columns);
+			if(desarrollos!= null && !desarrollos.isEmpty())
+        for (UISelectEntity item : desarrollos) {
+          regresar.add(item.getKey()+ " ".concat(Constantes.SEPARADOR).concat(" ").concat(item.toString("nombres")));
+        } // for
+    } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+    return regresar;
+	} // doLoadObras	
+  
 	private void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
@@ -213,7 +241,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
-			this.attrs.put("idTipoCombustible", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			this.attrs.put("idTipoCombustible", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposCombustibles")));			
       this.toLoadMaquinariasGrupo();
 		} // try
 		catch (Exception e) {			
@@ -356,5 +384,50 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doGlobalEvent(Boolean isViewException) {
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA ["+ isViewException+ "]");
 	}
+  
+  public void doValueChangeDesarrollo(ValueChangeEvent event) {
+    try {      
+      String[] values= event.getNewValue().toString().split("[|]");
+      if(values!= null && values.length> 1) 
+        this.attrs.put("ikDesarrollo", values[0].trim());      
+      else
+        this.attrs.put("ikDesarrollo", null);      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doChangeDesarrollo(Entity row) {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(!Cadena.isVacio(this.attrs.get("ikDesarrollo"))) {
+        params.put("idDesarrollo", this.attrs.get("ikDesarrollo"));      
+        params.put("idMaquinaria", row.toLong("idMaquinaria"));      
+        Entity item= (Entity)DaoFactory.getInstance().toEntity("TrSakbeMaquinariaDesarrolloDto", "buscar", params);
+        if(item== null || item.isEmpty()) {
+          TrSakbeMaquinariaDesarrolloDto value= new TrSakbeMaquinariaDesarrolloDto(
+            row.toLong("idMaquinaria"), // Long idMaquinaria, 
+            new Long((String)this.attrs.get("ikDesarrollo")), // Long idDesarrollo, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            -1L // Long idMaquinariaDesarrollo
+          );
+          DaoFactory.getInstance().insert(value);
+        } // if  
+        else {
+          params.put("idMaquinariaDesarrollo", item.getKey());      
+          DaoFactory.getInstance().updateAll(TrSakbeMaquinariaDesarrolloDto.class, params);
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

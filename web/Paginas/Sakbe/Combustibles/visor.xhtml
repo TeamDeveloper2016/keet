@@ -58,8 +58,8 @@
 					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
 						<p:tab id="avance" title="Litros disponibles:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
-                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="ikTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="ikTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesVisor.doLoadPorcentajes}"/>
                   <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">

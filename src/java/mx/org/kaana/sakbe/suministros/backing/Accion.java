@@ -104,7 +104,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento"));
       this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
-      this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible"));
+      this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible"));
       this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
       this.attrs.put("porcentaje", JsfBase.getFlashAttribute("porcentaje"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -235,10 +235,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		List<Columna> columns      = null;
 		try {
 			params.put("idDesarrollo", this.suministro.getIdDesarrollo());
+			params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			maquinarias= UIEntity.seleccione("VistaSuministrosDto", "maquinarias", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
+			maquinarias= UIEntity.seleccione("VistaSuministrosDto", "combustibles", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("maquinarias", maquinarias);
       if(maquinarias!= null && !maquinarias.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))

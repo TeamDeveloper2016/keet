@@ -385,6 +385,22 @@
         where      
           id_maquinaria = {idMaquinaria} and id_desarrollo = {idDesarrollo}
       </select>
+      <select id="buscar">
+        select      
+          *
+        from      
+          tr_sakbe_maquinaria_desarrollo
+        where      
+          id_maquinaria = {idMaquinaria}
+      </select>
+      <update id="rows">
+        update
+          tr_sakbe_maquinaria_desarrollo
+        set
+          id_desarrollo= {idDesarrollo}
+        where
+          id_maquinaria_desarrollo= {idMaquinariaDesarrollo}
+      </update>
     </unit>    
   </dml>    
 </process>

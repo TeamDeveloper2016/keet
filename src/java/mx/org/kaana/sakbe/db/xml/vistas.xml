@@ -341,6 +341,31 @@
         order by
           tc_sakbe_maquinarias.clave
       </select>      
+      <select id="combustibles">
+        select      
+          tc_sakbe_maquinarias.id_maquinaria as id_key,
+          tc_sakbe_maquinarias.id_maquinaria,
+          tc_sakbe_maquinarias.clave,
+          tc_sakbe_maquinarias.nombre,
+          tc_sakbe_maquinarias.marca,
+          tc_sakbe_maquinarias.litros,
+          tc_sakbe_maquinarias.rendimiento,
+          tc_sakbe_tipos_maquinarias.nombre as tipo,
+          tc_sakbe_maquinarias_grupos.nombre as grupo
+        from      
+          tc_sakbe_maquinarias
+        inner join
+          tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
+        inner join
+          tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        where 
+          (tr_sakbe_maquinaria_desarrollo.id_desarrollo= {idDesarrollo} or {idDesarrollo}=-1)
+          and tc_sakbe_maquinarias.id_tipo_combustible= {idTipoCombustible}
+        order by
+          tc_sakbe_maquinarias.clave
+      </select>      
     </unit>      
     <unit id="VistaMaquinariasDto">
       <select id="lazy">

@@ -64,12 +64,12 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
-			this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible")== null || Objects.equals(EOpcionesResidente.DIESEL, opcionResidente)? 1L: JsfBase.getFlashAttribute("idTipoCombustible"));
+			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null || Objects.equals(EOpcionesResidente.DIESEL, opcionResidente)? 1L: JsfBase.getFlashAttribute("idTipoCombustible"));
+      this.toLoadTiposCombustibles();
 			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null ? "/Paginas/Sakbe/Combustibles/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
-      this.attrs.put("porcentaje", this.toLoadCombustible());
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "visor": JsfBase.getFlashAttribute("retorno"));
   		this.doLoad();
     } // try
@@ -176,6 +176,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
     	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
+      JsfBase.setFlashAttribute("ikTipoCombustible", this.attrs.get("ikTipoCombustible"));      
       JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
       JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
   	  JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
@@ -217,7 +218,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));      
+      params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));      
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try
@@ -229,6 +230,32 @@ public class Desarrollos extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+ 
+	private void toLoadTiposCombustibles() throws Exception {
+		List<UISelectEntity> tiposCombustibles= null;
+		Map<String, Object>params             = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			this.attrs.put("tiposCombustibles", tiposCombustibles);
+      if(!tiposCombustibles.isEmpty()) 
+  	    this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("idTipoCombustible")));
+      else  
+  			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
+      this.doLoadPorcentajes();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadTiposCombustibles 
+
+  public void doLoadPorcentajes() throws Exception {
+    this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+    this.attrs.put("porcentaje", this.toLoadCombustible());
   }
   
 }
