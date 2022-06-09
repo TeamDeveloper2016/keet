@@ -232,6 +232,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
     } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
     finally {
       Methods.clean(columns);
       Methods.clean(params);
@@ -240,11 +244,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_combustible_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcSakbeCombustiblesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -310,7 +313,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
 	}
 
-	private void toLoadTiposCombustibles() throws Exception {
+	private void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
@@ -324,9 +327,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
       this.doLoadPorcentajes();
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
 		finally{
 			Methods.clean(params);
 		} // finally
@@ -336,7 +340,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     this.attrs.put("porcentaje", this.toLoadCombustible());
   }
   
-  private Entity toLoadCombustible() throws Exception {
+  private Entity toLoadCombustible() {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -360,10 +364,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Sakbe/Suministros/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
-  
-	@Override
-	protected void finalize() throws Throwable {
-    super.finalize();
-	}	// finalize
   
 }

@@ -10,11 +10,14 @@
     <unit id="TcSakbeTiposMaquinariasDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_tipos_maquinarias.id_tipo_maquinaria as id_key,
+          tc_sakbe_tipos_maquinarias.*
         from      
           tc_sakbe_tipos_maquinarias
         where 
-          {condicion} 
+          {condicion}
+        order by
+          nombre
       </select>
       <select id="identically">
         select      
@@ -23,6 +26,20 @@
           tc_sakbe_tipos_maquinarias
         where      
           clave = '{clave}'
+      </select>
+      <select id="grupo">
+        select      
+          tc_sakbe_tipos_maquinarias.id_tipo_maquinaria as id_key,
+          tc_sakbe_maquinarias_grupos.nombre as grupo,
+          tc_sakbe_tipos_maquinarias.*
+        from      
+          tc_sakbe_tipos_maquinarias
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        where 
+          tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= {idMaquinariaGrupo}
+        order by
+          tc_sakbe_maquinarias_grupos.nombre, tc_sakbe_tipos_maquinarias.nombre
       </select>
     </unit>    
     <unit id="TcSakbeMaquinariasGruposDto">
@@ -33,6 +50,8 @@
           tc_sakbe_maquinarias_grupos
         where 
           {condicion} 
+        order by
+          nombre
       </select>
       <select id="identically">
         select      
@@ -46,11 +65,14 @@
     <unit id="TcSakbeMaquinariasEstatusDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_maquinarias_estatus.id_maquinaria_estatus as id_key,
+          tc_sakbe_maquinarias_estatus.*
         from      
           tc_sakbe_maquinarias_estatus
         where 
           {condicion} 
+        order by
+          nombre
       </select>
       <select id="identically">
         select      
@@ -97,12 +119,13 @@
           id_combustible_bitacora = {idCombustibleBitacora}
       </select>
     </unit>    
-    <unit id="TrSakbeMaquinariaGrupoDto">
+    <unit id="TcSakbeMaquinariaGrupoDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_maquinarias_grupos.id_maquinaria_grupo as id_key,
+          tc_sakbe_maquinarias_grupos.*
         from      
-          tr_sakbe_maquinaria_grupo
+          tc_sakbe_maquinarias_grupos
         where 
           {condicion} 
       </select>
@@ -110,27 +133,9 @@
         select      
           *
         from      
-          tr_sakbe_maquinaria_grupo
+          tc_sakbe_maquinarias_grupos
         where      
           id_maquinaria = {idMaquinaria} and id_tipo_grupo = {idTipoGrupo}
-      </select>
-    </unit>    
-    <unit id="TcSakbeTiposGruposDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_sakbe_tipos_grupos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_sakbe_tipos_grupos
-        where      
-          descripcion = '{descripcion}'
       </select>
     </unit>    
     <unit id="TcSakbeCombustiblesEstatusDto">

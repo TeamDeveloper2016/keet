@@ -30,8 +30,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="pedimento")
   private String pedimento;
-  @Column (name="id_maquinaria_grupo")
-  private Long idMaquinariaGrupo;
   @Column (name="id_tipo_maquinaria")
   private Long idTipoMaquinaria;
   @Column (name="fecha_factura")
@@ -54,6 +52,8 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   private Double litros;
   @Column (name="id_maquinaria_estatus")
   private Long idMaquinariaEstatus;
+  @Column (name="placa")
+  private String placa;
   @Column (name="id_original")
   private Long idOriginal;
   @Column (name="clave")
@@ -86,13 +86,12 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   }
 
   public TcSakbeMaquinariasDto(Long key) {
-    this(null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcSakbeMaquinariasDto(String pedimento, Long idMaquinariaGrupo, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, Long idTipoCombustible, String poliza, String marca, Double total, String factura, Double iva, Double litros, Long idMaquinariaEstatus, Long idOriginal, String clave, Long ejercicio, Long idMaquinaria, String facturado, Double rendimiento, Long idUsuario, Double subtotal, String serie, String observaciones, Long idEmpresa) {
+  public TcSakbeMaquinariasDto(String pedimento, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, Long idTipoCombustible, String poliza, String marca, Double total, String factura, Double iva, Double litros, Long idMaquinariaEstatus, String placa, Long idOriginal, String clave, Long ejercicio, Long idMaquinaria, String facturado, Double rendimiento, Long idUsuario, Double subtotal, String serie, String observaciones, Long idEmpresa) {
     setPedimento(pedimento);
-    setIdMaquinariaGrupo(idMaquinariaGrupo);
     setIdTipoMaquinaria(idTipoMaquinaria);
     setFechaFactura(fechaFactura);
     setNombre(nombre);
@@ -104,6 +103,7 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     setIva(iva);
     setLitros(litros);
     setIdMaquinariaEstatus(idMaquinariaEstatus);
+    setPlaca(placa);
     setIdOriginal(idOriginal);
     setClave(clave);
     setEjercicio(ejercicio);
@@ -124,14 +124,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 
   public String getPedimento() {
     return pedimento;
-  }
-
-  public void setIdMaquinariaGrupo(Long idMaquinariaGrupo) {
-    this.idMaquinariaGrupo = idMaquinariaGrupo;
-  }
-
-  public Long getIdMaquinariaGrupo() {
-    return idMaquinariaGrupo;
   }
 
   public void setIdTipoMaquinaria(Long idTipoMaquinaria) {
@@ -220,6 +212,14 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 
   public Long getIdMaquinariaEstatus() {
     return idMaquinariaEstatus;
+  }
+
+  public void setPlaca(String placa) {
+    this.placa = placa;
+  }
+
+  public String getPlaca() {
+    return placa;
   }
 
   public void setIdOriginal(Long idOriginal) {
@@ -335,8 +335,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getPedimento());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdMaquinariaGrupo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMaquinaria());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaFactura());
@@ -358,6 +356,8 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.append(getLitros());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdMaquinariaEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPlaca());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOriginal());
 		regresar.append(Constantes.SEPARADOR);
@@ -390,7 +390,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("pedimento", getPedimento());
-		regresar.put("idMaquinariaGrupo", getIdMaquinariaGrupo());
 		regresar.put("idTipoMaquinaria", getIdTipoMaquinaria());
 		regresar.put("fechaFactura", getFechaFactura());
 		regresar.put("nombre", getNombre());
@@ -402,6 +401,7 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.put("iva", getIva());
 		regresar.put("litros", getLitros());
 		regresar.put("idMaquinariaEstatus", getIdMaquinariaEstatus());
+		regresar.put("placa", getPlaca());
 		regresar.put("idOriginal", getIdOriginal());
 		regresar.put("clave", getClave());
 		regresar.put("ejercicio", getEjercicio());
@@ -420,7 +420,7 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getPedimento(), getIdMaquinariaGrupo(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getIdTipoCombustible(), getPoliza(), getMarca(), getTotal(), getFactura(), getIva(), getLitros(), getIdMaquinariaEstatus(), getIdOriginal(), getClave(), getEjercicio(), getRegistro(), getIdMaquinaria(), getFacturado(), getRendimiento(), getIdUsuario(), getSubtotal(), getSerie(), getObservaciones(), getIdEmpresa()
+    getPedimento(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getIdTipoCombustible(), getPoliza(), getMarca(), getTotal(), getFactura(), getIva(), getLitros(), getIdMaquinariaEstatus(), getPlaca(), getIdOriginal(), getClave(), getEjercicio(), getRegistro(), getIdMaquinaria(), getFacturado(), getRendimiento(), getIdUsuario(), getSubtotal(), getSerie(), getObservaciones(), getIdEmpresa()
     };
     return regresar;
   }

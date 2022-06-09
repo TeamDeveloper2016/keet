@@ -36,14 +36,6 @@
 				} // if
 				return ok;
 			} // validaJustificacion
-      
-			function start() {
-        PF('statusDialog').show();
-      };
- 
-      function stop() {
-        PF('statusDialog').hide();
-      };
     </script>		
 		<style>
 	  </style>		
@@ -152,11 +144,11 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.grupo}">
               <f:facet name="header">
-                <h:outputText value="Tipo"/>
+                <h:outputText value="Grupo"/>
               </f:facet>
-              <h:outputText value="#{row['tipo']}"/>
+              <h:outputText value="#{row['grupo']}"/>
             </p:column>
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
@@ -164,19 +156,13 @@
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.grupo}">
-              <f:facet name="header">
-                <h:outputText value="Grupo"/>
-              </f:facet>
-              <h:outputText value="#{row['grupo']}"/>
-            </p:column>
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
               <f:facet name="header">
                 <h:outputText value="Marca"/>
               </f:facet>
               <h:outputText value="#{row['marca']}"/>
             </p:column>
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.litros}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.litros}">
               <f:facet name="header">
                 <h:outputText value="Litros"/>
               </f:facet>
@@ -188,7 +174,7 @@
               </f:facet>
               <h:outputText value="#{row['recibio']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
