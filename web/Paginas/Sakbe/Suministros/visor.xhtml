@@ -125,7 +125,7 @@
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
                 <p:column headerText="Tipo">
-                  <h:outputText value="#{item.tipo}"/>
+                  <h:outputText value="#{item.grupo}"/>
                 </p:column>                   
                 <p:column headerText="Marca">
                   <h:outputText value="#{item.marca}"/>
@@ -174,7 +174,7 @@
 						</p:tab>
 					</p:accordionPanel>           					
           <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{sakbeSuministrosVisor.lazyModel}" styleClass="detalle" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeSuministrosVisor.lazyModel.rowCount gt sakbeSuministrosVisor.lazyModel.pageSize}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorPosition="bottom" rowIndexVar="index">
-						<p:panel header="Maquinaría: #{row.clave} | #{row.tipo}" style="text-align:center; border: 0px;">
+						<p:panel header="Maquinaría: #{row.clave} | #{row.grupo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Suministrar" action="#{sakbeSuministrosVisor.doSuministros(row)}">
 									<p:outputLabel value="#{row.consecutivo}" title="Click para registrar un suministro" styleClass="manzana-lote-font janal-color-black" style="cursor: pointer;"/>

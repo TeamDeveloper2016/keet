@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.db.dto.TcKeetDesarrollosDto;
 import mx.org.kaana.sakbe.suministros.beans.Evidencia;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -111,6 +112,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("file", ""); 
 			this.attrs.put("index", 0); 
+      this.attrs.put("desarrollo", DaoFactory.getInstance().findById(TcKeetDesarrollosDto.class, (Long)this.attrs.get("idDesarrollo")));
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
@@ -238,7 +240,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			maquinarias= UIEntity.seleccione("VistaSuministrosDto", "maquinarias", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("maquinarias", maquinarias);
-      if(!maquinarias.isEmpty()) 
+      if(maquinarias!= null && !maquinarias.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           this.suministro.setIkMaquinaria(maquinarias.get(0));
         else  
@@ -481,7 +483,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     if(porcentaje!= null)
       saldo= porcentaje.toDouble("saldo");
   	List<UISelectEntity> maquinarias= (List<UISelectEntity>)this.attrs.get("maquinarias");
-    if(!maquinarias.isEmpty()) {
+    if(maquinarias!= null && !maquinarias.isEmpty()) {
       int index= maquinarias.indexOf(this.suministro.getIkMaquinaria());      
       if(index>= 0 && this.suministro.getIkMaquinaria().getKey()> 0L) {
         this.suministro.setIkMaquinaria(maquinarias.get(index));

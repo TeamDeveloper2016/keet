@@ -72,7 +72,7 @@
           <p:dataGrid id="tabla" var="item" value="#{sakbeCombustiblesDesarrollos.desarrollos}" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesDesarrollos.desarrollos.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{item.nombres}" style="width:100%;" >
 							<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">										
-								<p:commandLink id="ayuda" action="#{sakbeCombustiblesDesarrollos.doPagina}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+								<p:commandLink id="ayuda" action="#{sakbeCombustiblesDesarrollos.doPagina(item)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
 									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
 									<f:setPropertyActionListener value="#{item}" target="#{sakbeCombustiblesDesarrollos.seleccionado}"  />
 								</p:commandLink>										                    

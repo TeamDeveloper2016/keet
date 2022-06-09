@@ -118,11 +118,16 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
 								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeSuministrosAccion.agregar}" styleClass="recalculo"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{sakbeSuministrosAccion.suministro.consecutivo}" readonly="true" style="display: #{sakbeSuministrosAccion.agregar}"/>
+								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
+                <p:inputText id="desarrollo" value="#{sakbeSuministrosAccion.attrs.desarrollo.nombres}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
 								<p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
 								<p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosAccion.suministro.ikMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{sakbeSuministrosAccion.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Grupo">
+										<h:outputText value="#{item.grupo}"/>
 									</p:column>   
 									<p:column headerText="Marca">
 										<h:outputText value="#{item.marca}"/>

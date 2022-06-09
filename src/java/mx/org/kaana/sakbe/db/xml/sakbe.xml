@@ -7,6 +7,60 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeTiposMaquinariasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_maquinarias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_maquinarias
+        where      
+          clave = '{clave}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeMaquinariasGruposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_grupos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeMaquinariasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcSakbeSuministrosDetallesDto">
       <select id="row">
         select      
@@ -161,15 +215,15 @@
       <select id="depurar">
         select      
           tc_sakbe_combustibles.id_combustible as id_key,
-          tc_sakbe_tickets_saldos.id_suministro_detalle,
-          tc_sakbe_tickets_saldos.litros as litrox,
+          tc_sakbe_suministros_detalles.id_suministro_detalle,
+          tc_sakbe_suministros_detalles.litros as litrox,
           tc_sakbe_combustibles.*
         from      
           tc_sakbe_combustibles
         inner join
-          tc_sakbe_tickets_saldos on tc_sakbe_combustibles.id_combustible= tc_sakbe_tickets_saldos.id_combustible
+          tc_sakbe_suministros_detalles on tc_sakbe_combustibles.id_combustible= tc_sakbe_suministros_detalles.id_combustible
         where      
-          tc_sakbe_tickets_saldos.id_suministro= {idSuministro}
+          tc_sakbe_suministros_detalles.id_suministro= {idSuministro}
         order by
           tc_sakbe_combustibles.registro desc
       </select>

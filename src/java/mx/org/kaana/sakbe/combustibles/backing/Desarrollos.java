@@ -169,7 +169,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toCodigo	
 	
-	public String doPagina() {
+	public String doPagina(Entity row) {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;
     try {

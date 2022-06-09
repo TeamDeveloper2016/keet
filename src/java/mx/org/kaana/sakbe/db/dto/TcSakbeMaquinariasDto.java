@@ -28,12 +28,10 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="clave")
-  private String clave;
-  @Column (name="original")
-  private Long original;
   @Column (name="pedimento")
   private String pedimento;
+  @Column (name="id_maquinaria_grupo")
+  private Long idMaquinariaGrupo;
   @Column (name="id_tipo_maquinaria")
   private Long idTipoMaquinaria;
   @Column (name="fecha_factura")
@@ -44,6 +42,22 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   private Long idTipoCombustible;
   @Column (name="poliza")
   private String poliza;
+  @Column (name="marca")
+  private String marca;
+  @Column (name="total")
+  private Double total;
+  @Column (name="factura")
+  private String factura;
+  @Column (name="iva")
+  private Double iva;
+  @Column (name="litros")
+  private Double litros;
+  @Column (name="id_maquinaria_estatus")
+  private Long idMaquinariaEstatus;
+  @Column (name="id_original")
+  private Long idOriginal;
+  @Column (name="clave")
+  private String clave;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -52,91 +66,72 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_maquinaria")
   private Long idMaquinaria;
-  @Column (name="marca")
-  private String marca;
-  @Column (name="total")
-  private Double total;
-  @Column (name="factura")
-  private String factura;
   @Column (name="facturado")
   private String facturado;
   @Column (name="rendimiento")
   private Double rendimiento;
-  @Column (name="iva")
-  private Double iva;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="subtotal")
   private Double subtotal;
-  @Column (name="litros")
-  private Double litros;
   @Column (name="serie")
   private String serie;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="inventario")
-  private String inventario;
 
   public TcSakbeMaquinariasDto() {
     this(new Long(-1L));
   }
 
   public TcSakbeMaquinariasDto(Long key) {
-    this(null, null, null, null, LocalDate.now(), null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcSakbeMaquinariasDto(String clave, Long original, String pedimento, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, Long idTipoCombustible, String poliza, Long ejercicio, Long idMaquinaria, String marca, Double total, String factura, String facturado, Double rendimiento, Double iva, Long idUsuario, Double subtotal, Double litros, String serie, String observaciones, Long idEmpresa, String inventario) {
-    setClave(clave);
-    setOriginal(original);
+  public TcSakbeMaquinariasDto(String pedimento, Long idMaquinariaGrupo, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, Long idTipoCombustible, String poliza, String marca, Double total, String factura, Double iva, Double litros, Long idMaquinariaEstatus, Long idOriginal, String clave, Long ejercicio, Long idMaquinaria, String facturado, Double rendimiento, Long idUsuario, Double subtotal, String serie, String observaciones, Long idEmpresa) {
     setPedimento(pedimento);
+    setIdMaquinariaGrupo(idMaquinariaGrupo);
     setIdTipoMaquinaria(idTipoMaquinaria);
     setFechaFactura(fechaFactura);
     setNombre(nombre);
     setIdTipoCombustible(idTipoCombustible);
     setPoliza(poliza);
-    setEjercicio(ejercicio);
-    setRegistro(LocalDateTime.now());
-    setIdMaquinaria(idMaquinaria);
     setMarca(marca);
     setTotal(total);
     setFactura(factura);
+    setIva(iva);
+    setLitros(litros);
+    setIdMaquinariaEstatus(idMaquinariaEstatus);
+    setIdOriginal(idOriginal);
+    setClave(clave);
+    setEjercicio(ejercicio);
+    setRegistro(LocalDateTime.now());
+    setIdMaquinaria(idMaquinaria);
     setFacturado(facturado);
     setRendimiento(rendimiento);
-    setIva(iva);
     setIdUsuario(idUsuario);
     setSubtotal(subtotal);
-    setLitros(litros);
     setSerie(serie);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setInventario(inventario);
   }
 	
-  public void setClave(String clave) {
-    this.clave = clave;
-  }
-
-  public String getClave() {
-    return clave;
-  }
-
-  public void setOriginal(Long original) {
-    this.original = original;
-  }
-
-  public Long getOriginal() {
-    return original;
-  }
-
   public void setPedimento(String pedimento) {
     this.pedimento = pedimento;
   }
 
   public String getPedimento() {
     return pedimento;
+  }
+
+  public void setIdMaquinariaGrupo(Long idMaquinariaGrupo) {
+    this.idMaquinariaGrupo = idMaquinariaGrupo;
+  }
+
+  public Long getIdMaquinariaGrupo() {
+    return idMaquinariaGrupo;
   }
 
   public void setIdTipoMaquinaria(Long idTipoMaquinaria) {
@@ -179,30 +174,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     return poliza;
   }
 
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
-  }
-
-  public void setRegistro(LocalDateTime registro) {
-    this.registro = registro;
-  }
-
-  public LocalDateTime getRegistro() {
-    return registro;
-  }
-
-  public void setIdMaquinaria(Long idMaquinaria) {
-    this.idMaquinaria = idMaquinaria;
-  }
-
-  public Long getIdMaquinaria() {
-    return idMaquinaria;
-  }
-
   public void setMarca(String marca) {
     this.marca = marca;
   }
@@ -227,6 +198,70 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     return factura;
   }
 
+  public void setIva(Double iva) {
+    this.iva = iva;
+  }
+
+  public Double getIva() {
+    return iva;
+  }
+
+  public void setLitros(Double litros) {
+    this.litros = litros;
+  }
+
+  public Double getLitros() {
+    return litros;
+  }
+
+  public void setIdMaquinariaEstatus(Long idMaquinariaEstatus) {
+    this.idMaquinariaEstatus = idMaquinariaEstatus;
+  }
+
+  public Long getIdMaquinariaEstatus() {
+    return idMaquinariaEstatus;
+  }
+
+  public void setIdOriginal(Long idOriginal) {
+    this.idOriginal = idOriginal;
+  }
+
+  public Long getIdOriginal() {
+    return idOriginal;
+  }
+
+  public void setClave(String clave) {
+    this.clave = clave;
+  }
+
+  public String getClave() {
+    return clave;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
+
+  public Long getEjercicio() {
+    return ejercicio;
+  }
+
+  public void setRegistro(LocalDateTime registro) {
+    this.registro = registro;
+  }
+
+  public LocalDateTime getRegistro() {
+    return registro;
+  }
+
+  public void setIdMaquinaria(Long idMaquinaria) {
+    this.idMaquinaria = idMaquinaria;
+  }
+
+  public Long getIdMaquinaria() {
+    return idMaquinaria;
+  }
+
   public void setFacturado(String facturado) {
     this.facturado = facturado;
   }
@@ -243,14 +278,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     return rendimiento;
   }
 
-  public void setIva(Double iva) {
-    this.iva = iva;
-  }
-
-  public Double getIva() {
-    return iva;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -265,14 +292,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 
   public Double getSubtotal() {
     return subtotal;
-  }
-
-  public void setLitros(Double litros) {
-    this.litros = litros;
-  }
-
-  public Double getLitros() {
-    return litros;
   }
 
   public void setSerie(String serie) {
@@ -299,14 +318,6 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setInventario(String inventario) {
-    this.inventario = inventario;
-  }
-
-  public String getInventario() {
-    return inventario;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -322,11 +333,9 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getClave());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOriginal());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPedimento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMaquinariaGrupo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMaquinaria());
 		regresar.append(Constantes.SEPARADOR);
@@ -338,37 +347,41 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPoliza());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdMaquinaria());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMarca());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFactura());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIva());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLitros());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMaquinariaEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdOriginal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMaquinaria());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFacturado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRendimiento());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIva());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubtotal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getLitros());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSerie());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getInventario());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -376,37 +389,38 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("clave", getClave());
-		regresar.put("original", getOriginal());
 		regresar.put("pedimento", getPedimento());
+		regresar.put("idMaquinariaGrupo", getIdMaquinariaGrupo());
 		regresar.put("idTipoMaquinaria", getIdTipoMaquinaria());
 		regresar.put("fechaFactura", getFechaFactura());
 		regresar.put("nombre", getNombre());
 		regresar.put("idTipoCombustible", getIdTipoCombustible());
 		regresar.put("poliza", getPoliza());
-		regresar.put("ejercicio", getEjercicio());
-		regresar.put("registro", getRegistro());
-		regresar.put("idMaquinaria", getIdMaquinaria());
 		regresar.put("marca", getMarca());
 		regresar.put("total", getTotal());
 		regresar.put("factura", getFactura());
+		regresar.put("iva", getIva());
+		regresar.put("litros", getLitros());
+		regresar.put("idMaquinariaEstatus", getIdMaquinariaEstatus());
+		regresar.put("idOriginal", getIdOriginal());
+		regresar.put("clave", getClave());
+		regresar.put("ejercicio", getEjercicio());
+		regresar.put("registro", getRegistro());
+		regresar.put("idMaquinaria", getIdMaquinaria());
 		regresar.put("facturado", getFacturado());
 		regresar.put("rendimiento", getRendimiento());
-		regresar.put("iva", getIva());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("subtotal", getSubtotal());
-		regresar.put("litros", getLitros());
 		regresar.put("serie", getSerie());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("inventario", getInventario());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getOriginal(), getPedimento(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getIdTipoCombustible(), getPoliza(), getEjercicio(), getRegistro(), getIdMaquinaria(), getMarca(), getTotal(), getFactura(), getFacturado(), getRendimiento(), getIva(), getIdUsuario(), getSubtotal(), getLitros(), getSerie(), getObservaciones(), getIdEmpresa(), getInventario()
+    getPedimento(), getIdMaquinariaGrupo(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getIdTipoCombustible(), getPoliza(), getMarca(), getTotal(), getFactura(), getIva(), getLitros(), getIdMaquinariaEstatus(), getIdOriginal(), getClave(), getEjercicio(), getRegistro(), getIdMaquinaria(), getFacturado(), getRendimiento(), getIdUsuario(), getSubtotal(), getSerie(), getObservaciones(), getIdEmpresa()
     };
     return regresar;
   }
