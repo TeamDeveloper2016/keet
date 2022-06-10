@@ -100,7 +100,7 @@
                 </p:selectOneMenu>
                 <p:outputLabel for="ixTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="ixTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.ixTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.itemsCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   

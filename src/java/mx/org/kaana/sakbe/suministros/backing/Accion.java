@@ -144,7 +144,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaSuministrosDto", "evidencias", params);
           break;
       } // switch
-      this.suministro.setIdTipoCombustible((Long)this.attrs.get("idTipoCombustible"));
+      this.suministro.setIdTipoCombustible((Long)this.attrs.get("ikTipoCombustible"));
       if(this.importados== null)
         this.importados= new ArrayList<>();
       else
@@ -168,7 +168,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         break;
       default:
         break;
-    }
+    } // switch
 	} // doTabChange
   
 	public void doContinuar() {  
@@ -180,7 +180,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			this.attrs.put("evidencias", 0L);
 			this.attrs.put("file", ""); 
 			this.attrs.put("index", 0); 
-      this.attrs.put("porcentaje", toLoadCombustible());
+      this.attrs.put("porcentaje", this.toLoadCombustible());
       this.doLoad();
     } // try
     catch (Exception e) {
@@ -227,7 +227,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     JsfBase.setFlashAttribute("idSuministro", this.attrs.get("idSuministro"));
     JsfBase.setFlashAttribute("opcion", this.attrs.get("opcionResidente"));			
     JsfBase.setFlashAttribute("retorno", this.attrs.get("seguimiento"));			
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doCancelar
  
 	private void toLoadMaquinarias() {
@@ -247,7 +247,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.suministro.setIkMaquinaria(maquinarias.get(0));
         else  
           this.suministro.setIkMaquinaria(maquinarias.get(maquinarias.indexOf(this.suministro.getIkMaquinaria())));
-      this.toCheckLitros();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -464,7 +463,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));
+      params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
     } // try
@@ -478,7 +477,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     return regresar;
   }
  
-  private void toCheckLitros() {
+  public void doCheckLitros() {
     Entity porcentaje= (Entity)this.attrs.get("porcentaje");
     Double saldo     = 80D; 
     Double litros    = 80D; 

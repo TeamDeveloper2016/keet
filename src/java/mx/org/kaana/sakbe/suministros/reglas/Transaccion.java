@@ -94,7 +94,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= this.toAddCombustibles(sesion);
 					break;				
 				case ELIMINAR:
-					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.ELIMINADO.getKey());
+					this.suministro.setIdSuministroEstatus(ESuministrosEstatus.CANCELADO.getKey());
           DaoFactory.getInstance().update(sesion, this.suministro);
   			  registro= new TcSakbeSuministrosBitacoraDto("", JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), -1L, this.suministro.getIdSuministro());
           DaoFactory.getInstance().insert(sesion, registro);
@@ -112,7 +112,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					} // if
 					break;
 				case COMPLEMENTAR: 
-					this.suministro.setIdSuministroEstatus(ECombustiblesEstatus.TERMINADO.getKey());
+					this.suministro.setIdSuministroEstatus(ESuministrosEstatus.TERMINADO.getKey());
 					DaoFactory.getInstance().update(sesion, this.suministro);
   				this.suministro.setIdSuministroEstatus(this.bitacora.getIdSuministroEstatus());
   			  registro= new TcSakbeSuministrosBitacoraDto("", -1L, JsfBase.getIdUsuario(), this.suministro.getIdSuministroEstatus(), this.suministro.getIdSuministro());
@@ -231,10 +231,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Map<String, Object> params    = new HashMap<>();
     List<Combustible> combustibles= null;
     try {      
-      params.put("idTipoCombustible", this.suministro.getIdTipoCombustible());      
-      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
-      combustibles= (List<Combustible>)DaoFactory.getInstance().findViewCriteria(sesion, Combustible.class, params, Constantes.SQL_TODOS_REGISTROS, "depurar");
+      params.put("idSuministro", this.suministro.getIdSuministro());      
+      combustibles= (List<Combustible>)DaoFactory.getInstance().toEntitySet(sesion, Combustible.class, "TcSakbeCombustiblesDto", "depurar", params, Constantes.SQL_TODOS_REGISTROS);
       for (Combustible item: combustibles) {
+        if(item.getIdBanco()< 0L)
+          item.setIdBanco(null);
         item.setSaldo(item.getSaldo()+ item.getLitrox());
         if(Objects.equals(item.getLitros(), item.getSaldo()))
           item.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());

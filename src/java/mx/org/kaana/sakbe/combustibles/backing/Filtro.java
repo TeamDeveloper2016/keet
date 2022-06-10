@@ -322,6 +322,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params             = new HashMap<>();
 		try {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			this.attrs.put("itemsCombustibles", UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre"));
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
 			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));

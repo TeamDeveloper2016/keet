@@ -91,6 +91,11 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
     this.idTipoCombustible = idTipoCombustible;
   }
   
+  @Override
+  public Class toHbmClass() {
+    return TcSakbeSuministrosDto.class;
+  }
+  
   public Boolean isComplete() {
     return Boolean.FALSE;
   }
