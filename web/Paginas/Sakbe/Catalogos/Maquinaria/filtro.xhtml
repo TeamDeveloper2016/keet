@@ -62,7 +62,7 @@
               </p:selectOneMenu>
               <p:outputLabel for="idMaquinariaGrupo" value="Grupo:"/>
               <p:selectOneMenu id="idMaquinariaGrupo" value="#{sakbeCatalogosMaquinariaFiltro.attrs.idMaquinariaGrupo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-  							<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{sakbeCatalogosMaquinariaFiltro.doLoadTiposMaquinarias}" update="idTipoMaquinaria" oncomplete="janal.desbloquear();reloadTiposMaquinarias()"/>
+  							<p:ajax event="change" process="@this panelBusqueda" update="idTipoMaquinaria" listener="#{sakbeCatalogosMaquinariaFiltro.doLoadTiposMaquinarias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();reloadTiposMaquinarias()"/>
                 <f:selectItems value="#{sakbeCatalogosMaquinariaFiltro.attrs.maquinariasGrupos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>

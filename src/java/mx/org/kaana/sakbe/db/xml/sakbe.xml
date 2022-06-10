@@ -7,6 +7,31 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeMaquinariasBitacoraDto">
+      <select id="row">
+        select      
+          tc_sakbe_maquinarias_bitacora.id_maquinaria_bitacora as id_key,
+          tc_sakbe_maquinarias_bitacora.*
+        from      
+          tc_sakbe_maquinarias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_bitacora
+        where      
+          id_maquinaria_bitacora = {idMaquinariaBitacora}
+      </select>
+      <delete id="rows">
+        delete from
+          tc_sakbe_maquinarias_bitacora
+        where
+          id_maquinaria= {idMaquinaria}
+      </delete>
+    </unit>    
     <unit id="TcSakbeTiposMaquinariasDto">
       <select id="row">
         select      
@@ -45,7 +70,8 @@
     <unit id="TcSakbeMaquinariasGruposDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_maquinarias_grupos.id_maquinaria_grupo as id_key,
+          tc_sakbe_maquinarias_grupos.*
         from      
           tc_sakbe_maquinarias_grupos
         where 
@@ -117,25 +143,6 @@
           tc_sakbe_combustibles_bitacora
         where      
           id_combustible_bitacora = {idCombustibleBitacora}
-      </select>
-    </unit>    
-    <unit id="TcSakbeMaquinariaGrupoDto">
-      <select id="row">
-        select      
-          tc_sakbe_maquinarias_grupos.id_maquinaria_grupo as id_key,
-          tc_sakbe_maquinarias_grupos.*
-        from      
-          tc_sakbe_maquinarias_grupos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_sakbe_maquinarias_grupos
-        where      
-          id_maquinaria = {idMaquinaria} and id_tipo_grupo = {idTipoGrupo}
       </select>
     </unit>    
     <unit id="TcSakbeCombustiblesEstatusDto">
@@ -312,6 +319,20 @@
         where      
           clave = '{clave}' and id_empresa = {idEmpresa}
       </select>
+      <select id="igual">
+        select      
+          tc_sakbe_maquinarias.id_maquinaria as id_key,
+          tc_sakbe_maquinarias_grupos.id_maquinaria_grupo,
+          tc_sakbe_maquinarias.*
+        from      
+          tc_sakbe_maquinarias
+        inner join
+          tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        where 
+          tc_sakbe_maquinarias.id_maquinaria= {idMaquinaria}
+      </select>  
     </unit>    
     <unit id="TcSakbeSuministrosArchivosDto">
       <select id="row">
@@ -391,7 +412,7 @@
         from      
           tr_sakbe_maquinaria_desarrollo
         where      
-          id_maquinaria = {idMaquinaria}
+          id_maquinaria= {idMaquinaria}
       </select>
       <update id="rows">
         update

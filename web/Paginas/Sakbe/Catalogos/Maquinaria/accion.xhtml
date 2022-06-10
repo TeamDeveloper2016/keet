@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{sakbeCatalogosMaquinariaAccion.attrs.nombreAccion} un ticket de combustible"/>
+  <ui:param name="janalBackingPage" value="#{sakbeCatalogosMaquinariaAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">
+	   Janal.Control.fields = {				 				
+        'contenedorGrupos\\:idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:clave'            : {validaciones: 'requerido|texto|longitud({"min":3, "max":50})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:nombre'           : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:marca'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:serie'            : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:placa'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:ejercicio'        : {validaciones: 'entero|mayor({"cuanto":1900})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:pedimento'        : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:factura'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:idOriginal'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:facturado'        : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'fecha', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoCombustible': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:subtotal'         : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:iva'              : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'            : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:poliza'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:litros'           : {validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:rendimiento'      : {validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoMaquinaria' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idMaquinariaEstatus': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:entidad'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:color'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:modelo'           : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:motor'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:tarjeta'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:proEnFactura'     : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:proEnTarjeta'     : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:proReal'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:idConstancia'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:constancia'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comprado'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+			};	
+			
+    	$(document).ready(function() {
+        disabledComponent();
+				janal.decimals= 4;
+      });
+			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+      }      
+      
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			} // execute		
+		</script>   
+		<style type="text/css">
+		</style>			
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="LA MAQUINARIA [#{sakbeCatalogosMaquinariaAccion.maquinaria.clave}] SE (AUTO)GUARDO EL DIA #{sakbeCatalogosMaquinariaAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeCatalogosMaquinariaAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+					</div>
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{sakbeCatalogosMaquinariaAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); disabledComponent(); "/>
+            <p:tab title="General">							
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                <p:outputLabel for="idEmpresa" value="Empresa:" rendered="#{sakbeCatalogosMaquinariaAccion.attrs.isMatriz}"/>
+                <p:selectOneMenu id="idEmpresa" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="clave" value="Clave:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.clave}"/>
+                <p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.nombre}"/>
+                <p:outputLabel for="marca" value="Marca:"/>
+								<p:inputText id="marca" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.marca}"/>
+                <p:outputLabel for="serie" value="Serie:"/>
+								<p:inputText id="serie" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.serie}"/>
+                <p:outputLabel for="motor" value="Motor:"/>
+                <p:inputText id="motor" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.motor}" styleClass="janal-wid-100-txt"/>
+                <p:outputLabel for="placa" value="Placa:"/>
+								<p:inputText id="placa" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.placa}"/>
+								<p:outputLabel for="modelo" value="Modelo:"/>
+								<p:inputText id="modelo" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.modelo}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="color" value="Color:"/>
+								<p:inputText id="color" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.color}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="ejercicio" value="Año:"/>
+								<p:inputNumber id="ejercicio" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ejercicio}" decimalPlaces="0" decimalSeparator="." thousandSeparator="" emptyValue="1980" inputStyleClass="janal-wid-100-txt" minValue="1980"/>
+								<p:outputLabel for="entidad" value="Radicación (entidad):"/>
+								<p:inputText id="entidad" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.entidad}" styleClass="janal-wid-100-txt"/>
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Tipo">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+								<p:outputLabel for="litros" value="Litros:"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+								<p:outputLabel for="rendimiento" value="Rendimiento:"/>
+								<p:inputNumber id="rendimiento" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.rendimiento}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+                <p:outputLabel for="idMaquinariaGrupo" value="Grupo:"/>
+                <p:selectOneMenu id="idMaquinariaGrupo" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikMaquinariaGrupo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="idTipoMaquinaria" listener="#{sakbeCatalogosMaquinariaAccion.doLoadTiposMaquinarias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh(); reloadTiposMaquinarias()"/>
+                  <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.maquinariasGrupos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
+                <p:outputLabel for="idTipoMaquinaria" value="Tipo:"/>
+                <p:selectOneMenu id="idTipoMaquinaria" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikTipoMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.tiposMaquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.grupo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Grupo">
+                    <h:outputText value="#{item.grupo}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
+              </p:panelGrid>
+              <p:remoteCommand name="reloadTiposMaquinarias" process="@this" update="idTipoMaquinaria"/>
+						</p:tab>
+						<p:tab title="Costo">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+								<p:outputLabel for="subtotal" value="Sub total:"/>
+								<p:inputNumber id="subtotal" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.subtotal}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+								<p:outputLabel for="iva" value="IVA:"/>
+								<p:inputNumber id="iva" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.iva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+								<p:outputLabel for="total" value="Total:"/>
+								<p:inputNumber id="total" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Documentos">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                <p:outputLabel for="poliza" value="Poliza:"/>
+								<p:inputText id="poliza" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.poliza}"/>
+                <p:outputLabel for="pedimento" value="No. pedimento:"/>
+								<p:inputText id="pedimento" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.pedimento}"/>
+                <p:outputLabel for="factura" value="No. factura:"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.factura}"/>
+                <p:outputLabel for="idOriginal" value="Factura original:"/>
+                <p:selectOneMenu id="idOriginal" styleClass="janal-wid-100-txt contacto" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.idOriginal}" converter="javax.faces.Long">
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>								
+                </p:selectOneMenu>
+                <p:outputLabel for="facturado" value="Se facturó a:"/>
+								<p:inputText id="facturado" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.facturado}"/>
+								<p:outputLabel for="fecha" value="Fecha factura:"/>
+								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.fechaFactura}" pattern="dd/MM/yyyy" locale="es" />
+								<p:outputLabel for="tarjeta" value="No. tarjeta de circulación:"/>
+								<p:inputText id="tarjeta" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.tarjeta}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="proEnFactura" value="Propietario en factura:"/>
+								<p:inputText id="proEnFactura" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.proEnFactura}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="proEnTarjeta" value="Propietario en tarjeta:"/>
+								<p:inputText id="proEnTarjeta" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.proEnTarjeta}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="proReal" value="Propietario real:"/>
+								<p:inputText id="proReal" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.proReal}" styleClass="janal-wid-100-txt"/>
+                <p:outputLabel for="idConstancia" value="Constancia original:"/>
+                <p:selectOneMenu id="idConstancia" styleClass="janal-wid-100-txt contacto" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.idConstancia}" converter="javax.faces.Long">
+                  <p:ajax event="change" process="@this" update="@(.constancia)" listener="#{sakbeCatalogosMaquinariaAccion.doLoadTiposMaquinarias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>								
+                </p:selectOneMenu>
+                <p:outputLabel for="constancia" value="No constancia:" styleClass="constancia" style="display: #{sakbeCatalogosMaquinariaAccion.maquinaria.idConstancia eq '1'? '': 'none'}"/>
+								<p:inputText id="constancia" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.constancia}" styleClass="janal-wid-100-txt constancia" style="display: #{sakbeCatalogosMaquinariaAccion.maquinaria.idConstancia eq '1'? '': 'none'}"/>
+                <p:outputLabel for="comprado" value="Se compró a:"/>
+								<p:inputText id="comprado" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.comprado}" styleClass="janal-wid-100-txt"/>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Observaciones">
+							<p:inputTextarea id="observaciones" rows="4" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.observaciones}"/>
+						</p:tab>
+          </p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeCatalogosMaquinariaAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeCatalogosMaquinariaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeCatalogosMaquinariaAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeCatalogosMaquinariaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

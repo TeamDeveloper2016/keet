@@ -27,9 +27,9 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
-import mx.org.kaana.sakbe.suministros.beans.Suministro;
-import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosBitacoraDto;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
+import mx.org.kaana.sakbe.catalogos.maquinaria.reglas.Transaccion;
+import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasBitacoraDto;
 import mx.org.kaana.sakbe.db.dto.TrSakbeMaquinariaDesarrolloDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -115,7 +115,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
       params.put("idMaquinaria", seleccionado.getKey());
-			transaccion= new Transaccion((Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeSuministrosDto", "igual", params));
+			transaccion= new Transaccion((Maquinaria)DaoFactory.getInstance().toEntity(Maquinaria.class, "TcSakbeMaquinariasDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La maquinaria se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
@@ -260,7 +260,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("maquinariasGrupos", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeMaquinariaGrupoDto", "row", params, columns, "nombre"));			
+      this.attrs.put("maquinariasGrupos", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeMaquinariasGruposDto", "row", params, columns, "nombre"));			
 			this.attrs.put("idMaquinariasGrupo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinariasGrupos")));			
       this.doLoadTiposMaquinarias();
     } // try
@@ -356,18 +356,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion               = null;
-    TcSakbeSuministrosBitacoraDto bitacora= null;
+    TcSakbeMaquinariasBitacoraDto bitacora= null;
 		Entity seleccionado       = null;
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
       params.put("idMaquinaria", seleccionado.toMap());
-			Suministro orden= (Suministro)DaoFactory.getInstance().toEntity(Suministro.class, "TcSakbeMaquinariaDto", "igual", params);
-  	  bitacora= new TcSakbeSuministrosBitacoraDto((String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), -1L, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+			Maquinaria orden= (Maquinaria)DaoFactory.getInstance().toEntity(Maquinaria.class, "TcSakbeMaquinariasDto", "igual", params);
+  	  bitacora= new TcSakbeMaquinariasBitacoraDto(seleccionado.getKey(), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), -1L);
 			transaccion = new Transaccion(orden, bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
-      } // if  
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
 		} // try

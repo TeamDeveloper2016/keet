@@ -270,9 +270,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         else  
           this.combustible.setIkBanco(bancos.get(bancos.indexOf(this.combustible.getIkBanco())));
 		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch		
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
 		finally{
 			Methods.clean(params);
 		} // finally
@@ -311,9 +312,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         else  
           this.combustible.setIkTipoCombustible(tiposCombustibles.get(tiposCombustibles.indexOf(this.combustible.getIkTipoCombustible())));
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
 		finally{
 			Methods.clean(params);
 		} // finally
