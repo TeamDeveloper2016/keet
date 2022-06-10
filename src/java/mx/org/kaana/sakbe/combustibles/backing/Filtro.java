@@ -68,6 +68,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible"));
+      this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? 1L: JsfBase.getFlashAttribute("ikTipoCombustible"));
       this.toLoadTiposCombustibles();
 			this.toLoadCatalog();
       if(this.attrs.get("idCombustible")!= null) 
@@ -191,6 +192,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idCombustible")) && !this.attrs.get("idCombustible").toString().equals("-1"))
   		sb.append("(tc_sakbe_combustibles.id_combustible=").append(this.attrs.get("idCombustible")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("ixTipoCombustible")) && !this.attrs.get("ixTipoCombustible").toString().equals("-1"))
+  		sb.append("(tc_sakbe_combustibles.id_tipo_combustible=").append(this.attrs.get("ixTipoCombustible")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_sakbe_combustibles.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
@@ -295,6 +298,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doSuministros(Entity row) {
     this.attrs.put("combustible", row.clone());
+    this.attrs.put("idTipoCombustible", new UISelectEntity(row.toLong("idTipoCombustible")));
     return this.doSuministros();
   }
   

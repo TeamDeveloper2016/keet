@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -64,9 +63,9 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
-			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null || Objects.equals(EOpcionesResidente.DIESEL, opcionResidente)? 1L: JsfBase.getFlashAttribute("idTipoCombustible"));
+			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? 1L: JsfBase.getFlashAttribute("ikTipoCombustible"));
       this.toLoadTiposCombustibles();
-			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null ? "/Paginas/Sakbe/Combustibles/visor": JsfBase.getFlashAttribute("seguimiento"));
+			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null? "/Paginas/Sakbe/Combustibles/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
@@ -209,6 +208,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
  
   public String doCancelar() {
   	JsfBase.setFlashAttribute("idCombustible", this.attrs.get("idCombustible"));
+  	JsfBase.setFlashAttribute("ikTipoCombustible", this.attrs.get("ikTipoCombustible"));
     JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
   	JsfBase.setFlashAttribute("combustible", this.attrs.get("combustible"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
@@ -240,7 +240,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
-  	    this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("idTipoCombustible")));
+  	    this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
       else  
   			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
       this.doLoadPorcentajes();

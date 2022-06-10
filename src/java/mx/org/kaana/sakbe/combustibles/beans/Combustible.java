@@ -28,6 +28,7 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
   private UISelectEntity ikTipoMedioPago;
   private UISelectEntity ikBanco;
   private Long idSuministroDetalle;
+  private Long ixTipoCombustible;
   private double litrox;
 
   public Combustible() {
@@ -118,6 +119,14 @@ public class Combustible extends TcSakbeCombustiblesDto implements Serializable 
 
   public void setIdSuministroDetalle(Long idSuministroDetalle) {
     this.idSuministroDetalle = idSuministroDetalle;
+  }
+
+  public Long getIxTipoCombustible() {
+    return ixTipoCombustible;
+  }
+
+  public void setIxTipoCombustible(Long ixTipoCombustible) {
+    this.ixTipoCombustible = ixTipoCombustible;
   }
 
   public Boolean isComplete() {

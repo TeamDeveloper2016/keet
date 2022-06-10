@@ -199,6 +199,7 @@
         select      
           tc_sakbe_combustibles.id_combustible as id_key,
           tc_sakbe_combustibles.litros as litrox,
+          tc_sakbe_combustibles.idTipoCombustible as ixTipoCombustible,
           tc_sakbe_combustibles.*
         from      
           tc_sakbe_combustibles

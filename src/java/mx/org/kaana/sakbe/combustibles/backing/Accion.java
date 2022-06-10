@@ -132,6 +132,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.combustible.setIkTipoMedioPago(new UISelectEntity(this.combustible.getIdTipoMedioPago()));
           this.combustible.setIkBanco(new UISelectEntity(this.combustible.getIdBanco()));
     		  this.importados= (List<Evidencia>)DaoFactory.getInstance().toEntitySet(Evidencia.class, "VistaCombustiblesDto", "evidencias", params);
+    			this.attrs.put("isBanco", !Objects.equals(this.combustible.getIdTipoMedioPago(), ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()));
           break;
       } // switch
       if(this.importados== null)

@@ -31,6 +31,8 @@
 			
     	$(document).ready(function() {
         disabledComponent();
+        if(!(#{sakbeCombustiblesAccion.attrs.isBanco}))
+          setTimeout("$('#contenedorGrupos\\\\:idBanco').hide();", 2000);
 				janal.decimals= 4;
       });
 			
@@ -107,8 +109,8 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
-                <p:selectOneMenu id="idBanco" value="#{sakbeCombustiblesAccion.combustible.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not sakbeCombustiblesAccion.attrs.isBanco}">
+                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco" style="display: #{sakbeCombustiblesAccion.attrs.isBanco? '': 'none'}"/>
+                <p:selectOneMenu id="idBanco" value="#{sakbeCombustiblesAccion.combustible.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" style="display: #{sakbeCombustiblesAccion.attrs.isBanco? '': 'none'}">
                   <f:selectItems value="#{sakbeCombustiblesAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
@@ -117,8 +119,8 @@
                     <h:outputText value="#{item.razonSocial}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
-                <p:inputText id="referencia" value="#{sakbeCombustiblesAccion.combustible.referencia}" styleClass="janal-wid-100-txtbanco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not sakbeCombustiblesAccion.attrs.isBanco}"/>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco" style="display: #{sakbeCombustiblesAccion.attrs.isBanco? '': 'none'}"/>
+                <p:inputText id="referencia" value="#{sakbeCombustiblesAccion.combustible.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" style="display: #{sakbeCombustiblesAccion.attrs.isBanco? '': 'none'}"/>
                 <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesAccion.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{sakbeCombustiblesAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

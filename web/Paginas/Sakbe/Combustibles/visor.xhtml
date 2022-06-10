@@ -13,6 +13,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'ixTipoCombustible': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         'ticket'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'lugar'          : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -58,8 +59,8 @@
 					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
 						<p:tab id="avance" title="Litros disponibles:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                <p:outputLabel for="ikTipoCombustible" value="Combustible:"/>
-                <p:selectOneMenu id="ikTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesVisor.doLoadPorcentajes}"/>
                   <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">
@@ -93,6 +94,13 @@
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="ixTipoCombustible" value="Combustible:"/>
+                <p:selectOneMenu id="ixTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.ixTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   

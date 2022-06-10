@@ -12,12 +12,13 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
-        'ticket'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'lugar'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'ixTipoCombustible': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        'consecutivo'      : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+        'ticket'           : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'lugar'            : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idCombustibleEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
@@ -54,6 +55,13 @@
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="ixTipoCombustible" value="Combustible:"/>
+              <p:selectOneMenu id="ixTipoCombustible" value="#{sakbeCombustiblesFiltro.attrs.ixTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{sakbeCombustiblesFiltro.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
@@ -134,18 +142,48 @@
               </f:facet>
               <h:outputText value="#{row['litros']}"/>
             </p:column>		
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{row['precioLitro']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Combustible"/>
+              </f:facet>
+              <h:outputText value="#{row['combustible']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Medio pago"/>
+              </f:facet>
+              <h:outputText value="#{row['medio']}"/>
+            </p:column>		
             <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.porcentaje}">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="#{row['saldo']} [#{row['porcentaje']}%]"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
-              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
+              <i class="fa fa-fw fa-user janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Compró"/>
+              </f:facet>
+              <h:outputText value="#{row['usuario']}"/>
             </p:column>		
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
               <f:facet name="header">

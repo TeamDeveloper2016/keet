@@ -223,6 +223,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
   public String doCancelar() {   
     JsfBase.setFlashAttribute("idDessarrollo", this.attrs.get("idDessarrollo"));
+    JsfBase.setFlashAttribute("ikTipoCombustible", this.attrs.get("ikTipoCombustible"));
     JsfBase.setFlashAttribute("idSuministro", this.attrs.get("idSuministro"));
     JsfBase.setFlashAttribute("opcion", this.attrs.get("opcionResidente"));			
     JsfBase.setFlashAttribute("retorno", this.attrs.get("seguimiento"));			

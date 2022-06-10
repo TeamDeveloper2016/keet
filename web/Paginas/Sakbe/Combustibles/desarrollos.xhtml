@@ -52,8 +52,8 @@
 							</div>
 						</p:tab>
 						<p:tab title="Litros disponibles:">
-              <p:outputLabel for="ikTipoCombustible" value="Combustible:"/>
-              <p:selectOneMenu id="ikTipoCombustible" value="#{sakbeCombustiblesDesarrollos.attrs.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+              <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesDesarrollos.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesDesarrollos.doLoadPorcentajes}"/>
                 <f:selectItems value="#{sakbeCombustiblesDesarrollos.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">

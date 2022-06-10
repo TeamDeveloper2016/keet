@@ -162,11 +162,29 @@
               </f:facet>
               <h:outputText value="#{row['marca']}"/>
             </p:column>
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Lectura anterior"/>
+              </f:facet>
+              <h:outputText value="#{row['lecturaAnterior']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Lectura actual"/>
+              </f:facet>
+              <h:outputText value="#{row['lecturaActual']}"/>
+            </p:column>	
             <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.litros}">
               <f:facet name="header">
                 <h:outputText value="Litros"/>
               </f:facet>
               <h:outputText value="#{row['litros']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Horas"/>
+              </f:facet>
+              <h:outputText value="#{row['horas']}"/>
             </p:column>	
             <p:column styleClass="MarAuto Responsive" sortBy="#{row.recibio}">
               <f:facet name="header">
@@ -174,12 +192,30 @@
               </f:facet>
               <h:outputText value="#{row['recibio']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.estatus}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
-              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
+              <i class="fa fa-fw fa-user janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Combustible"/>
+              </f:facet>
+              <h:outputText value="#{row['combustible']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Suministro"/>
+              </f:facet>
+              <h:outputText value="#{row['usuario']}"/>
             </p:column>		
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
