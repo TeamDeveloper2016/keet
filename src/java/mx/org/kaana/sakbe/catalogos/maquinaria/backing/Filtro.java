@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
@@ -50,7 +51,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idMaquinaria", JsfBase.getFlashAttribute("idMaquinaria"));
       this.attrs.put("obras", this.toLoadObras());
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(this.attrs.get("idMaquinaria")!= null) {
 			  this.doLoad();
         this.attrs.put("idMaquinaria", null);
@@ -164,7 +165,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 	
-	protected void toLoadCatalog() {
+	protected void toLoadCatalogos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -217,7 +218,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.build("TcKeetDesarrollosDto", "row", params, columns);
+      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, columns, "nombres");
 			if(desarrollos!= null && !desarrollos.isEmpty())
         for (UISelectEntity item : desarrollos) {
           regresar.add(item.getKey()+ " ".concat(Constantes.SEPARADOR).concat(" ").concat(item.toString("nombres")));
@@ -387,7 +388,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doValueChangeDesarrollo(ValueChangeEvent event) {
     try {      
       String[] values= event.getNewValue().toString().split("[|]");
-      if(values!= null && values.length> 1) 
+      if(values!= null && values.length> 1 && !Objects.equals(values[0].trim(),"-1")) 
         this.attrs.put("ikDesarrollo", values[0].trim());      
       else
         this.attrs.put("ikDesarrollo", null);      
@@ -402,7 +403,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       if(!Cadena.isVacio(this.attrs.get("ikDesarrollo"))) {
-        params.put("idDesarrollo", this.attrs.get("ikDesarrollo"));      
+        params.put("idDesarrollo", this.attrs.get("ikDesarrollo"));
         params.put("idMaquinaria", row.toLong("idMaquinaria"));      
         Entity item= (Entity)DaoFactory.getInstance().toEntity("TrSakbeMaquinariaDesarrolloDto", "buscar", params);
         if(item== null || item.isEmpty()) {
@@ -417,7 +418,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         else {
           params.put("idMaquinariaDesarrollo", item.getKey());      
           DaoFactory.getInstance().updateAll(TrSakbeMaquinariaDesarrolloDto.class, params);
-        } // if  
+        } // if
+        this.attrs.put("ikDesarrollo", null);
       } // if  
     } // try
     catch (Exception e) {

@@ -23,9 +23,11 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
   private static final Log LOG = LogFactory.getLog(Maquinaria.class);
   
   private UISelectEntity ikEmpresa;
+  private UISelectEntity ikDesarrollo;
   private UISelectEntity ikMaquinariaGrupo;
   private UISelectEntity ikTipoMaquinaria;
   private UISelectEntity ikTipoCombustible;
+  private Long idDesarrollo;
   private Long idMaquinariaGrupo;
 
   public Maquinaria() {
@@ -71,8 +73,10 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       -1L // Long idEmpresa    
     );
     this.ikEmpresa= new UISelectEntity(this.getIdEmpresa());
+    this.ikDesarrollo= new UISelectEntity(-1L);
     this.ikTipoMaquinaria= new UISelectEntity(this.getIdTipoMaquinaria());
     this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
+    this.idDesarrollo= -1L;
     this.idMaquinariaGrupo= -1L;
   }
 
@@ -84,6 +88,16 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
     this.ikEmpresa = ikEmpresa;
 		if(this.ikEmpresa!= null)
 		  this.setIdEmpresa(this.ikEmpresa.getKey());
+  }
+
+  public UISelectEntity getIkDesarrollo() {
+    return ikDesarrollo;
+  }
+
+  public void setIkDesarrollo(UISelectEntity ikDesarrollo) {
+    this.ikDesarrollo = ikDesarrollo;
+		if(this.ikDesarrollo!= null)
+		  this.setIdDesarrollo(this.ikDesarrollo.getKey());
   }
 
   public UISelectEntity getIkMaquinariaGrupo() {
@@ -114,6 +128,14 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
     this.ikTipoCombustible = ikTipoCombustible;
 		if(this.ikTipoCombustible!= null)
 		  this.setIdTipoCombustible(this.ikTipoCombustible.getKey());
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
   }
 
   public Long getIdMaquinariaGrupo() {

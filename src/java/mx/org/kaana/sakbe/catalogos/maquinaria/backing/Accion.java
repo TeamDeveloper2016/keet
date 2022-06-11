@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -85,12 +86,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         case CONSULTAR:											
           this.maquinaria= (Maquinaria)DaoFactory.getInstance().toEntity(Maquinaria.class, "TcSakbeMaquinariasDto", "igual", params);
           this.maquinaria.setIkEmpresa(new UISelectEntity(this.maquinaria.getIdEmpresa()));
+          this.maquinaria.setIkDesarrollo(new UISelectEntity(this.maquinaria.getIdDesarrollo()));
           this.maquinaria.setIkMaquinariaGrupo(new UISelectEntity(this.maquinaria.getIdMaquinariaGrupo()));
           this.maquinaria.setIkTipoMaquinaria(new UISelectEntity(this.maquinaria.getIdTipoMaquinaria()));
           this.maquinaria.setIkTipoCombustible(new UISelectEntity(this.maquinaria.getIdTipoCombustible()));
           break;
       } // switch
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
+      this.doLoadDesarrollos();
       this.toLoadTiposCombustibles();
       this.toLoadMaquinariasGrupos();
     } // try
@@ -103,7 +106,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // finally
   } // doLoad  
 
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -135,6 +138,31 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // finally
 	} // toLoadCatalog
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+  		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, columns, "nombres");
+			this.attrs.put("desarrollos", desarrollos);
+			if(desarrollos!= null && !desarrollos.isEmpty())
+        if(this.accion.equals(EAccion.AGREGAR))
+          this.maquinaria.setIkDesarrollo(desarrollos.get(0));
+        else  
+          this.maquinaria.setIkDesarrollo(desarrollos.get(desarrollos.indexOf(this.maquinaria.getIkDesarrollo())));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos
+  
 	private void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();

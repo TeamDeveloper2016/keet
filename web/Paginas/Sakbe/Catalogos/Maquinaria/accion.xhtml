@@ -14,6 +14,7 @@
 		<script type="text/javascript">
 	   Janal.Control.fields = {				 				
         'contenedorGrupos\\:idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idDesarrollo'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave'            : {validaciones: 'requerido|texto|longitud({"min":3, "max":50})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:nombre'           : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:marca'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -88,6 +89,13 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
+                <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombres}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
                 <p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt janal-color-blue" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.clave}"/>
                 <p:outputLabel for="nombre" value="Nombre:"/>
@@ -141,11 +149,6 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>                   
                 </p:selectOneMenu>
-              </p:panelGrid>
-              <p:remoteCommand name="reloadTiposMaquinarias" process="@this" update="idTipoMaquinaria"/>
-						</p:tab>
-						<p:tab title="Costo">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
 								<p:outputLabel for="subtotal" value="Sub total:"/>
 								<p:inputNumber id="subtotal" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.subtotal}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
 								<p:outputLabel for="iva" value="IVA:"/>
@@ -153,6 +156,7 @@
 								<p:outputLabel for="total" value="Total:"/>
 								<p:inputNumber id="total" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
               </p:panelGrid>
+              <p:remoteCommand name="reloadTiposMaquinarias" process="@this" update="idTipoMaquinaria"/>
 						</p:tab>
 						<p:tab title="Documentos">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		

@@ -322,6 +322,7 @@
       <select id="igual">
         select      
           tc_sakbe_maquinarias.id_maquinaria as id_key,
+          ifnull(tr_sakbe_maquinaria_desarrollo.id_desarrollo, -1) as id_desarrollo,
           tc_sakbe_maquinarias_grupos.id_maquinaria_grupo,
           tc_sakbe_maquinarias.*
         from      
@@ -330,6 +331,8 @@
           tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
         inner join
           tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        left join
+          tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
         where 
           tc_sakbe_maquinarias.id_maquinaria= {idMaquinaria}
       </select>  
@@ -422,6 +425,12 @@
         where
           id_maquinaria_desarrollo= {idMaquinariaDesarrollo}
       </update>
+      <delete id="rows">
+        delete from
+          tr_sakbe_maquinaria_desarrollo
+        where
+          id_maquinaria= {idMaquinaria}
+      </delete>  
     </unit>    
   </dml>    
 </process>

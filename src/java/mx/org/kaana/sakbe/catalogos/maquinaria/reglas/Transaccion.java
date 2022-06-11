@@ -3,8 +3,10 @@ package mx.org.kaana.sakbe.catalogos.maquinaria.reglas;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
@@ -12,6 +14,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasBitacoraDto;
+import mx.org.kaana.sakbe.db.dto.TrSakbeMaquinariaDesarrolloDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -56,22 +59,27 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case AGREGAR:
 					DaoFactory.getInstance().insert(sesion, this.maquinaria);
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
-          regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+          DaoFactory.getInstance().insert(sesion, registro);
+          regresar= this.toChangeDesarrollo(sesion);
 					break;
 				case MODIFICAR:
 					DaoFactory.getInstance().update(sesion, this.maquinaria);
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
 				  DaoFactory.getInstance().insert(sesion, registro);
+          regresar= this.toChangeDesarrollo(sesion);
 					break;				
 				case ELIMINAR:
           params.put("idMaquinaria", this.maquinaria.getIdMaquinaria());
           DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasBitacoraDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TrSakbeMaquinariaDesarrolloDto.class, params);
           regresar= DaoFactory.getInstance().delete(sesion, this.maquinaria)> 0L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.maquinaria.setIdMaquinariaEstatus(this.bitacora.getIdMaquinariaEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.maquinaria)>= 1L;
+						DaoFactory.getInstance().update(sesion, this.maquinaria);
+  					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
+	  			  regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
 					} // if
 					break;
 			} // switch
@@ -87,5 +95,41 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // finally
 		return regresar;
 	}	// ejecutar
+  
+  private Boolean toChangeDesarrollo(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {    
+      if(!Objects.equals(this.maquinaria.getIdDesarrollo(), this.maquinaria.getIkDesarrollo().getKey()) && !Objects.equals(this.maquinaria.getIdDesarrollo(), -1L)) {
+        params.put("idDesarrollo", this.maquinaria.getIdDesarrollo());
+        params.put("idMaquinaria", this.maquinaria.getIdMaquinaria());      
+        Entity item= (Entity)DaoFactory.getInstance().toEntity("TrSakbeMaquinariaDesarrolloDto", "buscar", params);
+        if(item== null || item.isEmpty()) {
+          TrSakbeMaquinariaDesarrolloDto value= new TrSakbeMaquinariaDesarrolloDto(
+            this.maquinaria.getIdMaquinaria(), // Long idMaquinaria, 
+            this.maquinaria.getIdDesarrollo(), // Long idDesarrollo, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            -1L // Long idMaquinariaDesarrollo
+          );
+          DaoFactory.getInstance().insert(value);
+        } // if  
+        else {
+          params.put("idMaquinariaDesarrollo", item.getKey());      
+          DaoFactory.getInstance().updateAll(TrSakbeMaquinariaDesarrolloDto.class, params);
+        } // if
+        TcSakbeMaquinariasBitacoraDto registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "CAMBIO DE DESARROLLO", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
+        regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+      }  // if
+      else
+        regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 } 
