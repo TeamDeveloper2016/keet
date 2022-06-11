@@ -20,7 +20,7 @@
 				'contenedorGrupos\\:marca'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:serie'            : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:placa'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:ejercicio'        : {validaciones: 'entero|mayor({"cuanto":1900})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:tipo'             : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:pedimento'        : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:factura'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:idOriginal'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -38,7 +38,7 @@
 				'contenedorGrupos\\:observaciones'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:entidad'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:color'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:modelo'           : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:modelo'           : {validaciones: 'entero|mayor({"cuanto":1900})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:motor'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:tarjeta'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:proEnFactura'     : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -46,7 +46,9 @@
 				'contenedorGrupos\\:proReal'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:idConstancia'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:constancia'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:comprado'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+				'contenedorGrupos\\:comprado'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:ultimaTarjeta'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:responsable'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -108,18 +110,20 @@
                 <p:inputText id="motor" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.motor}" styleClass="janal-wid-100-txt"/>
                 <p:outputLabel for="placa" value="Placa:"/>
 								<p:inputText id="placa" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.placa}"/>
-								<p:outputLabel for="modelo" value="Modelo:"/>
-								<p:inputText id="modelo" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.modelo}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="modelo" value="Año:"/>
+								<p:inputNumber id="modelo" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.modelo}" decimalPlaces="0" decimalSeparator="." thousandSeparator="" emptyValue="1950" inputStyleClass="janal-wid-100-txt" minValue="1950"/>
+								<p:outputLabel for="tipo" value="Modelo:"/>
+								<p:inputText id="tipo" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.tipo}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="color" value="Color:"/>
 								<p:inputText id="color" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.color}" styleClass="janal-wid-100-txt"/>
-								<p:outputLabel for="ejercicio" value="Año:"/>
-								<p:inputNumber id="ejercicio" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ejercicio}" decimalPlaces="0" decimalSeparator="." thousandSeparator="" emptyValue="1980" inputStyleClass="janal-wid-100-txt" minValue="1980"/>
 								<p:outputLabel for="entidad" value="Radicación (entidad):"/>
 								<p:inputText id="entidad" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.entidad}" styleClass="janal-wid-100-txt"/>
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Tipo">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+								<p:outputLabel for="responsable" value="Responsable:"/>
+								<p:inputText id="responsable" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.responsable}" styleClass="janal-wid-100-txt"/>
                 <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -177,6 +181,8 @@
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.fechaFactura}" pattern="dd/MM/yyyy" locale="es" />
 								<p:outputLabel for="tarjeta" value="No. tarjeta de circulación:"/>
 								<p:inputText id="tarjeta" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.tarjeta}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="ultimaTarjeta" value="Última tarjeta de circulación:"/>
+								<p:inputText id="ultimaTarjeta" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.ultimaTarjeta}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="proEnFactura" value="Propietario en factura:"/>
 								<p:inputText id="proEnFactura" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.proEnFactura}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="proEnTarjeta" value="Propietario en tarjeta:"/>

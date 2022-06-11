@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Listado de suministro de combustibles" />
+  <ui:param name="titulo" value="Catálogo de automoviles, camiones, tractores y maqionaría" />
   <ui:param name="janalBackingPage" value="#{sakbeCatalogosMaquinariaFiltro}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
@@ -111,6 +111,8 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-plus" action="#{sakbeCatalogosMaquinariaFiltro.doAccion('AGREGAR')}" ajax="false" value="Agregar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+                <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>

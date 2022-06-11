@@ -59,8 +59,8 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       "", // String placa, 
       2L, // Long idOriginal, 
       "", // String clave, 
-      "", // String modelo, 
-      new Long(Fecha.getAnioActual()), // Long ejercicio, 
+      new Long(Fecha.getAnioActual()), // Long modelo, 
+      "", // String tipo, 
       -1L, // Long idMaquinaria, 
       2L, // Long idConstancia, 
       "", // String facturado, 
@@ -70,7 +70,9 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       "", // String entidad, 
       "", // String serie, 
       "", // String observaciones, 
-      -1L // Long idEmpresa    
+      -1L, // Long idEmpresa    
+      "", // String ultimaTarjeta 
+      "" // String responsable
     );
     this.ikEmpresa= new UISelectEntity(this.getIdEmpresa());
     this.ikDesarrollo= new UISelectEntity(-1L);
