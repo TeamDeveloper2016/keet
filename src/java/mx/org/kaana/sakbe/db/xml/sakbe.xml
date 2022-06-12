@@ -411,7 +411,8 @@
       </select>
       <select id="buscar">
         select      
-          *
+          tr_sakbe_maquinaria_desarrollo.id_maquinaria_desarrollo as id_key,
+          tr_sakbe_maquinaria_desarrollo.*
         from      
           tr_sakbe_maquinaria_desarrollo
         where      

@@ -125,37 +125,37 @@
               </f:facet>
               <h:outputText value="#{row['clave']}" styleClass="janal-color-blue"/>
             </p:column>
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.grupo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.grupo}">
               <f:facet name="header">
                 <h:outputText value="Grupo"/>
               </f:facet>
               <h:outputText value="#{row['grupo']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-20" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>
-            <p:column styleClass="MarAuto Responsive" sortBy="#{row.marca}">
+            <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.marca}">
               <f:facet name="header">
                 <h:outputText value="Marca"/>
               </f:facet>
               <h:outputText value="#{row['marca']}"/>
             </p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.serie}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.serie}">
               <f:facet name="header">
                 <h:outputText value="Serie"/>
               </f:facet>
               <h:outputText value="#{row['serie']}"/>
             </p:column>
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8 janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Total"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>	
-            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.desarrollo}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.desarrollo}">
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
@@ -164,7 +164,7 @@
                   <h:outputText value="#{row['desarrollo']}" title="DblClic para cambiar desarrollo"/>
                 </f:facet>
                 <f:facet name="input">
-                  <h:selectOneMenu value="#{row['desarrollo'].data}" style="width:100%" valueChangeListener="#{sakbeCatalogosMaquinariaFiltro.doValueChangeDesarrollo}">
+                  <h:selectOneMenu value="#{row['desarrollos'].data}" style="width:100%" valueChangeListener="#{sakbeCatalogosMaquinariaFiltro.doValueChangeDesarrollo}">
                     <p:ajax event="blur" process="@this" listener="#{sakbeCatalogosMaquinariaFiltro.doChangeDesarrollo(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaFiltro.attrs.obras}" var="item" itemLabel="#{item}" itemValue="#{item}" />
                   </h:selectOneMenu>
@@ -177,7 +177,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>

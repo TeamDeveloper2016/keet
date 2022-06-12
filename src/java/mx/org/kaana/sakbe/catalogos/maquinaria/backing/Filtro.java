@@ -218,7 +218,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, columns, "nombres");
+      List<UISelectEntity> desarrollos= (List<UISelectEntity>) UIEntity.build("TcKeetDesarrollosDto", "row", params, columns);
 			if(desarrollos!= null && !desarrollos.isEmpty())
         for (UISelectEntity item : desarrollos) {
           regresar.add(item.getKey()+ " ".concat(Constantes.SEPARADOR).concat(" ").concat(item.toString("nombres")));
@@ -262,7 +262,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("maquinariasGrupos", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeMaquinariasGruposDto", "row", params, columns, "nombre"));			
-			this.attrs.put("idMaquinariasGrupo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinariasGrupos")));			
+			this.attrs.put("idMaquinariaGrupo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinariasGrupos")));			
       this.doLoadTiposMaquinarias();
     } // try
 		catch (Exception e) {
@@ -388,8 +388,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doValueChangeDesarrollo(ValueChangeEvent event) {
     try {      
       String[] values= event.getNewValue().toString().split("[|]");
-      if(values!= null && values.length> 1 && !Objects.equals(values[0].trim(),"-1")) 
+      if(values!= null && values.length> 1 && !Objects.equals(values[0].trim(),"-1")) {
         this.attrs.put("ikDesarrollo", values[0].trim());      
+        this.attrs.put("temporal", values[1].trim());      
+      } // if  
       else
         this.attrs.put("ikDesarrollo", null);      
     } // try
@@ -419,7 +421,9 @@ public class Filtro extends IBaseFilter implements Serializable {
           params.put("idMaquinariaDesarrollo", item.getKey());      
           DaoFactory.getInstance().updateAll(TrSakbeMaquinariaDesarrolloDto.class, params);
         } // if
+        row.get("desarrollo").setData(this.attrs.get("temporal"));
         this.attrs.put("ikDesarrollo", null);
+        this.attrs.put("temporal", null);
       } // if  
     } // try
     catch (Exception e) {

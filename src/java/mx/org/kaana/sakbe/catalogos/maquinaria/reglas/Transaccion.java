@@ -100,7 +100,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar= Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {    
-      if(!Objects.equals(this.maquinaria.getIdDesarrollo(), this.maquinaria.getIkDesarrollo().getKey()) && !Objects.equals(this.maquinaria.getIdDesarrollo(), -1L)) {
+      if(!Objects.equals(this.maquinaria.getIdDesarrollo(), this.maquinaria.getIkDesarrollo().getKey()) && !Objects.equals(this.maquinaria.getIkDesarrollo().getKey(), -1L)) {
+        this.maquinaria.setIdDesarrollo(this.maquinaria.getIkDesarrollo().getKey());
         params.put("idDesarrollo", this.maquinaria.getIdDesarrollo());
         params.put("idMaquinaria", this.maquinaria.getIdMaquinaria());      
         Entity item= (Entity)DaoFactory.getInstance().toEntity("TrSakbeMaquinariaDesarrolloDto", "buscar", params);

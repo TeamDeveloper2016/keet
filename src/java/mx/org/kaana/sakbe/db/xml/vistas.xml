@@ -391,6 +391,7 @@
           tc_sakbe_maquinarias_estatus.estatus_asociados,
           ifnull(tc_keet_desarrollos.id_desarrollo, -1) as id_desarrollo,
           ifnull(tc_keet_desarrollos.nombres, 'SIN DESARROLLO') as desarrollo,
+          concat(tc_keet_desarrollos.id_desarrollo, ' | ', ifnull(tc_keet_desarrollos.nombres, 'SIN DESARROLLO')) as desarrollos,
           tc_sakbe_maquinarias.registro
         from      
           tc_sakbe_maquinarias

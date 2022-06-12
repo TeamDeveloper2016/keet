@@ -13,8 +13,8 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 	   Janal.Control.fields = {				 				
-        'contenedorGrupos\\:idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idDesarrollo'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idEmpresa'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idDesarrollo'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave'            : {validaciones: 'requerido|texto|longitud({"min":3, "max":50})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:nombre'           : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:marca'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -57,7 +57,7 @@
       });
 			
       function disabledComponent() {
-        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+        setTimeout("janal.readingMode('#{sakbeCatalogosMaquinariaAccion.attrs.nombreAccion}')", 500);
       }      
       
 			function execute() {

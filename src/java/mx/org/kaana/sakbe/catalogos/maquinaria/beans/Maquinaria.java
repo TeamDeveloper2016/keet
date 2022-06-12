@@ -98,8 +98,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
 
   public void setIkDesarrollo(UISelectEntity ikDesarrollo) {
     this.ikDesarrollo = ikDesarrollo;
-		if(this.ikDesarrollo!= null)
-		  this.setIdDesarrollo(this.ikDesarrollo.getKey());
   }
 
   public UISelectEntity getIkMaquinariaGrupo() {
