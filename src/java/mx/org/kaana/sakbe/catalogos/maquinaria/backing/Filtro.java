@@ -362,9 +362,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      params.put("idMaquinaria", seleccionado.toMap());
+      params.put("idMaquinaria", seleccionado.toLong("idMaquinaria"));
 			Maquinaria orden= (Maquinaria)DaoFactory.getInstance().toEntity(Maquinaria.class, "TcSakbeMaquinariasDto", "igual", params);
-  	  bitacora= new TcSakbeMaquinariasBitacoraDto(seleccionado.getKey(), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), -1L);
+  	  bitacora= new TcSakbeMaquinariasBitacoraDto(seleccionado.toLong("idMaquinaria"), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), -1L);
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);

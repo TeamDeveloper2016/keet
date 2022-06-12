@@ -65,11 +65,11 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
 			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? 1L: JsfBase.getFlashAttribute("ikTipoCombustible"));
       this.toLoadTiposCombustibles();
-			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null? "/Paginas/Sakbe/Combustibles/visor": JsfBase.getFlashAttribute("seguimiento"));
+			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null? "/Paginas/Sakbe/Suministros/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "visor": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Sakbe/Suministros/visor": JsfBase.getFlashAttribute("retorno"));
   		this.doLoad();
     } // try
     catch (Exception e) {

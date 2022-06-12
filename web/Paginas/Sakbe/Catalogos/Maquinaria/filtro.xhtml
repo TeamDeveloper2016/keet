@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Catálogo de automoviles, camiones, tractores y maqionaría" />
+  <ui:param name="titulo" value="Catálogo de automóviles, camiones, tractores y maquinaria" />
   <ui:param name="janalBackingPage" value="#{sakbeCatalogosMaquinariaFiltro}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
@@ -137,6 +137,12 @@
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Combustible"/>
+              </f:facet>
+              <h:outputText value="#{row['combustible']}"/>
+            </p:column>
             <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.marca}">
               <f:facet name="header">
                 <h:outputText value="Marca"/>
@@ -149,6 +155,18 @@
               </f:facet>
               <h:outputText value="#{row['serie']}"/>
             </p:column>
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Sub total"/>
+              </f:facet>
+              <h:outputText value="#{row['subtotal']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="IVA"/>
+              </f:facet>
+              <h:outputText value="#{row['iva']}"/>
+            </p:column>	
             <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8 janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Total"/>
@@ -170,18 +188,90 @@
                   </h:selectOneMenu>
                 </f:facet>
             </p:cellEditor>              
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Facturado"/>
+              </f:facet>
+              <h:outputText value="#{row['facturado']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Factura"/>
+              </f:facet>
+              <h:outputText value="#{row['factura']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Pedimento"/>
+              </f:facet>
+              <h:outputText value="#{row['pedimento']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Fecha factura"/>
+              </f:facet>
+              <h:outputText value="#{row['Fecha factura']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Capacidad litros"/>
+              </f:facet>
+              <h:outputText value="#{row['litros']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Rendimiento por litro"/>
+              </f:facet>
+              <h:outputText value="#{row['rendimiento']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Número de serie"/>
+              </f:facet>
+              <h:outputText value="#{row['serie']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Número de motor"/>
+              </f:facet>
+              <h:outputText value="#{row['motor']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Número de tarjeta"/>
+              </f:facet>
+              <h:outputText value="#{row['tarjeta']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Última tarjeta"/>
+              </f:facet>
+              <h:outputText value="#{row['ultimaTarjeta']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Color"/>
+              </f:facet>
+              <h:outputText value="#{row['color']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Entidad"/>
+              </f:facet>
+              <h:outputText value="#{row['entidad']}"/>
+            </p:column>	
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Propietario"/>
+              </f:facet>
+              <h:outputText value="#{row['proReal']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
-            </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none">
-              <f:facet name="header">
-                <h:outputText value="Fecha"/>
-              </f:facet>
-              <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{sakbeCatalogosMaquinariaFiltro.lazyModel== null? 0: sakbeCatalogosMaquinariaFiltro.lazyModel.rowCount}] registros"/>

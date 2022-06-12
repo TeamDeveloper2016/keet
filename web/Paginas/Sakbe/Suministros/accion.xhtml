@@ -235,12 +235,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton value="Continuar" icon="fa fa-gas-pump" accesskey="a" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(1)"/>
+      <p:commandButton value="Continuar" icon="fa fa-gas-pump" accesskey="a" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(0)"/>
 			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton title="Continuar" icon="fa fa-gas-pump" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(1)"/>
+			<p:commandButton title="Continuar" icon="fa fa-gas-pump" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosAccion.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(0)"/>
 			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeSuministrosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		

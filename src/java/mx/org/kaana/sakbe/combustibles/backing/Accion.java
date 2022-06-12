@@ -98,7 +98,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idCombustible", JsfBase.getFlashAttribute("idCombustible")== null? -1L: JsfBase.getFlashAttribute("idCombustible"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "visor": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("isBanco", Boolean.FALSE);
 			this.attrs.put("evidencias", 0L);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);

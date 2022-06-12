@@ -77,9 +77,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.maquinaria.setIdMaquinariaEstatus(this.bitacora.getIdMaquinariaEstatus());
-						DaoFactory.getInstance().update(sesion, this.maquinaria);
-  					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
-	  			  regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+						regresar= DaoFactory.getInstance().update(sesion, this.maquinaria)>= 1L;
 					} // if
 					break;
 			} // switch
