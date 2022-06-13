@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosPersona" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="2195"/>
-	<property name="ireport.y" value="371"/>
+	<property name="ireport.x" value="1656"/>
+	<property name="ireport.y" value="106"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -131,7 +131,7 @@
 						<text><![CDATA[Lote]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="266" y="0" width="80" height="15" forecolor="#FFFFFF" uuid="77998c7d-b3c0-498b-acb8-02bb2b883d00"/>
+						<reportElement x="266" y="0" width="64" height="15" forecolor="#FFFFFF" uuid="77998c7d-b3c0-498b-acb8-02bb2b883d00"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -145,21 +145,21 @@
 						<text><![CDATA[Nómina]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="346" y="0" width="226" height="15" forecolor="#FFFFFF" uuid="72f30ad7-cf94-459d-8264-55b6a746490d"/>
+						<reportElement x="331" y="0" width="207" height="15" forecolor="#FFFFFF" uuid="72f30ad7-cf94-459d-8264-55b6a746490d"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Concepto]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="572" y="0" width="52" height="15" forecolor="#FFFFFF" uuid="ac4e14ab-c11f-449b-8d65-ac94b2e3615b"/>
+						<reportElement x="538" y="0" width="52" height="15" forecolor="#FFFFFF" uuid="ac4e14ab-c11f-449b-8d65-ac94b2e3615b"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Porcentaje]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="624" y="0" width="75" height="15" forecolor="#FFFFFF" uuid="bc867714-5664-4d77-bc0f-8c2a57461a11"/>
+						<reportElement x="642" y="0" width="57" height="15" forecolor="#FFFFFF" uuid="bc867714-5664-4d77-bc0f-8c2a57461a11"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -171,6 +171,13 @@
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Anticipo]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="590" y="0" width="52" height="15" forecolor="#FFFFFF" uuid="381b54f9-d6f5-46f3-9349-9ab75a28c1d6"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="10" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Acumulado]]></text>
 					</staticText>
 				</frame>
 			</band>
@@ -364,14 +371,14 @@
 				<textFieldExpression><![CDATA[$F{PROTOTIPO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="346" y="0" width="226" height="14" uuid="2a37ed52-56b6-4f2c-981b-d0cbfc5a4b80"/>
+				<reportElement x="331" y="0" width="207" height="14" uuid="2a37ed52-56b6-4f2c-981b-d0cbfc5a4b80"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="266" y="0" width="80" height="14" uuid="36b14542-8416-4294-b245-7e30c7105268"/>
+				<reportElement x="266" y="0" width="64" height="14" uuid="36b14542-8416-4294-b245-7e30c7105268"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
@@ -398,14 +405,14 @@
 				</graphicElement>
 			</line>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="572" y="0" width="52" height="14" uuid="f6a2d84c-10bb-4ad7-9421-67504f4b0697"/>
+				<reportElement x="538" y="0" width="52" height="14" uuid="f6a2d84c-10bb-4ad7-9421-67504f4b0697"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ("["+ $F{PORCENTAJE}+ "]"): $F{PORCENTAJE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="624" y="0" width="75" height="14" uuid="8b8f518e-b420-403e-8f19-cf2c6f8d6d6f"/>
+				<reportElement x="642" y="0" width="57" height="14" uuid="8b8f518e-b420-403e-8f19-cf2c6f8d6d6f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
@@ -417,6 +424,13 @@
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ANTICIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="590" y="0" width="52" height="14" uuid="da0e8799-951f-4e6d-a01a-dabc863782da"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ("["+ $F{PORCENTAJE}+ "/100]"): ("100/100")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
