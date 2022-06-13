@@ -430,7 +430,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ("["+ $F{PORCENTAJE}+ "/100]"): ("100/100")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ($F{PORCENTAJE}.intValue()+ "/100"): ("100/100")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
