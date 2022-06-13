@@ -3,6 +3,7 @@ package mx.org.kaana.keet.catalogos.contratos.contratistas.reglas;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -43,21 +44,29 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object>params= null;
 		IBaseDto dto             = null;
 		Long idUsuario           = -1L;
+  	params                   = new HashMap<>();
 		try {
-			switch(accion){
+			switch(accion) {
+				case ELIMINAR:
+					for(String item: this.lotes) {
+						params.put("idContratoLote", item);
+						params.put("idEmpresaPersona", this.idEmpresaPersona);
+						params.put("idProveedor", this.idEmpresaPersona);
+						DaoFactory.getInstance().execute(ESql.DELETE, sesion, Objects.equals(this.tipo, 1L)? "TcKeetContratosLotesContratistasDto": "TcKeetContratosLotesProveedoresDto", "contratoLotePersona", params);					
+					} // for					
+          break;
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
-					for(SelectionItem item: this.empleados){
+					for(SelectionItem item: this.empleados) {
 						if(item.getTipo().equals(1L))
-							dto= loadContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
+							dto= this.loadContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
 						else
-							dto= loadSubContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
+							dto= this.loadSubContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
 						DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
 					break;				
 				case DEPURAR:
-					for(SelectionItem item: this.empleados){
-						params= new HashMap<>();
+					for(SelectionItem item: this.empleados) {
 						params.put("idContratoLote", this.idContratoLote);
 						params.put("idEmpresaPersona", Long.valueOf(item.getKey().substring(4)));
 						params.put("idProveedor", Long.valueOf(item.getKey().substring(4)));
@@ -66,11 +75,11 @@ public class Transaccion extends IBaseTnx {
 					break;				
 				case REPROCESAR:
 					idUsuario= JsfBase.getIdUsuario();
-					for(String lote: this.lotes){
+					for(String lote: this.lotes) {
 						if(this.tipo.equals(1L))
-							dto= loadContratista(Long.valueOf(lote), idUsuario, false);						
+							dto= this.loadContratista(Long.valueOf(lote), idUsuario, false);						
 						else
-							dto= loadSubContratista(Long.valueOf(lote), idUsuario, false);
+							dto= this.loadSubContratista(Long.valueOf(lote), idUsuario, false);
 						if(DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosLotesContratistasDto", "existe", dto.toMap())== null)
 							DaoFactory.getInstance().insert(sesion, dto);
 					} // for					

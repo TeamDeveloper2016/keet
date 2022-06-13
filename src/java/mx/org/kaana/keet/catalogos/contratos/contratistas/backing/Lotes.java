@@ -41,8 +41,10 @@ public class Lotes extends IBaseFilter implements Serializable {
   protected void init() {		
     try {						
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));			
-			doLoadContrato();
-			doLoad();
+      this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));			
+      this.attrs.put("documento", JsfBase.getFlashAttribute("documento"));			
+			this.doLoadContrato();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -124,6 +126,8 @@ public class Lotes extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
 			JsfBase.setFlashAttribute("idContratoLote", seleccionado.getKey());			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("documento", this.attrs.get("documento"));			
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))
 				regresar= "asignacion".concat(Constantes.REDIRECIONAR);
 			else
@@ -134,5 +138,24 @@ public class Lotes extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina
+  } // doRegistrar
+  
+	public String doDepurar() {
+    String regresar    = null;    		
+		Entity seleccionado= null;
+    try {			
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
+			JsfBase.setFlashAttribute("idContratoLote", seleccionado.getKey());			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("documento", this.attrs.get("documento"));			
+			regresar= "depuracion".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doDepurar
+  
 }

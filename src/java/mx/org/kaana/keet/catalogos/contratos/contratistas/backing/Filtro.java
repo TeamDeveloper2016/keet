@@ -50,8 +50,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {						
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.loadCatalogs();
-			if(JsfBase.getFlashAttribute("idContratoProcess")!= null){
-				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
+			if(JsfBase.getFlashAttribute("idContratoProcess")!= null) {
+//				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
 				this.doLoad();
 				this.attrs.put("idContratoProcess", null);
 			} // if
@@ -77,7 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombreDesarrollo", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-	    this.contratos= UIEntity.build("VistaContratosLotesDto", JsfBase.isAdminEncuestaOrAdmin()? "principal" : "residentes", params, columns);  
+	    this.contratos= UIEntity.build("VistaContratosLotesDto", JsfBase.isAdminEncuestaOrAdmin()? "principal": "residentes", params, columns);  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -178,6 +178,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     String regresar= null;    		
     try {			
 			JsfBase.setFlashAttribute("idContrato", this.seleccionado.getKey());			
+			JsfBase.setFlashAttribute("documento", this.seleccionado);			
 			regresar= "lotes".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

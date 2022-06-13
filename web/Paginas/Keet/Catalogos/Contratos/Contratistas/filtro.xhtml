@@ -73,7 +73,7 @@
               <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:accordionPanel>           					
-					<p:carousel id="tabla" value="#{keetCatalogosContratosContratistasFiltro.contratos}" headerText="Contratos" var="item" itemStyle="text-align:center" responsive="true" >								
+          <p:dataGrid id="tabla" var="item" value="#{keetCatalogosContratosContratistasFiltro.contratos}" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosContratistasFiltro.contratos.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{item.nombreDesarrollo} [#{item.nombre}] " styleClass="janal-wid-100-txt" >
 							<p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">										
 								<p:commandLink id="ayuda" action="#{keetCatalogosContratosContratistasFiltro.doLotes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="cursor: hand;">
@@ -88,7 +88,7 @@
 								</p:panelGrid>																		
 							</p:panelGrid>
 						</p:panel>
-					</p:carousel>                      
+					</p:dataGrid>                      
         </div>
       </div>
     </div>		           				

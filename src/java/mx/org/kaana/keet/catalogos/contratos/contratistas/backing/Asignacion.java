@@ -38,10 +38,13 @@ public class Asignacion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {				
     try {						
-			this.attrs.put("idContrato", (Long) JsfBase.getFlashAttribute("idContrato"));
+			this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
+			this.attrs.put("idContratoLote", JsfBase.getFlashAttribute("idContratoLote"));
+			this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
+			this.attrs.put("documento", JsfBase.getFlashAttribute("documento"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.toLoadEspecialidades();
 			this.loadCatalogos();
-			Catalogos.toLoadEspecialidades(this.attrs);
 			this.doLoad();
     } // try 
     catch (Exception e) {
@@ -49,6 +52,20 @@ public class Asignacion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
+  
+	public void toLoadEspecialidades() throws Exception {
+		Map<String, Object> params= null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+      List<UISelectItem> departamentos= (List<UISelectItem>)UISelect.build("TcKeetDepartamentosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("departamentos", departamentos);
+			this.attrs.put("idDepartamentos", UIBackingUtilities.toFirstKeySelectItem(departamentos));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	} // toLoadEspecialidades
   
 	private void loadCatalogos() throws Exception {
 		Entity contrato          = null;
@@ -77,11 +94,10 @@ public class Asignacion extends IBaseAttribute implements Serializable {
   public void doLoad() {    						
 		String condicion            = null;    			
 		List<Columna> columns       = null;
-    Map<String, Object> params  = null;
+    Map<String, Object> params  = new HashMap<>();
 		List<UISelectEntity> nombres= null;		
     try {
 			columns= new ArrayList<>();      
-			params= new HashMap<>();
 			condicion= this.toPrepare();									
       columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));									
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());						
@@ -115,8 +131,7 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			figura= ((List<UISelectEntity>)this.attrs.get("nombres")).get(((List<UISelectEntity>)this.attrs.get("nombres")).indexOf(((UISelectEntity)this.attrs.get("nombre"))));			
 			transaccion= new Transaccion(Long.valueOf(figura.getKey().toString().substring(4)), (String[])this.attrs.get("idsLotes"), figura.toLong("tipo"));
 			if(transaccion.ejecutar(EAccion.REPROCESAR)){				
-				JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
-				regresar= "lotes".concat(Constantes.REDIRECIONAR);			
+				regresar= this.doCancelar();			
 				JsfBase.addMessage("Asignación de contratista a lotes", "La asignación se realizo de forma correcta.", ETipoMensaje.INFORMACION);
 			} // if
 			else
@@ -133,6 +148,9 @@ public class Asignacion extends IBaseAttribute implements Serializable {
     String regresar= null;    		
     try {			
 			JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
+			JsfBase.setFlashAttribute("idContratoLote", this.attrs.get("idContratoLote"));			
+			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+			JsfBase.setFlashAttribute("documento", this.attrs.get("documento"));			
 			regresar= "lotes".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -141,4 +159,5 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }

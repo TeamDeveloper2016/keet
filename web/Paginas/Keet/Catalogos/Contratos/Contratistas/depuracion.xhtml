@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Registro de contratistas en lotes" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
+				'lotes'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
+				'nombre'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}				
+      };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios
+    </script>		
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>		
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel activeIndex="1" multiple="true">
+						<p:tab title="[ #{keetCatalogosContratosContratistasDepuracion.attrs.contrato.clave} ] #{keetCatalogosContratosContratistasDepuracion.attrs.contrato.etapa} M#{keetCatalogosContratosContratistasDepuracion.attrs.contratoLote.manzana}L#{keetCatalogosContratosContratistasDepuracion.attrs.contratoLote.lote}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Viviendas:"/>
+								<p:inputText value="#{keetCatalogosContratosContratistasDepuracion.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Proyecto:"/>
+								<p:inputText value="[#{keetCatalogosContratosContratistasDepuracion.attrs.contrato.claveProyecto}] #{keetCatalogosContratosContratistasDepuracion.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosContratistasDepuracion.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosContratistasDepuracion.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosContratistasDepuracion.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:inputText value="#{keetCatalogosContratosContratistasDepuracion.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>								
+					</p:accordionPanel>						
+					<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
+						<p:outputLabel for="departamento" value="Departamento:"/>
+						<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosContratistasDepuracion.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+							<p:ajax event="change" onstart="return janal.bloquear();" process="@this departamento tabla" listener="#{keetCatalogosContratosContratistasDepuracion.doLoadContratistas}" update="nombre" oncomplete="janal.desbloquear();"/>
+							<f:selectItems value="#{keetCatalogosContratosContratistasDepuracion.attrs.departamentos}"/>
+						</p:selectOneMenu>																
+						<p:outputLabel for="nombre" value="Contratista o subconstratista:"/>							
+						<p:selectOneMenu id="nombre" value="#{keetCatalogosContratosContratistasDepuracion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
+							<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosContratistasDepuracion.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+							<f:selectItems value="#{keetCatalogosContratosContratistasDepuracion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>
+							<p:column headerText="Departamento">
+								<h:outputText value="#{item.departamento}"/>
+							</p:column> 
+							<p:column headerText="Puesto">
+								<h:outputText value="#{item.puesto}"/>
+							</p:column> 
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombreCompleto}"/>
+							</p:column>   
+						</p:selectOneMenu>	
+					</p:panelGrid>
+          <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetCatalogosContratosContratistasDepuracion.lotes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="1000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="1000, 2000" paginator="#{keetCatalogosContratosContratistasDepuracion.lotes.size() gt 1000}" selection="#{keetCatalogosContratosContratistasDepuracion.seleccionados}" rowKey="#{row.idKey}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header">
+              <div style="display: flex;">
+                <p:outputLabel value="Lote(s) asociados al contratista y/o subcontratista" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>  
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+            <p:column styleClass="MarAuto Responsive janal-wid-2">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <p:outputLabel value="#{index+ 1}."/>
+            </p:column>  
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Lote"/>
+              </f:facet>
+              <h:outputText value="M#{row.manzana}L#{row.lote}" styleClass="janal-color-blue"/>
+            </p:column>  
+            <p:column styleClass="MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row.claveContrato}"/>
+            </p:column>  
+            <p:column styleClass="MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row.nombreContrato}"/>
+            </p:column>  
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Etapa"/>
+              </f:facet>
+              <h:outputText value="#{row.etapaContrato}"/>
+            </p:column>  
+            <p:column styleClass="MarAuto Responsive janal-wid-10">
+              <f:facet name="header">
+                <h:outputText value="Prototipo"/>
+              </f:facet>
+              <h:outputText value="#{row.prototipo}"/>
+            </p:column>											
+            <p:column styleClass="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{keetCatalogosContratosContratistasDepuracion.attrs.idContratista.nombreCompleto}"/>
+            </p:column>					
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosContratistasDepuracion.lotes.size()}] registros"/>
+            </f:facet>
+          </p:dataTable>                  
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" update="tabla" action="#{keetCatalogosContratosContratistasDepuracion.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosContratistasDepuracion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="tabla" action="#{keetCatalogosContratosContratistasDepuracion.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosContratistasDepuracion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
