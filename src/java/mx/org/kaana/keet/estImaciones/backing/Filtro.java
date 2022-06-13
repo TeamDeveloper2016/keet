@@ -82,7 +82,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_keet_estimaciones.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -150,6 +152,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("consecutivo")))
         sb.append("(tc_keet_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
+      if(!Cadena.isVacio(this.attrs.get("folio")))
+        sb.append("(tc_keet_estimaciones.folio= '").append(this.attrs.get("folio")).append("') and ");
       if(!Cadena.isVacio(this.attrs.get("factura")))
         sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("factura")).append("%') and ");
       if(!Cadena.isVacio(this.fechaInicio))

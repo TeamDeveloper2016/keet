@@ -16,6 +16,7 @@
         idCliente   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         idContrato  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        folio       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         factura     : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
         fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -98,6 +99,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{keetEstimacionesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="folio" value="Folio:"/>
+              <p:inputText id="folio" value="#{keetEstimacionesFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="factura" value="No factura:" rendered="false"/>
               <p:inputText id="factura" value="#{keetEstimacionesFiltro.attrs.factura}" styleClass="janal-wid-100-txt" rendered="false"/> 
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
@@ -161,6 +164,18 @@
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>		
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
+              <f:facet name="header">
+                <h:outputText value="Folio"/>
+              </f:facet>
+              <h:outputText value="#{row['folio']}"/>
+            </p:column>	
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['contrato']}"/>
+            </p:column>	
 						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.desarrollo}">
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>

@@ -36,6 +36,7 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
   private Double anticipo;
   private Double costoAnterior;
   private Double anticipoAnterior;
+  private String prototipo;
 
   public Partida() {
     this(-1L);
@@ -53,6 +54,7 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
     this.anticipo  = 0D;
     this.costoAnterior   = 0D;
     this.anticipoAnterior= 0D;
+    this.prototipo = "";
   }
 
   public Long getIdEstacion() {
@@ -197,6 +199,14 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
   
   public Boolean isCostoDiferente() {
     return !Objects.equals(this.costo, this.costoAnterior) || !Objects.equals(this.anticipo, this.anticipoAnterior);
+  }
+
+  public String getPrototipo() {
+    return prototipo;
+  }
+
+  public void setPrototipo(String prototipo) {
+    this.prototipo = prototipo;
   }
   
   @Override

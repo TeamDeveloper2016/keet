@@ -14,7 +14,11 @@
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_clientes.id_cliente,
           tc_keet_contratos.id_contrato,
+          tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as contrato,
+          tc_keet_contratos.etapa,
           tc_keet_estimaciones.consecutivo,
+          tc_keet_estimaciones.folio,
           tc_keet_estimaciones.importe as total,
           tc_keet_estimaciones.saldo,
           tc_keet_estimaciones_estatus.id_estimacion_estatus,
@@ -6931,6 +6935,7 @@
           -1 as id_partida,  
           {idUsuario} as id_usuario,
           timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.termino)+ 1 as anterior,
+          tc_keet_prototipos.nombre as prototipo,
           0 as orden 
         from
           tc_keet_estaciones
@@ -6938,6 +6943,8 @@
           tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
         inner join
           tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
         where
           tc_keet_estaciones.nivel= 6
           and tc_keet_estaciones.clave like '{clave}%'
@@ -6965,6 +6972,7 @@
           tc_keet_partidas.id_partida,  
           {idUsuario} as id_usuario,
           tc_keet_partidas.dias as anterior,
+          tc_keet_prototipos.nombre as prototipo,
           tc_keet_partidas.orden 
         from
           tc_keet_estaciones
@@ -6972,6 +6980,8 @@
           tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
         inner join
           tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
         inner join
           tc_keet_partidas on tc_keet_estaciones.codigo= tc_keet_partidas.codigo
         where
