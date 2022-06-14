@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.estaciones.beans.Partida;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -61,7 +62,6 @@ public class Concepto extends IBaseAttribute implements Serializable {
       this.attrs.put("estacionProcess", JsfBase.getFlashAttribute("estacionProcess"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.toLoadCatalogos();
-      this.toLoadConceptos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -127,6 +127,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
             this.estaciones.remove(count);
         } // for
       } // if  
+      this.toLoadConceptos();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -143,6 +144,9 @@ public class Concepto extends IBaseAttribute implements Serializable {
     try {			
       if(!this.estaciones.isEmpty()) {
         if(this.checkCostos()) {
+          this.toLookRubro();
+          for (Partida item: estaciones)
+            item.setIdRubro((UISelectEntity)this.attrs.get("idRubro"));
           transacion= new Transaccion((Long)this.attrs.get("idContratoLote"), this.estaciones);
           if(transacion.ejecutar(EAccion.GENERAR)) {
             JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
@@ -199,7 +203,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
       if(rubros!= null && !rubros.isEmpty()) {
         int index= rubros.indexOf((UISelectEntity)this.attrs.get("idRubro"));
         if(index>= 0)
-			    this.attrs.put("idRubros", rubros.get(index));
+			    this.attrs.put("idRubro", rubros.get(index));
       } // if  
  		} // try
 		catch (Exception e) {			
@@ -250,8 +254,25 @@ public class Concepto extends IBaseAttribute implements Serializable {
 	private void toLoadConceptos() {
 		List<UISelectEntity> rubros= null;
 		Map<String, Object>params  = new HashMap<>();
+    Estaciones conceptos       = new Estaciones();
+    StringBuilder sb           = new StringBuilder();
 		try {
+      if(this.estaciones!= null && !this.estaciones.isEmpty()) {
+        String clave= conceptos.toKey(this.estaciones.get(0).getClave(), 3);
+        params.put("clave", clave);
+        params.put("nivel", 6L);
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetEstacionesDto", "distintos", params);
+        if(items!= null && !items.isEmpty())
+          for (Entity item: items) {
+            sb.append("'").append(item.toString("codigo")).append("', ");  
+          } // for
+        if(sb.length()> 1)
+          sb.delete(sb.length()- 2, sb.length());
+        else
+          sb.append("WXYZ");
+      } // if
 			params.put("codigo", this.attrs.get("codigo"));
+			params.put("codigos", sb.toString());
 			rubros= UIEntity.seleccione("VistaEstacionesDto", "rubros", params, "nombre");
 			this.attrs.put("rubros", rubros);
 			this.attrs.put("idRubros", UIBackingUtilities.toFirstKeySelectEntity(rubros));
@@ -262,6 +283,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
 		} // catch		
 		finally {
 			Methods.clean(params);
+      conceptos= null;
 		} // finally
 	} // toLoadConceptos  
   

@@ -203,7 +203,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         Long idContrato= this.attrs.get("idContrato")== null? 0L: ((UISelectEntity)this.attrs.get("idContrato")).getKey();
         this.children= this.estaciones.toEntity(idContrato, incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
 			} // if
-		} // try // try
+		} // try 
 		catch (Exception e) {
 			throw e;
 		} // catch

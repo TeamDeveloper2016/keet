@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.prototipos.reglas;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposHabilesDto;
 import mx.org.kaana.keet.enums.EDiasSemana;
@@ -216,6 +218,14 @@ public class Transaccion extends IBaseTnx {
         switch(item.getAccion()) {
           case SELECT:
             if(item.isCostoDiferente()) {
+              TcKeetEstacionesBitacoraDto bitacora= new TcKeetEstacionesBitacoraDto(
+                item.getIdEstacionEstatus(), // Long idEstacionEstatus, 
+                "SE MODIFICO EL CONCEPTO ".concat(item.getCodigo()).concat(", ").concat(item.getNombre()).concat("; COSTO DE ")+ item.getCosto()+ " | "+ item.getCostoAnterior()+ ", ANTICIPO DE "+ item.getAnticipo()+ " | "+ item.getAnticipoAnterior(), // String justificacion
+                JsfBase.getIdUsuario(), // Long idUsuario, 
+                item.getIdEstacion(), // Long idEstacion, 
+                -1L // Long idEstacionBitacora
+              );
+              DaoFactory.getInstance().insert(sesion, bitacora);
               TcKeetEstacionesDto estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, item.getIdEstacion());
               this.toUpdateFathers(sesion, estaciones, estacion, item);
               estacion.setCosto(item.getCosto());
@@ -269,7 +279,18 @@ public class Transaccion extends IBaseTnx {
             estacion.setCosto(item.getCosto());
             estacion.setAnticipo(item.getAnticipo());
           } // if  
+          TcKeetEstacionesBitacoraDto bitacora= new TcKeetEstacionesBitacoraDto(
+            estacion.getIdEstacionEstatus(), // Long idEstacionEstatus, 
+            "SE CAMBIO EL CONCEPTO ".concat(estacion.getCodigo()).concat(" POR ").concat(item.getIdRubro().toString("codigo")).concat(" | ").concat(estacion.getNombre()).concat(" CON UN COSTO DE ")+ item.getCosto()+ ", ANTICIPO DE "+ item.getAnticipo(), // String justificacion
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            estacion.getIdEstacion(), // Long idEstacion, 
+            -1L // Long idEstacionBitacora
+          );
+          DaoFactory.getInstance().insert(sesion, bitacora);
           estacion.setCodigo(item.getIdRubro().toString("codigo"));
+          estacion.setNombre(item.getIdRubro().toString("nombre"));
+          estacion.setDescripcion(item.getIdRubro().toString("nombre"));
+          estacion.setRegistro(LocalDateTime.now());
           DaoFactory.getInstance().update(sesion, estacion);
         } // if
       } // for
@@ -287,12 +308,18 @@ public class Transaccion extends IBaseTnx {
     Estaciones estaciones     = new Estaciones(sesion);
     try {      
       for (Partida item: this.partidas) {
+        TcKeetEstacionesBitacoraDto bitacora= new TcKeetEstacionesBitacoraDto(
+          item.getIdEstacionEstatus(), // Long idEstacionEstatus, 
+          "SE ELIMINO EL CONCEPTO ".concat(item.getCodigo()).concat(" | ").concat(item.getNombre()).concat(" CON UN COSTO DE ")+ item.getCosto()+ ", ANTICIPO DE "+ item.getAnticipo(), // String justificacion
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          item.getIdEstacion(), // Long idEstacion, 
+          -1L // Long idEstacionBitacora
+        );
+        DaoFactory.getInstance().insert(sesion, bitacora);
         item.setCosto(0D);
         item.setAnticipo(0D);
         TcKeetEstacionesDto estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, item.getIdEstacion());
         this.toUpdateFathers(sesion, estaciones, estacion, item);
-        estacion.setCosto(item.getCosto());
-        estacion.setAnticipo(item.getAnticipo());
         params.put("idEstacion", item.getIdEstacion());
         DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosContratistasDto.class, params);
         DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params);

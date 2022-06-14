@@ -11,9 +11,9 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
+        'contenedorGrupos\\:idRubro' : {validaciones: 'requerido', mascara: 'libre', grupo: 'todos'},
 				'contenedorGrupos\\:costo'   : {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'eliminar'},
 				'contenedorGrupos\\:anticipo': {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'eliminar'}
-				'contenedorGrupos\\:idRubro' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'todos'}
 			};
 
 			$(document).ready(function () {
@@ -48,15 +48,15 @@
                 <p:inputText id="lote" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstacionesConcepto.contrato.noViviendas}" readonly="true"/>
                 <p:outputLabel for="idRubro" value="Concepto:"/>
                 <p:selectOneMenu id="idRubro" value="#{keetEstacionesConcepto.attrs.idRubro}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetEstacionesConcepto.attrs.rubros}" var="element" itemValue="#{element}" itemLabel="#{element.departamento}#{empty element.departamento or element.departamento eq ''? '': ' | '}#{element.nombre}"/>
-                  <p:column headerText="Departamento">
-                    <h:outputText value="#{item.departamento}"/>
+                <f:selectItems value="#{keetEstacionesConcepto.attrs.rubros}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.codigo or element.codigo eq ''? '': ' | '}#{element.nombre}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
                   </p:column>                   
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>                   
-                  <p:column headerText="Código">
-                    <h:outputText value="#{item.codigo}"/>
+                  <p:column headerText="Departamento">
+                    <h:outputText value="#{item.departamento}"/>
                   </p:column>                   
                 </p:selectOneMenu>
               </p:panelGrid>

@@ -6948,6 +6948,7 @@
 			   ) as tt_keet_rubros on tc_keet_departamentos.id_departamento= tt_keet_rubros.id_departamento and tc_keet_rubros.id_extra= tt_keet_rubros.id_extra
 			 where
 			   tc_keet_rubros.codigo!= '{codigo}'
+         and tc_keet_rubros.codigo not in ({codigos})
 			 group by
           tc_keet_puntos_grupos.id_departamento,
           tc_keet_rubros.id_rubro

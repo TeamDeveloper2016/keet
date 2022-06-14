@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
@@ -54,7 +53,7 @@ public class Contrato extends Filtro implements Serializable {
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave("");
 				this.current.setNivel(1L);
-				this.actualizarChildren(0, 3);
+				// this.actualizarChildren(0, 3);
 				this.current.setNivel(3L);
 			} // if	
 		  this.loadCombos();

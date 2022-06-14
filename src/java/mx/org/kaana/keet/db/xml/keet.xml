@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetEstacionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_estaciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estaciones_bitacora
+        where      
+          date_format(registro, '%Y%m%d%')= '{registro}'
+      </select>
+    </unit>    
     <unit id="TcKeetContratosLotesArchivosDto">
       <select id="row">
         select      
@@ -2794,6 +2812,20 @@
         where 
           clave like '{clave}%'
 				  and nivel = {nivel}
+				order by
+				  clave 
+      </select>
+      <select id="distintos">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.codigo
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				  and nivel = {nivel}
+        group by
+          tc_keet_estaciones.codigo
 				order by
 				  clave 
       </select>
