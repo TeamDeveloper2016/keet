@@ -6915,6 +6915,45 @@
 			</select>
 		</unit>		
 		<unit id="VistaEstacionesDto">
+			<select id="rubros">
+        select
+          tc_keet_rubros.id_rubro as id_key,
+          tc_keet_rubros.codigo,
+          tc_keet_rubros.nombre,
+          tc_keet_puntos_grupos.id_departamento,
+          tc_keet_departamentos.nombre as departamento
+        from
+          tc_keet_rubros
+        inner join
+          tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
+        inner join
+          tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo
+        inner join
+          tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+        inner join (
+					select
+						tc_keet_rubros.id_rubro as id_key,
+						tc_keet_puntos_grupos.id_departamento,
+						tc_keet_rubros.id_extra
+					from
+						tc_keet_rubros
+					inner join
+						tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro
+					inner join
+						tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo
+					inner join
+						tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+					where
+						tc_keet_rubros.codigo= '{codigo}'
+			   ) as tt_keet_rubros on tc_keet_departamentos.id_departamento= tt_keet_rubros.id_departamento and tc_keet_rubros.id_extra= tt_keet_rubros.id_extra
+			 where
+			   tc_keet_rubros.codigo!= '{codigo}'
+			 group by
+          tc_keet_puntos_grupos.id_departamento,
+          tc_keet_rubros.id_rubro
+			 order by
+			   tc_keet_rubros.nombre        
+      </select>  
 			<select id="costos">
         select
           tc_keet_estaciones.id_estacion as id_key,

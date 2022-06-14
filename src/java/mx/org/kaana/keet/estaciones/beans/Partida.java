@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDiasDto;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
  *@company KAANA
@@ -37,6 +38,7 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
   private Double costoAnterior;
   private Double anticipoAnterior;
   private String prototipo;
+  private UISelectEntity idRubro;
 
   public Partida() {
     this(-1L);
@@ -44,17 +46,18 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
 
   public Partida(Long key) {
     super(key);
-    this.accion    = ESql.SELECT;
-    this.idEstacion= -1L;
+    this.accion           = ESql.SELECT;
+    this.idEstacion       = -1L;
     this.idEstacionEstatus= -1L;
-    this.lote      = "";
-    this.inicio    = LocalDate.now();
-    this.termino   = LocalDate.now();
-    this.costo     = 0D;
-    this.anticipo  = 0D;
-    this.costoAnterior   = 0D;
-    this.anticipoAnterior= 0D;
-    this.prototipo = "";
+    this.lote             = "";
+    this.inicio           = LocalDate.now();
+    this.termino          = LocalDate.now();
+    this.costo            = 0D;
+    this.anticipo         = 0D;
+    this.costoAnterior    = 0D;
+    this.anticipoAnterior = 0D;
+    this.prototipo        = "";
+    this.idRubro          = new UISelectEntity(-1L);
   }
 
   public Long getIdEstacion() {
@@ -207,6 +210,14 @@ public class Partida extends TcKeetPrototiposDiasDto implements Serializable {
 
   public void setPrototipo(String prototipo) {
     this.prototipo = prototipo;
+  }
+
+  public UISelectEntity getIdRubro() {
+    return idRubro;
+  }
+
+  public void setIdRubro(UISelectEntity idRubro) {
+    this.idRubro = idRubro;
   }
   
   @Override

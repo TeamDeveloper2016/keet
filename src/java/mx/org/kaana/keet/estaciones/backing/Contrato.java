@@ -357,5 +357,31 @@ public class Contrato extends Filtro implements Serializable {
     return regresar;
   }  
   
+  public String doCheckConcepto(Entity row) {
+    String regresar= null;
+    try {      
+      JsfBase.setFlashAttribute("ikEmpresa", this.attrs.get("idEmpresa"));
+      JsfBase.setFlashAttribute("ikDesarrollo", this.attrs.get("idDesarrollo"));
+      JsfBase.setFlashAttribute("ikContrato", this.attrs.get("idContrato"));
+      JsfBase.setFlashAttribute("ikLote", this.attrs.get("idLote"));    
+      JsfBase.setFlashAttribute("seleccionado", this.current!= null? this.current: row);    
+      
+      JsfBase.setFlashAttribute("idEstacion", row.toLong("idEstacion"));
+      JsfBase.setFlashAttribute("idContrato", row.toLong("idContrato"));
+      JsfBase.setFlashAttribute("idContratoLote", row.toLong("idContratoLote"));
+      JsfBase.setFlashAttribute("siguiente", row.toString("siguiente"));
+      JsfBase.setFlashAttribute("codigo", row.toString("codigo"));
+      JsfBase.setFlashAttribute("estacionProcess", this.current);
+      JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+      regresar= "concepto".concat(Constantes.REDIRECIONAR);
+    } // try
+    catch (Exception e) {
+			JsfBase.addMessageError(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }  
+  
 }
 

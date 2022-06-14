@@ -232,9 +232,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
  
 	private void toLoadTiposMediosPagos() {
 		List<UISelectEntity> tiposMediosPagos= null;
-		Map<String, Object>params            = null;
+		Map<String, Object>params            = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
@@ -245,7 +244,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.combustible.setIkTipoMedioPago(tiposMediosPagos.get(tiposMediosPagos.indexOf(this.combustible.getIkTipoMedioPago())));
 		} // try
 		catch (Exception e) {			
-			throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
 		} // catch		
 		finally{
 			Methods.clean(params);
@@ -254,10 +254,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   
 	private void toLoadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
+		Map<String, Object> params = new HashMap<>();
 		List<Columna> columns      = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -300,9 +299,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
  
 	private void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);

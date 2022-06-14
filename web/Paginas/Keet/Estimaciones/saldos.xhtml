@@ -98,7 +98,7 @@
 							<p:outputLabel for="nombre" value="Nombre:"/>
 							<p:inputText id="nombre" value="#{keetEstimacionesSaldos.attrs.nombre}" placeholder="Nombre del contrato" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="razonSocial" value="Razón social:" rendered="false"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEstimacionesSaldos.attrs.cliente}" completeMethod="#{keetEstimacionesSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"  rendered="false">
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave or custom.clave eq ''? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEstimacionesSaldos.attrs.cliente}" completeMethod="#{keetEstimacionesSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"  rendered="false">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />

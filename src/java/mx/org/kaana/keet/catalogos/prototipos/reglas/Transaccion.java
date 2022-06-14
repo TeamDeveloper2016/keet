@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposHabilesDto;
@@ -93,6 +96,12 @@ public class Transaccion extends IBaseTnx {
 				case MOVIMIENTOS:
 					regresar= this.toApplyDays(sesion);
 					break;
+				case GENERAR:
+					regresar= this.toChangeData(sesion);
+					break;
+				case RESTAURAR:
+					regresar= this.toDeleteData(sesion);
+					break;
 			} // switch						
 		} // try
 		catch (Exception e) {			
@@ -157,11 +166,10 @@ public class Transaccion extends IBaseTnx {
    
   private Boolean toApplyDates(Session sesion) throws Exception {
     Boolean regresar          = Boolean.FALSE;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     Estaciones estaciones     = new Estaciones(sesion);
     String clave              = null;
     try {      
-      params = new HashMap<>();      
       for (Partida item: this.partidas) {
         clave= estaciones.toOnlyKey(item.getClave(), 6);
         params.put("clave", clave);     
@@ -249,6 +257,58 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }
   
+  private Boolean toChangeData(Session sesion) throws Exception {
+    Boolean regresar     = Boolean.FALSE;
+    Estaciones estaciones= new Estaciones(sesion);
+    try {      
+      for (Partida item: this.partidas) {
+        TcKeetEstacionesDto estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, item.getIdEstacion());
+        if(item.getIdRubro().getKey()> 0L && this.toCheckConcepto(sesion, item, estaciones.toKey(estacion.getClave(), 4))) {
+          if(item.isCostoDiferente()) {
+            this.toUpdateFathers(sesion, estaciones, estacion, item);
+            estacion.setCosto(item.getCosto());
+            estacion.setAnticipo(item.getAnticipo());
+          } // if  
+          estacion.setCodigo(item.getIdRubro().toString("codigo"));
+          DaoFactory.getInstance().update(sesion, estacion);
+        } // if
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+			throw e; 
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toDeleteData(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    Estaciones estaciones     = new Estaciones(sesion);
+    try {      
+      for (Partida item: this.partidas) {
+        item.setCosto(0D);
+        item.setAnticipo(0D);
+        TcKeetEstacionesDto estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, item.getIdEstacion());
+        this.toUpdateFathers(sesion, estaciones, estacion, item);
+        estacion.setCosto(item.getCosto());
+        estacion.setAnticipo(item.getAnticipo());
+        params.put("idEstacion", item.getIdEstacion());
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosContratistasDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params);
+        DaoFactory.getInstance().delete(sesion, estacion);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+			throw e; 
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // catch	
+    return regresar;
+  }
+  
   private void toUpdateFathers(Session sesion, Estaciones estaciones, TcKeetEstacionesDto origen, Partida estacion) throws Exception {
     try {      
       Double diferencia= Numero.toRedondearSat(estacion.getCosto()- origen.getCosto());
@@ -270,6 +330,26 @@ public class Transaccion extends IBaseTnx {
       estaciones= null;
     } // finally
   }
+  
+  private Boolean toCheckConcepto(Session sesion, Partida partida, String clave) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {  
+      params.put("clave", clave);
+      params.put("codigo", partida.getIdRubro().toString("codigo"));
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetEstacionesDto", "concepto", params);
+      if(entity!= null && !entity.isEmpty()) 
+        throw new RuntimeException("El concepto [".concat(partida.getIdRubro().toString("codigo")).concat(" | ").concat(partida.getIdRubro().toString("nombre")).concat("] ya existe en el lote"));
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // catch	
+    return regresar;
+ }
   
   public static void main(String ... args) {
     Estaciones estaciones= new Estaciones();

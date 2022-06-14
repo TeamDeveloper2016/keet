@@ -232,8 +232,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
  
 	private void toLoadMaquinarias() {
 		List<UISelectEntity> maquinarias= null;
-		Map<String, Object> params = new HashMap<>();
-		List<Columna> columns      = null;
+		Map<String, Object> params      = new HashMap<>();
+		List<Columna> columns           = null;
 		try {
 			params.put("idDesarrollo", this.suministro.getIdDesarrollo());
 			params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
@@ -249,7 +249,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.suministro.setIkMaquinaria(maquinarias.get(maquinarias.indexOf(this.suministro.getIkMaquinaria())));
 		} // try
 		catch (Exception e) {
-			throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
 		} // catch		
 		finally{
 			Methods.clean(params);
