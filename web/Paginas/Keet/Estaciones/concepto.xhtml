@@ -139,13 +139,13 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetEstacionesConcepto.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton value="Eliminar" icon="fa fa-trash" accesskey="a"  process="@form" action="#{keetEstacionesConcepto.doEliminar}" onstart="return true" oncomplete="janal.desbloquear()"/>
+			<p:commandButton value="Cambiar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetEstacionesConcepto.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton value="Eliminar" icon="fa fa-trash" accesskey="a"  process="@form" action="#{keetEstacionesConcepto.doEliminar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetEstacionesConcepto.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEstacionesConcepto.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton title="Eliminar" icon="fa fa-trash" process="@form" action="#{keetEstacionesConcepto.doEliminar}" onstart="return true" oncomplete="janal.desbloquear()"/>
+			<p:commandButton title="Cambiar" icon="fa fa-check" process="@form" action="#{keetEstacionesConcepto.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton title="Eliminar" icon="fa fa-trash" process="@form" action="#{keetEstacionesConcepto.doEliminar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEstacionesConcepto.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
