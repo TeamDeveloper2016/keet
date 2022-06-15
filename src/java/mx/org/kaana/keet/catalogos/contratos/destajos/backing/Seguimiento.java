@@ -58,6 +58,10 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     return fields;
   }
 
+  public Boolean isConcepto(Concepto row) {
+    return !row.getCodigo().startsWith("#");
+  }
+  
   @PostConstruct
   @Override
   protected void init() {		

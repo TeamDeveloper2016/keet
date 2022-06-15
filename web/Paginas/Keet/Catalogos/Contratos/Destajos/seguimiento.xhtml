@@ -58,7 +58,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosSeguimiento.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosSeguimiento.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosSeguimiento.doColor(row)}">
+          <p:dataTable lazy="false" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosSeguimiento.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosSeguimiento.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosSeguimiento.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="3">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Resumen de conceptos por lotes" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -68,7 +68,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>	
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-2">
+            <p:column class="janal-column-center MarAuto Responsive janal-col-18">
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
@@ -76,13 +76,13 @@
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
               </p:commandLink>
 						</p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-5">
+            <p:column class="janal-column-left MarAuto Responsive janal-col-50">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
               <h:outputText value="#{row.codigo}" title="#{row.nombre}"/>
             </p:column>  
-            <p:column class="janal-column-left MarAuto Responsive">
+            <p:column class="janal-column-left MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-col-180': 'janal-col-210'}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
@@ -92,8 +92,8 @@
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
-              <h:outputText value="#{row[column.field]['titulo']}" styleClass="janal-display-none"/>
-              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['titulo']}"/>
+              <h:outputText value="#{keetCatalogosContratosDestajosSeguimiento.isConcepto(row)? '': '|'}" styleClass="#{keetCatalogosContratosDestajosSeguimiento.isConcepto(row)? '': 'janal-color-cell'}"/>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['titulo']}" height="10px" width="10px" rendered="#{keetCatalogosContratosDestajosSeguimiento.isConcepto(row)}"/>
             </p:columns>            
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosSeguimiento.model== null? 0: keetCatalogosContratosDestajosSeguimiento.model.size()}] registros"/>

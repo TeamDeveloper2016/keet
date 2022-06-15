@@ -58,7 +58,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     return fields;
   }
   
-  public Boolean getIsConcepto(Concepto row) {
+  public Boolean isConcepto(Concepto row) {
     return !row.getCodigo().startsWith("#");
   }
 
