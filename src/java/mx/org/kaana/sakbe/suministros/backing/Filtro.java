@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -406,6 +407,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
+      if(regresar== null || regresar.isEmpty()) {
+        regresar= new Entity(-1L);
+        regresar.put("saldo", new Value("saldo", 0D));
+        regresar.put("litros", new Value("litros", 0D));
+        regresar.put("tickets", new Value("tickets", 0D));
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
