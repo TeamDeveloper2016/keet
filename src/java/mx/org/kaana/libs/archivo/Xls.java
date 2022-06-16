@@ -50,7 +50,7 @@ public class Xls extends XlsBase {
     this(archivo, definicion, null);    
   }
   
-	private void init(){
+	private void init() {
 		try {      
       this.setPosicionColumna(0);
       this.setPosicionFila(0);
@@ -156,7 +156,7 @@ public class Xls extends XlsBase {
         for (int x= 0; x < columna.size(); x++) {
           LOG.info("[generarRegistros]  registro: "+ fila+ " celda: "+ columna.get("col"+ String.valueOf(x)));
           Label label= new Label(getPosicionColumna()+ x, getPosicionFila()+ fila, columna.get("col"+String.valueOf(x))== null? "": columna.get("col"+ String.valueOf(x)).toString());         
-          hoja.addCell(label);
+          this.hoja.addCell(label);
         } // for x
         columna.clear();
         columna= null;
@@ -179,14 +179,14 @@ public class Xls extends XlsBase {
 			PageRecords pages= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), 0, top);
 			if ((pages!= null) && (!pages.getList().isEmpty())) {				
         this.monitoreo.comenzar(DaoFactory.getInstance().toSize(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams()));
-				libro= Workbook.createWorkbook(new File(this.nombreArchivo));
-				hoja = libro.createSheet("IMOX", 0);
+				this.libro= Workbook.createWorkbook(new File(this.nombreArchivo));
+				this.hoja = libro.createSheet("IMOX", 0);
 				this.registros= pages.getList();
 				if (!isAlgunos())
 					this.campos= getNombresColumnas();		
 				if (titulo)
 					procesarEncabezado(this.campos);   
-				setTotalColumnas();
+				this.setTotalColumnas();
 				pages.calculate(true);
 				List<LinkPage> list= pages.getPages();								
 				detail((List)pages.getList());
@@ -201,8 +201,8 @@ public class Xls extends XlsBase {
       Error.mensaje(e);
     } // catch
 		finally {
-  	  getLibro().write();
-      getLibro().close();
+  	  this.libro.write();
+      this.libro.close();
     } // finally
     return termino;
   }

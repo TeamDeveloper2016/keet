@@ -4165,6 +4165,153 @@
 			</select>				
 		</unit>
 		<unit id="VistaNominaDto">
+			<select id="contratos">
+        select
+          tt_keet_contratos.*
+        from (        
+          select 
+            tc_keet_contratos.id_contrato as id_key,
+            tc_keet_contratos.id_empresa,
+            tc_mantic_empresas.nombre as empresa,  
+            tc_keet_desarrollos.id_desarrollo,
+            tc_keet_desarrollos.nombres as desarrollo,
+            tc_mantic_clientes.razon_social as cliente,
+            tc_keet_contratos.ejercicio,
+            tc_keet_contratos.orden,
+            tc_keet_contratos.id_contrato,
+            tc_keet_contratos.clave,
+						tc_keet_contratos.nombre as contrato,
+						tc_keet_contratos.etapa
+          from
+            tc_keet_contratos_destajos_contratistas 
+          inner join
+            tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista     
+          inner join
+            tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     
+          inner join
+            tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+          inner join
+            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+          inner join
+            tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+					inner join
+						tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+  				inner join 
+	  				tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+          where 
+            tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina}
+            and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+          union all  
+          select 
+            tc_keet_contratos.id_contrato as id_key,
+            tc_keet_contratos.id_empresa,
+            tc_mantic_empresas.nombre as empresa,  
+            tc_keet_desarrollos.id_desarrollo,
+            tc_keet_desarrollos.nombres as desarrollo,
+            tc_mantic_clientes.razon_social as cliente,
+            tc_keet_contratos.ejercicio,
+            tc_keet_contratos.orden,
+            tc_keet_contratos.id_contrato,
+            tc_keet_contratos.clave,
+						tc_keet_contratos.nombre as contrato,
+						tc_keet_contratos.etapa
+          from
+            tc_keet_contratos_destajos_proveedores 
+          inner join
+            tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+          inner join
+            tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+          inner join
+            tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+          inner join
+            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+          inner join
+            tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+					inner join
+						tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+  				inner join 
+	  				tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+          where 
+            tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}
+            and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+        ) as tt_keet_contratos
+        group by
+          id_desarrollo,
+          id_contrato
+        order by
+          id_desarrollo,
+          id_contrato        
+			</select>
+			<select id="destajos">
+        select
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_estaciones.codigo,
+          tc_keet_estaciones.nombre,
+          tt_destajo_nomina.id_nomina,
+          tt_destajo_nomina.id_tipo,
+          ifnull(tc_keet_rubros.id_extra, -1) as id_extra,
+          tt_destajo_nomina.porcentaje,
+          tt_destajo_nomina.costo,
+          tt_destajo_nomina.anticipo,
+          concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
+          if(substring(tc_keet_estaciones.codigo, 1, 1)= '#', 4, if(tt_destajo_nomina.id_nomina is null, 3, if(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden)= '{semana}', 1, 2))) as actual
+        from
+          tc_keet_estaciones         
+        inner join
+          tc_keet_contratos on tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)         
+        inner join
+          tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
+        left join (
+          select 
+            tt_estacion_nomina.*
+          from (
+            select
+              id_estacion,
+              1 as id_tipo,
+              id_nomina,
+              porcentaje,
+              costo,
+              anticipo
+            from                       
+              tc_keet_contratos_destajos_contratistas
+            where 
+              id_nomina= {idNomina}
+            union all  
+            select
+              id_estacion,
+              2 as id_tipo,
+              id_nomina,
+              porcentaje,
+              costo,
+              anticipo
+            from                       
+              tc_keet_contratos_destajos_proveedores
+            where 
+              id_nomina= {idNomina}
+           ) tt_estacion_nomina
+           group by
+             id_estacion
+         ) tt_destajo_nomina on tc_keet_estaciones.id_estacion= tt_destajo_nomina.id_estacion
+        left join
+          tc_keet_nominas on tc_keet_nominas.id_nomina= tt_destajo_nomina.id_nomina
+        left join 
+          tc_keet_nominas_periodos on tc_keet_nominas_periodos.id_nomina_periodo= tc_keet_nominas.id_nomina_periodo
+        where
+          tc_keet_estaciones.clave like '{clave}%'              
+          and tc_keet_estaciones.nivel&gt;= 5            
+          and tc_keet_estaciones.nivel&lt;= 6         
+          and tc_keet_nominas.id_nomina= {idNomina}
+        group by
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote,
+          tc_keet_estaciones.codigo         
+        order by
+          tc_keet_contratos_lotes.orden,
+          tc_keet_estaciones.clave
+      </select>  
 			<select id="lazy">
 				select
 					tc_keet_nominas.id_nomina as id_key,
@@ -4614,6 +4761,7 @@
 				  tc_keet_nominas.total,
 				  tc_keet_nominas.neto,
 				  tc_keet_nominas.total+ tc_keet_nominas.neto as global,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as semana,
 					tc_keet_nominas_periodos.*,
 				  tc_keet_nominas_estatus.id_nomina_estatus,
 				  tc_keet_nominas_estatus.nombre as estatus,

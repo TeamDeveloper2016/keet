@@ -143,7 +143,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 
-  public String toLoadCondicion() {
+  private String toLoadCondicion() {
     StringBuilder regresar = new StringBuilder();
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
     if(contrato!= null && contrato.getKey()> 0L)
@@ -151,14 +151,14 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
 
-  public String toTokenClave() {
+  private String toTokenClave() {
     StringBuilder regresar = new StringBuilder();
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
     if(contrato!= null && contrato.getKey()> 0L) {
       List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
       if(contratos!= null) {
         contrato= contratos.get(contratos.indexOf(contrato));
-		    regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+		    regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.toLong("orden")), 3, '0', true));
       } // if
       else
         regresar.append(Cadena.rellenar("", 25, '9', true));

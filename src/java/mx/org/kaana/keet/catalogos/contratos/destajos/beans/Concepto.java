@@ -19,15 +19,39 @@ public class Concepto extends HashMap<String, Object> implements Comparable<Conc
   private int id;  
   private String codigo;  
   private String nombre;  
+  private Long idTipo;  
+  private Long idExtra;  
+
+  public Long getIdTipo() {
+    return idTipo;
+  }
+
+  public void setIdTipo(Long idTipo) {
+    this.idTipo = idTipo;
+  }
+
+  public Long getIdExtra() {
+    return idExtra;
+  }
+
+  public void setIdExtra(Long idExtra) {
+    this.idExtra = idExtra;
+  }
 
   public Concepto(String codigo) {
     this(-1, codigo, null);
   }
 
   public Concepto(int id, String codigo, String nombre) {
-    this.id = id;
-    this.codigo= codigo;
-    this.nombre= nombre;
+    this(id, codigo, nombre, -1L, -1L);
+  }
+
+  public Concepto(int id, String codigo, String nombre, Long idTipo, Long idExtra) {
+    this.id     = id;
+    this.codigo = codigo;
+    this.nombre = nombre;
+    this.idTipo = idTipo;
+    this.idExtra= idExtra;
     this.put("codigo", codigo);
     this.put("nombre", nombre);
   }
@@ -58,7 +82,7 @@ public class Concepto extends HashMap<String, Object> implements Comparable<Conc
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 97 * hash + Objects.hashCode(this.codigo);
+    hash = 97 * hash+ Objects.hashCode(this.codigo);
     return hash;
   }
 
@@ -82,7 +106,7 @@ public class Concepto extends HashMap<String, Object> implements Comparable<Conc
 
   @Override
   public String toString() {
-    return "Concepto{" + "id=" + id + ", codigo=" + codigo + ", nombre=" + nombre + "}, "+ super.toString();
+    return "Concepto{"+ "id="+ id+ ", codigo="+ codigo+ ", nombre="+ nombre+ ", idTipo="+ idTipo+ ", idExtra="+ idExtra+ '}'+ super.toString();
   }
   
 }

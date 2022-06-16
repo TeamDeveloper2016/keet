@@ -157,6 +157,14 @@ public class Criterio implements Serializable {
     this.datos = datos;
   }
 
+  public String getSemaforo() {
+    return semaforo;
+  }
+  
+  public String getTitulo() {
+    return titulo;
+  }
+  
   private long dias(LocalDate uno, LocalDate dos) {
     final DayOfWeek startW= uno.getDayOfWeek();
     final DayOfWeek endW  = dos.getDayOfWeek();
@@ -282,17 +290,9 @@ public class Criterio implements Serializable {
     } // switch
   }   
   
-  public String getSemaforo() {
-    return semaforo;
-  }
-  
-  public String getTitulo() {
-    return titulo;
-  }
-
   @Override
   public String toString() {
-    return "Criterio{" + "lote=" + lote + ", inicio=" + inicio + ", termino=" + termino + ", entrega=" + entrega + ", hoy=" + hoy + ", idEstacionEstatus=" + idEstacionEstatus + ", estatus=" + estatus + ", idNomina=" + idNomina + ", semana=" + semana + ", actual=" + actual + ", semaforo=" + semaforo + ", titulo=" + titulo + '}';
+    return "Criterio{" + "lote=" + lote + ", inicio=" + inicio + ", termino=" + termino + ", entrega=" + entrega + ", hoy=" + hoy + ", idEstacionEstatus=" + idEstacionEstatus + ", estatus=" + estatus + ", idNomina=" + idNomina + ", semana=" + semana + ", actual=" + actual + ", semaforo=" + semaforo + ", titulo=" + titulo + ", datos=" + datos + '}';
   }
-
+  
 }

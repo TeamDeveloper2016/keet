@@ -146,6 +146,7 @@ public final class Constantes {
   public static final int MAX_OPCIONES_ULTIMO_NIVEL= 12;
   
   public static final double PORCENTAJE_IVA   = 0.16;
+  public static final double IMPORTE_NETO     = 1.16;
   public static final double FONDO_DE_GARANTIA= 0.03;
 
 	public static double PORCENTAJE_MENUDEO= 1.5;

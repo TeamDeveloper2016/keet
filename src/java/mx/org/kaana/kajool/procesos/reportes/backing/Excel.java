@@ -94,7 +94,7 @@ public class Excel implements Serializable {
       fileName= JsfBase.getRealPath("").concat(EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(this.ixls.getModelo().getNombre()).concat(".")).concat(EFormatos.XLS.name().toLowerCase()));
       Xls xls= new Xls(fileName, new Modelo(this.ixls.getModelo().getParams(), this.ixls.getModelo().getProceso(), this.ixls.getModelo().getIdXml()), this.ixls.getCampos());
       this.reporteGenerado= xls.procesar();        
-      if (this.reporteGenerado && toZipFile()){
+      if (this.reporteGenerado && this.toZipFile()){
         UIBackingUtilities.addCallbackParam("janalOk", true);
       } // if
 		} // try
