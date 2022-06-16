@@ -9,6 +9,7 @@ public class Flotante {
     System.out.println(iva.intValue());
     Estaciones estaciones= new Estaciones();
     System.out.println(estaciones.toKey("0012021002002000000000000", 4));
+    System.out.println("*HOLA\\n*".replaceAll("(\\*|\\\\n)+", ""));
   }
   
 }

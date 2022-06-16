@@ -126,6 +126,10 @@
                 <p:menuitem icon="fa fa-user-times" value="Faltas" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 	  							<p:fileDownload value="#{keetNominasFiltro.faltas}" />
   							</p:menuitem>
+                <p:separator/>
+                <p:menuitem icon="fa fa-file-invoice-dollar" value="Egresos" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{keetNominasFiltro.global}" />
+                </p:menuitem>
   						</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -134,6 +138,9 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('NOMINA_LISTADO')}" oncomplete="janal.desbloquear();" update="descargar"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-user-times" title="Faltas" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
 								<p:fileDownload value="#{keetNominasFiltro.faltas}" />
+							</p:commandButton>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-invoice-dollar" title="Descargar nómina de egresos" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+								<p:fileDownload value="#{keetNominasFiltro.global}" />
 							</p:commandButton>
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
@@ -232,6 +239,10 @@
             <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
 						<p:menuitem value="Contratistas" icon="fa fa-download" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina contratistas" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
 	  					<p:fileDownload value="#{keetNominasFiltro.documento}" />
+  					</p:menuitem>
+            <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+						<p:menuitem value="Egresos" icon="fa fa-file-invoice-dollar" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+	  					<p:fileDownload value="#{keetNominasFiltro.egresos}" />
   					</p:menuitem>
           </p:contextMenu>
         </div>

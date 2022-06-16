@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
@@ -623,7 +624,7 @@ public final class Cafu implements Serializable {
     String[] files = destajos.toArray(new String[0]);
 		try {
 			Zip zip= new Zip(Boolean.TRUE, Boolean.FALSE);
-			zip.compactar(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(regresar)), JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath())).length()+ 1, files);
+			zip.comprimir(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(regresar)), files);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -633,6 +634,7 @@ public final class Cafu implements Serializable {
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
+    String desarrollo     = "";
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
       Map<String, Object> params= null;
       List<String> files        = new ArrayList<>();
@@ -641,11 +643,12 @@ public final class Cafu implements Serializable {
         int count= 1;
         for (String key: this.contratistas.keySet()) {
           if(key.startsWith("Desarrollo"))  {
-            archivos.append("\\nDesarrollo: ".concat((String)this.contratistas.get(key)));
+            desarrollo= (String)this.contratistas.get(key);
+            archivos.append("\\nDesarrollo: ".concat(desarrollo));
             count= 1;
           } // if  
           else {
-            files.add(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat((String)this.contratistas.get(key))));
+            String name= (String)this.contratistas.get(key);
             params.put("numero", count++);
             params.put("reporte", this.contratistas.get(key));
             params.put("url", this.url);
@@ -653,6 +656,7 @@ public final class Cafu implements Serializable {
               key= key.substring(key.indexOf("-")+ 1);
             params.put("contratista", key);
             archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
+            files.add(desarrollo.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
           } // else  
         } // for
         String concentado= this.toZipFile(files);

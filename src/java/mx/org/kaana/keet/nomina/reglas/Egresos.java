@@ -22,11 +22,13 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
 import mx.org.kaana.keet.nomina.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,9 +41,9 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Gastos extends XlsBase implements Serializable {
+public class Egresos extends XlsBase implements Serializable {
   
-  private static final Log LOG = LogFactory.getLog(Gastos.class);
+  private static final Log LOG = LogFactory.getLog(Egresos.class);
   private static final long serialVersionUID = -3364636967422678893L;
   
   private Long idNomina;
@@ -53,11 +55,11 @@ public class Gastos extends XlsBase implements Serializable {
   private Double global;
   private int posicion;
 
-  public Gastos(Long idNomina) {
+  public Egresos(Long idNomina) {
     this(idNomina, -1L);
   }
 
-  public Gastos(Long idNomina, Long idContrato) {
+  public Egresos(Long idNomina, Long idContrato) {
     this.idNomina  = idNomina;
     this.idContrato= idContrato;
     this.subTotales= new HashMap<>();
@@ -84,20 +86,40 @@ public class Gastos extends XlsBase implements Serializable {
     this.global    = 0D;
     this.posicion  = 0;
   }
-          
+
+  @Override
+  protected String getNombresColumnas() {
+    return "";
+  }
+
+  @Override
+  protected int getColumnasInformacion() {
+    return 0;
+  }
+
+  @Override
+  public boolean generarRegistros(boolean titulo) throws Exception {
+    return Boolean.FALSE;
+  }
+  
   public String execute() throws Exception {
     String regresar           = "";
     String path               = "";
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idNomina", this.idNomina);      
+      params.put("idTipoNomina", 1L);      
+      params.put("idContratoEstatus", Objects.equals(this.idContrato, -1L)? EContratosEstatus.COBRADO.getKey(): EContratosEstatus.TERMINADO.getKey());
       params.put("idContrato", this.idContrato);      
-      this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
+      if(Objects.equals(this.idNomina, -1L))
+        this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+      else
+        this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
       regresar   = Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "contratos", params);
       if(contratos!= null && !contratos.isEmpty()) {
-        // path= JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(regresar);
-        path= "d:/".concat(regresar);
+        path= JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(regresar);
+        //path= "d:/".concat(regresar);
         this.posicionFila   = 0;
         this.posicionColumna= 0;
         this.libro= Workbook.createWorkbook(new File(path));
@@ -110,7 +132,14 @@ public class Gastos extends XlsBase implements Serializable {
           this.posicionFila++;
           this.posicionFila++;
           LOG.info("-----------------------------------------------------------------------");
+          // break;
         } // for
+        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVOS DE OBRA");
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.toAddView(0, 12);
+        this.toAddView(1, 50);
       } // if
     } // try
     catch (Exception e) {
@@ -123,21 +152,6 @@ public class Gastos extends XlsBase implements Serializable {
     } // finally
     return regresar;
   }  
-
-  @Override
-  protected String getNombresColumnas() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  protected int getColumnasInformacion() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public boolean generarRegistros(boolean titulo) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
   
   public void toContrato(Entity contrato) throws Exception {
     Map<String, Object> params= new HashMap<>();
@@ -147,8 +161,9 @@ public class Gastos extends XlsBase implements Serializable {
     String anterior           = "";
     try {      
       params.put("idNomina", this.idNomina);      
-      params.put("idTipoNomina", "1");
+      params.put("idTipoNomina", 1L);      
       params.put("idContrato", contrato.toLong("idContrato"));
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       params.put("semana", this.nomina.toString("semana"));
       params.put("clave", this.toTokenClave(contrato));
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "destajos", params, Constantes.SQL_TODOS_REGISTROS);
@@ -183,6 +198,11 @@ public class Gastos extends XlsBase implements Serializable {
         this.addCell(this.posicionColumna+ 1, this.posicionFila++, contrato.toString("desarrollo"));
         this.addCell(this.posicionColumna, this.posicionFila, "FRENTE:");
         this.addCell(this.posicionColumna+ 1, this.posicionFila++, contrato.toString("contrato"));
+        this.addCell(this.posicionColumna, this.posicionFila, "SEMANA:");
+        if(Objects.equals(this.idNomina, -1L))
+          this.addCellColor(this.posicionColumna+ 1, this.posicionFila++, "ACUMULADO");
+        else
+          this.addCellColor(this.posicionColumna+ 1, this.posicionFila++, this.nomina.toString("semana"));
         this.posicionFila++;
         this.addRow("DESTAJOS", model, 1L, 1L, fields);
         this.addRow("SUBCONTRATOS", model, 2L, 1L, fields);
@@ -193,7 +213,7 @@ public class Gastos extends XlsBase implements Serializable {
         this.toRowTotales(this.totales, fields, 0L, "TOTAL:", 0);
         this.posicionFila++;
         this.posicionFila++;
-        this.addCell(this.posicionColumna+ 1, this.posicionFila++, "RESUMEN TOTALES CONTRATO");
+        this.addCell(this.posicionColumna+ 1, this.posicionFila++, "RESUMEN DE LOS TOTALES DEL CONTRATO");
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL DESTAJOS:");
         this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(0)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL SUBCONTRATOS:");
@@ -204,10 +224,6 @@ public class Gastos extends XlsBase implements Serializable {
         this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(3)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL:");
         this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.global), Alignment.RIGHT, Boolean.TRUE);
-        // TOTAL ADMINISTRATIVOS DE OBRA
-        // TOTAL ADMINISTRATIVO POR DIA
-        this.toAddView(0, 12);
-        this.toAddView(1, 50);
       } // if
     } // try
     catch (Exception e) {
@@ -404,7 +420,7 @@ public class Gastos extends XlsBase implements Serializable {
 
   
   public static void main(String ... args) throws Exception {
-    Gastos corte= new Gastos(28L);
+    Egresos corte= new Egresos(-1L, 6L);
     LOG.info(corte.execute());
   }
   

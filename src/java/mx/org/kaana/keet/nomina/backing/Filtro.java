@@ -29,6 +29,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -626,12 +627,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StreamedContent regresar = null;		
 		Entity seleccionado      = null;				
 		Xls xls                  = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		String template          = "CONTRATISTAS";
 		try {
-      // this.toExecute();
 			seleccionado= (Entity) this.attrs.get("seleccionado");						
-	  	params=new HashMap<>();
       params.put("idNomina", seleccionado.toLong("idNomina"));
       params.put("idPuesto", 6L);
       params.put("loNuevo", "");
@@ -652,6 +651,40 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
     return regresar;		
 	} // getDocumento
+  
+	public StreamedContent getEgresos() {
+		StreamedContent regresar = null;		
+		Entity seleccionado      = null;				
+    Egresos egresos          = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");						
+	  	egresos     = new Egresos(seleccionado.toLong("idNomina"));
+      String name= egresos.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getEgresos
+  
+	public StreamedContent getGlobal() {
+		StreamedContent regresar = null;		
+    Egresos egresos          = null;
+		try {
+	  	egresos    = new Egresos(-1L);
+      String name= egresos.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getGlobal
   
 }
 	

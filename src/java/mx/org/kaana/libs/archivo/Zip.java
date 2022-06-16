@@ -200,7 +200,7 @@ public class Zip {
         LOG.debug("Archivos: " + (files != null ? 0 : files.length));
       for (int i= 0; files != null && i < files.length; i++) {
         if (this.debug)
-          LOG.debug("Sumando: " + getDirectorio(true) + files[i]);
+          LOG.debug("Sumando: " + getDirectorio(true)+ files[i]);
         if (acceptFile(getPatron(), files[i], true)) {
           FileInputStream fi = new FileInputStream(getDirectorio(true) + files[i]);
           origen = new BufferedInputStream(fi, BUFFER);
@@ -225,6 +225,48 @@ public class Zip {
     }// try
   }
 
+  public void comprimir(String files[]) throws Exception {
+    try {
+      BufferedInputStream origen= null;
+      File rutaArchivo          = null;
+      if (getNombre().contains("\\"))
+        rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("\\")));
+      else
+        if (getNombre().contains("/"))
+          rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("/")));
+      if (!(rutaArchivo.exists())) 
+        rutaArchivo.mkdirs();
+      FileOutputStream destino = new FileOutputStream(getNombre());
+      CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
+      ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
+      byte data[] = new byte[BUFFER];
+      for (String name: files) {
+				String[] tokens= name.split("[|]");
+        // tokens[0]: es el nombre de la carpeta al interior del zip
+        // tokens[1]: es la ruta del archivo mas el nombres del achivo
+        // tokens[2]: es el nombre del archivo dentro del zip
+				FileInputStream fi = new FileInputStream(tokens[1]);
+				origen = new BufferedInputStream(fi, BUFFER); 
+				ZipEntry entry = new ZipEntry(tokens[0].concat(File.separator).concat(tokens[2]));
+				out.putNextEntry(entry);
+				int count;
+				while ((count = origen.read(data, 0, BUFFER)) != -1) {
+					out.write(data, 0, count);
+				} // while
+				origen.close();
+				if (this.eliminar) {
+					File file= new File(name);
+					file.delete();
+				} // if
+      }// for
+      out.close();
+    }
+    catch (Exception e) {
+      Error.mensaje(e);
+      throw e;
+    }// try
+  }
+	
   public void compactar(int token, String files[]) throws Exception {
     try {
       BufferedInputStream origen = null;
@@ -238,7 +280,7 @@ public class Zip {
         rutaArchivo.mkdirs();
       FileOutputStream destino = new FileOutputStream(getNombre());
       if (this.debug)
-        LOG.debug("nombre zip: " + getNombre());
+        LOG.debug("nombre zip: " + this.getNombre());
       CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
       ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
       byte data[] = new byte[BUFFER];
@@ -393,6 +435,11 @@ public class Zip {
   public void compactar(String nombre, int token, String[] archivos) throws Exception {
     this.setNombre(nombre);
     this.compactar(token, archivos);
+  }
+
+  public void comprimir(String nombre, String[] archivos) throws Exception {
+    this.setNombre(nombre);
+    this.comprimir(archivos);
   }
 
 /**
