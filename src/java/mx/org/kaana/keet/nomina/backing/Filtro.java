@@ -674,7 +674,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StreamedContent regresar = null;		
     Egresos egresos          = null;
 		try {
-	  	egresos    = new Egresos(-1L);
+	  	egresos    = new Egresos();
       String name= egresos.execute();
       String contentType= EFormatos.XLS.getContent();
       InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  

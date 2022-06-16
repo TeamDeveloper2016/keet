@@ -52,9 +52,14 @@ public class Egresos extends XlsBase implements Serializable {
   private Map<String, Double> subTotales;
   private Map<String, Double> totales;
   private List<Double> resumen;
+  private String path;
   private Double global;
   private int posicion;
 
+  public Egresos() {
+    this(-1L);  
+  }
+  
   public Egresos(Long idNomina) {
     this(idNomina, -1L);
   }
@@ -65,6 +70,7 @@ public class Egresos extends XlsBase implements Serializable {
     this.subTotales= new HashMap<>();
     this.totales   = new HashMap<>();
     this.resumen   = new ArrayList<>();
+    this.path      = "";
     this.init();
   }
 
@@ -102,9 +108,18 @@ public class Egresos extends XlsBase implements Serializable {
     return Boolean.FALSE;
   }
   
+  protected String local() throws Exception {
+    this.path= "d:/";
+    return this.process();
+  }
+  
   public String execute() throws Exception {
+    this.path= JsfBase.getRealPath("").concat(EFormatos.XLS.toPath());
+    return this.process();
+  }
+  
+  private String process() throws Exception {
     String regresar           = "";
-    String path               = "";
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idNomina", this.idNomina);      
@@ -115,14 +130,12 @@ public class Egresos extends XlsBase implements Serializable {
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
       else
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
-      regresar   = Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      regresar= Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "contratos", params);
       if(contratos!= null && !contratos.isEmpty()) {
-        path= JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(regresar);
-        //path= "d:/".concat(regresar);
         this.posicionFila   = 0;
         this.posicionColumna= 0;
-        this.libro= Workbook.createWorkbook(new File(path));
+        this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
         this.hoja = this.libro.createSheet("IMOX", 0);
         this.addCell(this.posicionColumna, this.posicionFila, "CONTROL DE PAGO DE DESTAJOS Y SUBCONTRATOS");
         for (Entity item: contratos) {
@@ -135,11 +148,13 @@ public class Egresos extends XlsBase implements Serializable {
           // break;
         } // for
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVOS DE OBRA");
-        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.addCell(this.posicionColumna+ 3, this.posicionFila++, "(PENDIENTE)");
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
-        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, "$0.00", Alignment.RIGHT, Boolean.FALSE);
+        this.addCell(this.posicionColumna+ 3, this.posicionFila++, "(PENDIENTE)");
         this.toAddView(0, 12);
-        this.toAddView(1, 50);
+        this.toAddView(1, 70);
       } // if
     } // try
     catch (Exception e) {
@@ -168,10 +183,10 @@ public class Egresos extends XlsBase implements Serializable {
       params.put("clave", this.toTokenClave(contrato));
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "destajos", params, Constantes.SQL_TODOS_REGISTROS);
       if(lotes!= null && !lotes.isEmpty()) {
-        this.toOrderConceptos(model, lotes, 1L, 1L, model.size());
-        this.toOrderConceptos(model, lotes, 2L, 1L, model.size());
         this.toOrderConceptos(model, lotes, 1L, 2L, model.size());
         this.toOrderConceptos(model, lotes, 2L, 2L, model.size());
+        this.toOrderConceptos(model, lotes, 1L, 1L, model.size());
+        this.toOrderConceptos(model, lotes, 2L, 1L, model.size());
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
           int index= model.indexOf(new Concepto(item.toString("codigo")));
@@ -204,10 +219,10 @@ public class Egresos extends XlsBase implements Serializable {
         else
           this.addCellColor(this.posicionColumna+ 1, this.posicionFila++, this.nomina.toString("semana"));
         this.posicionFila++;
-        this.addRow("DESTAJOS", model, 1L, 1L, fields);
-        this.addRow("SUBCONTRATOS", model, 2L, 1L, fields);
-        this.addRow("OBRA EXTRA / ADICIONALES DESTAJOS", model, 1L, 2L, fields);
-        this.addRow("OBRA EXTRA / ADICIONALES SUBCONTRATOS", model, 2L, 2L, fields);
+        this.addRow("DESTAJOS", model, 1L, 2L, fields);
+        this.addRow("SUBCONTRATOS", model, 2L, 2L, fields);
+        this.addRow("OBRA EXTRA / ADICIONALES DESTAJOS", model, 1L, 1L, fields);
+        this.addRow("OBRA EXTRA / ADICIONALES SUBCONTRATOS", model, 2L, 1L, fields);
         this.posicionFila++;
         this.posicionFila++;
         this.toRowTotales(this.totales, fields, 0L, "TOTAL:", 0);
@@ -412,16 +427,16 @@ public class Egresos extends XlsBase implements Serializable {
 
   @Override
   public void finalize() {
-    super.finalize(); 
     Methods.clean(this.subTotales);
     Methods.clean(this.totales);
     Methods.clean(this.resumen);
+    super.finalize(); 
   }
 
   
   public static void main(String ... args) throws Exception {
     Egresos corte= new Egresos(-1L, 6L);
-    LOG.info(corte.execute());
+    LOG.info(corte.local());
   }
   
 }
