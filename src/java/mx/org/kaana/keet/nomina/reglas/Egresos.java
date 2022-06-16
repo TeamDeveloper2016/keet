@@ -435,7 +435,7 @@ public class Egresos extends XlsBase implements Serializable {
 
   
   public static void main(String ... args) throws Exception {
-    Egresos corte= new Egresos(-1L, 6L);
+    Egresos corte= new Egresos(-1L, 5L);
     LOG.info(corte.local());
   }
   
