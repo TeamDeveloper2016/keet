@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{sakbeCatalogosMaquinariaAccion.attrs.nombreAccion} un ticket de combustible"/>
+	<ui:param name="titulo" value="#{sakbeCatalogosMaquinariaAccion.attrs.nombreAccion} una maquinaria, equipo, automóvil, camión, etc"/>
   <ui:param name="janalBackingPage" value="#{sakbeCatalogosMaquinariaAccion}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
@@ -203,6 +203,13 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="4" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.observaciones}"/>
+						</p:tab>
+						<p:tab title="Código QR">
+              <div class="janal-column-center">
+                <p:barcode value="www.triana.mx|#{sakbeCatalogosMaquinariaAccion.maquinaria.clave}|imox.soluciones.web@gmail.com|449-209-05-86" type="qr" width="350px" height="350px"/>
+                <br/>
+                <p:outputLabel value="#{sakbeCatalogosMaquinariaAccion.maquinaria.clave}" styleClass="janal-color-black janal-font-bold"/>
+              </div>  
 						</p:tab>
           </p:tabView>
 				</div>

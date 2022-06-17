@@ -58,7 +58,7 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       1L, // Long idMaquinariaEstatus, 
       "", // String placa, 
       2L, // Long idOriginal, 
-      "", // String clave, 
+      "TRIANA-01", // String clave, 
       new Long(Fecha.getAnioActual()), // Long modelo, 
       "", // String tipo, 
       -1L, // Long idMaquinaria, 

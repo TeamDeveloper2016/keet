@@ -106,7 +106,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
       this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible"));
-      this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro"));
+      this.attrs.put("ikMaquinaria", JsfBase.getFlashAttribute("ikMaquinaria")== null? -1L: JsfBase.getFlashAttribute("ikMaquinaria"));
+      this.attrs.put("idSuministro", JsfBase.getFlashAttribute("idSuministro")== null? -1L: JsfBase.getFlashAttribute("idSuministro"));
       this.attrs.put("porcentaje", JsfBase.getFlashAttribute("porcentaje"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "visor": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("evidencias", 0L);
@@ -244,8 +245,13 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			maquinarias= UIEntity.seleccione("VistaSuministrosDto", "combustibles", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("maquinarias", maquinarias);
       if(maquinarias!= null && !maquinarias.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
-          this.suministro.setIkMaquinaria(maquinarias.get(0));
+        if(this.accion.equals(EAccion.AGREGAR)) {
+          int index= maquinarias.indexOf(new UISelectEntity((Long)this.attrs.get("ikMaquinaria")));
+          if(index>= 0)
+            this.suministro.setIkMaquinaria(maquinarias.get(index));
+          else
+            this.suministro.setIkMaquinaria(maquinarias.get(0));
+        } // if  
         else  
           this.suministro.setIkMaquinaria(maquinarias.get(maquinarias.indexOf(this.suministro.getIkMaquinaria())));
 		} // try
@@ -503,5 +509,27 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       saldo= litros;
     UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:litros', value: {validaciones: 'requerido|flotante|rango({\"min\":1,\"max\":"+ saldo+"})', mascara: 'libre', grupo: 'general', individual: true}}])");
   }
+ 
+	public String doLector() {
+    String regresar= null;    				
+    try {									
+			JsfBase.setFlashAttribute("accion", this.accion);		
+      JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));
+      JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+      JsfBase.setFlashAttribute("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
+      JsfBase.setFlashAttribute("idSuministro", this.attrs.get("idSuministro"));
+      JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
+      JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));
+      JsfBase.setFlashAttribute("desarrollo", this.attrs.get("desarrollo"));
+      JsfBase.setFlashAttribute("regresar", this.attrs.get("retorno"));
+      JsfBase.setFlashAttribute("retorno", "accion");
+ 			regresar= "lector".concat(Constantes.REDIRECIONAR);										
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doLector
   
 }

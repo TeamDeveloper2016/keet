@@ -112,7 +112,7 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   }
 
   public TcSakbeMaquinariasDto(Long key) {
-    this(null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "TRIANA-01", null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 

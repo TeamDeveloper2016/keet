@@ -23,7 +23,7 @@ public class Visor extends Filtro implements Serializable {
   private static final long serialVersionUID= 8793267741599428338L;
   
   public String doUltimaVez(Entity row) {
-    String regresar= "Litros sumnistrados la última vez: <b>SIN REGISTRO</b>";
+    String regresar= "Litros suministrados la última vez: <b>SIN REGISTRO</b>";
     List<Columna> columns     = null;    
     Map<String, Object> params= new HashMap<>();
     try {      

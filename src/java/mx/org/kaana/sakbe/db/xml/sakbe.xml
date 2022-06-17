@@ -319,6 +319,31 @@
         where      
           clave = '{clave}' and id_empresa = {idEmpresa}
       </select>
+      <select id="clave">
+        select      
+          tc_sakbe_maquinarias.id_maquinaria as id_key,
+          ifnull(tr_sakbe_maquinaria_desarrollo.id_desarrollo, -1) as id_desarrollo,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_sakbe_maquinarias_grupos.id_maquinaria_grupo,
+          tc_sakbe_maquinarias_grupos.nombre as grupo,
+          tc_sakbe_tipos_maquinarias.nombre as clasificacion,
+          tc_sakbe_tipos_combustibles.nombre as combustible,
+          tc_sakbe_maquinarias.*
+        from      
+          tc_sakbe_maquinarias
+        inner join
+          tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        inner join
+          tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+        left join
+          tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
+        left join
+          tc_keet_desarrollos on tr_sakbe_maquinaria_desarrollo.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where 
+          tc_sakbe_maquinarias.clave= '{clave}'
+      </select>  
       <select id="igual">
         select      
           tc_sakbe_maquinarias.id_maquinaria as id_key,

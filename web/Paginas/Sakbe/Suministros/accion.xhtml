@@ -120,26 +120,29 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{sakbeSuministrosAccion.suministro.consecutivo}" readonly="true" style="display: #{sakbeSuministrosAccion.agregar}"/>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
                 <p:inputText id="desarrollo" value="#{sakbeSuministrosAccion.attrs.desarrollo.nombres}" styleClass="janal-wid-100-txt janal-column-center janal-color-black janal-font-bold" readonly="true"/>
-								<p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
-								<p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosAccion.suministro.ikMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" listener="#{sakbeSuministrosAccion.doCheckLitros}"/>
-									<f:selectItems value="#{sakbeSuministrosAccion.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Grupo">
-										<h:outputText value="#{item.grupo}"/>
-									</p:column>   
-									<p:column headerText="Marca">
-										<h:outputText value="#{item.marca}"/>
-									</p:column>   
-									<p:column headerText="Litros">
-										<h:outputText value="#{item.litros}"/>
-									</p:column>   
-									<p:column headerText="Rendimiento">
-										<h:outputText value="#{item.rendimiento}"/>
-									</p:column>   
-								</p:selectOneMenu>
+                <p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-98, janal-wid-2 janal-column-right">		
+                  <p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosAccion.suministro.ikMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" listener="#{sakbeSuministrosAccion.doCheckLitros}"/>
+                    <f:selectItems value="#{sakbeSuministrosAccion.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Grupo">
+                      <h:outputText value="#{item.grupo}"/>
+                    </p:column>   
+                    <p:column headerText="Marca">
+                      <h:outputText value="#{item.marca}"/>
+                    </p:column>   
+                    <p:column headerText="Litros">
+                      <h:outputText value="#{item.litros}"/>
+                    </p:column>   
+                    <p:column headerText="Rendimiento">
+                      <h:outputText value="#{item.rendimiento}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosAccion.doLector}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" disabled="true"/>
+                </p:panelGrid>  
                 <p:outputLabel for="lecturaActual" value="Lectura actual:" styleClass=""/>
 								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
 								<p:outputLabel for="lecturaNueva" value="Lectura nueva:" styleClass=""/>
