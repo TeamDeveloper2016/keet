@@ -173,15 +173,19 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;
     try {
-			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
-    	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
-			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
-      JsfBase.setFlashAttribute("ikTipoCombustible", this.attrs.get("ikTipoCombustible"));      
-      JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
-      JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
-  	  JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
-			JsfBase.setFlashAttribute("opcionResidente", opcion);			
-			regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
+      if(((Entity)this.attrs.get("porcentaje")).toDouble("saldo")> 0D) {
+        opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
+        JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+        JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
+        JsfBase.setFlashAttribute("ikTipoCombustible", this.attrs.get("ikTipoCombustible"));      
+        JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));    
+        JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
+        JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
+        JsfBase.setFlashAttribute("opcionResidente", opcion);			
+        regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
+      } // if
+      else 
+        JsfBase.addMessage("Precaución", "No se tiene combustible disponible, agregue un ticket");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

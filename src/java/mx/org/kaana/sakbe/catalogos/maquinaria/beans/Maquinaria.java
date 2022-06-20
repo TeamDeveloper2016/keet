@@ -34,7 +34,7 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
     this(-1L);
   }
   
-  public Maquinaria(Long idCombustible) {
+  public Maquinaria(Long idMaquinaria) {
     super(
       "", // String motor, 
       "", // String proEnTarjeta, 
@@ -61,7 +61,7 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       "TRIANA-01", // String clave, 
       new Long(Fecha.getAnioActual()), // Long modelo, 
       "", // String tipo, 
-      -1L, // Long idMaquinaria, 
+      idMaquinaria, // Long idMaquinaria, 
       2L, // Long idConstancia, 
       "", // String facturado, 
       0D, // Double rendimiento, 

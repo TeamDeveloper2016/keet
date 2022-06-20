@@ -4,6 +4,23 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaTiposMaquinariasDto">
+			<select id="lazy">
+        select
+          tc_sakbe_tipos_maquinarias.id_tipo_maquinaria as id_key,
+          tc_sakbe_maquinarias_grupos.nombre as grupo,
+          tc_sakbe_tipos_maquinarias.clave,
+          tc_sakbe_tipos_maquinarias.nombre,
+          tc_sakbe_tipos_maquinarias.registro
+        from
+          tc_sakbe_tipos_maquinarias
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        where
+          {condicion}
+        {sortOrder}
+      </select>  
+    </unit>  
     <unit id="VistaCombustiblesDto">
 			<select id="movimientos">
 				select

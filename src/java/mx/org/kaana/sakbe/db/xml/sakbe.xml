@@ -52,6 +52,20 @@
         where      
           clave = '{clave}'
       </select>
+      <select id="igual">
+        select      
+          tc_sakbe_tipos_maquinarias.id_tipo_maquinaria as id_key,
+          tc_sakbe_maquinarias_grupos.nombre as grupo,
+          tc_sakbe_tipos_maquinarias.*
+        from      
+          tc_sakbe_tipos_maquinarias
+        inner join
+          tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        where      
+          tc_sakbe_tipos_maquinarias.id_tipo_maquinaria = '{idTipoMaquinaria}'
+        order by
+          tc_sakbe_tipos_maquinarias.nombre
+      </select>
       <select id="grupo">
         select      
           tc_sakbe_tipos_maquinarias.id_tipo_maquinaria as id_key,
