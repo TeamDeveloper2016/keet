@@ -99,7 +99,46 @@
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosSeguimiento.model== null? 0: keetCatalogosContratosDestajosSeguimiento.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>		
-					<p:spacer height="3px"/>
+          <p:fieldset legend="Semáforos">
+            <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
+                <h:outputText value="Concepto a 2 dias de iniciar"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-gris.png"/>
+                <h:outputText value="Concepto a más de 2 de iniciar"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
+                <h:outputText value="Concepto que esta retrasado ó que ya debió iniciar"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-naranja.png"/>
+                <h:outputText value="Concepto que esta por terminar y dentro del periodo"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+                <h:outputText value="Concepto que inició antes de su periodo"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
+                <h:outputText value="Concepto que terminó en tiempo"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-cafe.png"/>
+                <h:outputText value="Concepto que terminó después de su periodo"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
+                <h:outputText value="Concepto que ya debió iniciar y no a iniciado, pero esta dentro del periodo"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-magenta.png"/>
+                <h:outputText value="Concepto que fué cancelado"/>
+              </p:panelGrid>  
+            </p:panelGrid>  
+          </p:fieldset>  
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" reflow="true" value="#{keetCatalogosContratosDestajosSeguimiento.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosSeguimiento.lazyModel.rowCount gt keetCatalogosContratosDestajosSeguimiento.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCatalogosContratosDestajosSeguimiento.attrs.detalle? '': 'none'}" rowStyleClass="#{keetCatalogosContratosDestajosSeguimiento.doColorNomina(row)}">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Destajistas que realizarón el trabajo" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>

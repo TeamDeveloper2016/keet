@@ -99,7 +99,18 @@
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosControl.model== null? 0: keetCatalogosContratosDestajosControl.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>		
-					<p:spacer height="3px"/>
+          <p:fieldset legend="Semáforos">
+            <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
+                <h:outputText value="Concepto pagado en semanas anteriores"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-3, janal-fix-97">
+                <h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+                <h:outputText value="Concepto pagado en la semana actual"/>
+              </p:panelGrid>  
+            </p:panelGrid>  
+          </p:fieldset>  
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" reflow="true" value="#{keetCatalogosContratosDestajosControl.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosControl.lazyModel.rowCount gt keetCatalogosContratosDestajosControl.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCatalogosContratosDestajosControl.attrs.detalle? '': 'none'}" rowStyleClass="#{keetCatalogosContratosDestajosControl.doColorNomina(row)}">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Destajistas que realizarón el trabajo" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>

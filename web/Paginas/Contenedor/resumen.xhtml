@@ -152,7 +152,15 @@
                       <p:inputText value="#{kajoolResumen.attrs.idContrato.noViviendas} viviendas" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
-                  <p:inputText value="Cliente: #{kajoolResumen.attrs.idContrato.razonSocial}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                  <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-fix-94, janal-fix-3 janal-column-center, janal-fix-3 janal-column-center">
+                    <p:inputText value="Cliente: #{kajoolResumen.attrs.idContrato.razonSocial}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                    <p:commandButton icon="fa fa-hand-holding-usd" title="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                      <p:fileDownload value="#{kajoolResumen.pagados}" />
+                    </p:commandButton>
+                    <p:commandButton icon="fa fa-file-invoice-dollar" title="Conceptos estimados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                      <p:fileDownload value="#{kajoolResumen.estimados}" />
+                    </p:commandButton>
+                  </p:panelGrid>  
                 </p:panelGrid>
               </p:panel>  
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
@@ -271,7 +279,7 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% estimado:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porcentajeEstimado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porcentajeEstimado}%" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por estimar&lt;/strong&gt;:" escape="false"/>
@@ -283,7 +291,7 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% anticipado:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porcentajeAnticipado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porcentajeAnticipado}%" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por amortizar&lt;/strong&gt; anticipo:" escape="false"/>
@@ -296,7 +304,7 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% retenido:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porcentajeFondeado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porcentajeFondeado}%" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por retener&lt;/strong&gt; fondo:" escape="false"/>

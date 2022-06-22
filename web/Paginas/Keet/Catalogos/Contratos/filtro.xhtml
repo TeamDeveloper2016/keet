@@ -34,6 +34,7 @@
 				} // if
 				return ok;
 			} // justifica
+
       //<![CDATA[
 				function start() {
 					janal.bloquear();
@@ -109,16 +110,23 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-hand-holding-usd" value="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{keetCatalogosContratosFiltro.globalPagados}" />
+                </p:menuitem>
+                <p:menuitem icon="fa fa-file-invoice-dollar" value="Conceptos estimados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{keetCatalogosContratosFiltro.globalEstimados}" />
+                </p:menuitem>
+                <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem icon="fa fa-file-invoice-dollar" value="Egresos" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetCatalogosContratosFiltro.global}" />
-                </p:menuitem>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-invoice-dollar" title="Descargar nómina de egresos" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
-								<p:fileDownload value="#{keetCatalogosContratosFiltro.global}" />
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-hand-holding-usd" title="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+								<p:fileDownload value="#{keetCatalogosContratosFiltro.globalPagados}" />
+							</p:commandButton>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-invoice-dollar" title="Conceptos estimados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+								<p:fileDownload value="#{keetCatalogosContratosFiltro.globalEstimados}" />
 							</p:commandButton>
             </f:facet>												
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
@@ -184,8 +192,11 @@
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="fondo" icon="fa fa-medium" value="Fondo garantía" action="#{keetCatalogosContratosFiltro.doFondoGarantia()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:separator/>					
-						<p:menuitem value="Egresos" icon="fa fa-file-invoice-dollar" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+						<p:menuitem value="Conceptos pagados" icon="fa fa-hand-holding-usd" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Conceptos pagados">
 	  					<p:fileDownload value="#{keetCatalogosContratosFiltro.egresos}" />
+  					</p:menuitem>
+						<p:menuitem value="Conceptos estimados" icon="fa fa-file-invoice-dollar" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Conceptos estimados">
+	  					<p:fileDownload value="#{keetCatalogosContratosFiltro.estimados}" />
   					</p:menuitem>
           </p:contextMenu>
         </div>

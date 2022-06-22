@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,15 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.nomina.reglas.Egresos;
+import mx.org.kaana.keet.nomina.reglas.Estimados;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -39,6 +45,8 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  * @company KAANA
@@ -418,5 +426,37 @@ public class Resumen extends Respaldos implements Serializable {
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte	  
+
+  public StreamedContent getPagados() {
+		StreamedContent regresar = null;		
+    Egresos egresos          = null;
+		try {
+	  	egresos    = new Egresos(-1L, ((UISelectEntity)this.attrs.get("idContrato")).getKey());
+      String name= egresos.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getPagados
+  
+	public StreamedContent getEstimados() {
+		StreamedContent regresar= null;		
+    Estimados estimados     = null;
+		try {
+	  	estimados  = new Estimados(((UISelectEntity)this.attrs.get("idContrato")).getKey());
+      String name= estimados.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getEstimados
   
 }

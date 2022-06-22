@@ -38,6 +38,7 @@ import mx.org.kaana.keet.catalogos.contratos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
+import mx.org.kaana.keet.nomina.reglas.Estimados;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -334,7 +335,25 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;		
 	} // getEgresos
   
-	public StreamedContent getGlobal() {
+	public StreamedContent getEstimados() {
+		StreamedContent regresar = null;		
+		Entity seleccionado      = null;				
+    Estimados estimados      = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");						
+	  	estimados   = new Estimados(seleccionado.getKey());
+      String name = estimados.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getEstimados
+  
+	public StreamedContent getGlobalPagados() {
 		StreamedContent regresar = null;		
     Egresos egresos          = null;
 		try {
@@ -348,6 +367,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 		} // catch		
     return regresar;		
-	} // getGlobal
+	} // getGlobalPagados
+  
+	public StreamedContent getGlobalEstimados() {
+		StreamedContent regresar= null;		
+    Estimados estimados     = null;
+		try {
+	  	estimados  = new Estimados();
+      String name= estimados.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getGlobalEstimados
   
 }

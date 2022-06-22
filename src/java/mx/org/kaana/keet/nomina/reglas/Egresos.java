@@ -18,6 +18,7 @@ import jxl.write.WritableFont;
 import jxl.write.WriteException;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
 import mx.org.kaana.keet.nomina.beans.Criterio;
@@ -52,9 +53,11 @@ public class Egresos extends XlsBase implements Serializable {
   private Map<String, Double> subTotales;
   private Map<String, Double> totales;
   private List<Double> resumen;
+  private List<Long> nominas;
   private String path;
   private Double global;
   private int posicion;
+  protected String idXml;
 
   public Egresos() {
     this(-1L);  
@@ -70,7 +73,9 @@ public class Egresos extends XlsBase implements Serializable {
     this.subTotales= new HashMap<>();
     this.totales   = new HashMap<>();
     this.resumen   = new ArrayList<>();
+    this.nominas   = new ArrayList<>();
     this.path      = "";
+    this.idXml     = "destajos";
     this.init();
   }
 
@@ -89,8 +94,9 @@ public class Egresos extends XlsBase implements Serializable {
     this.resumen.add(0D);
     this.resumen.add(0D);
     this.resumen.add(0D);
-    this.global    = 0D;
-    this.posicion  = 0;
+    this.global  = 0D;
+    this.posicion= 0;
+    this.nominas.clear();
   }
 
   @Override
@@ -130,14 +136,14 @@ public class Egresos extends XlsBase implements Serializable {
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
       else
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
-      regresar= Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "contratos", params);
+      regresar= Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      this.posicionFila   = 0;
+      this.posicionColumna= 0;
+      this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
+      this.hoja = this.libro.createSheet("IMOX", 0);
+      this.addCell(this.posicionColumna, this.posicionFila, "CONTROL DE PAGO DE DESTAJOS Y SUBCONTRATOS");
       if(contratos!= null && !contratos.isEmpty()) {
-        this.posicionFila   = 0;
-        this.posicionColumna= 0;
-        this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-        this.hoja = this.libro.createSheet("IMOX", 0);
-        this.addCell(this.posicionColumna, this.posicionFila, "CONTROL DE PAGO DE DESTAJOS Y SUBCONTRATOS");
         for (Entity item: contratos) {
           LOG.info("------------------------CONTRATO ["+ item.toString("clave")+"]-------------------------------");
           this.toContrato(item);
@@ -147,15 +153,15 @@ public class Egresos extends XlsBase implements Serializable {
           LOG.info("-----------------------------------------------------------------------");
           // break;
         } // for
-        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVOS DE OBRA");
-        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, "$0.00", Alignment.RIGHT, Boolean.FALSE);
-        this.addCell(this.posicionColumna+ 3, this.posicionFila++, "(PENDIENTE)");
-        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
-        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, "$0.00", Alignment.RIGHT, Boolean.FALSE);
-        this.addCell(this.posicionColumna+ 3, this.posicionFila++, "(PENDIENTE)");
         this.toAddView(0, 12);
         this.toAddView(1, 70);
       } // if
+      else {
+        this.posicionFila++;
+        this.addCellColor(this.posicionColumna, this.posicionFila, "EL CONTRATO NO TIENE CONCEPTOS", jxl.format.Colour.BLUE);
+        this.toAddView(0, 80);
+      } // else
+        
     } // try
     catch (Exception e) {
       throw e;
@@ -167,6 +173,9 @@ public class Egresos extends XlsBase implements Serializable {
     } // finally
     return regresar;
   }  
+  
+  protected void toAddConceptoNoPagado() throws Exception {
+  }
   
   public void toContrato(Entity contrato) throws Exception {
     Map<String, Object> params= new HashMap<>();
@@ -181,7 +190,7 @@ public class Egresos extends XlsBase implements Serializable {
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       params.put("semana", this.nomina.toString("semana"));
       params.put("clave", this.toTokenClave(contrato));
-      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "destajos", params, Constantes.SQL_TODOS_REGISTROS);
+      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", this.idXml, params, Constantes.SQL_TODOS_REGISTROS);
       if(lotes!= null && !lotes.isEmpty()) {
         this.toOrderConceptos(model, lotes, 1L, 2L, model.size());
         this.toOrderConceptos(model, lotes, 2L, 2L, model.size());
@@ -196,7 +205,9 @@ public class Egresos extends XlsBase implements Serializable {
             if(!Objects.equals(lote, anterior)) {
               fields.add(new Lote(lote, lote, "", ""));
               anterior= lote;
-            } // if  
+            } // if 
+            if(this.nominas.indexOf(item.toLong("idNomina"))< 0)
+              this.nominas.add(item.toLong("idNomina"));
           } // if
           else
             throw new RuntimeException("El concepto ["+ item.toString("codigo")+ "] no existe en la consulta !");
@@ -218,6 +229,7 @@ public class Egresos extends XlsBase implements Serializable {
           this.addCellColor(this.posicionColumna+ 1, this.posicionFila++, "ACUMULADO");
         else
           this.addCellColor(this.posicionColumna+ 1, this.posicionFila++, this.nomina.toString("semana"));
+        this.toAddConceptoNoPagado();
         this.posicionFila++;
         this.addRow("DESTAJOS", model, 1L, 2L, fields);
         this.addRow("SUBCONTRATOS", model, 2L, 2L, fields);
@@ -230,15 +242,27 @@ public class Egresos extends XlsBase implements Serializable {
         this.posicionFila++;
         this.addCell(this.posicionColumna+ 1, this.posicionFila++, "RESUMEN DE LOS TOTALES DEL CONTRATO");
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL DESTAJOS:");
-        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(0)), Alignment.RIGHT);
+        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, this.resumen.get(0)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL SUBCONTRATOS:");
-        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(1)), Alignment.RIGHT);
+        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, this.resumen.get(1)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL DESTAJOS OBRA EXTRA/ADICIONALES:");
-        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(2)), Alignment.RIGHT);
+        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, this.resumen.get(2)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL SUBCONTRATOS OBRA EXTRA/ADICIONALES:");
-        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.resumen.get(3)), Alignment.RIGHT);
+        this.addCellCosto(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, this.resumen.get(3)), Alignment.RIGHT);
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL:");
-        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, this.global), Alignment.RIGHT, Boolean.TRUE);
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, this.global), Alignment.RIGHT, Boolean.TRUE);
+        this.posicionFila++;
+        Entity personal= this.toCalcultePersonal(contrato);
+        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVOS DE OBRA");
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porObra")), Alignment.RIGHT, Boolean.FALSE);
+        this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
+        this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
+        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(PENDIENTE)");
+        this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
+        this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porDia")), Alignment.RIGHT, Boolean.FALSE);
+        this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
+        this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
+        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(PENDIENTE)");
       } // if
     } // try
     catch (Exception e) {
@@ -269,6 +293,12 @@ public class Egresos extends XlsBase implements Serializable {
     cell.setSize(characters* 256 + 100);
     this.hoja.setColumnView(column, cell);      
   }
+  
+  private WritableCellFormat toCellFormat(Colour colour) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, colour);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    return regresar;
+  }  
   
   private WritableCellFormat toCellColorFormat(Colour colour) throws WriteException {
     WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.WHITE);
@@ -301,6 +331,10 @@ public class Egresos extends XlsBase implements Serializable {
     return regresar.toString();
   }
 
+  protected void isConceptoPagado(int columna, int fila, Criterio criterio) throws Exception {
+    this.addCellCosto(columna, fila, Numero.formatear(Numero.MILES_SAT_DECIMALES, criterio.getCosto()));
+  }
+  
   private void addRow(String titulo, List<Concepto> model, Long idTipo, Long idExtra, List<Lote> fields) throws Exception {
     Double costo= 0D;
     try {
@@ -322,7 +356,7 @@ public class Egresos extends XlsBase implements Serializable {
           for (Lote field: fields) {
             Criterio criterio= (Criterio)item.get(field.getField());
             if(criterio!= null) {
-              this.addCellCosto(this.posicionColumna+ (column++), this.posicionFila, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, criterio.getCosto()));
+              this.isConceptoPagado(this.posicionColumna+ (column++), this.posicionFila, criterio);
               costo= criterio.getCosto();
               if(Objects.equals(idTipo, 2L))
                 costo= costo* Constantes.IMPORTE_NETO;
@@ -359,7 +393,7 @@ public class Egresos extends XlsBase implements Serializable {
       int column= 2;
       for (Lote field : fields) {
         if(costos.containsKey(key+ "|"+ field.getName()))
-          this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, costos.get(key+ "|"+ field.getName())), Alignment.CENTRE, Boolean.TRUE);
+          this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, costos.get(key+ "|"+ field.getName())), Alignment.CENTRE, Boolean.TRUE);
         else
           this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, "$ 0.00", Alignment.CENTRE, Boolean.TRUE);
       } // for
@@ -369,7 +403,7 @@ public class Egresos extends XlsBase implements Serializable {
         this.addCellTotal(this.posicionColumna+ 1, this.posicionFila, "SUB-TOTAL (NETO):", Alignment.RIGHT, Boolean.FALSE);
         for (Lote field: fields) {
           if(costos.containsKey(key+ "|"+ field.getName()))
-            this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, Numero.formatear(Numero.MONEDA_SAT_DECIMALES, costos.get(key+ "|"+ field.getName())* Constantes.IMPORTE_NETO), Alignment.CENTRE, Boolean.FALSE);
+            this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, costos.get(key+ "|"+ field.getName())* Constantes.IMPORTE_NETO), Alignment.CENTRE, Boolean.FALSE);
           else
             this.addCellTotal(this.posicionColumna+ (column++), this.posicionFila, "$ 0.00", Alignment.CENTRE, Boolean.FALSE);
         } // for
@@ -380,7 +414,7 @@ public class Egresos extends XlsBase implements Serializable {
     } // catch
   }
   
-  private void addCell(int column, int row, String data) throws Exception {
+  protected void addCell(int column, int row, String data) throws Exception {
     try {
       Label label= new Label(column, row, data);
       this.hoja.addCell(label);
@@ -392,8 +426,16 @@ public class Egresos extends XlsBase implements Serializable {
   
   private void addCellColor(int column, int row, String data) throws Exception {
     try {
-      // Colour colour= new Colour(10000, "1", 221, 221, 221) {};
-      Label label= new Label(column, row, data, this.toCellColorFormat(jxl.format.Colour.BLUE_GREY));
+      this.addCellColor(column, row, data, jxl.format.Colour.BLUE_GREY);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellColor(int column, int row, String data, Colour color) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellColorFormat(color));
       this.hoja.addCell(label);
     } // trt
     catch(Exception e) {
@@ -401,7 +443,17 @@ public class Egresos extends XlsBase implements Serializable {
     } // catch
   }
   
-  private void addCellCosto(int column, int row, String data) throws Exception {
+  protected void addFontColor(int column, int row, String data, Colour color) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellFormat(color));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellCosto(int column, int row, String data) throws Exception {
     this.addCellCosto(column, row, data, Alignment.CENTRE);
   }
   
@@ -425,6 +477,38 @@ public class Egresos extends XlsBase implements Serializable {
     } // catch
   }
 
+  private Entity toCalcultePersonal(Entity contrato) throws Exception {
+    Entity regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
+    try {      
+      this.nominas.forEach((item) -> {
+        sb.append(item).append(",");
+      }); // for
+      if(sb.length()> 0)
+        sb.delete(sb.length()- 1, sb.length());
+      else
+        sb.append("-1");
+      params.put("idDesarrollo", contrato.toLong("idDesarrollo"));      
+      params.put("nominas", sb.toString());      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "personalEnDesarrollo", params);
+      if(regresar== null || regresar.isEmpty()) {
+        regresar= new Entity(-1L);
+        regresar.put("porObra", new Value("porObra", 0D, "por_obra"));
+        regresar.put("porDia", new Value("porDia", 0D, "por_dia"));
+        regresar.put("minimo", new Value("minimo", "1900-1", "minimo"));
+        regresar.put("maximo", new Value("maximo", "1900-54", "maximo"));
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar; 
+  }
+  
   @Override
   public void finalize() {
     Methods.clean(this.subTotales);
