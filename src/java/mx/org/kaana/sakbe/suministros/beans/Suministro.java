@@ -47,7 +47,8 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
       0D, // Double lecturaNueva, 
       1L, // Long orden, 
       -1L, // Long idSuministro, 
-      null // String observaciones
+      null, // String observaciones
+      2L // idPatrocinado      
     );
     this.ikDesarrollo= new UISelectEntity(this.getIdDesarrollo());
     this.ikMaquinaria= new UISelectEntity(this.getIdMaquinaria());

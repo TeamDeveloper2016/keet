@@ -154,6 +154,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           item.setSql(ESql.SELECT);
       this.toEvidencias();
       this.toLoadMaquinarias();
+      this.doUpdateTotal();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -299,7 +300,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		Long fileSize     = 0L;			
 		Long idArchivo    = 0L;			
 		try {			
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("suministros"));
+      String source= Configuracion.getInstance().getPropiedadSistemaServidor("suministros");
+      path.append(source);
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       temp.append("/");			
       temp.append(Fecha.getAnioActual());
@@ -320,8 +322,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize = event.getFile().getSize();						
-			idArchivo= this.toSaveFileRecord("suministros");							
-			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("comentarios"), event.getFile().getFileName().toUpperCase(), idArchivo));
+			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("comentarios"), event.getFile().getFileName().toUpperCase(), -1L));
+			idArchivo= this.toSaveFileArchivo(source);
   		this.attrs.put("file", this.getFile().getName());	
 			this.documentos.add(this.toEvidencia(idArchivo));
       this.toEvidencias();
@@ -531,5 +533,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		} // catch		
     return regresar;
   } // doLector
+ 
+  public void doUpdateTotal() {
+    this.attrs.put("diferencia", Numero.redondearSat(this.suministro.getLecturaNueva()- this.suministro.getLecturaActual()));
+  }
   
 }

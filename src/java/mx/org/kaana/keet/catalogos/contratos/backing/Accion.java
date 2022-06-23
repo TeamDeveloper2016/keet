@@ -102,6 +102,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("mostrarGeo", Boolean.FALSE);
  			this.attrs.put("cpNuevo", Boolean.FALSE);						
+ 			this.attrs.put("total", 0D);
+      this.attrs.put("diferencia", 0D);
       this.toLoadCombos();
 			this.doLoad();
       this.doLoadItemsDomicilio();
@@ -177,6 +179,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					} // if
           break;
       } // switch
+      this.doUpdateGlobal();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -986,5 +989,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 		// if(event.getTab().getTitle().equals("Retenciones"))
 			// UIBackingUtilities.execute("");
 	}
+ 
+  public void doUpdateGlobal() {
+    Double total= this.contrato.getContrato().getMateriales()+ 
+            this.contrato.getContrato().getDestajos()+
+            this.contrato.getContrato().getSubcontratados()+
+            this.contrato.getContrato().getPorElDia()+
+            this.contrato.getContrato().getAdministrativos()+
+            this.contrato.getContrato().getMaquinaria();
+    this.attrs.put("total", total);
+    this.attrs.put("diferencia", total- this.contrato.getContrato().getCosto());
+  }
   
 }

@@ -26,6 +26,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -145,6 +146,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.toLoadBancos();
       this.toLoadTiposMediosPagos();
       this.toLoadTiposCombustibles();
+      this.doUpdateTotal();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -354,7 +356,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		Long fileSize     = 0L;			
 		Long idArchivo    = 0L;			
 		try {			
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("combustibles"));
+      String source= Configuracion.getInstance().getPropiedadSistemaServidor("combustibles");
+      path.append(source);
       temp.append(this.combustible.getIdEmpresa());
       temp.append("/");			
       temp.append(Fecha.getAnioActual());
@@ -373,8 +376,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize = event.getFile().getSize();						
-			idArchivo= this.toSaveFileRecord("combustibles");							
-			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("comentarios"), event.getFile().getFileName().toUpperCase(), idArchivo));
+			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("comentarios"), event.getFile().getFileName().toUpperCase(), -1L));
+			idArchivo= this.toSaveFileArchivo(source);							
   		this.attrs.put("file", this.getFile().getName());	
 			this.documentos.add(this.toEvidencia(idArchivo));
       this.toEvidencias();
@@ -496,6 +499,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         count++;
     } // for
     this.attrs.put("evidencias", count);    
+  }
+  
+  public void doUpdateTotal() {
+    this.attrs.put("diferencia", Numero.redondearSat(this.combustible.getLitros()* this.combustible.getPrecioLitro()));
   }
   
 }

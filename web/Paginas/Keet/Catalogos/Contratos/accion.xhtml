@@ -18,6 +18,13 @@
 				'contenedorGrupos\\:permiso': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:noViviendas': {validaciones: 'requerido|entero', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:etapa'  : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:costo'  : {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:materiales': {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:destajos': {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:subcontratados': {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:porElDia': {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:administrativos': {validaciones: 'flotante', mascara: 'libre'},
+				'contenedorGrupos\\:maquinaria': {validaciones: 'flotante', mascara: 'libre'},
 				'contenedorGrupos\\:idProyecto': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:entidad'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -198,10 +205,6 @@
                     <p:calendar id="arranque" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-center" value="#{keetCatalogosContratosAccion.contrato.contrato.arranque}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode"/>
                   </p:panelGrid>
                 </p:panelGrid>
-								<p:outputLabel for="costo" value="Costo:"/>
-								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0">
-                  <p:ajax event="change" process="@this" update="@(.anticipo) @(.fondo) @(.calculos)" listener="#{keetCatalogosContratosAccion.doUpdateCosto}"/>
-                </p:inputNumber>  
 								<p:separator/>
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
                 <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" editable="false" disabled="true">
@@ -212,6 +215,47 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>		
+						<p:tab id="tabCostos" title="Costos">	
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+								<p:outputLabel for="costo" value="Prespuestado:"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                  <p:ajax event="change" process="@this" update="@(.anticipo) @(.fondo) @(.calculos)" listener="#{keetCatalogosContratosAccion.doUpdateCosto}"/>
+                </p:inputNumber>  
+								<p:separator/>
+                <p:fieldset legend="Desglose de lo presupuestado:">
+                  <p:outputLabel for="materiales" value="Materiales:"/>
+                  <p:inputNumber id="materiales" value="#{keetCatalogosContratosAccion.contrato.contrato.materiales}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                  </p:inputNumber>  
+                  <p:fieldset legend="Costos de mano de obra:">
+                    <p:outputLabel for="destajos" value="Por destajo:"/>
+                    <p:inputNumber id="destajos" value="#{keetCatalogosContratosAccion.contrato.contrato.destajos}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                      <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                    </p:inputNumber>  
+                    <p:outputLabel for="subcontratados" value="Por subcontrato:"/>
+                    <p:inputNumber id="subcontratados" value="#{keetCatalogosContratosAccion.contrato.contrato.subcontratados}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                      <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                    </p:inputNumber>  
+                    <p:outputLabel for="porElDia" value="De personal por el día:"/>
+                    <p:inputNumber id="porElDia" value="#{keetCatalogosContratosAccion.contrato.contrato.porElDia}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                      <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                    </p:inputNumber>  
+                  </p:fieldset>                  
+                  <p:outputLabel for="administrativos" value="Administrativos:"/>
+                  <p:inputNumber id="administrativos" value="#{keetCatalogosContratosAccion.contrato.contrato.administrativos}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                  </p:inputNumber>  
+                  <p:outputLabel for="maquinaria" value="Maquinaria:"/>
+                  <p:inputNumber id="maquinaria" value="#{keetCatalogosContratosAccion.contrato.contrato.maquinaria}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.total)" listener="#{keetCatalogosContratosAccion.doUpdateGlobal}"/>
+                  </p:inputNumber>  
+                </p:fieldset>                  
+								<p:outputLabel value="Suma del desglose de lo presupuestado:"/>
+                <p:inputNumber value="#{keetCatalogosContratosAccion.attrs.total}" styleClass="total" inputStyleClass="janal-wid-100-txt janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p" readonly="true"/>
+								<p:outputLabel value="Suma del desglose de lo presupuestado - Presupuestado:"/>
+                <p:inputNumber value="#{keetCatalogosContratosAccion.attrs.diferencia}" styleClass="total" inputStyleClass="janal-wid-100-txt janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p" readonly="true"/>
+              </p:panelGrid>
+            </p:tab>  
 						<p:tab id="tabSiembra" title="Siembra">	
 							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
 							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doExistGeo}"/>														
@@ -254,7 +298,7 @@
 									<p:inputText value="#{lote.calle}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column headerText="Costo" class="janal-wid-15">										
-									<p:inputNumber value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0">
+									<p:inputNumber value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
                     <p:ajax event="change" process="@this contenedorGrupos:costo" update="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCalculateCosto}"/>
                   </p:inputNumber>  
 								</p:column>								
@@ -394,7 +438,7 @@
                       <p:inputNumber id="porcentajeAnticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeAnticipo}" inputStyleClass="janal-wid-100-txt janal-column-center anticipo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" emptyValue="zero" symbol=" %" symbolPosition="s">
                         <p:ajax event="change" process="@this contenedorGrupos:costo" update="contenedorGrupos:anticipo @(.anticipo)" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo(true)}"/>
                       </p:inputNumber>  
-                      <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue anticipo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                      <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue anticipo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
                         <p:ajax event="change" process="@this contenedorGrupos:porcentajeAnticipo" update="contenedorGrupos:porcentajeAnticipo @(.anticipo)" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo(false)}"/>
                       </p:inputNumber>  
                     </p:panelGrid>  
@@ -404,7 +448,7 @@
                       <p:inputNumber id="porcentajeFondo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeFondo}" inputStyleClass="janal-wid-100-txt janal-column-center fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" emptyValue="zero" symbol=" %" symbolPosition="s">
                         <p:ajax event="change" process="@this contenedorGrupos:fondoGarantia" update="contenedorGrupos:fondoGarantia @(.fondo)" listener="#{keetCatalogosContratosAccion.doCalculateFondoGarantia(true)}"/>
                       </p:inputNumber>  
-                      <p:inputNumber id="fondoGarantia" value="#{keetCatalogosContratosAccion.contrato.contrato.fondoGarantia}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                      <p:inputNumber id="fondoGarantia" value="#{keetCatalogosContratosAccion.contrato.contrato.fondoGarantia}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
                         <p:ajax event="change" process="@this contenedorGrupos:porcentajeFondo" update="contenedorGrupos:porcentajeFondo  @(.fondo)" listener="#{keetCatalogosContratosAccion.doCalculateFondoGarantia(false)}"/>
                       </p:inputNumber>  
                     </p:panelGrid>  

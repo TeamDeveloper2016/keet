@@ -157,6 +157,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           case INSERT:
             item.setIdCombustible(this.combustible.getIdCombustible());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            this.toCheckDeleteFile(sesion, item.getArchivo());
             break;
           case UPDATE:
             regresar= DaoFactory.getInstance().update(sesion, item)> 0L;

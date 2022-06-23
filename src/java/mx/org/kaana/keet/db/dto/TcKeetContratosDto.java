@@ -92,7 +92,19 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   private LocalDate inicio;
   @Column (name="termino")
   private LocalDate termino;
-
+  @Column (name="materiales")
+  private Double materiales;
+  @Column (name="destajos")
+  private Double destajos;
+  @Column (name="subcontratados")
+  private Double subcontratados;
+  @Column (name="por_el_dia")
+  private Double porElDia;
+  @Column (name="administrativos")
+  private Double administrativos;
+  @Column (name="maquinaria")
+  private Double maquinaria;
+  
   public TcKeetContratosDto() {
     this(new Long(-1L));
   }
@@ -142,6 +154,12 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
     this.vence= vence;
     this.inicio= inicio;
     this.termino= termino;
+    this.materiales= 0D;
+    this.destajos= 0D;
+    this.subcontratados= 0D;
+    this.porElDia= 0D;
+    this.administrativos= 0D;
+    this.maquinaria= 0D;
   }
 	
   public void setClave(String clave) {
@@ -391,6 +409,54 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
   public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
+
+  public Double getMateriales() {
+    return materiales;
+  }
+
+  public void setMateriales(Double materiales) {
+    this.materiales = materiales;
+  }
+
+  public Double getDestajos() {
+    return destajos;
+  }
+
+  public void setDestajos(Double destajos) {
+    this.destajos = destajos;
+  }
+
+  public Double getSubcontratados() {
+    return subcontratados;
+  }
+
+  public void setSubcontratados(Double subcontratados) {
+    this.subcontratados = subcontratados;
+  }
+
+  public Double getPorElDia() {
+    return porElDia;
+  }
+
+  public void setPorElDia(Double porElDia) {
+    this.porElDia = porElDia;
+  }
+
+  public Double getAdministrativos() {
+    return administrativos;
+  }
+
+  public void setAdministrativos(Double administrativos) {
+    this.administrativos = administrativos;
+  }
+
+  public Double getMaquinaria() {
+    return maquinaria;
+  }
+
+  public void setMaquinaria(Double maquinaria) {
+    this.maquinaria = maquinaria;
+  }
 	
   @Transient
   @Override
@@ -468,6 +534,18 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.append(getInicio());		
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTermino());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMateriales());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDestajos());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSubcontratados());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorElDia());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAdministrativos());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMaquinaria());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -506,13 +584,19 @@ public class TcKeetContratosDto implements IBaseDto, Serializable {
 		regresar.put("vence", getVence());
 		regresar.put("inicio", getInicio());
 		regresar.put("termino", getTermino());
+		regresar.put("materiales", getMateriales());
+		regresar.put("destajos", getDestajos());
+		regresar.put("subcontratados", getSubcontratados());
+		regresar.put("porElDia", getPorElDia());
+		regresar.put("administrativos", getAdministrativos());
+		regresar.put("maquinaria", getMaquinaria());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-			getClave(), getIdProyecto(), getEtapa(), getRecepcion(), getAceptacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdContratoEstatus(), getIdUsuario(), getIdContrato(), getArranque(), getObservaciones(), getIdEmpresa(), getOrden(), getNoViviendas(), getCosto(), getNombre(), getPermiso(), getPorcentajeFondo(), getFondoGarantia(), getVence(), getInicio(), getTermino()
+    Object[] regresar = new Object[] {
+			getClave(), getIdProyecto(), getEtapa(), getRecepcion(), getAceptacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdContratoEstatus(), getIdUsuario(), getIdContrato(), getArranque(), getObservaciones(), getIdEmpresa(), getOrden(), getNoViviendas(), getCosto(), getNombre(), getPermiso(), getPorcentajeFondo(), getFondoGarantia(), getVence(), getInicio(), getTermino(), getMateriales(), getDestajos(), getSubcontratados(), getPorElDia(), getAdministrativos(), getMaquinaria()
     };
     return regresar;
   }

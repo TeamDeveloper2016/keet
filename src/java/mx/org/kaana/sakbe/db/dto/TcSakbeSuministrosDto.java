@@ -61,6 +61,8 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_suministro")
   private Long idSuministro;
+	@Column (name="id_patrocinado")
+  private Long idPatrocinado;
   @Column (name="observaciones")
   private String observaciones;
 
@@ -69,11 +71,11 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
   }
 
   public TcSakbeSuministrosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, 2L);
     setKey(key);
   }
 
-  public TcSakbeSuministrosDto(Double lecturaActual, String latitud, Long idDesarrollo, String recibio, Long idSuministroEstatus, Long ejercicio, Long idMaquinaria, String consecutivo, Double horas, String longitud, Long idUsuario, Double litros, Double lecturaNueva, Long orden, Long idSuministro, String observaciones) {
+  public TcSakbeSuministrosDto(Double lecturaActual, String latitud, Long idDesarrollo, String recibio, Long idSuministroEstatus, Long ejercicio, Long idMaquinaria, String consecutivo, Double horas, String longitud, Long idUsuario, Double litros, Double lecturaNueva, Long orden, Long idSuministro, String observaciones, Long idPatrocinado) {
     setLecturaActual(lecturaActual);
     setLatitud(latitud);
     setIdDesarrollo(idDesarrollo);
@@ -91,6 +93,7 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
     setOrden(orden);
     setIdSuministro(idSuministro);
     setObservaciones(observaciones);
+    setIdPatrocinado(idPatrocinado);
   }
 	
   public void setLecturaActual(Double lecturaActual) {
@@ -229,6 +232,14 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
     this.observaciones = observaciones;
   }
 
+  public Long getIdPatrocinado() {
+    return idPatrocinado;
+  }
+
+  public void setIdPatrocinado(Long idPatrocinado) {
+    this.idPatrocinado = idPatrocinado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -277,6 +288,8 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
 		regresar.append(getIdSuministro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPatrocinado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -301,13 +314,14 @@ public class TcSakbeSuministrosDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idSuministro", getIdSuministro());
 		regresar.put("observaciones", getObservaciones());
+		regresar.put("idPatrocinado", getIdPatrocinado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getLecturaActual(), getLatitud(), getIdDesarrollo(), getRecibio(), getIdSuministroEstatus(), getEjercicio(), getRegistro(), getIdMaquinaria(), getConsecutivo(), getHoras(), getLongitud(), getIdUsuario(), getLitros(), getLecturaNueva(), getOrden(), getIdSuministro(), getObservaciones()
+    Object[] regresar = new Object[] {
+      getLecturaActual(), getLatitud(), getIdDesarrollo(), getRecibio(), getIdSuministroEstatus(), getEjercicio(), getRegistro(), getIdMaquinaria(), getConsecutivo(), getHoras(), getLongitud(), getIdUsuario(), getLitros(), getLecturaNueva(), getOrden(), getIdSuministro(), getObservaciones(), getIdPatrocinado()
     };
     return regresar;
   }

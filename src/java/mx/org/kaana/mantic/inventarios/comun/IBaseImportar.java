@@ -589,6 +589,25 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			Archivo.toFormatNameFile(this.getFile().getOriginal()) // String nombre
 		);
 		regresar= DaoFactory.getInstance().insert(file);
+    this.getFile().setIdArchivo(regresar);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
+	}	// toSaveFileRecord
+
+	protected Long toSaveFileArchivo(String path) throws Exception {
+		Long regresar= -1L;
+		TcManticArchivosDto file= new TcManticArchivosDto(
+			this.getFile().getOriginal(), // String archivo, 
+			2L, // Long idEliminado, 
+			this.getFile().getRuta(), // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			path.concat(this.getFile().getRuta()).concat(this.getFile().getName()), // String alias, 
+			-1L, // Long idArchivo, 
+			this.getFile().getName() // String nombre
+		);
+		regresar= DaoFactory.getInstance().insert(file);
+    this.getFile().setIdArchivo(regresar);
 		if(regresar <= 0)
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;

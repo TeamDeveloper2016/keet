@@ -26,7 +26,8 @@
 				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:comentarios'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:evidencias'       : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:evidencias'       : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:diferencia'       : {validaciones: 'requerido|igual-a({"cual": "contenedorGrupos\\\\:total"})', mascara: 'libre', mensaje: 'El importe debe ser iguales a los litros por precio'}
 			};	
 			
     	$(document).ready(function() {
@@ -93,10 +94,14 @@
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesAccion.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
 								<p:outputLabel for="litros" value="Litros:"/>
-								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesAccion.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
-								<p:outputLabel for="precio" value="Precio:"/>
-								<p:inputNumber id="precio" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
-								<p:outputLabel for="total" value="Total"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesAccion.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                  <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesAccion.doUpdateTotal}"/>
+                </p:inputNumber>  
+								<p:outputLabel for="precio" value="Precio por litro:"/>
+								<p:inputNumber id="precio" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                  <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesAccion.doUpdateTotal}"/>
+                </p:inputNumber>  
+								<p:outputLabel for="total" value="Importe total:"/>
 								<p:inputNumber id="total" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.combustible.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0"/>
                 <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{sakbeCombustiblesAccion.combustible.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
@@ -132,6 +137,8 @@
   							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.combustible.observaciones}"/>
                 <p:outputLabel for="evidencias" value="Evidencia(s):"/>
                 <p:inputNumber id="evidencias" styleClass="janal-wid-100-txt janal-color-black cargados" value="#{sakbeCombustiblesAccion.attrs.evidencias}" converter="javax.faces.Long" decimalPlaces="0" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-color-black" minValue="0" readonly="true"/>
+                <p:outputLabel for="diferencia" value="Importe total:" styleClass="janal-display-none"/>
+								<p:inputNumber id="diferencia" styleClass="janal-wid-100-txt janal-display-none diferencia" value="#{sakbeCombustiblesAccion.attrs.diferencia}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0"/>
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Evidencia">
