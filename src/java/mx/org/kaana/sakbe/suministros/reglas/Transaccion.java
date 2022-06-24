@@ -186,36 +186,38 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar                         = Boolean.FALSE;
     Map<String, Object> params               = new HashMap<>();
     List<TcSakbeCombustiblesDto> combustibles= null;
-    TcSakbeSuministrosDetallesDto saldos           = null;
+    TcSakbeSuministrosDetallesDto saldos     = null;
     try {      
-      double total     = this.suministro.getLitros();
-      double diferencia= 0D;
-      params.put("idTipoCombustible", this.suministro.getIdTipoCombustible());      
-      params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
-      combustibles= (List<TcSakbeCombustiblesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcSakbeCombustiblesDto.class, params, Constantes.SQL_TODOS_REGISTROS, "abiertos");
-      for (TcSakbeCombustiblesDto item: combustibles) {
-        if(total> item.getSaldo())
-          diferencia= item.getSaldo();
-        else
-          diferencia= total;
-        item.setSaldo(item.getSaldo()- diferencia);
-        if(item.getSaldo()<= 0D)
-          item.setIdCombustibleEstatus(ECombustiblesEstatus.TERMINADO.getKey());
-        else  
-          item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
-        DaoFactory.getInstance().update(sesion, item);
-        saldos= new TcSakbeSuministrosDetallesDto(
-          JsfBase.getIdUsuario(), // Long idUsuario, 
-          diferencia, // Double litros, 
-          -1L, // Long idSuministroDetalle
-          this.suministro.getIdSuministro(), // Long idSuministro, 
-          item.getIdCombustible() // Long idCombustible
-        );
-        DaoFactory.getInstance().insert(sesion, saldos);
-        total-= diferencia;
-        if(total<= 0)
-          break;
-      } // for
+      if(Objects.equals(this.suministro.getIdPatrocinado(), 2L)) {
+        double total     = this.suministro.getLitros();
+        double diferencia= 0D;
+        params.put("idTipoCombustible", this.suministro.getIdTipoCombustible());      
+        params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
+        combustibles= (List<TcSakbeCombustiblesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcSakbeCombustiblesDto.class, params, Constantes.SQL_TODOS_REGISTROS, "abiertos");
+        for (TcSakbeCombustiblesDto item: combustibles) {
+          if(total> item.getSaldo())
+            diferencia= item.getSaldo();
+          else
+            diferencia= total;
+          item.setSaldo(item.getSaldo()- diferencia);
+          if(item.getSaldo()<= 0D)
+            item.setIdCombustibleEstatus(ECombustiblesEstatus.TERMINADO.getKey());
+          else  
+            item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
+          DaoFactory.getInstance().update(sesion, item);
+          saldos= new TcSakbeSuministrosDetallesDto(
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            diferencia, // Double litros, 
+            -1L, // Long idSuministroDetalle
+            this.suministro.getIdSuministro(), // Long idSuministro, 
+            item.getIdCombustible() // Long idCombustible
+          );
+          DaoFactory.getInstance().insert(sesion, saldos);
+          total-= diferencia;
+          if(total<= 0)
+            break;
+        } // for
+      } // if
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
@@ -232,19 +234,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Map<String, Object> params    = new HashMap<>();
     List<Combustible> combustibles= null;
     try {      
-      params.put("idSuministro", this.suministro.getIdSuministro());      
-      combustibles= (List<Combustible>)DaoFactory.getInstance().toEntitySet(sesion, Combustible.class, "TcSakbeCombustiblesDto", "depurar", params, Constantes.SQL_TODOS_REGISTROS);
-      for (Combustible item: combustibles) {
-        if(item.getIdBanco()< 0L)
-          item.setIdBanco(null);
-        item.setSaldo(item.getSaldo()+ item.getLitrox());
-        if(Objects.equals(item.getLitros(), item.getSaldo()))
-          item.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());
-        else
-          item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
-        DaoFactory.getInstance().update(sesion, item);
-        DaoFactory.getInstance().delete(sesion, TcSakbeSuministrosDetallesDto.class, item.getIdSuministroDetalle());
-      } // for
+      if(Objects.equals(this.suministro.getIdPatrocinado(), 2L)) {
+        params.put("idSuministro", this.suministro.getIdSuministro());      
+        combustibles= (List<Combustible>)DaoFactory.getInstance().toEntitySet(sesion, Combustible.class, "TcSakbeCombustiblesDto", "depurar", params, Constantes.SQL_TODOS_REGISTROS);
+        for (Combustible item: combustibles) {
+          if(item.getIdBanco()< 0L)
+            item.setIdBanco(null);
+          item.setSaldo(item.getSaldo()+ item.getLitrox());
+          if(Objects.equals(item.getLitros(), item.getSaldo()))
+            item.setIdCombustibleEstatus(ECombustiblesEstatus.ACEPTADO.getKey());
+          else
+            item.setIdCombustibleEstatus(ECombustiblesEstatus.EN_PROCESO.getKey());
+          DaoFactory.getInstance().update(sesion, item);
+          DaoFactory.getInstance().delete(sesion, TcSakbeSuministrosDetallesDto.class, item.getIdSuministroDetalle());
+        } // for
+      } // if
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {

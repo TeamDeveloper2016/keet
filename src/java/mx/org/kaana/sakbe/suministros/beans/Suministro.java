@@ -24,6 +24,7 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
   private UISelectEntity ikDesarrollo;
   private UISelectEntity ikMaquinaria;
   private Long idTipoCombustible;
+  private Long idPatrocinadox;
   private Double litrox;
 
   public Suministro() {
@@ -54,6 +55,7 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
     this.ikMaquinaria= new UISelectEntity(this.getIdMaquinaria());
     this.litrox= this.getLitros();
     this.idTipoCombustible= 1L;
+    this.idPatrocinadox= this.getIdPatrocinado();
   }
 
   public UISelectEntity getIkDesarrollo() {
@@ -90,6 +92,14 @@ public class Suministro extends TcSakbeSuministrosDto implements Serializable {
 
   public void setIdTipoCombustible(Long idTipoCombustible) {
     this.idTipoCombustible = idTipoCombustible;
+  }
+
+  public Long getIdPatrocinadox() {
+    return idPatrocinadox;
+  }
+
+  public void setIdPatrocinadox(Long idPatrocinadox) {
+    this.idPatrocinadox = idPatrocinadox;
   }
   
   @Override
