@@ -283,7 +283,7 @@ public class Transaccion extends Facturama {
                         this.toUpdateImages(sesion, idArticulo);
 					} } } } } }	} // if												
 				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
-					registraArticuloFacturama(sesion, idArticulo);
+					this.registraArticuloFacturama(sesion, idArticulo);
 			} // if
 		} // try
 		catch (Exception e) {						
@@ -293,12 +293,12 @@ public class Transaccion extends Facturama {
 	} // procesarArticulo
 	
 	private void registraArticuloFacturama(Session sesion, Long idArticulo){		
-		CFDIGestor gestor       = null;
-		ArticuloFactura articulo= null;
+		CFDIGestor gestor   = null;
+		ArticuloFactura item= null;
 		try {			
 			gestor= new CFDIGestor(idArticulo);
-			articulo= gestor.toArticuloFactura(sesion);
-			setArticulo(articulo);
+			item= gestor.toArticuloFactura(sesion);
+			this.setArticulo(item);
 			super.procesarArticulo(sesion);
 		} // try
 		catch (Exception e) {			

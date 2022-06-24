@@ -230,9 +230,8 @@ public class CFDIGestor implements Serializable {
 	
 	public ArticuloFactura toArticuloFactura(Session sesion) throws Exception {
 		ArticuloFactura regresar = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_articulo=" + this.idComodin);
 			regresar= (ArticuloFactura) DaoFactory.getInstance().toEntity(sesion, ArticuloFactura.class, "VistaArticulosDto", "facturama", params);			
 		} // try		

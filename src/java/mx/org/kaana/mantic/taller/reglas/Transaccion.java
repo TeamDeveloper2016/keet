@@ -155,7 +155,7 @@ public class Transaccion extends Facturama{
 		catch (Exception e) {			
 			mx.org.kaana.libs.formato.Error.mensaje(e);
 		} // catch		
-	} // registraArticuloFacturama
+	} // registraClienteFacturama
 	
 	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicio, String observaciones) throws Exception{
 		return loadBitacora(sesion, ELABORADA, idServicio, observaciones);

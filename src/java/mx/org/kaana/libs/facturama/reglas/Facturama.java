@@ -296,13 +296,13 @@ public class Facturama extends IBaseTnx {
 		String id       = null;
 		try {
 			id= CFDIFactory.getInstance().createProductId(this.articulo);
-			if(isCorrectId(id))
-				regresar= actualizarProducto(sesion, this.articulo.getId(), id);
+			if(this.isCorrectId(id))
+				regresar= this.actualizarProducto(sesion, this.articulo.getId(), id);
 			else
-				registrarBitacora(sesion, this.articulo.getId(), id, false);								
+				this.registrarBitacora(sesion, this.articulo.getId(), id, false);								
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
+			this.registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
 			throw e;
 		} // catch		
 		return regresar;

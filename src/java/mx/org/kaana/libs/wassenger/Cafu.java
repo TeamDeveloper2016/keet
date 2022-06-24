@@ -80,27 +80,31 @@ public final class Cafu implements Serializable {
   }
   
   public Cafu(String nombre, String celular) {
-    this(nombre, celular, "", "", Collections.EMPTY_MAP);
+    this(nombre, celular, "", "", Collections.EMPTY_MAP, "");
   }
   
   public Cafu(String nombre, String celular, String periodo) {
-    this(nombre, celular, "", "", Collections.EMPTY_MAP);
+    this(nombre, celular, "", "", Collections.EMPTY_MAP, "");
   }
   
   public Cafu(String nombre, String celular, String reporte, String nomina, String periodo) {
-    this(nombre, celular, nomina, periodo, Collections.EMPTY_MAP);
+    this(nombre, celular, nomina, periodo, Collections.EMPTY_MAP, "");
     this.reporte= reporte;
   }
 
   public Cafu(String nomina, String periodo, Map<String, Object> contratistas) {
-    this("", "", nomina, periodo, contratistas);
+    this("", "", nomina, periodo, contratistas, "");
   }
   
-  public Cafu(String nombre, String celular, String nomina, String periodo, Map<String, Object> contratistas) {
-    this(nombre, celular, nomina, periodo, "", "", contratistas);
+  public Cafu(String nomina, String periodo, Map<String, Object> contratistas, String desarrollo) {
+    this("", "", nomina, periodo, contratistas, desarrollo);
+  }
+  
+  public Cafu(String nombre, String celular, String nomina, String periodo, Map<String, Object> contratistas, String desarrollo) {
+    this(nombre, celular, nomina, periodo, "", "", contratistas, desarrollo);
   }
 
-  public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas) {
+  public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas, String desarrollo) {
     this.nombre = Cadena.nombrePersona(nombre);
     this.celular= this.clean(celular);
     this.nomina = nomina;
@@ -109,7 +113,7 @@ public final class Cafu implements Serializable {
     this.fecha  = fecha;
     this.token  = System.getenv(IMOX_TOKEN);
     this.contratistas= contratistas;
-    this.desarrollo= "";
+    this.desarrollo= desarrollo;
     this.prepare();
     this.empresa= Configuracion.getInstance().getEmpresa("titulo");
     this.url    = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
@@ -634,17 +638,16 @@ public final class Cafu implements Serializable {
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
-    String desarrollo     = "";
+    String construccion   = this.desarrollo== null || this.desarrollo.length()== 0? Configuracion.getInstance().getPropiedad("sistema.empresa.principal"): this.desarrollo;
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
-      Map<String, Object> params= null;
+      Map<String, Object> params= new HashMap<>();
       List<String> files        = new ArrayList<>();
       try {        
-        params= new HashMap<>();        
         int count= 1;
         for (String key: this.contratistas.keySet()) {
           if(key.startsWith("Desarrollo"))  {
-            desarrollo= (String)this.contratistas.get(key);
-            archivos.append("\\nDesarrollo: ".concat(desarrollo));
+            construccion= (String)this.contratistas.get(key);
+            archivos.append("\\nDesarrollo: ".concat(construccion));
             count= 1;
           } // if  
           else {
@@ -656,7 +659,7 @@ public final class Cafu implements Serializable {
               key= key.substring(key.indexOf("-")+ 1);
             params.put("contratista", key);
             archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
-            files.add(desarrollo.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
+            files.add(construccion.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
           } // else  
         } // for
         String concentado= this.toZipFile(files);

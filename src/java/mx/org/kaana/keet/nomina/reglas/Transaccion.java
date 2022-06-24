@@ -1152,8 +1152,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             residentes.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
             break;
         } // swtich
-        notificar= new Cafu(periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", contratistas);
-        notificar.setDesarrollo(desarrollo);
+        notificar= new Cafu(periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", contratistas, desarrollo);
         for (String residente: residentes.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(residente));
           notificar.setCelular((String)residentes.get(residente));
@@ -1414,7 +1413,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       if(!residentes.isEmpty())
         JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
       else
-        JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+        JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try 
 		catch(Exception e) {
 			throw e;

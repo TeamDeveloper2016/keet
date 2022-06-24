@@ -167,7 +167,7 @@ public class Transaccion extends Facturama {
 		catch (Exception e) {			
 			Error.mensaje(e);
 		} // catch		
-	} // registraArticuloFacturama
+	} // registraClienteFacturama
 	
 	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
 		CFDIGestor gestor     = null;

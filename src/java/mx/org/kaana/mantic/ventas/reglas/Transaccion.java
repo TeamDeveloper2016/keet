@@ -412,7 +412,7 @@ public class Transaccion extends Facturama {
 		catch (Exception e) {			
 			Error.mensaje(e);
 		} // catch		
-	} // registraArticuloFacturama
+	} // registraClienteFacturama
 	
 	protected boolean actualizarCliente(Session sesion) throws Exception {
     boolean regresar= false;
