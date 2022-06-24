@@ -136,18 +136,18 @@ public class Transaccion extends IBaseTnx {
 						case DOCUMENTOS:
 							for(Documento dto: this.contrato.getDocumentos()){
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							} // for
 							break;
 						case GENERADORES:
 							for(Generador dto: this.contrato.getGeneradores())
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							break;
 						case PRESUPUESTOS:
 							for(Presupuesto dto: this.contrato.getPresupuestos()){
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							} // for
 							break;
 					} // switch
@@ -451,6 +451,7 @@ public class Transaccion extends IBaseTnx {
             break;
           case INSERT:
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            this.toCheckDeleteFile(sesion, item.getArchivo());
             break;
           case UPDATE:
             regresar= DaoFactory.getInstance().update(sesion, item)> 0L;

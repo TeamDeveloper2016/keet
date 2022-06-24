@@ -158,7 +158,8 @@ public class Importar extends IBaseImportar implements Serializable {
 		Long fileSize     = 0L;			
 		Long idArchivo    = 0L;			
 		try {			
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("entregas"));
+      String source= Configuracion.getInstance().getPropiedadSistemaServidor("entregas");
+      path.append(source);
       temp.append(String.valueOf((Long)this.attrs.get("idEmpresa")));
       temp.append("/");			
       temp.append(Fecha.getAnioActual());
@@ -175,8 +176,8 @@ public class Importar extends IBaseImportar implements Serializable {
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize = event.getFile().getSize();						
-			idArchivo= this.toSaveFileRecord("entregas");							
-			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
+			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " BYTES": " KB", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), -1L));
+			idArchivo= this.toSaveFileArchivo(source);
   		this.attrs.put("file", this.getFile().getName());	
 			this.documentos.add(this.toEvidencia(idArchivo));
 		} // try
