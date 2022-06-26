@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Estimación de costos del personal por el día por contrato"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 		
+        'contenedorGrupos\\:idNomina'  : {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idContrato': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:porDia'    : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:porObra'   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:total'     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+			};	
+		</script>
+		<style>
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetNominasCostos.doTabChange}" process="@this" update="contenedorGrupos:tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
+            <p:tab title="Costos por contrato">
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+								<p:outputLabel for="idContrato" value="Contrato(s):"/>
+                <p:selectOneMenu id="idContrato" styleClass="janal-wid-100-txt" value="#{keetNominasCostos.attrs.idContrato}" converter="javax.faces.Long">
+                  <p:ajax event="change" process="@this" update="tabla" listener="#{keetNominasCostos.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:selectItem itemLabel="ABIERTOS" itemValue="-1"/>
+                  <f:selectItem itemLabel="TODOS" itemValue="1"/>								
+                </p:selectOneMenu>
+              </p:panelGrid>  
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasCostos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasCostos.lazyModel.rowCount gt keetNominasCostos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+								<f:facet name="header">
+                  <div class="janal-column-left">
+                    <p:outputLabel value="Acumulado de los costos de nómina del personal de mano de obra" styleClass="janal-color-white"/>
+                  </div>
+								</f:facet>												
+								<p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
+									<f:facet name="header">
+										<h:outputText value="Desarrollo"/>
+									</f:facet>
+									<h:outputText value="#{row['desarrollo']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.clave}">
+									<f:facet name="header">
+										<h:outputText value="Clave"/>
+									</f:facet>
+									<h:outputText value="#{row['clave']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive" sortBy="#{row.contrato}">
+									<f:facet name="header">
+										<h:outputText value="Contrato"/>
+									</f:facet>
+									<h:outputText value="#{row['contrato']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.etapa}">
+									<f:facet name="header">
+										<h:outputText value="Etapa"/>
+									</f:facet>
+									<h:outputText value="#{row['etapa']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porDia}">
+									<f:facet name="header">
+										<h:outputText value="Por día"/>
+									</f:facet>
+									<h:outputText value="#{row['porDia']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porObra}">
+									<f:facet name="header">
+										<h:outputText value="Por obra"/>
+									</f:facet>
+									<h:outputText value="#{row['porObra']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.total}">
+									<f:facet name="header">
+										<h:outputText value="Total"/>
+									</f:facet>
+									<h:outputText value="#{row['total']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porElDia}">
+									<f:facet name="header">
+										<h:outputText value="Presupuestado"/>
+									</f:facet>
+									<h:outputText value="#{row['porElDia']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.diferencia}">
+									<f:facet name="header">
+										<h:outputText value="Diferencia"/>
+									</f:facet>
+                  <h:outputText value="#{row['diferencia']}" styleClass="#{row['costos'].toDouble lt 0.0? 'janal-color-red': 'janal-color-blue'}"/>
+								</p:column>														
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetNominasCostos.lazyModel== null? 0: keetNominasCostos.lazyModel.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+								<p:outputLabel for="idNomina" value="Nómina(s):"/>
+                <p:selectOneMenu id="idNomina" value="#{keetNominasCostos.attrs.idNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="desarrollos contratos" listener="#{keetNominasCostos.doLoadDesarrollos}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:selectItems value="#{keetNominasCostos.attrs.nominas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
+                  <p:column headerText="Semana">
+                    <h:outputText value="#{item.semana}"/>
+                  </p:column>   
+                  <p:column headerText="Estatus">
+                    <h:outputText value="#{item.estatus}"/>
+                  </p:column>   
+                </p:selectOneMenu>                
+              </p:panelGrid>  
+							<p:dataTable lazy="true" id="desarrollos" widgetVar="kajoolDesarrollos" var="row" value="#{keetNominasCostos.lazyDesarrollos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasCostos.lazyDesarrollos.rowCount gt keetNominasCostos.lazyDesarrollos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+								<f:facet name="header">
+                  <div class="janal-column-left">
+                    <p:outputLabel value="Nómina del personal de mano de obra" styleClass="janal-color-white"/>
+                  </div>
+								</f:facet>												
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.semana}">
+									<f:facet name="header">
+										<h:outputText value="Semana"/>
+									</f:facet>
+									<h:outputText value="#{row['semana']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive" sortBy="#{row.desarrollo}">
+									<f:facet name="header">
+										<h:outputText value="Desarrollo"/>
+									</f:facet>
+									<h:outputText value="#{row['desarrollo']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porDia}">
+									<f:facet name="header">
+										<h:outputText value="Por día"/>
+									</f:facet>
+									<h:outputText value="#{row['porDia']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porObra}">
+									<f:facet name="header">
+										<h:outputText value="Por obra"/>
+									</f:facet>
+									<h:outputText value="#{row['porObra']}"/>
+								</p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.total}">
+									<f:facet name="header">
+										<h:outputText value="Total"/>
+									</f:facet>
+									<h:outputText value="#{row['total']}"/>
+								</p:column>		                
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetNominasCostos.lazyDesarrollos== null? 0: keetNominasCostos.lazyDesarrollos.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
+              <p:dataTable id="contratos" widgetVar="kajoolContratos" var="row" value="#{keetNominasCostos.contratos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContrato}">
+								<f:facet name="header">
+                  <div class="janal-column-left">
+                    <p:outputLabel value="Contratos que se encuentran abiertos" styleClass="janal-color-white"/>
+                  </div>
+								</f:facet>											
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center">
+									<f:facet name="header">
+										<h:outputText value="Semana"/>
+									</f:facet>
+									<h:outputText value="#{row['semana']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-15">
+									<f:facet name="header">
+										<h:outputText value="Desarrollo"/>
+									</f:facet>
+									<h:outputText value="#{row['desarrollo']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Clave"/>
+									</f:facet>
+									<h:outputText value="#{row['clave']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Contrato"/>
+									</f:facet>
+									<h:outputText value="#{row['contrato']}"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Etapa"/>
+									</f:facet>
+									<h:outputText value="#{row['etapa']}"/>
+								</p:column>														
+								<p:column styleClass="porDia MarAuto Responsive janal-wid-10 janal-column-center">
+									<f:facet name="header">
+										<h:outputText value="Por día"/>
+									</f:facet>
+                  <p:inputNumber id="porDia" value="#{row['porDia']}" inputStyleClass="janal-color-black janal-wid-96 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCosto(row)}"/>
+                  </p:inputNumber>  
+								</p:column>														
+								<p:column styleClass="porObra MarAuto Responsive janal-wid-10 janal-column-center">
+									<f:facet name="header">
+										<h:outputText value="Por obra"/>
+									</f:facet>
+                  <p:inputNumber id="porObra" value="#{row['porObra']}" inputStyleClass="janal-color-black janal-wid-96 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCosto(row)}"/>
+                  </p:inputNumber>  
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right">
+									<f:facet name="header">
+										<h:outputText value="Total"/>
+									</f:facet>
+                  <p:outputLabel value="#{row['total']}" styleClass="calculos"/>
+                  <p:inputText id="total" value="#{row['total']}" styleClass="calculos janal-display-none"/>
+								</p:column>														
+								<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
+									<f:facet name="header">
+										<h:outputText value="En nómina"/>
+									</f:facet>
+									<h:outputText value="#{empty(row['idNomina'])? 'NO': 'SI'}"/>
+								</p:column>														
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetNominasCostos.contratos== null? 0: keetNominasCostos.contratos.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-reply" process="@this" action="#{keetNominasCostos.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-reply" process="@this" action="#{keetNominasCostos.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

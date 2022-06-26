@@ -4,6 +4,139 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaCostosContratosDto">
+      <select id="lazy">
+        select
+          tc_keet_contratos.id_contrato as id_key,
+          tc_keet_contratos.id_contrato,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as contrato,
+          tc_keet_contratos.etapa,
+          tc_nominas_contratos_costos.porcentaje_dia,
+          tc_nominas_contratos_costos.porcentaje_obra,
+          sum(tc_nominas_contratos_costos.por_dia) as por_dia,
+          sum(tc_nominas_contratos_costos.por_obra) as por_obra,
+          sum(tc_nominas_contratos_costos.total) as total,
+          tc_keet_contratos.por_el_dia,
+          (tc_keet_contratos.por_el_dia- sum(tc_nominas_contratos_costos.total)) as diferencia,        
+          ifnull((tc_keet_contratos.por_el_dia- sum(tc_nominas_contratos_costos.total)), 0) as costos        
+        from
+          tc_nominas_contratos_costos
+        inner join
+          tc_keet_contratos on tc_nominas_contratos_costos.id_contrato= tc_keet_contratos.id_contrato    
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where
+          {condicion}
+        {sortOrder}
+      </select>
+      <select id="desarrollos">
+        select
+          tc_keet_nominas_desarrollos.id_nomina_desarrollo as id_key,
+          tc_keet_nominas.id_nomina,
+          concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
+          tc_keet_nominas_desarrollos.id_desarrollo,
+          tc_keet_desarrollos.nombres as desarrollo,
+          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14, tc_keet_nominas_personas.neto, 0)) as por_dia,
+          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_obra,
+          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14 or tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as total
+        from
+          tc_keet_nominas_desarrollos
+        inner join  
+          tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join  
+          tc_keet_nominas on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
+        inner join 
+          tc_keet_nominas_periodos on tc_keet_nominas_periodos.id_nomina_periodo= tc_keet_nominas.id_nomina_periodo
+        inner join
+          tr_mantic_empresa_personal on tc_keet_nominas_desarrollos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        inner join 
+          tc_keet_nominas_personas on tc_keet_nominas_desarrollos.id_nomina= tc_keet_nominas_personas.id_nomina and tc_keet_nominas_desarrollos.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
+        inner join 
+          tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        where
+          tc_keet_nominas.id_nomina= {idNomina}
+          and tr_mantic_empresa_personal.id_contratista is null
+          and tc_mantic_personas.id_tipo_persona!= 1        
+        group by
+          tc_keet_nominas_desarrollos.id_desarrollo
+        {sortOrder}
+      </select>  
+      <select id="contratos">  
+        select
+          ifnull(tc_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_key,
+          tc_keet_contratos.id_contrato,
+          tc_keet_desarrollos.id_desarrollo,
+          ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden), '{semana}') as semana,
+          ifnull(tt_keet_desarrollos_contratos.id_nomina, -1) as id_nomina,        
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_contratos.clave,
+				  tc_keet_contratos.nombre as contrato,
+				  tc_keet_contratos.etapa,
+				  ifnull(tc_nominas_contratos_costos.porcentaje_dia, 0) as porcentaje_dia,
+				  ifnull(tc_nominas_contratos_costos.por_dia, 0) as por_dia,
+				  ifnull(tc_nominas_contratos_costos.porcentaje_obra, 0) as porcentaje_obra,
+				  ifnull(tc_nominas_contratos_costos.por_obra, 0) as por_obra,
+ 				  ifnull(tc_nominas_contratos_costos.total, 0) as total,
+				  ifnull(tc_nominas_contratos_costos.id_usuario, -1) as id_usuario,
+				  ifnull(tc_nominas_contratos_costos.registro, now()) as registro
+        from 
+          tc_keet_contratos 
+        left join (
+					select
+            tc_keet_contratos_destajos_contratistas.id_nomina,
+            tc_keet_contratos_lotes.id_contrato
+          from
+            tc_keet_contratos_destajos_contratistas
+          inner join
+            tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+          inner join
+						tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+          where
+            tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina}
+          group by
+					  tc_keet_contratos_destajos_contratistas.id_nomina,
+            tc_keet_contratos_lotes.id_contrato                 
+          union all
+					select
+					  tc_keet_contratos_destajos_proveedores.id_nomina,
+            tc_keet_contratos_lotes.id_contrato
+          from
+            tc_keet_contratos_destajos_proveedores
+          inner join
+            tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+          inner join
+					  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+          where
+            tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}
+          group by
+    				tc_keet_contratos_destajos_proveedores.id_nomina,
+            tc_keet_contratos_lotes.id_contrato          
+        ) as tt_keet_desarrollos_contratos on tc_keet_contratos.id_contrato= tt_keet_desarrollos_contratos.id_contrato
+				inner join
+				  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+			  inner join
+				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				left join
+				  tc_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_nominas_contratos_costos.id_contrato and tt_keet_desarrollos_contratos.id_nomina= tc_nominas_contratos_costos.id_nomina  
+        left join  
+          tc_keet_nominas on tt_keet_desarrollos_contratos.id_nomina= tc_keet_nominas.id_nomina
+        left join 
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        where
+          tc_keet_contratos.id_contrato_estatus&lt;= 8
+        group by
+  				tt_keet_desarrollos_contratos.id_nomina,
+          tc_keet_desarrollos.id_desarrollo,
+          tc_keet_contratos.id_contrato          
+        order by  
+          tc_keet_desarrollos.id_desarrollo,
+          tc_keet_contratos.id_contrato           
+      </select>  
+    </unit>  
 		<unit id="VistaEstimacionesDto">
       <select id="lazy">
         select
@@ -4257,8 +4390,8 @@
           tc_keet_nominas.id_nomina,
           if(tc_keet_nominas_periodos.ejercicio is null, '1900-1', min(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as minimo,
           if(tc_keet_nominas_periodos.ejercicio is null, '1900-54', max(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as maximo,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 20, tc_keet_nominas_personas.neto, 0)) as por_obra,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 2 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 14 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_dia
+          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14, tc_keet_nominas_personas.neto, 0)) as por_dia,
+          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_obra
         from
           tc_keet_nominas_desarrollos
         inner join  

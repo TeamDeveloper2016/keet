@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcNominasContratosCostosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_nominas_contratos_costos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_nominas_contratos_costos
+        where      
+          id_contrato = {idContrato} and id_nomina = {idNomina}
+      </select>
+    </unit>    
     <unit id="TcKeetEstacionesBitacoraDto">
       <select id="row">
         select      

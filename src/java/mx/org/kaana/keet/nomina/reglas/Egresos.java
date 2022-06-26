@@ -257,12 +257,12 @@ public class Egresos extends XlsBase implements Serializable {
         this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porObra")), Alignment.RIGHT, Boolean.FALSE);
         this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
         this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
-        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(PENDIENTE)");
+        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(CHOFER, VELADOR, ALMACENISTA Y RESIDENTE DE OBRA)");
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
         this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porDia")), Alignment.RIGHT, Boolean.FALSE);
         this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
         this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
-        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(PENDIENTE)");
+        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(DETALLITA Y LIMPIEZA)");
       } // if
     } // try
     catch (Exception e) {

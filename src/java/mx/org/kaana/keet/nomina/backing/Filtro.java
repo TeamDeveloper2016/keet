@@ -91,7 +91,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.doLoad();
 				this.attrs.put("idNomina", null);
 			} // if
-			this.loadCatalogs();
+			this.toLoadCatalogos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -209,8 +209,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
 	private Map<String, Object> toPrepare() {
-	  Map<String, Object> regresar  = new HashMap<>();	
-		StringBuilder sb              = new StringBuilder();
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb            = new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
 			sb.append("(tc_keet_nominas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
@@ -239,7 +239,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	} // toPrepare
 
-	private void loadCatalogs() {
+	private void toLoadCatalogos() {
 		Map<String, Object>params= null;
     List<Columna> columns    = null;
     try {
@@ -267,7 +267,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 			Methods.clean(columns);
 		}	// finally
-	} // loadCatalogs
+	} // toLoadCatalogos
 
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;

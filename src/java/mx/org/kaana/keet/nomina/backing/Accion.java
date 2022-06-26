@@ -63,7 +63,7 @@ public class Accion extends IBaseFilter implements Serializable {
 		this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		this.attrs.put("nomina", new Nomina());
 		this.attrs.put("tuplas", 0L);
-		this.loadCatalogs();
+		this.toLoadCatalogos();
   } // init
   
 	public void doTabChange(TabChangeEvent event) {
@@ -127,8 +127,7 @@ public class Accion extends IBaseFilter implements Serializable {
 		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina.", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
-	private void loadCatalogs() {
-		List<Columna> columns     = null;
+	private void toLoadCatalogos() {
     Map<String, Object> params= new HashMap<>();
     try {
 			params= new HashMap<>();
@@ -143,7 +142,6 @@ public class Accion extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
-      Methods.clean(columns);
       Methods.clean(params);
     } // finally
 	}
@@ -182,7 +180,6 @@ public class Accion extends IBaseFilter implements Serializable {
 	public void doLoadNomina() {
     Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
 		  params.put("idNomina", ((UISelectEntity)this.attrs.get("idNomina")).getKey());
 			params.put("sucursales", this.attrs.get("sucursales"));
 			Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);
