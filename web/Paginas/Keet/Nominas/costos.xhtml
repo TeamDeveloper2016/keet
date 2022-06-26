@@ -113,7 +113,7 @@
                   </p:column>   
                 </p:selectOneMenu>                
               </p:panelGrid>  
-							<p:dataTable lazy="true" id="desarrollos" widgetVar="kajoolDesarrollos" var="row" value="#{keetNominasCostos.lazyDesarrollos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasCostos.lazyDesarrollos.rowCount gt keetNominasCostos.lazyDesarrollos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+              <p:dataTable lazy="false" id="desarrollos" widgetVar="kajoolDesarrollos" var="row" value="#{keetNominasCostos.desarrollos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasCostos.desarrollos.size() gt 500}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
 								<f:facet name="header">
                   <div class="janal-column-left">
                     <p:outputLabel value="Nómina del personal de mano de obra" styleClass="janal-color-white"/>
@@ -150,7 +150,7 @@
 									<h:outputText value="#{row['total']}"/>
 								</p:column>		                
 								<f:facet name="footer">
-									<p:outputLabel value="Total [#{keetNominasCostos.lazyDesarrollos== null? 0: keetNominasCostos.lazyDesarrollos.rowCount}] registros"/>
+									<p:outputLabel value="Total [#{keetNominasCostos.desarrollos== null? 0: keetNominasCostos.desarrollos.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>
               <p:dataTable id="contratos" widgetVar="kajoolContratos" var="row" value="#{keetNominasCostos.contratos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContrato}">
@@ -216,7 +216,7 @@
 									<f:facet name="header">
 										<h:outputText value="En nómina"/>
 									</f:facet>
-									<h:outputText value="#{empty(row['idNomina'])? 'NO': 'SI'}"/>
+									<p:outputLabel value="#{row['nomina'] lt 0? 'NO': 'SI'}" styleClass="#{row['nomina'] lt 0? 'janal-color-red': ''}"/>
 								</p:column>														
 								<f:facet name="footer">
 									<p:outputLabel value="Total [#{keetNominasCostos.contratos== null? 0: keetNominasCostos.contratos.size()}] registros"/>
@@ -230,11 +230,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.totales)" action="#{keetNominasCostos.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-reply" process="@this" action="#{keetNominasCostos.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.totales)" action="#{keetNominasCostos.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="nominas"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-reply" process="@this" action="#{keetNominasCostos.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

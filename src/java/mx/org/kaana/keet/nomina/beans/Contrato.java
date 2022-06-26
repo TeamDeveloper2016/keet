@@ -18,6 +18,8 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
   
   private ESql sql;
   private String semana;
+  private Long idDesarrollo;
+  private Long nomina;
   private String desarrollo;
   private String clave;
   private String contrato;
@@ -25,6 +27,8 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
 
   public Contrato() {
     this.sql= ESql.INSERT;
+    this.nomina= -1L;
+    this.idDesarrollo= -1L;
   }
 
   public String getSemana() {
@@ -33,6 +37,14 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
 
   public void setSemana(String semana) {
     this.semana = semana;
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
   }
 
   public String getDesarrollo() {
@@ -75,6 +87,14 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
     this.sql = sql;
   }
 
+  public Long getNomina() {
+    return nomina;
+  }
+
+  public void setNomina(Long nomina) {
+    this.nomina = nomina;
+  }
+
   @Override
   public Class toHbmClass() {
     return TcNominasContratosCostosDto.class;
@@ -82,7 +102,7 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
 
   @Override
   public String toString() {
-    return "Contrato{" + "sql=" + sql + ", semana=" + semana + ", desarrollo=" + desarrollo + ", clave=" + clave + ", contrato=" + contrato + ", etapa=" + etapa + '}';
+    return "Contrato{" + "sql=" + sql + ", semana=" + semana + ", idDesarrollo=" + idDesarrollo + ", nomina=" + nomina + ", desarrollo=" + desarrollo + ", clave=" + clave + ", contrato=" + contrato + ", etapa=" + etapa + '}';
   }
-
+  
 }

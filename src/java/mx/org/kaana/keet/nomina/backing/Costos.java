@@ -10,13 +10,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.nomina.beans.Contrato;
 import mx.org.kaana.keet.nomina.reglas.Almacenar;
 import mx.org.kaana.libs.formato.Error;
@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -39,11 +40,12 @@ public class Costos extends IBaseFilter implements Serializable {
 	private static final Log LOG= LogFactory.getLog(Costos.class);
   private static final long serialVersionUID= 313633488565639323L;
   
-	protected FormatLazyModel lazyDesarrollos;
-	protected List<Contrato> contratos;
+	private List<Entity> desarrollos;
+	private List<Contrato> contratos;
+  private Map<Long, Double> totales;
 
-  public FormatLazyModel getLazyDesarrollos() {
-    return lazyDesarrollos;
+  public List<Entity> getDesarrollos() {
+    return desarrollos;
   }
 
   public List<Contrato> getContratos() {
@@ -57,6 +59,7 @@ public class Costos extends IBaseFilter implements Serializable {
 		//this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")== null? -1L: JsfBase.getFlashAttribute("idNomina"));
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 		this.attrs.put("idContrato", -1L);
+    this.totales= new HashMap<>();
 		this.toLoadCatalogos();
 		this.doLoad();
   } // init
@@ -113,7 +116,9 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("porDia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porObra", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazyDesarrollos = new FormatCustomLazy("VistaCostosContratosDto", "desarrollos", params, columns);
+      this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosContratosDto", "desarrollos", params);
+      if(this.desarrollos!= null)
+        UIBackingUtilities.toFormatEntitySet(this.desarrollos, columns);
       UIBackingUtilities.resetDataTable("desarrollos");
       this.toLoadContratos();
     } // try
@@ -143,16 +148,21 @@ public class Costos extends IBaseFilter implements Serializable {
       else
         params.put("semana", "1900-01");
 			params.put("idNomina", this.attrs.get("idNomina"));
-      this.contratos = (List<Contrato>)DaoFactory.getInstance().toEntitySet(Contrato.class, "VistaCostosContratosDto", "contratos", params);
+      this.contratos= (List<Contrato>)DaoFactory.getInstance().toEntitySet(Contrato.class, "VistaCostosContratosDto", "contratos", params);
+      int count= 0;
       if(this.contratos!= null) {
         for (Contrato item: this.contratos) {
-          if(item.isValid()) {
+          if(item.isValid()) 
+            item.setSql(ESql.SELECT);
+          else {
             item.setSql(ESql.INSERT);
             item.setIdNomina(((UISelectEntity)this.attrs.get("idNomina")).getKey());            
+            count++;
           } // if  
-          else 
-            item.setSql(ESql.SELECT);
         } // for  
+        if(Objects.equals(count, this.contratos.size()))
+          this.toDivideCostos();
+        this.toTotales();
       } // if    
       UIBackingUtilities.resetDataTable("desarrollos");
     } // try // try
@@ -190,13 +200,15 @@ public class Costos extends IBaseFilter implements Serializable {
     Almacenar transaccion= null;
     String regresar      = null;
     try {			
-  	  transaccion= new Almacenar(this.contratos);
-			if (transaccion.ejecutar(EAccion.GENERAR)) {
-				// regresar= this.doCancelar();
-				JsfBase.addMessage("Se registraron los costos de mano de obra", ETipoMensaje.INFORMACION);
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar los costos de mano de obra", ETipoMensaje.ERROR);      			
+      if(this.toCheckTotales()) {
+        transaccion= new Almacenar(this.contratos);
+        if (transaccion.ejecutar(EAccion.GENERAR)) {
+          // regresar= this.doCancelar();
+          JsfBase.addMessage("Se registraron los costos de mano de obra", ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar los costos de mano de obra", ETipoMensaje.ERROR);      			
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -214,8 +226,84 @@ public class Costos extends IBaseFilter implements Serializable {
       row.setSql(ESql.UPDATE);
     } // if 
     row.setTotal(row.getPorDia()+ row.getPorObra());
-    for (Contrato item: this.contratos) {
-    } // for
+    this.toTotales();
   }
+  
+  private void toTotales() {
+    if(this.contratos!= null && this.contratos.size()> 0) {
+      this.totales.clear();
+      for (Contrato item: this.contratos) {
+        if(this.totales.containsKey(item.getIdDesarrollo()))
+          this.totales.put(item.getIdDesarrollo(), this.totales.get(item.getIdDesarrollo())+ item.getTotal());
+        else
+          this.totales.put(item.getIdDesarrollo(), item.getTotal());
+      } // for
+    } // if
+  }
+
+  private Boolean toCheckTotales() {
+    Boolean regresar= Boolean.FALSE;
+    if(this.contratos!= null && this.contratos.size()> 0) {
+      for (Entity item: this.desarrollos) {
+        Double costo= this.totales.get(item.toLong("idDesarrollo"));
+        if(!Objects.equals(Numero.redondearSat(item.toDouble("totalCosto")), Numero.redondearSat(costo))) {
+          JsfBase.addMessage("Los costos de mano de obra del desarrollo [".concat(item.toString("desarrollo")).concat("] no son iguales ")+ item.toDouble("totalCosto")+ " | "+ costo, ETipoMensaje.ERROR);
+          regresar= Boolean.FALSE;
+          break;          
+        } // if
+      } // for
+    } // if
+    return regresar;
+  } 
+
+  private void toDivideCostos() {
+    Map<Long, Integer> partes= new HashMap<>();
+    try {
+      int count= 0;
+      Long idDesarrollo= -1L;
+      for (Contrato item: this.contratos) {
+        if(!Objects.equals(idDesarrollo, -1L) && !Objects.equals(idDesarrollo, item.getIdDesarrollo())) {
+          partes.put(idDesarrollo, count);
+          count= 0;
+        } // if
+        idDesarrollo= item.getIdDesarrollo();
+        count++;  
+      } // for
+      partes.put(idDesarrollo, count);
+      for (Entity item: this.desarrollos) {
+        Double porDiaCosto = item.toDouble("porDiaCosto");
+        Double porObraCosto= item.toDouble("porObraCosto");
+        idDesarrollo  = item.toLong("idDesarrollo");
+        Double porDia = 0D;
+        Double porObra= 0D;
+        count= 1;
+        for (Contrato contrato: this.contratos) {
+          if(Objects.equals(idDesarrollo, contrato.getIdDesarrollo())) {
+            contrato.setPorcentajeDia(Numero.toRedondearSat(100/ partes.get(idDesarrollo)));
+            contrato.setPorcentajeObra(Numero.toRedondearSat(100/ partes.get(idDesarrollo)));
+            if(Objects.equals(count, partes.get(idDesarrollo))) {
+              contrato.setPorDia(Numero.toRedondearSat(porDiaCosto- porDia));
+              contrato.setPorObra(Numero.toRedondearSat(porObraCosto- porObra));
+            } // if
+            else {
+              contrato.setPorDia(Numero.toRedondearSat(contrato.getPorcentajeDia()/ 100* porDiaCosto));
+              contrato.setPorObra(Numero.toRedondearSat(contrato.getPorcentajeObra()/ 100* porObraCosto));
+              porDia+= contrato.getPorDia();
+              porObra+= contrato.getPorObra();
+            } // else
+            contrato.setTotal(Numero.toRedondearSat(contrato.getPorDia()+ contrato.getPorObra()));
+            count++;
+          } // if  
+        } // for
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(partes);
+    } // finally
+  } 
   
 }
