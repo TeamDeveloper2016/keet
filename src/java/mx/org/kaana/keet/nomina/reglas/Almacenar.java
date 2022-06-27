@@ -33,12 +33,12 @@ public class Almacenar extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= true;
+		Boolean regresar= Boolean.TRUE;
     try {
       this.messageError= "Ocurrio un error en el proceso de actualización";
 			switch(accion) {
 				case GENERAR:
-          this.toFillRetenciones(sesion);
+          regresar= this.toFillRetenciones(sesion);
 					break;
 			} // switch
 		} // try
@@ -49,7 +49,8 @@ public class Almacenar extends IBaseTnx {
 		return regresar;	
   }
 
-  private void toFillRetenciones(Session sesion) throws Exception {
+  private Boolean toFillRetenciones(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
     try {   
       for (Contrato item: this.contratos) {
         switch(item.getSql()) {
@@ -65,10 +66,12 @@ public class Almacenar extends IBaseTnx {
             break;
         } // switch
       } // for
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
 			throw e;
     } // catch	
+    return regresar;
   }  
 
 }

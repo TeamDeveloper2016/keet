@@ -115,7 +115,8 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem value="Procesar" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
+								<p:menuitem value="Procesar" action="#{keetNominasFiltro.doCheckNomina()}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
+								<p:menuitem value="Mano de obra" action="#{keetNominasFiltro.doClasificarNomina()}" icon="fa fa-handshake" title="Mano de obra" onstart="return janal.bloquear()" ajax="false"/>						
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -131,7 +132,8 @@
                   <p:fileDownload value="#{keetNominasFiltro.global}" />
                 </p:menuitem>
   						</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doCheckNomina()}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>	
+							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doClasificarNomina()}" icon="fa fa-handshake" title="Mano de obra" onstart="return janal.bloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>

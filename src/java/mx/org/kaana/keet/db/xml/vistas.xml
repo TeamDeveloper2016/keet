@@ -31,6 +31,9 @@
           tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where
           {condicion}
+        group by
+          tc_keet_desarrollos.id_desarrollo,
+          tc_keet_contratos.id_contrato
         {sortOrder}
       </select>
       <select id="desarrollos">
@@ -71,6 +74,7 @@
       <select id="contratos">  
         select
           ifnull(tc_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_key,
+          ifnull(tc_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_nomina_contrato_costo,
           tc_keet_contratos.id_contrato,
           tc_keet_desarrollos.id_desarrollo,
           ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden), '{semana}') as semana,
@@ -125,7 +129,7 @@
 			  inner join
 				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				left join
-				  tc_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_nominas_contratos_costos.id_contrato and tt_keet_desarrollos_contratos.id_nomina= tc_nominas_contratos_costos.id_nomina  
+				  tc_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_nominas_contratos_costos.id_contrato and tc_nominas_contratos_costos.id_nomina= {idNomina}
         left join  
           tc_keet_nominas on tt_keet_desarrollos_contratos.id_nomina= tc_keet_nominas.id_nomina
         left join 

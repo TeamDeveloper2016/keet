@@ -5,9 +5,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -42,6 +44,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -685,6 +688,46 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;		
 	} // getGlobal
+  
+  public String doCheckNomina() {
+    String regresar           = null;
+    List<Entity> nominas      = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu")) {
+        params.put("idTipoNomina", 1L);
+        nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 3L);
+        if(nominas!= null && nominas.size()> 0) {
+          params.put("idNomina", nominas.get(1).toLong("idNomina"));
+          Entity nomina= (Entity)DaoFactory.getInstance().toEntity("TcNominasContratosCostosDto", "existe", params);
+          if(nomina== null || Objects.equals(nomina.toLong("total"), 0L)) {
+            JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nominas/filtro");
+            JsfBase.setFlashAttribute("idNomina", nominas.get(1).toLong("idNomina"));
+            regresar= "costos".concat(Constantes.REDIRECIONAR);
+          } // if
+          else
+            regresar= this.doAccion("AGREGAR");
+        } // if  
+        else
+          regresar= this.doAccion("AGREGAR");
+      } // if  
+      else
+        regresar= this.doAccion("AGREGAR");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  public String doClasificarNomina() {
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nominas/filtro");
+    return "costos".concat(Constantes.REDIRECIONAR);
+  }
   
 }
 	

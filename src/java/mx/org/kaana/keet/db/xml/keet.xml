@@ -24,6 +24,15 @@
         where      
           id_contrato = {idContrato} and id_nomina = {idNomina}
       </select>
+      <select id="existe">
+        select      
+          tc_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
+          count(*) as total
+        from      
+          tc_nominas_contratos_costos
+        where      
+          id_nomina = {idNomina}
+      </select>
     </unit>    
     <unit id="TcKeetEstacionesBitacoraDto">
       <select id="row">

@@ -55,10 +55,13 @@ public class Costos extends IBaseFilter implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
-		//this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-		//this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")== null? -1L: JsfBase.getFlashAttribute("idNomina"));
+    if(JsfBase.getFlashAttribute("idNomina")!= null)
+		  this.attrs.put("idNomina", new UISelectEntity((Long)JsfBase.getFlashAttribute("idNomina")));
+//    if(JsfBase.getFlashAttribute("idNomina")== null)
+//      UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 		this.attrs.put("idContrato", -1L);
+    this.attrs.put("activar", Boolean.TRUE);
     this.totales= new HashMap<>();
 		this.toLoadCatalogos();
 		this.doLoad();
@@ -109,8 +112,17 @@ public class Costos extends IBaseFilter implements Serializable {
 	public void doLoadDesarrollos() {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
+    UISelectEntity idNomina  = null;
     try {
-			params.put("idNomina", this.attrs.get("idNomina"));
+      List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
+      if(nominas!= null) {
+        int index= nominas.indexOf((UISelectEntity)this.attrs.get("idNomina"));
+        if(index>= 0)
+          this.attrs.put("idNomina", nominas.get(index));
+      } // if
+      idNomina= (UISelectEntity)this.attrs.get("idNomina");
+      this.attrs.put("activar", !Objects.equals(idNomina.toLong("idNominaEstatus"), 4L));
+			params.put("idNomina", idNomina.getKey());
 			params.put("sortOrder", "order by tc_keet_nominas_desarrollos.id_desarrollo");
       columns= new ArrayList<>();
       columns.add(new Columna("porDia", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -184,7 +196,8 @@ public class Costos extends IBaseFilter implements Serializable {
     try {
 			params.put("idTipoNomina", "1");
       this.attrs.put("nominas", UIEntity.build("VistaNominaDto", "ultima", params));
-  		this.attrs.put("idNomina", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("nominas")));
+      if(this.attrs.get("idNomina")== null)
+  		  this.attrs.put("idNomina", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("nominas")));
       this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
@@ -205,6 +218,8 @@ public class Costos extends IBaseFilter implements Serializable {
         if (transaccion.ejecutar(EAccion.GENERAR)) {
           // regresar= this.doCancelar();
           JsfBase.addMessage("Se registraron los costos de mano de obra", ETipoMensaje.INFORMACION);
+          this.doLoadDesarrollos();
+          this.doLoad();
         } // if
         else 
           JsfBase.addMessage("Ocurrió un error al registrar los costos de mano de obra", ETipoMensaje.ERROR);      			
@@ -242,17 +257,19 @@ public class Costos extends IBaseFilter implements Serializable {
   }
 
   private Boolean toCheckTotales() {
-    Boolean regresar= Boolean.FALSE;
-    if(this.contratos!= null && this.contratos.size()> 0) {
+    Boolean regresar= this.contratos!= null && this.contratos.size()> 0;
+    if(regresar) {
       for (Entity item: this.desarrollos) {
         Double costo= this.totales.get(item.toLong("idDesarrollo"));
-        if(!Objects.equals(Numero.redondearSat(item.toDouble("totalCosto")), Numero.redondearSat(costo))) {
+        if(!Objects.equals(Numero.redondea(item.toDouble("totalCosto"), 1), Numero.redondea(costo, 1))) {
           JsfBase.addMessage("Los costos de mano de obra del desarrollo [".concat(item.toString("desarrollo")).concat("] no son iguales ")+ item.toDouble("totalCosto")+ " | "+ costo, ETipoMensaje.ERROR);
           regresar= Boolean.FALSE;
           break;          
         } // if
       } // for
     } // if
+    else
+      JsfBase.addMessage("No se tiene costos que registrar por desarrollo", ETipoMensaje.ERROR);
     return regresar;
   } 
 
