@@ -43,6 +43,8 @@ public class Costos extends IBaseFilter implements Serializable {
 	private List<Entity> desarrollos;
 	private List<Contrato> contratos;
   private Map<Long, Double> totales;
+  private Map<Long, Double> totalesDia;
+  private Map<Long, Double> totalesObra;
 
   public List<Entity> getDesarrollos() {
     return desarrollos;
@@ -62,7 +64,9 @@ public class Costos extends IBaseFilter implements Serializable {
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 		this.attrs.put("idContrato", -1L);
     this.attrs.put("activar", Boolean.TRUE);
-    this.totales= new HashMap<>();
+    this.totales    = new HashMap<>();
+    this.totalesDia = new HashMap<>();
+    this.totalesObra= new HashMap<>();
 		this.toLoadCatalogos();
 		this.doLoad();
   } // init
@@ -236,22 +240,44 @@ public class Costos extends IBaseFilter implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-  public void doUpdateCosto(Contrato row) {
-    if(Objects.equals(row.getSql(), ESql.SELECT)) {
+  public void doUpdateCostoDia(Contrato row) {
+    if(Objects.equals(row.getSql(), ESql.SELECT)) 
       row.setSql(ESql.UPDATE);
-    } // if 
-    row.setTotal(row.getPorDia()+ row.getPorObra());
+    for (Entity item: this.desarrollos) {
+      if(Objects.equals(item.toLong("idDesarrollo"), row.getIdDesarrollo())) 
+        row.setPorDia(Numero.toRedondearSat(row.getPorcentajeDia()/ 100* item.toDouble("porDiaCosto")));
+    } // for  
+    row.setTotal(Numero.toRedondearSat(row.getPorDia()+ row.getPorObra()));
+    this.toTotales();
+  }
+  
+  public void doUpdateCostoObra(Contrato row) {
+    if(Objects.equals(row.getSql(), ESql.SELECT)) 
+      row.setSql(ESql.UPDATE);
+    for (Entity item: this.desarrollos) {
+      if(Objects.equals(item.toLong("idDesarrollo"), row.getIdDesarrollo())) 
+        row.setPorObra(Numero.toRedondearSat(row.getPorcentajeObra()/ 100* item.toDouble("porObraCosto")));
+    } // for  
+    row.setTotal(Numero.toRedondearSat(row.getPorDia()+ row.getPorObra()));
     this.toTotales();
   }
   
   private void toTotales() {
     if(this.contratos!= null && this.contratos.size()> 0) {
       this.totales.clear();
+      this.totalesDia.clear();
+      this.totalesObra.clear();
       for (Contrato item: this.contratos) {
-        if(this.totales.containsKey(item.getIdDesarrollo()))
-          this.totales.put(item.getIdDesarrollo(), this.totales.get(item.getIdDesarrollo())+ item.getTotal());
-        else
+        if(this.totales.containsKey(item.getIdDesarrollo())) {
+          this.totales.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totales.get(item.getIdDesarrollo())+ item.getTotal()));
+          this.totalesDia.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totalesDia.get(item.getIdDesarrollo())+ item.getPorcentajeDia()));
+          this.totalesObra.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totalesObra.get(item.getIdDesarrollo())+ item.getPorcentajeObra()));
+        } // if  
+        else {
           this.totales.put(item.getIdDesarrollo(), item.getTotal());
+          this.totalesDia.put(item.getIdDesarrollo(), item.getPorcentajeDia());
+          this.totalesObra.put(item.getIdDesarrollo(), item.getPorcentajeObra());
+        } // else  
       } // for
     } // if
   }
@@ -260,11 +286,16 @@ public class Costos extends IBaseFilter implements Serializable {
     Boolean regresar= this.contratos!= null && this.contratos.size()> 0;
     if(regresar) {
       for (Entity item: this.desarrollos) {
-        Double costo= this.totales.get(item.toLong("idDesarrollo"));
-        if(!Objects.equals(Numero.redondea(item.toDouble("totalCosto"), 1), Numero.redondea(costo, 1))) {
-          JsfBase.addMessage("Los costos de mano de obra del desarrollo [".concat(item.toString("desarrollo")).concat("] no son iguales ")+ item.toDouble("totalCosto")+ " | "+ costo, ETipoMensaje.ERROR);
-          regresar= Boolean.FALSE;
-          break;          
+//        Double costo= this.totales.get(item.toLong("idDesarrollo"));
+//        if(!Objects.equals(Numero.redondea(item.toDouble("totalCosto"), 1), Numero.redondea(costo, 1))) {
+        if(this.totales.containsKey(item.toLong("idDesarrollo"))) {
+          Double porcentajeDia = this.totalesDia.get(item.toLong("idDesarrollo"));
+          Double porcentajeObra= this.totalesObra.get(item.toLong("idDesarrollo"));
+          if(!Objects.equals(100.0, porcentajeDia) || !Objects.equals(100.0, porcentajeObra)) {
+            JsfBase.addMessage("Los porcentajes de mano de obra [".concat(item.toString("desarrollo")).concat("] no son iguales, por día [100% | ")+ porcentajeDia+ "] por obra [100% | "+ porcentajeObra+ "]", ETipoMensaje.ERROR);
+            regresar= Boolean.FALSE;
+            break;          
+          } // if
         } // if
       } // for
     } // if
@@ -288,11 +319,13 @@ public class Costos extends IBaseFilter implements Serializable {
       } // for
       partes.put(idDesarrollo, count);
       for (Entity item: this.desarrollos) {
-        Double porDiaCosto = item.toDouble("porDiaCosto");
-        Double porObraCosto= item.toDouble("porObraCosto");
-        idDesarrollo  = item.toLong("idDesarrollo");
-        Double porDia = 0D;
-        Double porObra= 0D;
+        Double porDiaCosto   = item.toDouble("porDiaCosto");
+        Double porObraCosto  = item.toDouble("porObraCosto");
+        idDesarrollo         = item.toLong("idDesarrollo");
+        Double porDia        = 0D;
+        Double porObra       = 0D;
+        Double porcentajeDia = 0D;
+        Double porcentajeObra= 0D;
         count= 1;
         for (Contrato contrato: this.contratos) {
           if(Objects.equals(idDesarrollo, contrato.getIdDesarrollo())) {
@@ -300,13 +333,17 @@ public class Costos extends IBaseFilter implements Serializable {
             contrato.setPorcentajeObra(Numero.toRedondearSat(100/ partes.get(idDesarrollo)));
             if(Objects.equals(count, partes.get(idDesarrollo))) {
               contrato.setPorDia(Numero.toRedondearSat(porDiaCosto- porDia));
+              contrato.setPorcentajeDia(Numero.toRedondearSat(100- porcentajeDia));
               contrato.setPorObra(Numero.toRedondearSat(porObraCosto- porObra));
+              contrato.setPorcentajeObra(Numero.toRedondearSat(100- porcentajeObra));
             } // if
             else {
               contrato.setPorDia(Numero.toRedondearSat(contrato.getPorcentajeDia()/ 100* porDiaCosto));
-              contrato.setPorObra(Numero.toRedondearSat(contrato.getPorcentajeObra()/ 100* porObraCosto));
               porDia+= contrato.getPorDia();
+              porcentajeDia+= contrato.getPorcentajeDia();
+              contrato.setPorObra(Numero.toRedondearSat(contrato.getPorcentajeObra()/ 100* porObraCosto));
               porObra+= contrato.getPorObra();
+              porcentajeObra+= contrato.getPorcentajeObra();
             } // else
             contrato.setTotal(Numero.toRedondearSat(contrato.getPorDia()+ contrato.getPorObra()));
             count++;

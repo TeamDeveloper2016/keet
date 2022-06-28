@@ -68,13 +68,13 @@
 								</p:column>														
                 <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.porDia}">
 									<f:facet name="header">
-										<h:outputText value="Por día"/>
+                    <h:outputText value="Por día" title="PUESTOS: (DETALLITA Y LIMPIEZA)"/>
 									</f:facet>
 									<h:outputText value="#{row['porDia']}"/>
 								</p:column>														
                 <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.porObra}">
 									<f:facet name="header">
-										<h:outputText value="Por obra"/>
+                    <h:outputText value="Por obra" title="PUESTOS: (CHOFER, VELADOR, ALMACENISTA Y RESIDENTE DE OBRA)"/>
 									</f:facet>
 									<h:outputText value="#{row['porObra']}"/>
 								</p:column>														
@@ -135,13 +135,13 @@
 									<f:facet name="header">
 										<h:outputText value="Por día"/>
 									</f:facet>
-									<h:outputText value="#{row['porDia']}"/>
+									<h:outputText value="#{row['porDia']}" title="PUESTOS: (DETALLITA Y LIMPIEZA)"/>
 								</p:column>														
                 <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porObra}">
 									<f:facet name="header">
 										<h:outputText value="Por obra"/>
 									</f:facet>
-									<h:outputText value="#{row['porObra']}"/>
+									<h:outputText value="#{row['porObra']}" title="PUESTOS: (CHOFER, VELADOR, ALMACENISTA Y RESIDENTE DE OBRA)"/>
 								</p:column>														
                 <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.total}">
 									<f:facet name="header">
@@ -159,9 +159,15 @@
                     <p:outputLabel value="Contratos que se encuentran abiertos" styleClass="janal-color-white"/>
                   </div>
 								</f:facet>											
-								<p:column styleClass="MarAuto Responsive janal-wid-3 janal-column-center">
+								<p:column styleClass="MarAuto Responsive janal-wid-2 janal-column-center">
 									<f:facet name="header">
-										<h:outputText value="Almacenado"/>
+										<h:outputText value="No"/>
+									</f:facet>
+ 								 <h:outputText value="#{index+ 1}."/>
+                </p:column>  
+								<p:column styleClass="MarAuto Responsive janal-wid-2 janal-column-center">
+									<f:facet name="header">
+                    <i class="fa fa-save"/>
 									</f:facet>
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idNominaContratoCosto lt 0? 'circulo-rojo': 'circulo-verde'}.png" title="#{row.idNominaContratoCosto lt 0? 'NO': 'SI'}"/>
                 </p:column>  
@@ -187,7 +193,7 @@
 									<f:facet name="header">
 										<h:outputText value="Contrato"/>
 									</f:facet>
-									<h:outputText value="#{row['contrato']}; (#{row['porcentajeDia']}%)"/>
+									<h:outputText value="#{row['contrato']}"/>
 								</p:column>														
 								<p:column styleClass="MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
@@ -197,19 +203,21 @@
 								</p:column>														
 								<p:column styleClass="porDia MarAuto Responsive janal-wid-8 janal-column-center">
 									<f:facet name="header">
-										<h:outputText value="Por día"/>
+										<h:outputText value="Por día (%)" title="PUESTOS: (DETALLITA Y LIMPIEZA)"/>
 									</f:facet>
-                  <p:inputNumber id="porDia" value="#{row['porDia']}" inputStyleClass="janal-color-black janal-wid-92 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
-                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCosto(row)}"/>
+                  <p:inputNumber id="porDia" value="#{row['porcentajeDia']}" inputStyleClass="janal-color-black janal-wid-92 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCostoDia(row)}"/>
                   </p:inputNumber>  
+                  <p:outputLabel value="$#{row['porDia']}" styleClass="Fs10 janal-color-black calculos"/> 
 								</p:column>														
 								<p:column styleClass="porObra MarAuto Responsive janal-wid-8 janal-column-center">
 									<f:facet name="header">
-										<h:outputText value="Por obra"/>
+										<h:outputText value="Por obra (%)" title="PUESTOS: (CHOFER, VELADOR, ALMACENISTA Y RESIDENTE DE OBRA)"/>
 									</f:facet>
-                  <p:inputNumber id="porObra" value="#{row['porObra']}" inputStyleClass="janal-color-black janal-wid-92 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
-                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCosto(row)}"/>
+                  <p:inputNumber id="porObra" value="#{row['porcentajeObra']}" inputStyleClass="janal-color-black janal-wid-92 janal-column-center" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbolPosition="p">
+                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetNominasCostos.doUpdateCostoObra(row)}"/>
                   </p:inputNumber>  
+                  <p:outputLabel value="$#{row['porObra']}" styleClass="Fs10 janal-color-black calculos"/> 
 								</p:column>														
 								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-right">
 									<f:facet name="header">
