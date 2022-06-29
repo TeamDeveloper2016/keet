@@ -30,6 +30,7 @@ import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,6 +47,16 @@ public class Egresos extends XlsBase implements Serializable {
   
   private static final Log LOG = LogFactory.getLog(Egresos.class);
   private static final long serialVersionUID = -3364636967422678893L;
+  
+  public static final String CAFU_PUESTOS_DIA  = "(AYUDANTE, DETALLISTA, LIMPIEZA, MEDIA CUCHARA, OFICIAL, PEON, PINTOR)";
+  public static final String CAFU_PUESTOS_OBRA = "(ALMACENISTA, CHOFER, RESIDENTE DE OBRA, VELADOR)";
+  public static final String CAFU_PERSONAL_DIA = "|2|7|14|15|16|18|19|";
+  public static final String CAFU_PERSONAL_OBRA= "|1|4|20|25|";
+
+  public static final String GYLVI_PUESTOS_DIA  = "(DETALLISTA, LIMPIEZA)";
+  public static final String GYLVI_PUESTOS_OBRA = "(ALMACENISTA, CHOFER, RESIDENTE DE OBRA, VELADOR)";
+  public static final String GYLVI_PERSONAL_DIA = "|7|14|";
+  public static final String GYLVI_PERSONAL_OBRA= "|1|4|20|25|";
   
   private Long idNomina;
   private Long idContrato;
@@ -257,12 +268,33 @@ public class Egresos extends XlsBase implements Serializable {
         this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porObra")), Alignment.RIGHT, Boolean.FALSE);
         this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
         this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
-        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(CHOFER, VELADOR, ALMACENISTA Y RESIDENTE DE OBRA)");
+        String empresa= Configuracion.getInstance().getPropiedad("sistema.empresa.principal");
+        switch(empresa) {
+          case "cafu":
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, CAFU_PUESTOS_OBRA);
+            break;
+          case "gylvi":
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, GYLVI_PUESTOS_OBRA);
+            break;
+          default:  
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, CAFU_PUESTOS_OBRA);
+            break;
+        } // switch
         this.addCell(this.posicionColumna+ 1, this.posicionFila, "TOTAL GENERAL ADMINISTRATIVO POR DIA");
         this.addCellTotal(this.posicionColumna+ 2, this.posicionFila, Numero.formatear(Numero.MILES_SAT_DECIMALES, personal.toDouble("porDia")), Alignment.RIGHT, Boolean.FALSE);
         this.addCell(this.posicionColumna+ 3, this.posicionFila, personal.toString("minimo"));
         this.addCell(this.posicionColumna+ 4, this.posicionFila, personal.toString("maximo"));
-        this.addCell(this.posicionColumna+ 5, this.posicionFila++, "(DETALLITA Y LIMPIEZA)");
+        switch(empresa) {
+          case "cafu":
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, CAFU_PUESTOS_DIA);
+            break;
+          case "gylvi":
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, GYLVI_PUESTOS_DIA);
+            break;
+          default:  
+            this.addCell(this.posicionColumna+ 5, this.posicionFila++, CAFU_PUESTOS_DIA);
+            break;
+        } // switch
       } // if
     } // try
     catch (Exception e) {
@@ -491,6 +523,24 @@ public class Egresos extends XlsBase implements Serializable {
         sb.append("-1");
       params.put("idDesarrollo", contrato.toLong("idDesarrollo"));      
       params.put("nominas", sb.toString());      
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+        case "gylvi":
+          params.put("puestosPorDia", GYLVI_PERSONAL_DIA);      
+          params.put("puestosPorObra", GYLVI_PERSONAL_OBRA);      
+          break;
+        case "triana":
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+        default:  
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+      } // switch
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "personalEnDesarrollo", params);
       if(regresar== null || regresar.isEmpty()) {
         regresar= new Entity(-1L);
@@ -519,7 +569,7 @@ public class Egresos extends XlsBase implements Serializable {
 
   
   public static void main(String ... args) throws Exception {
-    Egresos corte= new Egresos(-1L, 5L);
+    Egresos corte= new Egresos(-1L, 36L);
     LOG.info(corte.local());
   }
   

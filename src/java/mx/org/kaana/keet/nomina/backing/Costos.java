@@ -19,6 +19,10 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.nomina.beans.Contrato;
 import mx.org.kaana.keet.nomina.reglas.Almacenar;
+import static mx.org.kaana.keet.nomina.reglas.Egresos.CAFU_PERSONAL_DIA;
+import static mx.org.kaana.keet.nomina.reglas.Egresos.CAFU_PERSONAL_OBRA;
+import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_DIA;
+import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_OBRA;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
@@ -30,6 +34,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.primefaces.event.TabChangeEvent;
 
@@ -128,6 +133,24 @@ public class Costos extends IBaseFilter implements Serializable {
       this.attrs.put("activar", !Objects.equals(idNomina.toLong("idNominaEstatus"), 4L));
 			params.put("idNomina", idNomina.getKey());
 			params.put("sortOrder", "order by tc_keet_nominas_desarrollos.id_desarrollo");
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+        case "gylvi":
+          params.put("puestosPorDia", GYLVI_PERSONAL_DIA);      
+          params.put("puestosPorObra", GYLVI_PERSONAL_OBRA);      
+          break;
+        case "triana":
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+        default:  
+          params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
+          params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          break;
+      } // switch
       columns= new ArrayList<>();
       columns.add(new Columna("porDia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porObra", EFormatoDinamicos.MILES_CON_DECIMALES));

@@ -43,12 +43,12 @@
           concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
           tc_keet_nominas_desarrollos.id_desarrollo,
           tc_keet_desarrollos.nombres as desarrollo,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14, tc_keet_nominas_personas.neto, 0)) as por_dia,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14, tc_keet_nominas_personas.neto, 0)) as por_dia_costo,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_obra,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_obra_costo,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14 or tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as total,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14 or tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as total_costo
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_dia,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_dia_costo,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_obra,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_obra_costo,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as total,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as total_costo
         from
           tc_keet_nominas_desarrollos
         inner join  
@@ -4398,8 +4398,8 @@
           tc_keet_nominas.id_nomina,
           if(tc_keet_nominas_periodos.ejercicio is null, '1900-1', min(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as minimo,
           if(tc_keet_nominas_periodos.ejercicio is null, '1900-54', max(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as maximo,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 7 or tr_mantic_empresa_personal.id_puesto= 14, tc_keet_nominas_personas.neto, 0)) as por_dia,
-          sum(if(tr_mantic_empresa_personal.id_puesto= 1 or tr_mantic_empresa_personal.id_puesto= 4 or tr_mantic_empresa_personal.id_puesto= 20 or tr_mantic_empresa_personal.id_puesto= 25, tc_keet_nominas_personas.neto, 0)) as por_obra
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_dia,
+          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_obra
         from
           tc_keet_nominas_desarrollos
         inner join  
