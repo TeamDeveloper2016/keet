@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;

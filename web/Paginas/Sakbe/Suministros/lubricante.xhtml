@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{sakbeSuministrosLubricante.attrs.nombreAccion} un suministro de lubricantes"/>
+  <ui:param name="janalBackingPage" value="#{sakbeSuministrosLubricante}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">
+	   Janal.Control.fields = {				 				
+				'contenedorGrupos\\:consecutivo'  : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idMaquinaria' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:lecturaActual': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-a({"cual": "contenedorGrupos\\\\:lecturaNueva"})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:lecturaNueva' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|mayor-a({"cual": "contenedorGrupos\\\\:lecturaActual"})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:litros'       : {validaciones: 'requerido|flotante|rango({"min":1,"max":#{sakbeSuministrosLubricante.attrs.porcentaje.saldo}})', mascara: 'libre', grupo: 'general', individual: true},
+				'contenedorGrupos\\:recibio'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:horas'        : {validaciones: 'requerido|flotante|rango({"min":1,"max":24})', mascara: 'libre', grupo: 'general', individual: true},
+				'contenedorGrupos\\:idPatrocinado': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:evidencias'   : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:diferencia'   : {validaciones: 'requerido|igual-a({"cual": "contenedorGrupos\\\\:litros"})', mascara: 'libre', mensaje: 'Los litros deben ser iguales a la lectura nueva menos la lectura actual'}
+			};	
+			
+    	$(document).ready(function() {
+        disabledComponent();
+				janal.decimals= 4;
+        initLocalization();
+				setTimeout('localization();', 1000);        
+      });
+			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+      }      
+      
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			} // execute		
+      
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+      
+      function initLocalization() {												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position){ 						
+						asignaGeoreferencia(position.coords.latitude.toString(), position.coords.longitude.toString());												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // initLocalization      
+      
+		  function localization() {												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position) { 						
+						// distance({latitud: position.coords.latitude, longitud: position.coords.longitude});												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // localization
+		</script>   
+		<style type="text/css">
+			.janal-upload-frame {border: solid 1px #D1D3D4;margin-bottom: 6px;border-radius: 5px;}
+      .ui-progressbar {height: 25px !important;}
+      .ui-progressbar-value {background-image:none !important;background-color: green !important;}
+      .ui-progressbar-label {font-size: 16px;color: white; padding-top: 4px; font-weight: normal;}
+		</style>			
+	</ui:define>
+	<ui:define name="contenido">
+		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{sakbeSuministrosLubricante.doAsignaGeoreferencia}">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+			<pe:methodParam name="latitud"/>  
+			<pe:methodParam name="longitud"/>  
+		</pe:remoteCommand>		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="EL SUMINISTRO DE COMBUSTIBLE [#{sakbeSuministrosLubricante.suministro.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeSuministrosLubricante.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeSuministrosLubricante.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+					</div>
+          <p:accordionPanel id="criterio" multiple="true" dynamic="true">
+						<p:tab id="avance" title="Litros disponibles:">
+              <p:panelGrid columns="3" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Litro(s):"/>
+                  <p:inputText value="#{sakbeSuministrosLubricante.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Saldo:"/>
+                  <p:inputText value="#{sakbeSuministrosLubricante.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel value="Tickets:"/>
+                  <p:inputText value="#{sakbeSuministrosLubricante.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:progressBar value="#{sakbeSuministrosLubricante.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeSuministrosLubricante.attrs.porcentaje.dinamico} LTS #{sakbeSuministrosLubricante.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+						</p:tab>
+					</p:accordionPanel>           					
+          <p:tabView id="contenedorGrupos" widgetVar="wcontenedor" activeIndex="#{sakbeSuministrosLubricante.attrs.index}">
+            <p:ajax event="tabChange" listener="#{sakbeSuministrosLubricante.doTabChange}" process="@this" update="@(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); disabledComponent()"/>
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+								<p:outputLabel for="consecutivo" value="Folio:" style="display: #{sakbeSuministrosLubricante.agregar}" styleClass="recalculo"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{sakbeSuministrosLubricante.suministro.consecutivo}" readonly="true" style="display: #{sakbeSuministrosLubricante.agregar}"/>
+								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
+                <p:inputText id="desarrollo" value="#{sakbeSuministrosLubricante.attrs.desarrollo.nombres}" styleClass="janal-wid-100-txt janal-column-center janal-color-black janal-font-bold" readonly="true"/>
+                <p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-98, janal-wid-2 janal-column-right">		
+                  <p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosLubricante.suministro.ikMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" listener="#{sakbeSuministrosLubricante.doCheckLitros}"/>
+                    <f:selectItems value="#{sakbeSuministrosLubricante.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Grupo">
+                      <h:outputText value="#{item.grupo}"/>
+                    </p:column>   
+                    <p:column headerText="Marca">
+                      <h:outputText value="#{item.marca}"/>
+                    </p:column>   
+                    <p:column headerText="Litros">
+                      <h:outputText value="#{item.litros}"/>
+                    </p:column>   
+                    <p:column headerText="Rendimiento">
+                      <h:outputText value="#{item.rendimiento}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosLubricante.doLector}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
+                </p:panelGrid>  
+                <p:outputLabel for="lecturaActual" value="Lectura actual: (Horómetro/Odómetro)" styleClass=""/>
+								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                  <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeSuministrosLubricante.doUpdateTotal}"/>
+                </p:inputNumber>  
+								<p:outputLabel for="lecturaNueva" value="Lectura nueva: (Horómetro/Odómetro)" styleClass=""/>
+								<p:inputNumber id="lecturaNueva" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaNueva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                  <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeSuministrosLubricante.doUpdateTotal}"/>
+                </p:inputNumber>  
+								<p:outputLabel for="litros" value="Litros:"/>
+								<p:inputNumber id="litros" styleClass="janal-wid-100-txt avance" value="#{sakbeSuministrosLubricante.suministro.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0">
+                  <p:ajax event="change" process="@this" update="criterio criterio:avance @(.avance)" listener="#{sakbeSuministrosLubricante.doUpdateLitros}"/>
+                </p:inputNumber>								
+                <p:outputLabel for="recibio" value="Recibio:"/>
+								<p:inputText id="recibio" value="#{sakbeSuministrosLubricante.suministro.recibio}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="horas" value="Horas trabajada(s):"/>
+								<p:inputNumber id="horas" styleClass="janal-wid-100-" value="#{sakbeSuministrosLubricante.suministro.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
+								<p:outputLabel for="idPatrocinado" value="Combustible patrocinado:"/>
+                <p:selectOneMenu id="idPatrocinado" value="#{sakbeSuministrosLubricante.suministro.idPatrocinado}" styleClass="janal-wid-100-txt" converter="javax.faces.Long">
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="observaciones" value="Observaciones:"/>
+  							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.observaciones}"/>
+                <p:outputLabel for="evidencias" value="Evidencia(s):"/>
+                <p:inputNumber id="evidencias" styleClass="janal-wid-100-txt janal-color-black cargados" value="#{sakbeSuministrosLubricante.attrs.evidencias}" converter="javax.faces.Long" decimalPlaces="0" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-color-black" minValue="0" readonly="true"/>
+                <p:outputLabel for="diferencia" value="Litros:" styleClass="janal-display-none"/>
+								<p:inputNumber id="diferencia" styleClass="janal-wid-100-txt janal-display-none diferencia" value="#{sakbeSuministrosLubricante.attrs.diferencia}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0"/>
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Evidencia">
+              <p:dataTable id="importados" var="row" value="#{sakbeSuministrosLubricante.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{sakbeSuministrosLubricante.doRegistro(row.registro)}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <a data-magnify="gallery" href="#{sakbeSuministrosLubricante.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver la imagen">
+                    <p:graphicImage url="#{sakbeSuministrosLubricante.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" width="30" height="30" style="cursor:zoom-in;"/>
+                  </a>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosLubricante.doRecuperar(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosLubricante.doEliminar(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{sakbeSuministrosLubricante.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{sakbeSuministrosLubricante.importados.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.attrs.comentarios}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{sakbeSuministrosLubricante.doFileUpload}" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{sakbeSuministrosLubricante.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeSuministrosLubricante.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{sakbeSuministrosLubricante.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeSuministrosLubricante.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>
+						</p:tab>
+          </p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton value="Continuar" icon="fa fa-gas-pump" accesskey="a" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosLubricante.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(0)"/>
+			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeSuministrosLubricante.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeSuministrosLubricante.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton title="Continuar" icon="fa fa-gas-pump" process="@form" update="criterio criterio:avance contenedorGrupos contenedorGrupos:importados contenedorGrupos:importado contenedorGrupos:comentarios" actionListener="#{sakbeSuministrosLubricante.doContinuar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear(); janal.refresh(); PF('wcontenedor').select(0)"/>
+			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeSuministrosLubricante.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeSuministrosLubricante.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

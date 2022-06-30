@@ -400,6 +400,26 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}
   
+  public String doLubricantes(Entity seleccionado) {
+    this.attrs.put("suministro", seleccionado.clone());
+    return this.doSuministros();
+  }
+  
+  public String Lubricantes() {
+    String regresar= null;
+    try {      
+      JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Suministros/visor");
+      JsfBase.setFlashAttribute("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Suministros/visor");		
+      regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=aabf54d864e06de06ef006");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+		return regresar;
+	}
+  
   private Entity toLoadCombustible() throws Exception {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
@@ -437,7 +457,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
   			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));

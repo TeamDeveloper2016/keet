@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -309,7 +310,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Combustibles/visor");
       JsfBase.setFlashAttribute("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
-      regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
+      Entity row= (Entity)this.attrs.get("combustible");
+      if(row==null || Objects.equals(row.toLong("idTipoInsumo"), 1L))
+        regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
+      else
+        regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=aabf54d864e06de06ef006");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

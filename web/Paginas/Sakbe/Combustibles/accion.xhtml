@@ -132,6 +132,9 @@
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
+                  <p:column headerText="Tipo">
+                    <h:outputText value="#{item.grupo}"/>
+                  </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
   							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.combustible.observaciones}"/>

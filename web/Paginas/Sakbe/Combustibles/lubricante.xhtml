@@ -87,7 +87,7 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="ticket" value="Ticket:"/>
+								<p:outputLabel for="ticket" value="Factura:"/>
 								<p:inputText id="ticket" value="#{sakbeCombustiblesLubricante.combustible.ticket}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="lugar" value="Proveedor:"/>
 								<p:inputText id="lugar" value="#{sakbeCombustiblesLubricante.combustible.lugar}" styleClass="janal-wid-100-txt"/>
@@ -131,6 +131,9 @@
                   <f:selectItems value="#{sakbeCombustiblesLubricante.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Tipo">
+                    <h:outputText value="#{item.grupo}"/>
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -64,13 +65,13 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
-			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? 1L: JsfBase.getFlashAttribute("ikTipoCombustible"));
-      this.toLoadTiposCombustibles();
+			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? (Objects.equals(opcionResidente, EOpcionesResidente.LUBRICANTE)? 3L: 1L): JsfBase.getFlashAttribute("ikTipoCombustible"));
 			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null? "/Paginas/Sakbe/Suministros/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Sakbe/Suministros/visor": JsfBase.getFlashAttribute("retorno"));
+      this.toLoadTiposCombustibles();
   		this.doLoad();
     } // try
     catch (Exception e) {
@@ -182,6 +183,15 @@ public class Desarrollos extends IBaseFilter implements Serializable {
         JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
         JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
         JsfBase.setFlashAttribute("opcionResidente", opcion);			
+//        String pagina= opcion.getRuta();
+//        if(pagina.indexOf("accion")> 0) {
+//          if(((UISelectEntity)this.attrs.get("ikTipoCombustible")).getKey()< 3L)
+//            pagina= pagina.concat(Constantes.REDIRECIONAR);			
+//          else {
+//            pagina= pagina.replace("accion", "lubricante").concat(Constantes.REDIRECIONAR);
+//          } // else          
+//        } // IF  
+//        regresar= pagina.concat(Constantes.REDIRECIONAR);			
         regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
       } // if
       else 
@@ -248,7 +258,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 		Map<String, Object>params             = new HashMap<>();
 		try {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
   	    this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
@@ -257,7 +267,8 @@ public class Desarrollos extends IBaseFilter implements Serializable {
       this.doLoadPorcentajes();
 		} // try
 		catch (Exception e) {			
-			throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
 		} // catch		
 		finally{
 			Methods.clean(params);
@@ -265,8 +276,31 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 	} // toLoadTiposCombustibles 
 
   public void doLoadPorcentajes() throws Exception {
-    this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
-    this.attrs.put("porcentaje", this.toLoadCombustible());
+    UISelectEntity idTipoCombustible= (UISelectEntity)this.attrs.get("idTipoCombustible");
+    try {
+      this.attrs.put("ikTipoCombustible", idTipoCombustible.getKey());
+      List<UISelectEntity> tiposCombustibles= (List<UISelectEntity>)this.attrs.get("tiposCombustibles");
+      if(tiposCombustibles!= null && !tiposCombustibles.isEmpty()) {
+        int index= tiposCombustibles.indexOf(idTipoCombustible);
+        if(index>= 0) {
+          idTipoCombustible= tiposCombustibles.get(index);
+          this.attrs.put("ikTipoCombustible", idTipoCombustible);
+        } // if  
+      } // if
+      this.attrs.put("porcentaje", this.toLoadCombustible());
+ 			EOpcionesResidente opcion= (EOpcionesResidente)this.attrs.get("opcionResidente");
+      if(Objects.equals(opcion, EOpcionesResidente.DIESEL) || Objects.equals(opcion, EOpcionesResidente.LUBRICANTE)) {
+        if(Objects.equals(idTipoCombustible.toLong("idTipoInsumo"), 1L))
+    			this.attrs.put("opcionResidente", EOpcionesResidente.DIESEL);
+        else  
+    			this.attrs.put("opcionResidente", EOpcionesResidente.LUBRICANTE);
+      } // if    
+		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+		} // catch		
+    
   }
   
 }

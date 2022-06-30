@@ -80,6 +80,7 @@
           tc_sakbe_combustibles.total,
           tc_sakbe_combustibles.id_tipo_combustible,
           tc_sakbe_tipos_combustibles.nombre as combustible,
+          tc_sakbe_tipos_combustibles.id_tipo_insumo,
           tc_sakbe_combustibles_estatus.nombre as estatus,
           tc_sakbe_combustibles.fecha,
           tc_sakbe_combustibles.saldo,

@@ -31,6 +31,7 @@ public enum EOpcionesResidente {
 	PROPUESTA       ("Registrar un avance para el destajo realizado por los contratistas o subcontratistas", "9ca5b648d760ec0e2356", "/Paginas/Keet/Catalogos/Contratos/Destajos/faltan.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
 	COMBUSTIBLES    ("Registrar un ticket de compra de combustible", "36303ec547d16c8e96ea077cfa", "/Paginas/Sakbe/Compras/filtro.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
 	DIESEL          ("Registrar un suministro de diesel", "52df68e378f074", "/Paginas/Sakbe/Suministros/accion.jsf", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=", 8L),
+	LUBRICANTE      ("Registrar un suministro de lubricante", "aabf54d864e06de06ef006", "/Paginas/Sakbe/Suministros/lubricante.jsf", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=", 8L),
 	GASOLINA        ("Registrar un suministro de gasolina", "4edc5ffc0302021e1e", "/Paginas/Sakbe/Suministros/accion.jsf", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=", 8L);
   
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
