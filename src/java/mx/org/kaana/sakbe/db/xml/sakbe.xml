@@ -7,6 +7,62 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeTiposInsumosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_insumos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_tipos_insumos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeMaquinariasInsumosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_insumos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_insumos
+        where      
+          id_maquinaria = {idMaquinaria} and id_tipo_combustible = {idTipoCombustible}
+      </select>
+      <select id="maquinaria">
+        select      
+          tc_sakbe_maquinarias_insumos.id_maquinaria_insumo as id_key,
+          tc_sakbe_tipos_combustibles.nombre as combustible,
+          tc_sakbe_maquinarias_insumos.*
+        from      
+          tc_sakbe_maquinarias_insumos
+        inner join
+          tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias_insumos.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+        where      
+          tc_sakbe_maquinarias_insumos.id_maquinaria = {idMaquinaria}
+        order by
+          tc_sakbe_maquinarias_insumos.id_tipo_combustible
+      </select>
+      <delete id="rows">
+        delete from
+          tc_sakbe_maquinarias_insumos
+        where      
+          id_maquinaria= {idMaquinaria}
+      </delete>
+    </unit>    
     <unit id="TcSakbeMaquinariasBitacoraDto">
       <select id="row">
         select      
@@ -351,13 +407,16 @@
         inner join
           tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
         inner join
-          tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+          tc_sakbe_maquinarias_insumos on tc_sakbe_maquinarias.id_maquinaria= tc_sakbe_maquinarias_insumos.id_maquinaria
+        inner join
+          tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias_insumos.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
         left join
           tr_sakbe_maquinaria_desarrollo on tc_sakbe_maquinarias.id_maquinaria= tr_sakbe_maquinaria_desarrollo.id_maquinaria
         left join
           tc_keet_desarrollos on tr_sakbe_maquinaria_desarrollo.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where 
-          tc_sakbe_maquinarias.clave= '{clave}'
+          tc_sakbe_maquinarias.clave= '{clave}' 
+          and tc_sakbe_maquinarias_insumos.id_tipo_combustible= {idTipoCombustible}
       </select>  
       <select id="igual">
         select      
@@ -430,6 +489,17 @@
           tc_sakbe_tipos_combustibles
         where      
           nombre = '{nombre}'
+      </select>
+      <select id="tipo">
+        select      
+          tc_sakbe_tipos_combustibles.id_tipo_combustible as id_key,
+          tc_sakbe_tipos_combustibles.*
+        from      
+          tc_sakbe_tipos_combustibles
+        where 
+          id_tipo_insumo= {idTipoInsumo} 
+        order by
+          id_tipo_combustible   
       </select>
     </unit>    
     <unit id="TrSakbeMaquinariaDesarrolloDto">

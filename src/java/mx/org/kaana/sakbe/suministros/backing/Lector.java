@@ -12,19 +12,33 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 
 @Named(value = "sakeSuministrosLector")
 @ViewScoped
 public class Lector extends IBaseFilter implements Serializable {  
 
 	private static final long serialVersionUID = 5461370708574838211L;
+
+  private List<Insumo> insumos;
+
+  public List<Insumo> getInsumos() {
+    return insumos;
+  }
+
+  public void setInsumos(List<Insumo> insumos) {
+    this.insumos = insumos;
+  }
 
   @PostConstruct
   @Override
@@ -45,6 +59,7 @@ public class Lector extends IBaseFilter implements Serializable {
 			this.attrs.put("codigoQR", "");    						
 			this.attrs.put("habilitar", Boolean.FALSE);
 			this.attrs.put("existe", Boolean.FALSE);
+      this.toLoadTiposCombustibles();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -68,18 +83,27 @@ public class Lector extends IBaseFilter implements Serializable {
         String clave= codigos[1].replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", "");
   		  this.attrs.put("existe", clave);
 				params.put("clave", clave);
+				params.put("idTipoCombustible", this.attrs.get("idTipoCombustible"));
 				maquinaria= (Entity) DaoFactory.getInstance().toEntity("TcSakbeMaquinariasDto", "clave", params);
 				this.attrs.put("existe", maquinaria== null);
 				if(maquinaria!= null && !maquinaria.isEmpty()) {
 					this.attrs.put("habilitar", 
             Objects.equals(maquinaria.toLong("idDesarrollo"), (Long)this.attrs.get("idDesarrollo")) &&
-            Objects.equals(maquinaria.toLong("idTipoCombustible"), (Long)this.attrs.get("idTipoCombustible")) 
+            Objects.equals(maquinaria.toLong("idTipoCombustible"), (Long)this.attrs.get("idTipoCombustible"))
           );
           if(!Objects.equals(maquinaria.toLong("idDesarrollo"), (Long)this.attrs.get("idDesarrollo")))
             JsfBase.addMessage("Precación", "Esta maquinaria esta asignada al desarrollo: "+ maquinaria.toString("desarrollo"));
           else
             if(!Objects.equals(maquinaria.toLong("idTipoCombustible"), (Long)this.attrs.get("idTipoCombustible")))
               JsfBase.addMessage("Precación", "Esta maquinaria usa combustible: "+ maquinaria.toString("combustible"));
+          
+          params.put("idMaquinaria", maquinaria.toLong("idMaquinaria"));
+          this.insumos= (List<Insumo>)DaoFactory.getInstance().toEntitySet(Insumo.class, "TcSakbeMaquinariasInsumosDto", "maquinaria", params);
+          if(this.insumos!= null && !this.insumos.isEmpty())
+            for (Insumo item: this.insumos) {
+              item.setIkTipoCombustible(new UISelectEntity(item.getIdTipoCombustible()));
+              item.setSql(ESql.SELECT);
+            } // for
           this.attrs.put("maquinaria", maquinaria);
           this.attrs.put("ultimo", this.toUltimaVez(clave));
 				} // if
@@ -150,5 +174,23 @@ public class Lector extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   }
+  
+	private void toLoadTiposCombustibles() {
+		List<UISelectEntity> tiposCombustibles= null;
+		Map<String, Object>params             = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposCombustibles= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre");
+			this.attrs.put("tiposCombustibles", tiposCombustibles);
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadTiposCombustibles  
+  
   
 }

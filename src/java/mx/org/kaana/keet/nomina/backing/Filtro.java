@@ -422,8 +422,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public void doListado() {
-		Entity seleccionado      = null;
-		Transaccion transaccion  = null;
+		Entity seleccionado    = null;
+		Transaccion transaccion= null;
 	  try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
  			transaccion = new Transaccion(seleccionado.getKey(), JsfBase.getAutentifica());

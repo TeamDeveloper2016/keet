@@ -143,7 +143,7 @@
                       <h:outputText value="#{item.rendimiento}"/>
                     </p:column>   
                   </p:selectOneMenu>
-                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosAccion.doLector}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" disabled="true"/>
+                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosAccion.doLector}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>  
                 <p:outputLabel for="lecturaActual" value="Lectura actual: (Horómetro/Odómetro)" styleClass=""/>
 								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">

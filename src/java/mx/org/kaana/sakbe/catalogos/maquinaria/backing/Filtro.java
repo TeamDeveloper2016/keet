@@ -74,7 +74,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("placa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyModel= new FormatCustomLazy("VistaMaquinariasDto", params, columns);
@@ -142,8 +141,6 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_sakbe_maquinarias.clave like '%").append(((UISelectEntity)this.attrs.get("clave")).getKey()).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("placa")))
   		sb.append("(tc_sakbe_maquinarias.placa like '%").append(((UISelectEntity)this.attrs.get("placa")).getKey()).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("litros")))
-  		sb.append("(tc_sakbe_maquinarias.litros= '").append(this.attrs.get("litros")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("marca")))
   		sb.append("(tc_sakbe_maquinarias.marca like '%").append(((UISelectEntity)this.attrs.get("marca")).getKey()).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("serie")))

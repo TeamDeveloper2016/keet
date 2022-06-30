@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
@@ -27,6 +28,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.catalogos.maquinaria.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +44,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	
   private EAccion accion;
   private Maquinaria maquinaria;
+  private List<Insumo> insumos;
   
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -53,6 +56,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
   public void setMaquinaria(Maquinaria maquinaria) {
     this.maquinaria = maquinaria;
+  }
+
+  public List<Insumo> getInsumos() {
+    return insumos;
+  }
+
+  public void setInsumos(List<Insumo> insumos) {
+    this.insumos = insumos;
   }
   
 	@PostConstruct
@@ -80,6 +91,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       switch (this.accion) {
         case AGREGAR:											
           this.maquinaria= new Maquinaria(-1L);
+          this.insumos= new ArrayList<>();
           break;
         case MODIFICAR:			
         case CONSULTAR:											
@@ -88,7 +100,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.maquinaria.setIkDesarrollo(new UISelectEntity(this.maquinaria.getIdDesarrollo()));
           this.maquinaria.setIkMaquinariaGrupo(new UISelectEntity(this.maquinaria.getIdMaquinariaGrupo()));
           this.maquinaria.setIkTipoMaquinaria(new UISelectEntity(this.maquinaria.getIdTipoMaquinaria()));
-          this.maquinaria.setIkTipoCombustible(new UISelectEntity(this.maquinaria.getIdTipoCombustible()));
+          this.insumos= (List<Insumo>)DaoFactory.getInstance().toEntitySet(Insumo.class, "TcSakbeMaquinariasInsumosDto", "maquinaria", params);
+          if(this.insumos!= null && !this.insumos.isEmpty())
+            for (Insumo item: this.insumos) {
+              item.setIkTipoCombustible(new UISelectEntity(item.getIdTipoCombustible()));
+              item.setSql(ESql.SELECT);
+            } // for
           break;
       } // switch
 			this.toLoadCatalogos();
@@ -169,11 +186,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposCombustibles= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre");
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
-      if(tiposCombustibles!=null && !tiposCombustibles.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
-          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(0));
-        else  
-          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(tiposCombustibles.indexOf(this.maquinaria.getIkTipoCombustible())));
+//      if(tiposCombustibles!=null && !tiposCombustibles.isEmpty()) 
+//        if(this.accion.equals(EAccion.AGREGAR))
+//          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(0));
+//        else  
+//          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(tiposCombustibles.indexOf(this.maquinaria.getIkTipoCombustible())));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -261,14 +278,16 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Transaccion transaccion= null;
     String regresar        = null;
 		try {
-			transaccion = new Transaccion(this.maquinaria);
-			if (transaccion.ejecutar(this.accion)) {
-			  if(!this.accion.equals(EAccion.CONSULTAR)) 
-   			  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la maquinaria"), ETipoMensaje.INFORMACION);
-   			regresar= this.doCancelar();
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la maquinaria", ETipoMensaje.ALERTA);      			
+      if(this.checkInsumos()) {
+        transaccion = new Transaccion(this.maquinaria, this.insumos);
+        if (transaccion.ejecutar(this.accion)) {
+          if(!this.accion.equals(EAccion.CONSULTAR)) 
+            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la maquinaria"), ETipoMensaje.INFORMACION);
+          regresar= this.doCancelar();
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar la maquinaria", ETipoMensaje.ALERTA);      			
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -308,4 +327,52 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		  this.toSaveRecord();
 	} // doGlobalEvent
 
+  public void doAgregar() {
+    try {      
+      this.insumos.add(new Insumo());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doEliminar(Insumo row) {
+    try {      
+      if(Objects.equals(ESql.INSERT, row.getSql()))
+        this.insumos.remove(row);
+      else
+        row.setSql(ESql.DELETE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doRecuperar(Insumo row) {
+    try {      
+      if(Objects.equals(ESql.DELETE, row.getSql()))
+        row.setSql(ESql.UPDATE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+ 
+  private Boolean checkInsumos() {
+    Boolean regresar= Boolean.TRUE;
+    StringBuilder sb= new StringBuilder("|");
+    for (Insumo item: this.insumos) {
+      if(sb.indexOf("|"+ item.getIdTipoCombustible()+ "|")> 0) {
+        JsfBase.addMessage("Esta duplicado un tipo de combustible / lubricante", ETipoMensaje.ALERTA);      			
+        regresar= Boolean.FALSE;
+        break;
+      } // if
+      else
+        sb.append(item.getIdTipoCombustible()).append("|");
+    } // for
+    return regresar;
+  }
 }

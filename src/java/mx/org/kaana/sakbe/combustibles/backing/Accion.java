@@ -54,8 +54,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	
-  private EAccion accion;
-  private Combustible combustible;
+  protected EAccion accion;
+  protected Combustible combustible;
 	private List<Evidencia> importados;
 	private List<Evidencia> documentos;
   private String pathImage;
@@ -299,12 +299,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		} // catch		
 	} // doCheckTipoMedioPago
  
-	private void toLoadTiposCombustibles() {
+	protected void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			params.put("idTipoInsumo", 1L);
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "tipo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))

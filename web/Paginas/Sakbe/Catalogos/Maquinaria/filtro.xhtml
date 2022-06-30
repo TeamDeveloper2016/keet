@@ -19,7 +19,6 @@
         'marca'            : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'placa'            : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'serie'            : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        'litros'           : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idMaquinariaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
@@ -86,8 +85,6 @@
               <p:inputText id="placa" value="#{sakbeCatalogosMaquinariaFiltro.attrs.placa}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="serie" value="Serie:"/>
               <p:inputText id="serie" value="#{sakbeCatalogosMaquinariaFiltro.attrs.serie}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="litros" value="Litros:"/>
-              <p:inputText id="litros" value="#{sakbeCatalogosMaquinariaFiltro.attrs.litros}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="idMaquinariaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idMaquinariaEstatus" value="#{sakbeCatalogosMaquinariaFiltro.attrs.idMaquinariaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{sakbeCatalogosMaquinariaFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -212,18 +209,6 @@
                 <h:outputText value="Fecha factura"/>
               </f:facet>
               <h:outputText value="#{row['Fecha factura']}"/>
-            </p:column>	
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
-              <f:facet name="header">
-                <h:outputText value="Capacidad litros"/>
-              </f:facet>
-              <h:outputText value="#{row['litros']}"/>
-            </p:column>	
-            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
-              <f:facet name="header">
-                <h:outputText value="Rendimiento por litro"/>
-              </f:facet>
-              <h:outputText value="#{row['rendimiento']}"/>
             </p:column>	
             <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-1 janal-display-none">
               <f:facet name="header">

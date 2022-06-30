@@ -1,7 +1,9 @@
 package mx.org.kaana.sakbe.catalogos.maquinaria.reglas;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
@@ -12,8 +14,10 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasBitacoraDto;
+import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasInsumosDto;
 import mx.org.kaana.sakbe.db.dto.TrSakbeMaquinariaDesarrolloDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,18 +36,24 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private static final long serialVersionUID=-3186367186737673670L;
  
 	private Maquinaria maquinaria;	
+  private List<Insumo> insumos;
 	private String messageError;
 	private TcSakbeMaquinariasBitacoraDto bitacora;
 
+	public Transaccion(Maquinaria maquinaria) {
+    this(maquinaria, Collections.EMPTY_LIST);
+	} // Transaccion
+  
+	public Transaccion(Maquinaria maquinaria, List<Insumo> insumos) {
+    this.maquinaria= maquinaria;
+    this.insumos= insumos;
+	} // Transaccion
+  
 	public Transaccion(Maquinaria maquinaria, TcSakbeMaquinariasBitacoraDto bitacora) {
-		this(maquinaria);
+		this(maquinaria, Collections.EMPTY_LIST);
 		this.bitacora= bitacora;
 	} // Transaccion
 	
-	public Transaccion(Maquinaria maquinaria) {
-    this.maquinaria= maquinaria;
-	} // Transaccion
-
 	public String getMessageError() {
 		return messageError;
 	} // getMessageError
@@ -60,18 +70,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					DaoFactory.getInstance().insert(sesion, this.maquinaria);
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
           DaoFactory.getInstance().insert(sesion, registro);
+          this.toInsumos(sesion);
           regresar= this.toChangeDesarrollo(sesion);
 					break;
 				case MODIFICAR:
 					DaoFactory.getInstance().update(sesion, this.maquinaria);
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
 				  DaoFactory.getInstance().insert(sesion, registro);
+          this.toInsumos(sesion);
           regresar= this.toChangeDesarrollo(sesion);
 					break;				
 				case ELIMINAR:
           params.put("idMaquinaria", this.maquinaria.getIdMaquinaria());
           DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasBitacoraDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TrSakbeMaquinariaDesarrolloDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasInsumosDto.class, params);
           regresar= DaoFactory.getInstance().delete(sesion, this.maquinaria)> 0L;
 					break;
 				case JUSTIFICAR:
@@ -130,5 +143,33 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // finally
     return regresar;
   }
+  
+  private Boolean toInsumos(Session sesion) throws Exception {
+    Boolean regresar= this.insumos.size()<= 0;
+    try {   
+      for (Insumo item: this.insumos) {
+        switch(item.getSql()) {
+          case SELECT:
+            regresar= Boolean.TRUE;
+            break;
+          case INSERT:
+            item.setIdMaquinaria(this.maquinaria.getIdMaquinaria());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
+  }  
   
 } 

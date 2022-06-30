@@ -85,7 +85,7 @@
 	</ui:define> 
   <ui:define name="contenido">    		
 		<p:inputText type="hidden" id="eventoQR" value="#{sakeSuministrosLector.attrs.codigoQR}">    
-      <p:ajax event="click" process="@this eventoQR" listener="#{sakeSuministrosLector.doLoad}" onstart="return janal.bloquear();" update="maquinaria aceptar aceptarIcon encontrado @(.encontrado)" oncomplete="janal.desbloquear(); resetQR();"/>
+      <p:ajax event="click" process="@this eventoQR" listener="#{sakeSuministrosLector.doLoad}" onstart="return janal.bloquear();" update="maquinaria aceptar aceptarIcon encontrado @(.encontrado) combustibles" oncomplete="janal.desbloquear(); resetQR();"/>
     </p:inputText>						
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
@@ -141,7 +141,41 @@
                 </p:panelGrid>
               </p:panelGrid>												
             </p:panelGrid>					
-          </p:panel>   
+          </p:panel>
+          <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakeSuministrosLector.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+            <f:facet name="header">
+							<div class="janal-column-left">
+								<p:outputLabel value="Combustibles, lubricantes y aceites registrados" styleClass="janal-color-white"/>
+							</div>
+            </f:facet>
+            <p:column styleClass="MarAuto Responsive janal-wid-20">		
+              <f:facet name="header">
+                <h:outputText value="Combustible"/>
+              </f:facet>
+              <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.combustible}"/>
+            </p:column>
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+              <f:facet name="header">
+                <h:outputText value="Capacidad"/>
+              </f:facet>
+              <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.capacidad}"/>
+            </p:column>	
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+              <f:facet name="header">
+                <h:outputText value="Rendimiento"/>
+              </f:facet>
+              <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.rendimiento}"/>
+            </p:column>	
+            <p:column styleClass="MarAuto Responsive">		
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.observaciones}"/>
+            </p:column>	
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{sakeSuministrosLector.insumos.size()}] registros"/>
+            </f:facet>
+          </p:dataTable>	          
         </div>
       </div>
     </div>		           				

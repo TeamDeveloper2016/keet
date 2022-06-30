@@ -344,8 +344,6 @@
           tc_sakbe_maquinarias.clave,
           tc_sakbe_maquinarias.nombre,
           tc_sakbe_maquinarias.marca,
-          tc_sakbe_maquinarias.litros,
-          tc_sakbe_maquinarias.rendimiento,
           tc_sakbe_tipos_maquinarias.nombre as tipo,
           tc_sakbe_maquinarias_grupos.nombre as grupo
         from      
@@ -368,8 +366,8 @@
           tc_sakbe_maquinarias.clave,
           tc_sakbe_maquinarias.nombre,
           tc_sakbe_maquinarias.marca,
-          tc_sakbe_maquinarias.litros,
-          tc_sakbe_maquinarias.rendimiento,
+          tc_sakbe_maquinarias_insumos.capacidad as litros,
+          tc_sakbe_maquinarias_insumos.rendimiento,
           tc_sakbe_tipos_maquinarias.nombre as tipo,
           tc_sakbe_maquinarias_grupos.nombre as grupo
         from      
@@ -380,16 +378,18 @@
           tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
         inner join
           tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
+        inner join
+          tc_sakbe_maquinarias_insumos on tc_sakbe_maquinarias.id_maquinaria= tc_sakbe_maquinarias_insumos.id_maquinaria
         where 
           (tr_sakbe_maquinaria_desarrollo.id_desarrollo= {idDesarrollo} or {idDesarrollo}=-1)
-          and tc_sakbe_maquinarias.id_tipo_combustible= {idTipoCombustible}
+          and tc_sakbe_maquinarias_insumos.id_tipo_combustible= {idTipoCombustible}
         order by
           tc_sakbe_maquinarias.clave
       </select>      
     </unit>      
     <unit id="VistaMaquinariasDto">
       <select id="lazy">
-        select      
+				select      
           tc_sakbe_maquinarias.id_maquinaria as id_key,
           tc_sakbe_maquinarias.id_maquinaria,
           tc_sakbe_maquinarias_grupos.nombre as grupo,
@@ -397,8 +397,7 @@
           tc_sakbe_maquinarias.clave,
           tc_sakbe_maquinarias.nombre,
           tc_sakbe_maquinarias.marca,
-          tc_sakbe_maquinarias.litros,
-          tc_sakbe_maquinarias.rendimiento,
+          tt_sabke_maquinarias_insumos.combustible,
           tc_sakbe_maquinarias.placa,
           tc_sakbe_maquinarias.serie,
           tc_sakbe_maquinarias.subtotal,
@@ -415,7 +414,6 @@
           tc_sakbe_maquinarias.ultima_tarjeta,
           tc_sakbe_maquinarias.pro_real,
           tc_sakbe_maquinarias.entidad,
-          tc_sakbe_tipos_combustibles.nombre as combustible,
           tc_sakbe_maquinarias.id_maquinaria_estatus,
           tc_sakbe_maquinarias_estatus.nombre as estatus,
           tc_sakbe_maquinarias_estatus.estatus_asociados,
@@ -429,8 +427,17 @@
           tc_sakbe_tipos_maquinarias on tc_sakbe_maquinarias.id_tipo_maquinaria= tc_sakbe_tipos_maquinarias.id_tipo_maquinaria
         inner join
           tc_sakbe_maquinarias_grupos on tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= tc_sakbe_maquinarias_grupos.id_maquinaria_grupo
-        inner join
-          tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+        inner join (
+					select
+						tc_sakbe_maquinarias_insumos.id_maquinaria,
+						group_concat(distinct concat(tc_sakbe_tipos_combustibles.nombre, '(', tc_sakbe_maquinarias_insumos.capacidad, ' LTS, ', tc_sakbe_maquinarias_insumos.rendimiento, ')') order by tc_sakbe_tipos_combustibles.nombre separator ', ') as combustible
+					from  
+						tc_sakbe_maquinarias_insumos
+					inner join
+						tc_sakbe_tipos_combustibles on tc_sakbe_maquinarias_insumos.id_tipo_combustible= tc_sakbe_tipos_combustibles.id_tipo_combustible
+					group by
+						tc_sakbe_maquinarias_insumos.id_maquinaria				          
+        ) as tt_sabke_maquinarias_insumos on tc_sakbe_maquinarias.id_maquinaria= tt_sabke_maquinarias_insumos.id_maquinaria
         inner join
           tc_sakbe_maquinarias_estatus on tc_sakbe_maquinarias.id_maquinaria_estatus= tc_sakbe_maquinarias_estatus.id_maquinaria_estatus
         left join

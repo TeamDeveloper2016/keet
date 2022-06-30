@@ -26,7 +26,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
   private UISelectEntity ikDesarrollo;
   private UISelectEntity ikMaquinariaGrupo;
   private UISelectEntity ikTipoMaquinaria;
-  private UISelectEntity ikTipoCombustible;
   private Long idDesarrollo;
   private Long idMaquinariaGrupo;
 
@@ -43,7 +42,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       1L, // Long idTipoMaquinaria, 
       LocalDate.now(), // LocalDate fechaFactura, 
       "", // String nombre, 
-      1L, // Long idTipoCombustible, 
       "", // String poliza, 
       "", // String comprado, 
       "", // String marca, 
@@ -51,7 +49,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       "", // String factura, 
       "", // String proReal, 
       0D, // Double iva, 
-      0D, // Double litros, 
       "", // String proEnFactura, 
       "", // String constancia, 
       "", // String tarjeta, 
@@ -64,7 +61,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       idMaquinaria, // Long idMaquinaria, 
       2L, // Long idConstancia, 
       "", // String facturado, 
-      0D, // Double rendimiento, 
       JsfBase.getIdUsuario(), // Long idUsuario, 
       0D, // Double subtotal, 
       "", // String entidad, 
@@ -77,7 +73,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
     this.ikEmpresa= new UISelectEntity(this.getIdEmpresa());
     this.ikDesarrollo= new UISelectEntity(-1L);
     this.ikTipoMaquinaria= new UISelectEntity(this.getIdTipoMaquinaria());
-    this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
     this.idDesarrollo= -1L;
     this.idMaquinariaGrupo= -1L;
   }
@@ -118,16 +113,6 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
     this.ikTipoMaquinaria = ikTipoMaquinaria;
 		if(this.ikTipoMaquinaria!= null)
 		  this.setIdTipoMaquinaria(this.ikTipoMaquinaria.getKey());
-  }
-
-  public UISelectEntity getIkTipoCombustible() {
-    return ikTipoCombustible;
-  }
-
-  public void setIkTipoCombustible(UISelectEntity ikTipoCombustible) {
-    this.ikTipoCombustible = ikTipoCombustible;
-		if(this.ikTipoCombustible!= null)
-		  this.setIdTipoCombustible(this.ikTipoCombustible.getKey());
   }
 
   public Long getIdDesarrollo() {
