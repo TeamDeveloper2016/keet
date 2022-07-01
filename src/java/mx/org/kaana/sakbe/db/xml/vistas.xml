@@ -333,7 +333,7 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona        
         where
-          tc_sakbe_maquinarias.clave= '{clave}'
+          (tc_sakbe_maquinarias.clave= '{clave}' or tc_sakbe_maquinarias.id_maquinaria= {idMaquinaria})
           and tc_sakbe_suministros.id_suministro!= {idSuministro}
         order by
           tc_sakbe_suministros.registro desc

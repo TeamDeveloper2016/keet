@@ -195,7 +195,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
         regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
       } // if
       else 
-        JsfBase.addMessage("Precaución", "No se tiene combustible disponible, agregue un ticket");
+        JsfBase.addMessage("Precaución", "No se tiene combustible/lubricante disponible, agregue un ticket/factura");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -261,7 +261,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
-  	    this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
+	      this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
       else  
   			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
       this.doLoadPorcentajes();
@@ -284,7 +284,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
         int index= tiposCombustibles.indexOf(idTipoCombustible);
         if(index>= 0) {
           idTipoCombustible= tiposCombustibles.get(index);
-          this.attrs.put("ikTipoCombustible", idTipoCombustible);
+          this.attrs.put("ikTipoCombustible", idTipoCombustible.getKey());
         } // if  
       } // if
       this.attrs.put("porcentaje", this.toLoadCombustible());

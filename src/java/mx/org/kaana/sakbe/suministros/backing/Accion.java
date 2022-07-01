@@ -23,6 +23,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetDesarrollosDto;
 import mx.org.kaana.sakbe.suministros.beans.Evidencia;
 import mx.org.kaana.libs.Constantes;
@@ -167,7 +168,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
 	public void doTabChange(TabChangeEvent event) {
     switch (event.getTab().getTitle()) {
-      case "General":
+      case "Historial":
+        // this.toLoadHistorial();
         break;
       default:
         break;
@@ -510,6 +512,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     if(saldo> litros)
       saldo= litros;
     UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:litros', value: {validaciones: 'requerido|flotante|rango({\"min\":1,\"max\":"+ saldo+"})', mascara: 'libre', grupo: 'general', individual: true}}])");
+    this.toLoadHistorial();
   }
  
 	public String doLector() {
@@ -536,6 +539,41 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
  
   public void doUpdateTotal() {
     this.attrs.put("diferencia", Numero.redondearSat(this.suministro.getLecturaNueva()- this.suministro.getLecturaActual()));
+  }
+ 
+  private void toLoadHistorial() {
+    List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+    try {
+      UISelectEntity row= this.suministro.getIkMaquinaria();
+      List<UISelectEntity> maquinarias= (List<UISelectEntity>) this.attrs.get("maquinarias");
+      if (maquinarias!= null && !maquinarias.isEmpty()) {
+        int index = maquinarias.indexOf(row);
+        if (index >= 0) 
+          this.suministro.setIkMaquinaria(maquinarias.get(index));
+      } // if
+      params.put("idMaquinaria", row.toLong("idMaquinaria"));      
+      params.put("idSuministro", -1L);      
+      columns = new ArrayList<>();
+      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("tipo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("grupo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("combustible", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      this.lazyModel= new FormatCustomLazy("VistaSuministrosDto", "ultima", params, columns);
+      this.reset();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		      
   }
   
 }

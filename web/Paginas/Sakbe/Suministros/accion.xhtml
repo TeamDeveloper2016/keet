@@ -91,22 +91,21 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 						<p:outputLabel value="EL SUMINISTRO DE COMBUSTIBLE [#{sakbeSuministrosAccion.suministro.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeSuministrosAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeSuministrosAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
           <p:accordionPanel id="criterio" multiple="true" dynamic="true">
 						<p:tab id="avance" title="Litros disponibles:">
-              <p:panelGrid columns="3" styleClass="janal-wid-100">
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
+              <p:panelGrid columns="3" styleClass="janal-wid-100-txt">
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel value="Litro(s):"/>
                   <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel value="Saldo:"/>
                   <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel value="Tickets:"/>
                   <p:inputText value="#{sakbeSuministrosAccion.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
@@ -125,7 +124,7 @@
                 <p:outputLabel for="idMaquinaria" value="Maquinaria:"/>
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-98, janal-wid-2 janal-column-right">		
                   <p:selectOneMenu id="idMaquinaria" value="#{sakbeSuministrosAccion.suministro.ikMaquinaria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" process="@this" listener="#{sakbeSuministrosAccion.doCheckLitros}"/>
+                    <p:ajax event="change" process="@this" update="contenedorGrupos:tabla" listener="#{sakbeSuministrosAccion.doCheckLitros}"/>
                     <f:selectItems value="#{sakbeSuministrosAccion.attrs.maquinarias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.marca or element.marca eq ''? '': '|'} #{element.marca}"/>
                     <p:column headerText="Clave">
                       <h:outputText value="#{item.clave}"/>
@@ -240,6 +239,63 @@
                   <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeSuministrosAccion.doDelete(row)}" title="Eliminar"/>
 								</p:column>   								
 							</p:dataTable>
+						</p:tab>
+						<p:tab title="Historial">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeSuministrosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeSuministrosAccion.lazyModel.rowCount gt sakbeSuministrosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	            
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+                  <f:facet name="header">
+                    <h:outputText value="Desarrollo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['desarrollo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5" sortBy="#{row.clave}">
+                  <f:facet name="header">
+                    <h:outputText value="Clave"/>
+                  </f:facet>
+                  <h:outputText value="#{row['clave']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.grupo}">
+                  <f:facet name="header">
+                    <h:outputText value="Grupo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['grupo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.combustible}">
+                  <f:facet name="header">
+                    <h:outputText value="Combustible"/>
+                  </f:facet>
+                  <h:outputText value="#{row['combustible']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
+                  <f:facet name="header">
+                    <h:outputText value="Litros"/>
+                  </f:facet>
+                  <h:outputText value="#{row['litros']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fecha}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['fecha']}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeSuministrosAccion.lazyModel== null? 0: sakbeSuministrosAccion.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
 						</p:tab>
           </p:tabView>
 				</div>
