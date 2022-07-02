@@ -42,6 +42,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.sakbe.suministros.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.enums.ECombustiblesEstatus;
 import mx.org.kaana.sakbe.suministros.beans.Suministro;
 import org.apache.commons.logging.Log;
@@ -63,6 +64,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private Suministro suministro;
 	private List<Evidencia> importados;
 	private List<Evidencia> documentos;
+  private List<Insumo> insumos;
   private String pathImage;
   
 	public String getAgregar() {
@@ -93,6 +95,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     this.importados = importados;
   }
 
+  public List<Insumo> getInsumos() {
+    return insumos;
+  }
+  
   public String getPathImage() {
     return pathImage;
   }
@@ -565,6 +571,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyModel= new FormatCustomLazy("VistaSuministrosDto", "ultima", params, columns);
       this.reset();
+      this.insumos= (List<Insumo>)DaoFactory.getInstance().toEntitySet(Insumo.class, "TcSakbeMaquinariasInsumosDto", "maquinaria", params);
+      if(this.insumos!= null && !this.insumos.isEmpty())
+        for (Insumo item: this.insumos) {
+          item.setIkTipoCombustible(new UISelectEntity(item.getIdTipoCombustible()));
+          item.setSql(ESql.SELECT);
+        } // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);

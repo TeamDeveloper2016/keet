@@ -39,22 +39,25 @@ public class TcSakbeTiposCombustiblesDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
+	@Column (name="id_tipo_insumo")
+  private Long idTipoInsumo;
 
   public TcSakbeTiposCombustiblesDto() {
     this(new Long(-1L));
   }
 
   public TcSakbeTiposCombustiblesDto(Long key) {
-    this(null, null, new Long(-1L), null);
+    this(null, null, new Long(-1L), null, 1L);
     setKey(key);
   }
 
-  public TcSakbeTiposCombustiblesDto(String descripcion, Long idUsuario, Long idTipoCombustible, String nombre) {
+  public TcSakbeTiposCombustiblesDto(String descripcion, Long idUsuario, Long idTipoCombustible, String nombre, Long idTipoInsumo) {
     setDescripcion(descripcion);
     setIdUsuario(idUsuario);
     setIdTipoCombustible(idTipoCombustible);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+    setIdTipoInsumo(idTipoInsumo);
   }
 	
   public void setDescripcion(String descripcion) {
@@ -97,6 +100,14 @@ public class TcSakbeTiposCombustiblesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getIdTipoInsumo() {
+    return idTipoInsumo;
+  }
+
+  public void setIdTipoInsumo(Long idTipoInsumo) {
+    this.idTipoInsumo = idTipoInsumo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -121,6 +132,8 @@ public class TcSakbeTiposCombustiblesDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoInsumo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -133,13 +146,14 @@ public class TcSakbeTiposCombustiblesDto implements IBaseDto, Serializable {
 		regresar.put("idTipoCombustible", getIdTipoCombustible());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("idTipoInsumo", getIdTipoInsumo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getDescripcion(), getIdUsuario(), getIdTipoCombustible(), getNombre(), getRegistro()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getIdUsuario(), getIdTipoCombustible(), getNombre(), getRegistro(), getIdTipoInsumo()
     };
     return regresar;
   }

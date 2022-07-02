@@ -36,10 +36,6 @@ public class Lector extends IBaseFilter implements Serializable {
     return insumos;
   }
 
-  public void setInsumos(List<Insumo> insumos) {
-    this.insumos = insumos;
-  }
-
   @PostConstruct
   @Override
   protected void init() {		    
