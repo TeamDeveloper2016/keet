@@ -173,43 +173,42 @@
 								<p:inputNumber id="diferencia" styleClass="janal-wid-100-txt janal-display-none diferencia" value="#{sakbeSuministrosAccion.attrs.diferencia}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0"/>
               </p:panelGrid>
 						</p:tab>
-						<p:tab title="Evidencia">
-              <p:dataTable id="importados" var="row" value="#{sakbeSuministrosAccion.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
-								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
-									<h:outputText value="#{index+ 1}.-"/>
-								</p:column>   								
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
-									<h:outputText value="#{row.nombre}"/>
-								</p:column>   								
-								<p:column headerText="Archivo">
-									<h:outputText value="#{row.archivo}"/>
-								</p:column> 
-								<p:column styleClass="MarAuto Responsive janal-wid-25" headerText="Usuario">
-									<h:outputText value="#{row.usuario}"/>
-								</p:column> 
-								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
-									<h:outputText value="#{row.tipo}"/>
-								</p:column> 
-								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
-									<h:outputText value="#{sakbeSuministrosAccion.doRegistro(row.registro)}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-                  <a data-magnify="gallery" href="#{sakbeSuministrosAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver la imagen">
-                    <p:graphicImage url="#{sakbeSuministrosAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" width="30" height="30" style="cursor:zoom-in;"/>
-                  </a>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-                  <p:commandButton icon="fa fa-recycle" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosAccion.doRecuperar(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
-                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosAccion.doEliminar(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-										<p:fileDownload value="#{sakbeSuministrosAccion.doFileDownload(row)}" />
-									</p:commandButton>
-								</p:column>
-								<f:facet name="footer">
-									<p:outputLabel value="Total [#{sakbeSuministrosAccion.importados.size()}] registros"/>
-								</f:facet>
-							</p:dataTable>
-						</p:tab>						            						            																																																
+						<p:tab title="Especificación">
+              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeSuministrosAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                <f:facet name="header">
+                  <div class="janal-column-left">
+                    <p:outputLabel value="Combustibles, lubricantes y aceites registrados" styleClass="janal-color-white"/>
+                  </div>
+                </f:facet>
+                <p:column styleClass="MarAuto Responsive janal-wid-20">		
+                  <f:facet name="header">
+                    <h:outputText value="Combustible"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.combustible}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+                  <f:facet name="header">
+                    <h:outputText value="Capacidad"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.capacidad}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+                  <f:facet name="header">
+                    <h:outputText value="Rendimiento"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.rendimiento}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive">		
+                  <f:facet name="header">
+                    <h:outputText value="Observaciones"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.observaciones}"/>
+                </p:column>	
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeSuministrosAccion.insumos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>	              
+						</p:tab>
 						<p:tab title="Importar">
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosAccion.attrs.comentarios}" onblur="processDataFile();"/>
@@ -243,12 +242,13 @@
 						<p:tab title="Historial">
               <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeSuministrosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeSuministrosAccion.lazyModel.rowCount gt sakbeSuministrosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
                 <f:facet name="header">
+                  <h:outputText value="Historial de suministros registrados" styleClass="janal-color-white janal-float-left"/>
                   <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
                 </f:facet>	            
                 <p:column styleClass="MarAuto Responsive janal-wid-2">
                   <f:facet name="header">
@@ -296,44 +296,51 @@
                   <p:outputLabel value="Total [#{sakbeSuministrosAccion.lazyModel== null? 0: sakbeSuministrosAccion.lazyModel.rowCount}] registros"/>
                 </f:facet>
               </p:dataTable>
+              <h:commandLink id="dataXPdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXXls">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>	              
 						</p:tab>
-						<p:tab title="Especificación">
-              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeSuministrosAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                <f:facet name="header">
-                  <div class="janal-column-left">
-                    <p:outputLabel value="Combustibles, lubricantes y aceites registrados" styleClass="janal-color-white"/>
-                  </div>
-                </f:facet>
-                <p:column styleClass="MarAuto Responsive janal-wid-20">		
-                  <f:facet name="header">
-                    <h:outputText value="Combustible"/>
-                  </f:facet>
-                  <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.combustible}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
-                  <f:facet name="header">
-                    <h:outputText value="Capacidad"/>
-                  </f:facet>
-                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.capacidad}"/>
-                </p:column>	
-                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
-                  <f:facet name="header">
-                    <h:outputText value="Rendimiento"/>
-                  </f:facet>
-                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.rendimiento}"/>
-                </p:column>	
-                <p:column styleClass="MarAuto Responsive">		
-                  <f:facet name="header">
-                    <h:outputText value="Observaciones"/>
-                  </f:facet>
-                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.observaciones}"/>
-                </p:column>	
-                <f:facet name="footer">
-                  <p:outputLabel value="Total [#{sakbeSuministrosAccion.insumos.size()}] registros"/>
-                </f:facet>
-              </p:dataTable>	              
-						</p:tab>
-          </p:tabView>
+						<p:tab title="Evidencia">
+              <p:dataTable id="importados" var="row" value="#{sakbeSuministrosAccion.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column> 
+								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{sakbeSuministrosAccion.doRegistro(row.registro)}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <a data-magnify="gallery" href="#{sakbeSuministrosAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver la imagen">
+                    <p:graphicImage url="#{sakbeSuministrosAccion.pathImage}combustibles/compras/#{row.ruta}#{row.archivo}" width="30" height="30" style="cursor:zoom-in;"/>
+                  </a>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosAccion.doRecuperar(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.cargados)" actionListener="#{sakbeSuministrosAccion.doEliminar(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{sakbeSuministrosAccion.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{sakbeSuministrosAccion.importados.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+          </p:tabView>            
 				</div>
 			</div>
 		</div>		

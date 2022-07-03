@@ -67,7 +67,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<h:outputText value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 						<p:outputLabel value="EL TICKET DE COMPRA [#{sakbeCombustiblesAccion.combustible.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeCombustiblesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeCombustiblesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
@@ -128,6 +128,7 @@
                 <p:inputText id="referencia" value="#{sakbeCombustiblesAccion.combustible.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" style="display: #{sakbeCombustiblesAccion.attrs.isBanco? '': 'none'}"/>
                 <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesAccion.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="contenedorGrupos:tabla" listener="#{sakbeCombustiblesAccion.doLoadHistorial}"/>
                   <f:selectItems value="#{sakbeCombustiblesAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
@@ -143,6 +144,36 @@
                 <p:outputLabel for="diferencia" value="Importe total:" styleClass="janal-display-none"/>
 								<p:inputNumber id="diferencia" styleClass="janal-wid-100-txt janal-display-none diferencia" value="#{sakbeCombustiblesAccion.attrs.diferencia}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0"/>
               </p:panelGrid>
+						</p:tab>
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.attrs.comentarios}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{sakbeCombustiblesAccion.doFileUpload}" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{sakbeCombustiblesAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeCombustiblesAccion.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{sakbeCombustiblesAccion.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeCombustiblesAccion.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>
 						</p:tab>
 						<p:tab title="Evidencia">
               <p:dataTable id="importados" var="row" value="#{sakbeCombustiblesAccion.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
@@ -180,37 +211,83 @@
 									<p:outputLabel value="Total [#{sakbeCombustiblesAccion.importados.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>
-						</p:tab>						            						            																																																
-						<p:tab title="Importar">
-							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesAccion.attrs.comentarios}" onblur="processDataFile();"/>
-							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
-							<p:spacer height="5px"/>	
-							<p:fileUpload listener="#{sakbeCombustiblesAccion.doFileUpload}" skinSimple="true" 
-							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
-								multiple="false" allowTypes="#{sakbeCombustiblesAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeCombustiblesAccion.attrs.formatos}"/>														
-							<p:dataTable id="importado" var="row" value="#{sakbeCombustiblesAccion.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
-								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
-									<h:outputText value="#{index+ 1}.-"/>
-								</p:column>   								
-								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
-									<h:outputText value="#{row.nombre}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
-									<h:outputText value="#{row.archivo}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
-									<h:outputText value="#{row.usuario}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
-									<h:outputText value="#{row.tipo}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
-                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeCombustiblesAccion.doDelete(row)}" title="Eliminar"/>
-								</p:column>   								
-							</p:dataTable>
-						</p:tab>
+						</p:tab>				
+						<p:tab title="Historial">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeCombustiblesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeCombustiblesAccion.lazyModel.rowCount gt sakbeCombustiblesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <h:outputText value="Historial de compras registradas" styleClass="janal-color-white janal-float-left"/>
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	            
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.consecutivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Consecutivo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['consecutivo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.ticket}">
+                  <f:facet name="header">
+                    <h:outputText value="Ticket"/>
+                  </f:facet>
+                  <h:outputText value="#{row['ticket']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.lugar}">
+                  <f:facet name="header">
+                    <h:outputText value="Lugar"/>
+                  </f:facet>
+                  <h:outputText value="#{row['lugar']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.combustible}">
+                  <f:facet name="header">
+                    <h:outputText value="Combustible"/>
+                  </f:facet>
+                  <h:outputText value="#{row['combustible']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
+                  <f:facet name="header">
+                    <h:outputText value="Litros"/>
+                  </f:facet>
+                  <h:outputText value="#{row['litros']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.precioLitro}">
+                  <f:facet name="header">
+                    <h:outputText value="Precio"/>
+                  </f:facet>
+                  <h:outputText value="#{row['precioLitro']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-right" sortBy="#{row.total}">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row['total']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Registro"/>
+                  </f:facet>
+                  <h:outputText value="#{row['registro']}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeCombustiblesAccion.lazyModel== null? 0: sakbeCombustiblesAccion.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataXPdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXXls">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>	              
+						</p:tab>            
           </p:tabView>
 				</div>
 			</div>

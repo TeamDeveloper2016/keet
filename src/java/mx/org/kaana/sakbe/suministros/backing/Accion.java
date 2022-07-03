@@ -555,8 +555,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       List<UISelectEntity> maquinarias= (List<UISelectEntity>) this.attrs.get("maquinarias");
       if (maquinarias!= null && !maquinarias.isEmpty()) {
         int index = maquinarias.indexOf(row);
-        if (index >= 0) 
+        if (index >= 0) {
           this.suministro.setIkMaquinaria(maquinarias.get(index));
+          row= maquinarias.get(index);
+        } // if  
       } // if
       params.put("idMaquinaria", row.toLong("idMaquinaria"));      
       params.put("idSuministro", -1L);      

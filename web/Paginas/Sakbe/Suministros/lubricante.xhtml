@@ -174,6 +174,136 @@
 								<p:inputNumber id="diferencia" styleClass="janal-wid-100-txt janal-display-none diferencia" value="#{sakbeSuministrosLubricante.attrs.diferencia}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0"/>
               </p:panelGrid>
 						</p:tab>
+						<p:tab title="Especificación">
+              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeSuministrosLubricante.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                <f:facet name="header">
+                  <div class="janal-column-left">
+                    <p:outputLabel value="Combustibles, lubricantes y aceites registrados" styleClass="janal-color-white"/>
+                  </div>
+                </f:facet>
+                <p:column styleClass="MarAuto Responsive janal-wid-20">		
+                  <f:facet name="header">
+                    <h:outputText value="Combustible"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.combustible}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+                  <f:facet name="header">
+                    <h:outputText value="Capacidad"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.capacidad}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+                  <f:facet name="header">
+                    <h:outputText value="Rendimiento"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.rendimiento}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive">		
+                  <f:facet name="header">
+                    <h:outputText value="Observaciones"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.observaciones}"/>
+                </p:column>	
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeSuministrosLubricante.insumos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>	              
+						</p:tab>            
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.attrs.comentarios}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{sakbeSuministrosLubricante.doFileUpload}" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{sakbeSuministrosLubricante.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeSuministrosLubricante.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{sakbeSuministrosLubricante.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
+									<h:outputText value="#{row.archivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeSuministrosLubricante.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Historial">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeSuministrosLubricante.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeSuministrosLubricante.lazyModel.rowCount gt sakbeSuministrosLubricante.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <h:outputText value="Historial de suministros registrados" styleClass="janal-color-white janal-float-left"/>
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	            
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+                  <f:facet name="header">
+                    <h:outputText value="Desarrollo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['desarrollo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5" sortBy="#{row.clave}">
+                  <f:facet name="header">
+                    <h:outputText value="Clave"/>
+                  </f:facet>
+                  <h:outputText value="#{row['clave']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.grupo}">
+                  <f:facet name="header">
+                    <h:outputText value="Grupo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['grupo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.combustible}">
+                  <f:facet name="header">
+                    <h:outputText value="Combustible"/>
+                  </f:facet>
+                  <h:outputText value="#{row['combustible']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
+                  <f:facet name="header">
+                    <h:outputText value="Litros"/>
+                  </f:facet>
+                  <h:outputText value="#{row['litros']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fecha}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['fecha']}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeSuministrosLubricante.lazyModel== null? 0: sakbeSuministrosLubricante.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataXPdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXXls">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>	              
+						</p:tab>
 						<p:tab title="Evidencia">
               <p:dataTable id="importados" var="row" value="#{sakbeSuministrosLubricante.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
@@ -211,36 +341,6 @@
 								</f:facet>
 							</p:dataTable>
 						</p:tab>						            						            																																																
-						<p:tab title="Importar">
-							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.attrs.comentarios}" onblur="processDataFile();"/>
-							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:comentarios"/>
-							<p:spacer height="5px"/>	
-							<p:fileUpload listener="#{sakbeSuministrosLubricante.doFileUpload}" skinSimple="true" 
-							  mode="advanced" process="@this observaciones" update="@(.importado) @(.cargados)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
-								multiple="false" allowTypes="#{sakbeSuministrosLubricante.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{sakbeSuministrosLubricante.attrs.formatos}"/>														
-							<p:dataTable id="importado" var="row" value="#{sakbeSuministrosLubricante.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado" rowIndexVar="index">
-								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
-									<h:outputText value="#{index+ 1}.-"/>
-								</p:column>   								
-								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Nombre">
-									<h:outputText value="#{row.nombre}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive" headerText="Archivo">
-									<h:outputText value="#{row.archivo}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Usuario">
-									<h:outputText value="#{row.usuario}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-center" headerText="Tipo">
-									<h:outputText value="#{row.tipo}"/>
-								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
-                  <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado)" actionListener="#{sakbeSuministrosLubricante.doDelete(row)}" title="Eliminar"/>
-								</p:column>   								
-							</p:dataTable>
-						</p:tab>
           </p:tabView>
 				</div>
 			</div>

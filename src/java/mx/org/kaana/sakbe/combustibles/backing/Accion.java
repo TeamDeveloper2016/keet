@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.sakbe.combustibles.beans.Evidencia;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -311,6 +312,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.combustible.setIkTipoCombustible(tiposCombustibles.get(0));
         else  
           this.combustible.setIkTipoCombustible(tiposCombustibles.get(tiposCombustibles.indexOf(this.combustible.getIkTipoCombustible())));
+      this.doLoadHistorial();
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -504,5 +506,41 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   public void doUpdateTotal() {
     this.attrs.put("diferencia", Numero.redondearSat(this.combustible.getLitros()* this.combustible.getPrecioLitro()));
   }
+ 
+  public void doLoadHistorial() {
+    List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+    try {
+      UISelectEntity row= this.combustible.getIkTipoCombustible();
+      List<UISelectEntity> tiposCombustibles= (List<UISelectEntity>) this.attrs.get("tiposCombustibles");
+      if (tiposCombustibles!= null && !tiposCombustibles.isEmpty()) {
+        int index = tiposCombustibles.indexOf(row);
+        if (index >= 0) {
+          this.combustible.setIkTipoCombustible(tiposCombustibles.get(index));
+          row= this.combustible.getIkTipoCombustible();
+        } // if  
+      } // if
+      params.put(Constantes.SQL_CONDICION, "tc_sakbe_combustibles.id_tipo_combustible= "+ row.toLong("idTipoCombustible"));      
+      params.put("sortOrder", "order by tc_sakbe_combustibles.registro desc");      
+      columns = new ArrayList<>();
+      columns.add(new Columna("lugar", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("ticket", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("combustible", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("litros", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precioLitro", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      this.lazyModel= new FormatCustomLazy("VistaCombustiblesDto", params, columns);
+      this.reset();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		          
+  } 
   
 }
