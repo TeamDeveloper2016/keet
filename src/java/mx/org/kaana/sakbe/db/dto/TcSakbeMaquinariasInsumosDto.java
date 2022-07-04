@@ -45,17 +45,19 @@ public class TcSakbeMaquinariasInsumosDto implements IBaseDto, Serializable {
   private Double capacidad;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="maximo")
+  private Double maximo;
 
   public TcSakbeMaquinariasInsumosDto() {
     this(new Long(-1L));
   }
 
   public TcSakbeMaquinariasInsumosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, new Long(-1L), null, null, 0D);
     setKey(key);
   }
 
-  public TcSakbeMaquinariasInsumosDto(Long idMaquinaria, Double rendimiento, Long idUsuario, String observaciones, Long idMaquinariaInsumo, Long idTipoCombustible, Double capacidad) {
+  public TcSakbeMaquinariasInsumosDto(Long idMaquinaria, Double rendimiento, Long idUsuario, String observaciones, Long idMaquinariaInsumo, Long idTipoCombustible, Double capacidad, Double maximo) {
     setIdMaquinaria(idMaquinaria);
     setRendimiento(rendimiento);
     setIdUsuario(idUsuario);
@@ -64,6 +66,7 @@ public class TcSakbeMaquinariasInsumosDto implements IBaseDto, Serializable {
     setIdTipoCombustible(idTipoCombustible);
     setCapacidad(capacidad);
     setRegistro(LocalDateTime.now());
+    setMaximo(maximo);
   }
 	
   public void setIdMaquinaria(Long idMaquinaria) {
@@ -130,6 +133,14 @@ public class TcSakbeMaquinariasInsumosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getMaximo() {
+    return maximo;
+  }
+
+  public void setMaximo(Double maximo) {
+    this.maximo = maximo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -160,6 +171,8 @@ public class TcSakbeMaquinariasInsumosDto implements IBaseDto, Serializable {
 		regresar.append(getCapacidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMaximo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -175,13 +188,14 @@ public class TcSakbeMaquinariasInsumosDto implements IBaseDto, Serializable {
 		regresar.put("idTipoCombustible", getIdTipoCombustible());
 		regresar.put("capacidad", getCapacidad());
 		regresar.put("registro", getRegistro());
+		regresar.put("maximo", getMaximo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdMaquinaria(), getRendimiento(), getIdUsuario(), getObservaciones(), getIdMaquinariaInsumo(), getIdTipoCombustible(), getCapacidad(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdMaquinaria(), getRendimiento(), getIdUsuario(), getObservaciones(), getIdMaquinariaInsumo(), getIdTipoCombustible(), getCapacidad(), getRegistro(), getMaximo()
     };
     return regresar;
   }

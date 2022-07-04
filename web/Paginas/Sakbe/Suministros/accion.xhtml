@@ -156,7 +156,7 @@
 								<p:inputNumber id="litros" styleClass="janal-wid-100-txt avance" value="#{sakbeSuministrosAccion.suministro.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0">
                   <p:ajax event="change" process="@this" update="criterio criterio:avance @(.avance)" listener="#{sakbeSuministrosAccion.doUpdateLitros}"/>
                 </p:inputNumber>								
-                <p:outputLabel for="recibio" value="Recibio:"/>
+                <p:outputLabel for="recibio" value="Recibió:"/>
 								<p:inputText id="recibio" value="#{sakbeSuministrosAccion.suministro.recibio}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="horas" value="Horas trabajada(s):"/>
 								<p:inputNumber id="horas" styleClass="janal-wid-100-" value="#{sakbeSuministrosAccion.suministro.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>

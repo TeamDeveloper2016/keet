@@ -52,7 +52,8 @@
 				'contenedorGrupos\\:responsable'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'idTipoCombustible': {multiple: '$', validaciones: 'requerido', mascara: 'libre'},
         'capacidad'        : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
-        'rendimiento'      : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'}
+        'rendimiento'      : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
+        'maximo'           : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'}
 			};	
 			
     	$(document).ready(function() {
@@ -146,12 +147,24 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>                   
                 </p:selectOneMenu>
-								<p:outputLabel for="subtotal" value="Sub total:"/>
-								<p:inputNumber id="subtotal" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.subtotal}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
-								<p:outputLabel for="iva" value="IVA:"/>
-								<p:inputNumber id="iva" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.iva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
-								<p:outputLabel for="total" value="Total:"/>
-								<p:inputNumber id="total" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+                <p:fieldset legend="Costos de adquisición">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                    <p:outputLabel for="subtotal" value="Sub total:"/>
+                    <p:inputNumber id="subtotal" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.subtotal}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+                    <p:outputLabel for="iva" value="IVA:"/>
+                    <p:inputNumber id="iva" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.iva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+                    <p:outputLabel for="total" value="Total:"/>
+                    <p:inputNumber id="total" styleClass="janal-wid-100-" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt" minValue="0"/>
+                  </p:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Mantenimiento">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                    <p:outputLabel for="mantenimiento" value="Cantidad de KM's ó HR's trabajadas:"/>
+                    <p:inputNumber id="mantenimiento" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.mantenimiento}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                    <p:outputLabel for="diasTrabajo" value="Plazo en días: (días naturales)"/>
+                    <p:inputNumber id="diasTrabajo" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosMaquinariaAccion.maquinaria.diasTrabajo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                  </p:panelGrid>
+                </p:fieldset>
               </p:panelGrid>
               <p:remoteCommand name="reloadTiposMaquinarias" process="@this" update="idTipoMaquinaria"/>
 						</p:tab>
@@ -179,6 +192,12 @@
                     <h:outputText value="Rendimiento"/>
                   </f:facet>
                   <p:inputNumber id="rendimiento" styleClass="janal-wid-100-txt" value="#{row.rendimiento}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-wid-8 maximo">		
+                  <f:facet name="header">
+                    <h:outputText value="Máximo" title="Máximo LTS por semana"/>
+                  </f:facet>
+                  <p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{row.maximo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive">		
                   <f:facet name="header">

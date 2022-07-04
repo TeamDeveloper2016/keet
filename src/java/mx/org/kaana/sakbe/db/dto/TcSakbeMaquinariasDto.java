@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import sun.awt.image.SurfaceManager;
 
 /**
  *@company KAANA
@@ -100,17 +101,21 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
   private String ultimaTarjeta;
   @Column (name="responsable")
   private String responsable;
+  @Column (name="mantenimiento")
+  private Double mantenimiento;
+  @Column (name="dias_trabajo")
+  private Double diasTrabajo;
 
   public TcSakbeMaquinariasDto() {
     this(new Long(-1L));
   }
 
   public TcSakbeMaquinariasDto(Long key) {
-    this(null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, "TRIANA-01", null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, "TRIANA-01", null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, 0D, 0D);
     setKey(key);
   }
 
-  public TcSakbeMaquinariasDto(String motor, String proEnTarjeta, String color, String pedimento, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, String poliza, String comprado, String marca, Double total, String factura, String proReal, Double iva, String proEnFactura, String constancia, String tarjeta, Long idMaquinariaEstatus, String placa, Long idOriginal, String clave, Long modelo, String tipo, Long idMaquinaria, Long idConstancia, String facturado, Long idUsuario, Double subtotal, String entidad, String serie, String observaciones, Long idEmpresa, String ultimaTarjeta, String responsable) {
+  public TcSakbeMaquinariasDto(String motor, String proEnTarjeta, String color, String pedimento, Long idTipoMaquinaria, LocalDate fechaFactura, String nombre, String poliza, String comprado, String marca, Double total, String factura, String proReal, Double iva, String proEnFactura, String constancia, String tarjeta, Long idMaquinariaEstatus, String placa, Long idOriginal, String clave, Long modelo, String tipo, Long idMaquinaria, Long idConstancia, String facturado, Long idUsuario, Double subtotal, String entidad, String serie, String observaciones, Long idEmpresa, String ultimaTarjeta, String responsable, Double mantenimiento, Double diasTrabajo) {
     setMotor(motor);
     setProEnTarjeta(proEnTarjeta);
     setColor(color);
@@ -146,6 +151,8 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setUltimaTarjeta(ultimaTarjeta);
     setResponsable(responsable);
+    setMantenimiento(mantenimiento);
+    setDiasTrabajo(diasTrabajo);
   }
 	
   public void setMotor(String motor) {
@@ -428,6 +435,21 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
     this.responsable = responsable;
   }
 
+  public Double getMantenimiento() {
+    return mantenimiento;
+  }
+
+  public void setMantenimiento(Double mantenimiento) {
+    this.mantenimiento = mantenimiento;
+  }
+
+  public Double getDiasTrabajo() {
+    return diasTrabajo;
+  }
+
+  public void setDiasTrabajo(Double diasTrabajo) {
+    this.diasTrabajo = diasTrabajo;
+  }
   
   @Transient
   @Override
@@ -513,6 +535,10 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.append(getUltimaTarjeta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getResponsable());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMantenimiento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiasTrabajo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -555,13 +581,15 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("ultimaTarjeta", getUltimaTarjeta());
 		regresar.put("responsable", getResponsable());
+		regresar.put("matenimiento", getMantenimiento());
+		regresar.put("diasTrabajo", getDiasTrabajo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getMotor(), getProEnTarjeta(), getColor(), getPedimento(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getPoliza(), getComprado(), getMarca(), getTotal(), getFactura(), getProReal(), getIva(), getProEnFactura(), getConstancia(), getTarjeta(), getIdMaquinariaEstatus(), getPlaca(), getIdOriginal(), getClave(), getModelo(), getTipo(), getRegistro(), getIdMaquinaria(), getIdConstancia(), getFacturado(), getIdUsuario(), getSubtotal(), getEntidad(), getSerie(), getObservaciones(), getIdEmpresa(), getUltimaTarjeta(), getResponsable()
+      getMotor(), getProEnTarjeta(), getColor(), getPedimento(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getPoliza(), getComprado(), getMarca(), getTotal(), getFactura(), getProReal(), getIva(), getProEnFactura(), getConstancia(), getTarjeta(), getIdMaquinariaEstatus(), getPlaca(), getIdOriginal(), getClave(), getModelo(), getTipo(), getRegistro(), getIdMaquinaria(), getIdConstancia(), getFacturado(), getIdUsuario(), getSubtotal(), getEntidad(), getSerie(), getObservaciones(), getIdEmpresa(), getUltimaTarjeta(), getResponsable(), getMantenimiento(), getDiasTrabajo()
     };
     return regresar;
   }

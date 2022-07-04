@@ -7,6 +7,96 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeServiciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_servicios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_servicios
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeServiciosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_archivos
+        where      
+          archivo = '{archivo}'
+      </select>
+    </unit>  
+    <unit id="TcSakbeServiciosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_bitacora
+        where      
+          id_servicio_bitacora = {idServicioBitacora}
+      </select>
+    </unit>      
+    <unit id="TcSakbeServiciosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcSakbeServiciosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_servicios_detalles
+        where      
+          id_servicio = {idServicio} and id_suministro = {idSuministro}
+      </select>
+    </unit>    
     <unit id="TcSakbeTiposInsumosDto">
       <select id="row">
         select      

@@ -35,7 +35,8 @@ public class Insumo extends TcSakbeMaquinariasInsumosDto implements Serializable
       null, // String observaciones, 
       (new Random().nextLong())* -1L, // Long idMaquinariaInsumo, 
       -1L, // Long idTipoCombustible, 
-      40D // Double capacidad
+      40D, // Double capacidad,
+      1D // Double maximo
     );
     this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
     this.sql= ESql.INSERT;
