@@ -14,9 +14,11 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Herramienta;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasBitacoraDto;
+import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasHerramientasDto;
 import mx.org.kaana.sakbe.db.dto.TcSakbeMaquinariasInsumosDto;
 import mx.org.kaana.sakbe.db.dto.TrSakbeMaquinariaDesarrolloDto;
 import org.apache.commons.logging.Log;
@@ -37,20 +39,22 @@ public class Transaccion extends IBaseTnx implements Serializable {
  
 	private Maquinaria maquinaria;	
   private List<Insumo> insumos;
+  private List<Herramienta> herramientas;
 	private String messageError;
 	private TcSakbeMaquinariasBitacoraDto bitacora;
 
 	public Transaccion(Maquinaria maquinaria) {
-    this(maquinaria, Collections.EMPTY_LIST);
+    this(maquinaria, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 	} // Transaccion
   
-	public Transaccion(Maquinaria maquinaria, List<Insumo> insumos) {
+	public Transaccion(Maquinaria maquinaria, List<Insumo> insumos, List<Herramienta> herramientas) {
     this.maquinaria= maquinaria;
     this.insumos= insumos;
+    this.herramientas= herramientas;
 	} // Transaccion
   
 	public Transaccion(Maquinaria maquinaria, TcSakbeMaquinariasBitacoraDto bitacora) {
-		this(maquinaria, Collections.EMPTY_LIST);
+		this(maquinaria, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 		this.bitacora= bitacora;
 	} // Transaccion
 	
@@ -71,6 +75,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
           DaoFactory.getInstance().insert(sesion, registro);
           this.toInsumos(sesion);
+          this.toHerramientas(sesion);
           regresar= this.toChangeDesarrollo(sesion);
 					break;
 				case MODIFICAR:
@@ -78,6 +83,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
 				  DaoFactory.getInstance().insert(sesion, registro);
           this.toInsumos(sesion);
+          this.toHerramientas(sesion);
           regresar= this.toChangeDesarrollo(sesion);
 					break;				
 				case ELIMINAR:
@@ -85,6 +91,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasBitacoraDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TrSakbeMaquinariaDesarrolloDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasInsumosDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcSakbeMaquinariasHerramientasDto.class, params);
           regresar= DaoFactory.getInstance().delete(sesion, this.maquinaria)> 0L;
 					break;
 				case JUSTIFICAR:
@@ -115,7 +122,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
         this.maquinaria.setIdDesarrollo(this.maquinaria.getIkDesarrollo().getKey());
         params.put("idDesarrollo", this.maquinaria.getIdDesarrollo());
         params.put("idMaquinaria", this.maquinaria.getIdMaquinaria());      
-        Entity item= (Entity)DaoFactory.getInstance().toEntity("TrSakbeMaquinariaDesarrolloDto", "buscar", params);
+        Entity item= (Entity)DaoFactory.getInstance().toEntity(sesion, "TrSakbeMaquinariaDesarrolloDto", "buscar", params);
         if(item== null || item.isEmpty()) {
           TrSakbeMaquinariaDesarrolloDto value= new TrSakbeMaquinariaDesarrolloDto(
             this.maquinaria.getIdMaquinaria(), // Long idMaquinaria, 
@@ -123,11 +130,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
             JsfBase.getIdUsuario(), // Long idUsuario, 
             -1L // Long idMaquinariaDesarrollo
           );
-          DaoFactory.getInstance().insert(value);
+          DaoFactory.getInstance().insert(sesion, value);
         } // if  
         else {
           params.put("idMaquinariaDesarrollo", item.getKey());      
-          DaoFactory.getInstance().updateAll(TrSakbeMaquinariaDesarrolloDto.class, params);
+          DaoFactory.getInstance().updateAll(sesion, TrSakbeMaquinariaDesarrolloDto.class, params);
         } // if
         TcSakbeMaquinariasBitacoraDto registro= new TcSakbeMaquinariasBitacoraDto(this.maquinaria.getIdMaquinaria(), "CAMBIO DE DESARROLLO", JsfBase.getIdUsuario(), this.maquinaria.getIdMaquinariaEstatus(), -1L);
         regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
@@ -148,6 +155,34 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar= this.insumos.size()<= 0;
     try {   
       for (Insumo item: this.insumos) {
+        switch(item.getSql()) {
+          case SELECT:
+            regresar= Boolean.TRUE;
+            break;
+          case INSERT:
+            item.setIdMaquinaria(this.maquinaria.getIdMaquinaria());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
+  }  
+  
+  private Boolean toHerramientas(Session sesion) throws Exception {
+    Boolean regresar= this.herramientas.size()<= 0;
+    try {   
+      for (Herramienta item: this.herramientas) {
         switch(item.getSql()) {
           case SELECT:
             regresar= Boolean.TRUE;

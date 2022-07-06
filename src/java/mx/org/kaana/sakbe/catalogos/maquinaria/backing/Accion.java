@@ -28,6 +28,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.catalogos.maquinaria.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Herramienta;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import org.apache.commons.logging.Log;
@@ -45,6 +46,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private EAccion accion;
   private Maquinaria maquinaria;
   private List<Insumo> insumos;
+  private List<Herramienta> herramientas;
   
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -64,6 +66,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
   public void setInsumos(List<Insumo> insumos) {
     this.insumos = insumos;
+  }
+
+  public List<Herramienta> getHerramientas() {
+    return herramientas;
+  }
+
+  public void setHerramientas(List<Herramienta> herramientas) {
+    this.herramientas = herramientas;
   }
   
 	@PostConstruct
@@ -92,6 +102,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         case AGREGAR:											
           this.maquinaria= new Maquinaria(-1L);
           this.insumos= new ArrayList<>();
+          this.herramientas= new ArrayList<>();
           break;
         case MODIFICAR:			
         case CONSULTAR:											
@@ -106,11 +117,18 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
               item.setIkTipoCombustible(new UISelectEntity(item.getIdTipoCombustible()));
               item.setSql(ESql.SELECT);
             } // for
+          this.herramientas= (List<Herramienta>)DaoFactory.getInstance().toEntitySet(Herramienta.class, "TcSakbeMaquinariasHerramientasDto", "maquinaria", params);
+          if(this.herramientas!= null && !this.herramientas.isEmpty())
+            for (Herramienta item: this.herramientas) {
+              item.setIkHerramienta(new UISelectEntity(item.getIdHerramienta()));
+              item.setSql(ESql.SELECT);
+            } // for
           break;
       } // switch
 			this.toLoadCatalogos();
       this.doLoadDesarrollos();
       this.toLoadTiposCombustibles();
+      this.toLoadHerramientas();
       this.toLoadMaquinariasGrupos();
     } // try
     catch (Exception e) {
@@ -186,11 +204,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposCombustibles= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre");
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
-//      if(tiposCombustibles!=null && !tiposCombustibles.isEmpty()) 
-//        if(this.accion.equals(EAccion.AGREGAR))
-//          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(0));
-//        else  
-//          this.maquinaria.setIkTipoCombustible(tiposCombustibles.get(tiposCombustibles.indexOf(this.maquinaria.getIkTipoCombustible())));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -200,6 +213,23 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			Methods.clean(params);
 		} // finally
 	} // toLoadTiposCombustibles  
+  
+	private void toLoadHerramientas() {
+		List<UISelectEntity> accesorios= null;
+		Map<String, Object>params      = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			accesorios= UIEntity.seleccione("TcSakbeHerramientasDto", "row", params, "nombre");
+			this.attrs.put("herramientas", accesorios);
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // toLoadHerramientas  
   
 	private void toLoadMaquinariasGrupos() {
 		List<Columna> columns     = null;
@@ -278,8 +308,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Transaccion transaccion= null;
     String regresar        = null;
 		try {
-      if(this.checkInsumos()) {
-        transaccion = new Transaccion(this.maquinaria, this.insumos);
+      if(this.checkInsumos() && checkHerramientas()) {
+        transaccion = new Transaccion(this.maquinaria, this.insumos, this.herramientas);
         if (transaccion.ejecutar(this.accion)) {
           if(!this.accion.equals(EAccion.CONSULTAR)) 
             JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la maquinaria"), ETipoMensaje.INFORMACION);
@@ -337,6 +367,16 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // catch	
   }
   
+  public void doSumar() {
+    try {      
+      this.herramientas.add(new Herramienta());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   public void doEliminar(Insumo row) {
     try {      
       if(Objects.equals(ESql.INSERT, row.getSql()))
@@ -350,9 +390,55 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // catch	
   }
   
+  public void doEliminar(Herramienta row) {
+    try {      
+      if(Objects.equals(ESql.INSERT, row.getSql()))
+        this.herramientas.remove(row);
+      else
+        row.setSql(ESql.DELETE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   public void doRecuperar(Insumo row) {
     try {      
       if(Objects.equals(ESql.DELETE, row.getSql()))
+        row.setSql(ESql.UPDATE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+ 
+  public void doRecuperar(Herramienta row) {
+    try {      
+      if(Objects.equals(ESql.DELETE, row.getSql()))
+        row.setSql(ESql.UPDATE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+ 
+  public void doActualizar(Insumo row) {
+    try {      
+      if(!Objects.equals(ESql.DELETE, row.getSql()) && !Objects.equals(ESql.INSERT, row.getSql()))
+        row.setSql(ESql.UPDATE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+ 
+  public void doActualizar(Herramienta row) {
+    try {      
+      if(!Objects.equals(ESql.DELETE, row.getSql()) && !Objects.equals(ESql.INSERT, row.getSql()))
         row.setSql(ESql.UPDATE);
     } // try
     catch (Exception e) {
@@ -375,4 +461,20 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // for
     return regresar;
   }
+
+  private Boolean checkHerramientas() {
+    Boolean regresar= Boolean.TRUE;
+    StringBuilder sb= new StringBuilder("|");
+    for (Herramienta item: this.herramientas) {
+      if(sb.indexOf("|"+ item.getIdHerramienta()+ "|")> 0) {
+        JsfBase.addMessage("Esta duplicado una herramienta", ETipoMensaje.ALERTA);      			
+        regresar= Boolean.FALSE;
+        break;
+      } // if
+      else
+        sb.append(item.getIdHerramienta()).append("|");
+    } // for
+    return regresar;
+  }
+
 }

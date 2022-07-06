@@ -69,7 +69,7 @@ public class Maquinaria extends TcSakbeMaquinariasDto implements Serializable {
       -1L, // Long idEmpresa    
       "", // String ultimaTarjeta 
       "", // String responsable
-      10D, // Double maquinaria
+      10D, // Double mantenimiento
       30D // Double diasTrabajo
     );
     this.ikEmpresa= new UISelectEntity(this.getIdEmpresa());

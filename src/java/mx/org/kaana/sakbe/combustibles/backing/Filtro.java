@@ -136,6 +136,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Sakbe/Combustibles/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
+  public String doLubricante(String accion) {
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("retorno", this.toPagina());		
+			JsfBase.setFlashAttribute("idCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Sakbe/Combustibles/lubricante".concat(Constantes.REDIRECIONAR);
+  } // doLubricante  
+	
   public String toPagina() {
     return "/Paginas/Sakbe/Combustibles/filtro";
   }

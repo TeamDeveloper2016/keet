@@ -19,7 +19,7 @@
 				'contenedorGrupos\\:lecturaNueva' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|mayor-a({"cual": "contenedorGrupos\\\\:lecturaActual"})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:litros'       : {validaciones: 'requerido|flotante|rango({"min":1,"max":#{sakbeSuministrosLubricante.attrs.porcentaje.saldo}})', mascara: 'libre', grupo: 'general', individual: true},
 				'contenedorGrupos\\:recibio'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:horas'        : {validaciones: 'requerido|flotante|rango({"min":1,"max":24})', mascara: 'libre', grupo: 'general', individual: true},
+				'contenedorGrupos\\:horas'        : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general', individual: true},
 				'contenedorGrupos\\:idPatrocinado': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:evidencias'   : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
@@ -145,11 +145,11 @@
                   </p:selectOneMenu>
                   <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosLubricante.doLector}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>  
-                <p:outputLabel for="lecturaActual" value="Lectura actual: (Horómetro/Odómetro)" styleClass=""/>
+                <p:outputLabel for="lecturaActual" value="Lectura actual: (Horómetro)" styleClass=""/>
 								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeSuministrosLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
-								<p:outputLabel for="lecturaNueva" value="Lectura nueva: (Horómetro/Odómetro)" styleClass=""/>
+								<p:outputLabel for="lecturaNueva" value="Lectura nueva: (Horómetro)" styleClass=""/>
 								<p:inputNumber id="lecturaNueva" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaNueva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeSuministrosLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
@@ -159,7 +159,7 @@
                 </p:inputNumber>								
                 <p:outputLabel for="recibio" value="Recibio:"/>
 								<p:inputText id="recibio" value="#{sakbeSuministrosLubricante.suministro.recibio}" styleClass="janal-wid-100-txt"/>
-								<p:outputLabel for="horas" value="Horas trabajada(s):"/>
+								<p:outputLabel for="horas" value="Horas trabajada(s) o kilometraje:"/>
 								<p:inputNumber id="horas" styleClass="janal-wid-100-" value="#{sakbeSuministrosLubricante.suministro.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
 								<p:outputLabel for="idPatrocinado" value="Combustible patrocinado:"/>
                 <p:selectOneMenu id="idPatrocinado" value="#{sakbeSuministrosLubricante.suministro.idPatrocinado}" styleClass="janal-wid-100-txt" converter="javax.faces.Long">

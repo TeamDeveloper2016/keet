@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{sakbeCombustiblesLubricante.attrs.nombreAccion} una factura de lubricante"/>
+	<ui:param name="titulo" value="#{sakbeCombustiblesLubricante.attrs.nombreAccion} una factura especial de lubricante"/>
   <ui:param name="janalBackingPage" value="#{sakbeCombustiblesLubricante}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
@@ -18,16 +18,15 @@
 				'contenedorGrupos\\:lugar'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fecha'            : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:litros'           : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:precio'           : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:total'            : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:precio'           : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'            : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoCombustible': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idBanco'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:comentarios'      : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:evidencias'       : {validaciones: 'entero|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:diferencia'       : {validaciones: 'requerido|igual-a({"cual": "contenedorGrupos\\\\:total"})', mascara: 'libre', mensaje: 'El importe debe ser iguales a los litros por precio'}
+				'contenedorGrupos\\:evidencias'       : {validaciones: 'entero|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -89,20 +88,20 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="ticket" value="Factura:"/>
 								<p:inputText id="ticket" value="#{sakbeCombustiblesLubricante.combustible.ticket}" styleClass="janal-wid-100-txt"/>
-								<p:outputLabel for="lugar" value="Proveedor:"/>
-								<p:inputText id="lugar" value="#{sakbeCombustiblesLubricante.combustible.lugar}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="lugar" value="Proveedor:" styleClass="janal-display-none"/>
+								<p:inputText id="lugar" value="#{sakbeCombustiblesLubricante.combustible.lugar}" styleClass="janal-wid-100-txt janal-display-none"/>
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesLubricante.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
 								<p:outputLabel for="litros" value="Litros:"/>
 								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesLubricante.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
-								<p:outputLabel for="precio" value="Precio por litro:"/>
-								<p:inputNumber id="precio" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesLubricante.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+								<p:outputLabel for="precio" value="Precio por litro:" styleClass="janal-display-none"/>
+								<p:inputNumber id="precio" styleClass="janal-wid-100-txt janal-display-none" value="#{sakbeCombustiblesLubricante.combustible.precioLitro}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
-								<p:outputLabel for="total" value="Importe total:"/>
-								<p:inputNumber id="total" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesLubricante.combustible.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0"/>
+								<p:outputLabel for="total" value="Importe total:" styleClass="janal-display-none"/>
+								<p:inputNumber id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{sakbeCombustiblesLubricante.combustible.total}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0"/>
                 <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{sakbeCombustiblesLubricante.combustible.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
                   <p:ajax event="change" process="@this" listener="#{sakbeCombustiblesLubricante.doCheckTipoMedioPago}" update="@(.banco)"/>

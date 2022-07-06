@@ -7,6 +7,63 @@
   </model>
 
   <dml>
+    <unit id="TcSakbeMaquinariasHerramientasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_herramientas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_maquinarias_herramientas
+        where      
+          id_maquinaria = {idMaquinaria} and id_herramienta = {idHerramienta}
+      </select>
+      <select id="maquinaria">
+        select      
+          tc_sakbe_maquinarias_herramientas.id_maquinaria_herramienta as id_key,
+          tc_sakbe_herramientas.nombre as herramienta,
+          tc_sakbe_maquinarias_herramientas.*
+        from      
+          tc_sakbe_maquinarias_herramientas
+        inner join
+          tc_sakbe_herramientas on tc_sakbe_maquinarias_herramientas.id_herramienta= tc_sakbe_herramientas.id_herramienta
+        where      
+          tc_sakbe_maquinarias_herramientas.id_maquinaria= {idMaquinaria}
+        order by
+          tc_sakbe_maquinarias_herramientas.id_herramienta
+      </select>
+      <delete id="rows">
+        delete from
+          tc_sakbe_maquinarias_herramientas
+        where      
+          id_maquinaria= {idMaquinaria}
+      </delete>      
+    </unit>    
+    <unit id="TcSakbeHerramientasDto">
+      <select id="row">
+        select      
+          tc_sakbe_herramientas.id_herramienta as id_key,
+          tc_sakbe_herramientas.*
+        from      
+          tc_sakbe_herramientas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_sakbe_herramientas
+        where      
+          clave = '{clave}'
+      </select>
+    </unit>    
     <unit id="TcSakbeServiciosDto">
       <select id="row">
         select      

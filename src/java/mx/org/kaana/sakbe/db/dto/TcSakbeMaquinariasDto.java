@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import sun.awt.image.SurfaceManager;
 
 /**
  *@company KAANA
@@ -581,14 +580,14 @@ public class TcSakbeMaquinariasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("ultimaTarjeta", getUltimaTarjeta());
 		regresar.put("responsable", getResponsable());
-		regresar.put("matenimiento", getMantenimiento());
+		regresar.put("mantenimiento", getMantenimiento());
 		regresar.put("diasTrabajo", getDiasTrabajo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
+    Object[] regresar = new Object[] {
       getMotor(), getProEnTarjeta(), getColor(), getPedimento(), getIdTipoMaquinaria(), getFechaFactura(), getNombre(), getPoliza(), getComprado(), getMarca(), getTotal(), getFactura(), getProReal(), getIva(), getProEnFactura(), getConstancia(), getTarjeta(), getIdMaquinariaEstatus(), getPlaca(), getIdOriginal(), getClave(), getModelo(), getTipo(), getRegistro(), getIdMaquinaria(), getIdConstancia(), getFacturado(), getIdUsuario(), getSubtotal(), getEntidad(), getSerie(), getObservaciones(), getIdEmpresa(), getUltimaTarjeta(), getResponsable(), getMantenimiento(), getDiasTrabajo()
     };
     return regresar;

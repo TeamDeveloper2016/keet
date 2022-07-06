@@ -16,7 +16,7 @@
         'contenedorGrupos\\:idEmpresa'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idDesarrollo'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave'            : {validaciones: 'requerido|alfanumerico|longitud({"min":3, "max":50})', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:nombre'           : {validaciones: 'requerido|texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:nombre'           : {validaciones: 'texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:marca'            : {validaciones: 'texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:serie'            : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:placa'            : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -53,7 +53,9 @@
         'idTipoCombustible': {multiple: '$', validaciones: 'requerido', mascara: 'libre'},
         'capacidad'        : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
         'rendimiento'      : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
-        'maximo'           : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'}
+        'maximo'           : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'},
+        'idHerramienta'    : {multiple: '$', validaciones: 'requerido', mascara: 'libre'},
+        'horas'            : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'}
 			};	
 			
     	$(document).ready(function() {
@@ -175,6 +177,7 @@
                     <h:outputText value="Combustible"/>
                   </f:facet>
                   <p:selectOneMenu id="idTipoCombustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                     <p:column headerText="Nombre">
                       <h:outputText value="#{item.nombre}"/>
@@ -185,25 +188,33 @@
                   <f:facet name="header">
                     <h:outputText value="Capacidad"/>
                   </f:facet>
-                  <p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                  <p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                    <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputNumber>  
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive janal-wid-8 rendimiento">		
                   <f:facet name="header">
                     <h:outputText value="Rendimiento"/>
                   </f:facet>
-                  <p:inputNumber id="rendimiento" styleClass="janal-wid-100-txt" value="#{row.rendimiento}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                  <p:inputNumber id="rendimiento" styleClass="janal-wid-100-txt" value="#{row.rendimiento}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                    <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputNumber>  
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive janal-wid-8 maximo">		
                   <f:facet name="header">
                     <h:outputText value="Máximo" title="Máximo LTS por semana"/>
                   </f:facet>
-                  <p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{row.maximo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0"/>
+                  <p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{row.maximo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                    <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputNumber>  
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive">		
                   <f:facet name="header">
                     <h:outputText value="Observaciones"/>
                   </f:facet>
-                  <p:inputText id="observaciones" styleClass="janal-wid-100-txt" value="#{row.observaciones}"/>
+                  <p:inputText id="observaciones" styleClass="janal-wid-100-txt" value="#{row.observaciones}">
+                    <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputText>  
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive janal-wid-3 janal-column-center">
                   <p:commandButton update="combustibles" icon="fa fa-trash" title="Eliminar" action="#{sakbeCatalogosMaquinariaAccion.doEliminar(row)}" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
@@ -211,6 +222,45 @@
                 </p:column>
                 <f:facet name="footer">
                   <p:commandButton actionListener="#{sakbeCatalogosMaquinariaAccion.doAgregar}" process="@this combustibles" update="combustibles" icon="fa fa-plus" oncomplete="janal.refresh()"/>						
+                </f:facet>
+              </p:dataTable>	
+						</p:tab>
+						<p:tab title="Herramientas">
+              <p:dataTable id="herramientas" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.herramientas}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaHerramienta}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                <p:column styleClass="MarAuto Responsive janal-wid-20 idHerramienta">		
+                  <f:facet name="header">
+                    <h:outputText value="Herramienta"/>
+                  </f:facet>
+                  <p:selectOneMenu id="idHerramienta" value="#{row.ikHerramienta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                    <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.herramientas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8 horas">		
+                  <f:facet name="header">
+                    <h:outputText value="Horas"/>
+                  </f:facet>
+                  <p:inputNumber id="horas" styleClass="janal-wid-100-txt" value="#{row.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                    <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputNumber>  
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive">		
+                  <f:facet name="header">
+                    <h:outputText value="Observaciones"/>
+                  </f:facet>
+                  <p:inputText id="observaciones" styleClass="janal-wid-100-txt" value="#{row.observaciones}">
+                    <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
+                  </p:inputText>  
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-wid-3 janal-column-center">
+                  <p:commandButton update="herramientas" icon="fa fa-trash" title="Eliminar" action="#{sakbeCatalogosMaquinariaAccion.doEliminar(row)}" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton update="herramientas" icon="fa fa-recycle" title="Recuperar" action="#{sakbeCatalogosMaquinariaAccion.doRecuperar(row)}" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:commandButton actionListener="#{sakbeCatalogosMaquinariaAccion.doSumar}" process="@this herramientas" update="herramientas" icon="fa fa-plus" oncomplete="janal.refresh()"/>						
                 </f:facet>
               </p:dataTable>	
 						</p:tab>
