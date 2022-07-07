@@ -65,7 +65,29 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
 			else
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
-			this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible")== null? (Objects.equals(opcionResidente, EOpcionesResidente.LUBRICANTE)? 3L: 1L): JsfBase.getFlashAttribute("ikTipoCombustible"));
+      this.attrs.put("ikTipoInsumo", "1,2,3,4"); 
+      if(JsfBase.getFlashAttribute("ikTipoCombustible")== null) {
+        switch(opcionResidente) {
+          case COMBUSTIBLES:
+          case DIESEL:
+            this.attrs.put("ikTipoCombustible", 1L);
+            this.attrs.put("ikTipoInsumo", 1L);
+            break;
+          case LUBRICANTE:
+            this.attrs.put("ikTipoCombustible", 3L);
+            this.attrs.put("ikTipoInsumo", "2,3");
+            break;
+          case HERRAMIENTA:
+            this.attrs.put("ikTipoCombustible", 4L);
+            this.attrs.put("ikTipoInsumo", 4L);
+            break;
+          default:
+            this.attrs.put("ikTipoCombustible", 1L);            
+            break;
+        } // switch
+      } // if  
+      else
+			  this.attrs.put("ikTipoCombustible", JsfBase.getFlashAttribute("ikTipoCombustible"));
 			this.attrs.put("seguimiento", JsfBase.getFlashAttribute("seguimiento")== null? "/Paginas/Sakbe/Suministros/visor": JsfBase.getFlashAttribute("seguimiento"));
 			this.attrs.put("idContratoEstatus", 8L);
 			this.attrs.put("titulo", opcionResidente.getTitulo());
@@ -183,15 +205,6 @@ public class Desarrollos extends IBaseFilter implements Serializable {
         JsfBase.setFlashAttribute("seguimiento", this.attrs.get("seguimiento"));
         JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=52df68e378f074");
         JsfBase.setFlashAttribute("opcionResidente", opcion);			
-//        String pagina= opcion.getRuta();
-//        if(pagina.indexOf("accion")> 0) {
-//          if(((UISelectEntity)this.attrs.get("ikTipoCombustible")).getKey()< 3L)
-//            pagina= pagina.concat(Constantes.REDIRECIONAR);			
-//          else {
-//            pagina= pagina.replace("accion", "lubricante").concat(Constantes.REDIRECIONAR);
-//          } // else          
-//        } // IF  
-//        regresar= pagina.concat(Constantes.REDIRECIONAR);			
         regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
       } // if
       else 
@@ -257,7 +270,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put("idTipoInsumo", this.attrs.get("ikTipoInsumo"));
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 
@@ -289,11 +302,22 @@ public class Desarrollos extends IBaseFilter implements Serializable {
       } // if
       this.attrs.put("porcentaje", this.toLoadCombustible());
  			EOpcionesResidente opcion= (EOpcionesResidente)this.attrs.get("opcionResidente");
-      if(Objects.equals(opcion, EOpcionesResidente.DIESEL) || Objects.equals(opcion, EOpcionesResidente.LUBRICANTE)) {
-        if(Objects.equals(idTipoCombustible.toLong("idTipoInsumo"), 1L))
-    			this.attrs.put("opcionResidente", EOpcionesResidente.DIESEL);
-        else  
-    			this.attrs.put("opcionResidente", EOpcionesResidente.LUBRICANTE);
+      if(Objects.equals(opcion, EOpcionesResidente.DIESEL) || Objects.equals(opcion, EOpcionesResidente.LUBRICANTE) || Objects.equals(opcion, EOpcionesResidente.HERRAMIENTA)) {
+        switch(idTipoCombustible.toLong("idTipoInsumo").intValue()) {
+          case 1:
+            this.attrs.put("opcionResidente", EOpcionesResidente.DIESEL);
+            break;
+          case 2:
+          case 3:
+      			this.attrs.put("opcionResidente", EOpcionesResidente.LUBRICANTE);
+            break;
+          case 4:
+      			this.attrs.put("opcionResidente", EOpcionesResidente.HERRAMIENTA);
+            break;
+          default:
+      			this.attrs.put("opcionResidente", EOpcionesResidente.DIESEL);
+            break;
+        } // switch
       } // if    
 		} // try
 		catch (Exception e) {			

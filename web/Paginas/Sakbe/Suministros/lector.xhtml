@@ -145,12 +145,18 @@
           <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakeSuministrosLector.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
             <f:facet name="header">
 							<div class="janal-column-left">
-								<p:outputLabel value="Combustibles, lubricantes y aceites registrados" styleClass="janal-color-white"/>
+								<p:outputLabel value="Combustibles, lubricantes, aceites y herramientas registrados" styleClass="janal-color-white"/>
 							</div>
             </f:facet>
+            <p:column styleClass="MarAuto Responsive janal-wid-10">		
+              <f:facet name="header">
+                <h:outputText value="Grupo"/>
+              </f:facet>
+              <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.grupo}"/>
+            </p:column>
             <p:column styleClass="MarAuto Responsive janal-wid-20">		
               <f:facet name="header">
-                <h:outputText value="Combustible"/>
+                <h:outputText value="Insumo"/>
               </f:facet>
               <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.combustible}"/>
             </p:column>

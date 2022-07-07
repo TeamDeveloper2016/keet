@@ -17,19 +17,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-@Named(value= "sakbeCombustiblesLubricante")
+@Named(value= "sakbeCombustiblesHerramienta")
 @ViewScoped
-public class Lubricante extends Accion implements IBaseStorage, Serializable {
+public class Herramienta extends Accion implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Lubricante.class);
-  private static final long serialVersionUID= 327393488565639327L;
+	private static final Log LOG              = LogFactory.getLog(Herramienta.class);
+  private static final long serialVersionUID= 327393483565639327L;
 
   @Override
 	protected void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
-			params.put("idTipoInsumo", "2,3");
+			params.put("idTipoInsumo", 4L);
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "tipo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 

@@ -453,10 +453,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private void toLoadTiposCombustibles() throws Exception {
 		List<UISelectEntity> tiposCombustibles= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put("idTipoInsumo", "1,2,3,4");
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
       if(!tiposCombustibles.isEmpty()) 

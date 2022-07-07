@@ -651,7 +651,7 @@
         inner join
           tc_sakbe_tipos_insumos on tc_sakbe_tipos_combustibles.id_tipo_insumo= tc_sakbe_tipos_insumos.id_tipo_insumo
         where 
-          tc_sakbe_tipos_combustibles.id_tipo_insumo= {idTipoInsumo} 
+          tc_sakbe_tipos_combustibles.id_tipo_insumo in ({idTipoInsumo})
         order by
           tc_sakbe_tipos_combustibles.nombre
       </select>
@@ -665,7 +665,7 @@
         inner join
           tc_sakbe_tipos_insumos on tc_sakbe_tipos_combustibles.id_tipo_insumo= tc_sakbe_tipos_insumos.id_tipo_insumo
         where 
-          tc_sakbe_tipos_combustibles.id_tipo_insumo= {idTipoInsumo} 
+          tc_sakbe_tipos_combustibles.id_tipo_insumo in ({idTipoInsumo})
         order by
           tc_sakbe_tipos_combustibles.id_tipo_combustible   
       </select>

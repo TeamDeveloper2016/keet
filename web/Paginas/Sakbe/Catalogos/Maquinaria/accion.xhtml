@@ -192,7 +192,7 @@
                   <f:facet name="header">
                     <h:outputText value="Capacidad"/>
                   </f:facet>
-                  <p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                  <p:inputNumber id="capacidad" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
                     <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                   </p:inputNumber>  
                 </p:column>	
@@ -250,7 +250,7 @@
                   <f:facet name="header">
                     <h:outputText value="Capacidad"/>
                   </f:facet>
-                  <p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                  <p:inputNumber id="capacidad" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
                     <p:ajax event="change" process="@this" update="@(.lubricantes)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                   </p:inputNumber>  
                 </p:column>	
@@ -304,15 +304,15 @@
                     </p:column>   
                   </p:selectOneMenu>
                 </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-8 capacidad" rendered="false">		
+                <p:column styleClass="MarAuto Responsive janal-wid-8 capacidad">		
                   <f:facet name="header">
                     <h:outputText value="Capacidad"/>
                   </f:facet>
-                  <p:inputNumber id="litros" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
+                  <p:inputNumber id="capacidad" styleClass="janal-wid-100-txt" value="#{row.capacidad}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
                     <p:ajax event="change" process="@this" update="@(.aceites)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                   </p:inputNumber>  
                 </p:column>	
-                <p:column styleClass="MarAuto Responsive janal-wid-8 rendimiento" rendered="false">		
+                <p:column styleClass="MarAuto Responsive janal-wid-8 rendimiento">		
                   <f:facet name="header">
                     <h:outputText value="Rendimiento"/>
                   </f:facet>
@@ -322,7 +322,7 @@
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive janal-wid-8 maximo">		
                   <f:facet name="header">
-                    <h:outputText value="Horas" title="Máximo horas para cambio"/>
+                    <h:outputText value="Máximo" title="Máximo LTS semana"/>
                   </f:facet>
                   <p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{row.maximo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
                     <p:ajax event="change" process="@this" update="@(.aceites)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
@@ -362,7 +362,7 @@
                     </p:column>   
                   </p:selectOneMenu>
                 </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-8 capacidad">		
+                <p:column styleClass="MarAuto Responsive janal-wid-8 capacidad" rendered="false">		
                   <f:facet name="header">
                     <h:outputText value="Capacidad"/>
                   </f:facet>
@@ -370,7 +370,7 @@
                     <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                   </p:inputNumber>  
                 </p:column>	
-                <p:column styleClass="MarAuto Responsive janal-wid-8 rendimiento">		
+                <p:column styleClass="MarAuto Responsive janal-wid-8 rendimiento" rendered="false">		
                   <f:facet name="header">
                     <h:outputText value="Rendimiento"/>
                   </f:facet>
@@ -380,7 +380,7 @@
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive janal-wid-8 maximo">		
                   <f:facet name="header">
-                    <h:outputText value="Máximo" title="Máximo LTS por semana"/>
+                    <h:outputText value="Horas" title="Horas para el cambio"/>
                   </f:facet>
                   <p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{row.maximo}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center" minValue="0">
                     <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
