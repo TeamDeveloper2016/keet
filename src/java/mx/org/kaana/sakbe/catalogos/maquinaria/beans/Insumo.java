@@ -21,6 +21,8 @@ public class Insumo extends TcSakbeMaquinariasInsumosDto implements Serializable
 
   private UISelectEntity ikTipoCombustible;
   private String combustible;
+  private Long idTipoInsumo;
+  private String grupo;
   private ESql sql;
 
   public Insumo() {
@@ -39,6 +41,8 @@ public class Insumo extends TcSakbeMaquinariasInsumosDto implements Serializable
       1D // Double maximo
     );
     this.ikTipoCombustible= new UISelectEntity(this.getIdTipoCombustible());
+    this.idTipoInsumo= -1L;
+    this.grupo= "";
     this.sql= ESql.INSERT;
   }
 
@@ -48,7 +52,7 @@ public class Insumo extends TcSakbeMaquinariasInsumosDto implements Serializable
 
   public void setIkTipoCombustible(UISelectEntity ikTipoCombustible) {
     this.ikTipoCombustible = ikTipoCombustible;
-		if(this.ikTipoCombustible!= null)
+		if(this.ikTipoCombustible!= null) 
 		  this.setIdTipoCombustible(this.ikTipoCombustible.getKey());
   }
 
@@ -66,6 +70,22 @@ public class Insumo extends TcSakbeMaquinariasInsumosDto implements Serializable
 
   public void setSql(ESql sql) {
     this.sql = sql;
+  }
+
+  public Long getIdTipoInsumo() {
+    return idTipoInsumo;
+  }
+
+  public void setIdTipoInsumo(Long idTipoInsumo) {
+    this.idTipoInsumo = idTipoInsumo;
+  }
+
+  public String getGrupo() {
+    return grupo;
+  }
+
+  public void setGrupo(String grupo) {
+    this.grupo = grupo;
   }
   
   @Override

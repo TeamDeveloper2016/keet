@@ -128,7 +128,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			this.toLoadCatalogos();
       this.doLoadDesarrollos();
       this.toLoadTiposCombustibles();
-      this.toLoadHerramientas();
+      // this.toLoadHerramientas();
       this.toLoadMaquinariasGrupos();
     } // try
     catch (Exception e) {
@@ -198,12 +198,21 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	} // doLoadDesarrollos
   
 	private void toLoadTiposCombustibles() {
-		List<UISelectEntity> tiposCombustibles= null;
-		Map<String, Object>params             = new HashMap<>();
+		List<UISelectEntity> insumo= null;
+		Map<String, Object>params  = new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposCombustibles= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre");
-			this.attrs.put("tiposCombustibles", tiposCombustibles);
+			params.put("idTipoInsumo", 1L);
+			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			this.attrs.put("combustibles", insumo);
+			params.put("idTipoInsumo", 2L);
+			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			this.attrs.put("lubricantes", insumo);
+			params.put("idTipoInsumo", 3L);
+			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			this.attrs.put("aceites", insumo);
+			params.put("idTipoInsumo", 4L);
+			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			this.attrs.put("herramientas", insumo);
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -357,9 +366,24 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		  this.toSaveRecord();
 	} // doGlobalEvent
 
-  public void doAgregar() {
+  public void doAgregar(Long idTipoInsumo) {
     try {      
       this.insumos.add(new Insumo());
+      this.insumos.get(this.insumos.size()- 1).setIdTipoInsumo(idTipoInsumo);
+      switch(idTipoInsumo.intValue()) {
+        case 1:
+          this.insumos.get(this.insumos.size()- 1).setGrupo("COMBUSTIBLES");
+          break;
+        case 2:
+          this.insumos.get(this.insumos.size()- 1).setGrupo("LUBRICANTES");
+          break;
+        case 3:
+          this.insumos.get(this.insumos.size()- 1).setGrupo("ACEITES");
+          break;
+        case 4:
+          this.insumos.get(this.insumos.size()- 1).setGrupo("HERRAMIENTAS");
+          break;
+      } // switch
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -477,4 +501,15 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     return regresar;
   }
 
+  public String doColor(Insumo row, Long grupo) {
+    String regresar= "";
+    try {      
+      regresar= Objects.equals(row.getIdTipoInsumo(), grupo)? "": "janal-display-none";
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
 }
