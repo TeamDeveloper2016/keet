@@ -568,7 +568,6 @@
           tc_keet_desarrollos on tr_sakbe_maquinaria_desarrollo.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where 
           tc_sakbe_maquinarias.clave= '{clave}' 
-          and tc_sakbe_maquinarias_insumos.id_tipo_combustible= {idTipoCombustible}
       </select>  
       <select id="igual">
         select      

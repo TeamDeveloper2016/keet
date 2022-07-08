@@ -65,7 +65,7 @@
               </p:selectOneMenu>
               <p:panelGrid columns="3" styleClass="janal-wid-100-txt">
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                  <p:outputLabel value="#{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'Pieza(s)': 'Litro(s)'}:" styleClass="avance"/>
+                  <p:outputLabel value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'Pieza(s)': 'Litro(s)'}:" styleClass="avance"/>
                   <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
@@ -73,18 +73,18 @@
                   <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.saldo}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                  <p:outputLabel value="Tickets:"/>
+                  <p:outputLabel value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'Factura(s)': 'Ticket(s)'}:" styleClass="avance"/>
                   <p:inputText value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
               </p:panelGrid>  
-              <p:progressBar value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesDesarrollos.attrs.porcentaje.saldo} #{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'PZA': 'LTS'} #{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+              <p:progressBar value="#{sakbeCombustiblesDesarrollos.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [ #{sakbeCombustiblesDesarrollos.attrs.porcentaje.saldo} #{sakbeCombustiblesDesarrollos.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'PZA': 'LTS'} #{sakbeCombustiblesDesarrollos.attrs.porcentaje.combustible} ]" displayOnly="true" style="background:red;" styleClass="avance"/>
 						</p:tab>
 					</p:accordionPanel>           					
           <p:dataGrid id="tabla" var="item" value="#{sakbeCombustiblesDesarrollos.desarrollos}" columns="3" layout="grid" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{sakbeCombustiblesDesarrollos.desarrollos.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{item.nombres}" style="width:100%;" >
 							<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">										
 								<p:commandLink id="ayuda" action="#{sakbeCombustiblesDesarrollos.doPagina(item)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
-									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
+									<p:graphicImage width="200px" height="70px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
 									<f:setPropertyActionListener value="#{item}" target="#{sakbeCombustiblesDesarrollos.seleccionado}"  />
 								</p:commandLink>										                    
 								<h:outputText value="Clave: #{item.clave}" styleClass="FontBold Fs18 janal-color-blue"/>

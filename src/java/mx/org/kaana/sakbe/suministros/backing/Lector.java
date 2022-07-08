@@ -89,9 +89,9 @@ public class Lector extends IBaseFilter implements Serializable {
           );
           if(!Objects.equals(maquinaria.toLong("idDesarrollo"), (Long)this.attrs.get("idDesarrollo")))
             JsfBase.addMessage("Precación", "Esta maquinaria esta asignada al desarrollo: "+ maquinaria.toString("desarrollo"));
-          else
-            if(!Objects.equals(maquinaria.toLong("idTipoCombustible"), (Long)this.attrs.get("idTipoCombustible")))
-              JsfBase.addMessage("Precación", "Esta maquinaria usa combustible: "+ maquinaria.toString("combustible"));
+//          else
+//            if(!Objects.equals(maquinaria.toLong("idTipoCombustible"), (Long)this.attrs.get("idTipoCombustible")))
+//              JsfBase.addMessage("Precación", "Esta maquinaria usa combustible: "+ maquinaria.toString("combustible"));
           
           params.put("idMaquinaria", maquinaria.toLong("idMaquinaria"));
           this.insumos= (List<Insumo>)DaoFactory.getInstance().toEntitySet(Insumo.class, "TcSakbeMaquinariasInsumosDto", "maquinaria", params);

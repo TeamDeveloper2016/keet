@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -318,16 +317,30 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String doSuministros() {
-    String regresar= null;
+    String regresar = null;
+    int idTipoInsumo= 1;
     try {      
+      UISelectEntity idTipoCombustible= (UISelectEntity)this.attrs.get("idTipoCombustible");
       JsfBase.setFlashAttribute("seguimiento", "/Paginas/Sakbe/Combustibles/visor");
-      JsfBase.setFlashAttribute("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      JsfBase.setFlashAttribute("ikTipoCombustible", idTipoCombustible.getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Combustibles/visor");
       Entity row= (Entity)this.attrs.get("combustible");
-      if(row==null || Objects.equals(row.toLong("idTipoInsumo"), 1L))
-        regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
+      if(row==null)
+        idTipoInsumo= idTipoCombustible.toLong("idTipoInsumo").intValue();
       else
-        regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=aabf54d864e06de06ef006");
+        idTipoInsumo= row.toLong("idTipoInsumo").intValue();
+      switch(idTipoInsumo) {
+        case 1:
+          regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=52df68e378f074");
+          break;
+        case 2:
+        case 3:
+          regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=aabf54d864e06de06ef006");
+          break;
+        case 4:
+          regresar= "/Paginas/Sakbe/Combustibles/desarrollos.jsf".concat(Constantes.REDIRECIONAR).concat("&opcion=a8b9bf5ce16ef272f677fb0d");
+          break;
+      } // switch
     } // try
     catch (Exception e) {
       Error.mensaje(e);

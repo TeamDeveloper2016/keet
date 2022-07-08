@@ -96,7 +96,7 @@
 						<p:outputLabel value="EL SUMINISTRO DE COMBUSTIBLE [#{sakbeSuministrosLubricante.suministro.consecutivo}] SE (AUTO)GUARDO EL DIA #{sakbeSuministrosLubricante.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeSuministrosLubricante.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
           <p:accordionPanel id="criterio" multiple="true" dynamic="true">
-						<p:tab id="avance" title="Litros disponibles:">
+						<p:tab id="avance" title="Litro(s) disponible(s):">
               <p:panelGrid columns="3" styleClass="janal-wid-100">
                 <p:panelGrid columns="1" styleClass="janal-wid-100">
                   <p:outputLabel value="Litro(s):"/>
@@ -111,7 +111,7 @@
                   <p:inputText value="#{sakbeSuministrosLubricante.attrs.porcentaje.tickets}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                 </p:panelGrid>  
               </p:panelGrid>  
-              <p:progressBar value="#{sakbeSuministrosLubricante.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeSuministrosLubricante.attrs.porcentaje.dinamico} LTS #{sakbeSuministrosLubricante.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+              <p:progressBar value="#{sakbeSuministrosLubricante.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [ #{sakbeSuministrosLubricante.attrs.porcentaje.dinamico} LTS #{sakbeSuministrosLubricante.attrs.porcentaje.combustible} ]" displayOnly="true" style="background:red;" styleClass="avance"/>
 						</p:tab>
 					</p:accordionPanel>           					
           <p:tabView id="contenedorGrupos" widgetVar="wcontenedor" activeIndex="#{sakbeSuministrosLubricante.attrs.index}">
@@ -143,7 +143,7 @@
                       <h:outputText value="#{item.rendimiento}"/>
                     </p:column>   
                   </p:selectOneMenu>
-                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosLubricante.doLector}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
+                  <p:commandButton icon="fa fa-qrcode" title="Consultar maquinaria (QR)" action="#{sakbeSuministrosLubricante.doLector('lubricante')}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>  
                 <p:outputLabel for="lecturaActual" value="Lectura actual: (Horómetro)" styleClass=""/>
 								<p:inputNumber id="lecturaActual" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaActual}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
@@ -153,7 +153,7 @@
 								<p:inputNumber id="lecturaNueva" styleClass="janal-wid-100-txt" value="#{sakbeSuministrosLubricante.suministro.lecturaNueva}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeSuministrosLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
-								<p:outputLabel for="litros" value="Litros:"/>
+								<p:outputLabel for="litros" value="Litro(s):"/>
 								<p:inputNumber id="litros" styleClass="janal-wid-100-txt avance" value="#{sakbeSuministrosLubricante.suministro.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-font-bold janal-color-orange" minValue="0">
                   <p:ajax event="change" process="@this" update="criterio criterio:avance @(.avance)" listener="#{sakbeSuministrosLubricante.doUpdateLitros}"/>
                 </p:inputNumber>								
@@ -161,7 +161,7 @@
 								<p:inputText id="recibio" value="#{sakbeSuministrosLubricante.suministro.recibio}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="horas" value="Horas trabajada(s) o kilometraje:"/>
 								<p:inputNumber id="horas" styleClass="janal-wid-100-" value="#{sakbeSuministrosLubricante.suministro.horas}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0"/>
-								<p:outputLabel for="idPatrocinado" value="Combustible patrocinado:"/>
+								<p:outputLabel for="idPatrocinado" value="Lubricante patrocinado:"/>
                 <p:selectOneMenu id="idPatrocinado" value="#{sakbeSuministrosLubricante.suministro.idPatrocinado}" styleClass="janal-wid-100-txt" converter="javax.faces.Long">
                   <f:selectItem itemLabel="SI" itemValue="1"/>
                   <f:selectItem itemLabel="NO" itemValue="2"/>
@@ -183,7 +183,7 @@
                 </f:facet>
                 <p:column styleClass="MarAuto Responsive janal-wid-20">		
                   <f:facet name="header">
-                    <h:outputText value="Insumo"/>
+                    <h:outputText value="Insumo(s)"/>
                   </f:facet>
                   <p:outputLabel styleClass="janal-wid-100-txt janal-color-black" value="#{row.combustible}"/>
                 </p:column>
@@ -240,70 +240,6 @@
 								</p:column>   								
 							</p:dataTable>
 						</p:tab>
-						<p:tab title="Historial">
-              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeSuministrosLubricante.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeSuministrosLubricante.lazyModel.rowCount gt sakbeSuministrosLubricante.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-                <f:facet name="header">
-                  <h:outputText value="Historial de suministros registrados" styleClass="janal-color-white janal-float-left"/>
-                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                  </p:menuButton>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
-                </f:facet>	            
-                <p:column styleClass="MarAuto Responsive janal-wid-2">
-                  <f:facet name="header">
-                    <h:outputText value="No."/>
-                  </f:facet>
-                  <h:outputText value="#{index+ 1}."/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
-                  <f:facet name="header">
-                    <h:outputText value="Desarrollo"/>
-                  </f:facet>
-                  <h:outputText value="#{row['desarrollo']}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-5" sortBy="#{row.clave}">
-                  <f:facet name="header">
-                    <h:outputText value="Clave"/>
-                  </f:facet>
-                  <h:outputText value="#{row['clave']}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive" sortBy="#{row.grupo}">
-                  <f:facet name="header">
-                    <h:outputText value="Grupo"/>
-                  </f:facet>
-                  <h:outputText value="#{row['grupo']}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.combustible}">
-                  <f:facet name="header">
-                    <h:outputText value="Lubricante"/>
-                  </f:facet>
-                  <h:outputText value="#{row['combustible']}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
-                  <f:facet name="header">
-                    <h:outputText value="Litros"/>
-                  </f:facet>
-                  <h:outputText value="#{row['litros']}"/>
-                </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fecha}">
-                  <f:facet name="header">
-                    <h:outputText value="Fecha"/>
-                  </f:facet>
-                  <h:outputText value="#{row['fecha']}"/>
-                </p:column>
-                <f:facet name="footer">
-                  <p:outputLabel value="Total [#{sakbeSuministrosLubricante.lazyModel== null? 0: sakbeSuministrosLubricante.lazyModel.rowCount}] registros"/>
-                </f:facet>
-              </p:dataTable>
-              <h:commandLink id="dataXPdf">
-                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
-              </h:commandLink>
-              <h:commandLink id="dataXXls">
-                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-              </h:commandLink>	              
-						</p:tab>
 						<p:tab title="Evidencia">
               <p:dataTable id="importados" var="row" value="#{sakbeSuministrosLubricante.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.id}" styleClass="cargados" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
@@ -341,6 +277,70 @@
 								</f:facet>
 							</p:dataTable>
 						</p:tab>						            						            																																																
+						<p:tab title="Historial">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="recalculo janal-wid-100-txt" value="#{sakbeSuministrosLubricante.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{sakbeSuministrosLubricante.lazyModel.rowCount gt sakbeSuministrosLubricante.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <h:outputText value="Historial de suministros registrados" styleClass="janal-color-white janal-float-left"/>
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataXPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+                </f:facet>	            
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+                  <f:facet name="header">
+                    <h:outputText value="Desarrollo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['desarrollo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5" sortBy="#{row.clave}">
+                  <f:facet name="header">
+                    <h:outputText value="Clave"/>
+                  </f:facet>
+                  <h:outputText value="#{row['clave']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.grupo}">
+                  <f:facet name="header">
+                    <h:outputText value="Grupo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['grupo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.combustible}">
+                  <f:facet name="header">
+                    <h:outputText value="Lubricante"/>
+                  </f:facet>
+                  <h:outputText value="#{row['combustible']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
+                  <f:facet name="header">
+                    <h:outputText value="Litro(s)"/>
+                  </f:facet>
+                  <h:outputText value="#{row['litros']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fecha}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['fecha']}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{sakbeSuministrosLubricante.lazyModel== null? 0: sakbeSuministrosLubricante.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataXPdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXXls">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>	              
+						</p:tab>
           </p:tabView>
 				</div>
 			</div>

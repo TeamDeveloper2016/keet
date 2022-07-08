@@ -522,7 +522,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     this.toLoadHistorial();
   }
  
-	public String doLector() {
+	public String doLector(String pagina) {
     String regresar= null;    				
     try {									
 			JsfBase.setFlashAttribute("accion", this.accion);		
@@ -534,7 +534,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       JsfBase.setFlashAttribute("porcentaje", this.attrs.get("porcentaje"));
       JsfBase.setFlashAttribute("desarrollo", this.attrs.get("desarrollo"));
       JsfBase.setFlashAttribute("regresar", this.attrs.get("retorno"));
-      JsfBase.setFlashAttribute("retorno", "accion");
+      JsfBase.setFlashAttribute("retorno", pagina);
  			regresar= "lector".concat(Constantes.REDIRECIONAR);										
 		} // try
 		catch (Exception e) {

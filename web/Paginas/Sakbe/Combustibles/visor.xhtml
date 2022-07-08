@@ -85,7 +85,7 @@
                   </p:panelGrid>  
                 </p:panelGrid>  
  								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministros()}">
-                  <p:progressBar value="#{sakbeCombustiblesVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesVisor.attrs.porcentaje.saldo} #{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'PZA': 'LTS'} #{sakbeCombustiblesVisor.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+                  <p:progressBar value="#{sakbeCombustiblesVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [ #{sakbeCombustiblesVisor.attrs.porcentaje.saldo} #{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'PZA': 'LTS'} #{sakbeCombustiblesVisor.attrs.porcentaje.combustible} ]" displayOnly="true" style="background:red;" styleClass="avance"/>
                 </p:commandLink>  
               </p:panelGrid>   
 						</p:tab>

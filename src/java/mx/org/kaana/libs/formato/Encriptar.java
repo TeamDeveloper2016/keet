@@ -162,7 +162,7 @@ public final class Encriptar {
     String texto = encriptado.encriptar("HERRAMIENTA", _CLAVE);
     //LOG.debug("encriptado: " + texto);
     //LOG.debug(texto);
-    //String texto= encriptado.desencriptar("e661f7021e3dcf64e41a5392d5", _CLAVE);
+    //String texto= encriptado.desencriptar("4edc5ffc0302021e1e", _CLAVE);
     System.out.println(texto);
     //LOG.debug("\u0053\u0049\u0041\u004E\u004F\u004D\u0049\u004E\u0041\u0032\u0030\u0030\u0035");
     //encriptado.des
