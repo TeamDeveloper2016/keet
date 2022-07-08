@@ -427,7 +427,6 @@
         select      
           tc_sakbe_combustibles.id_combustible as id_key,
           tc_sakbe_combustibles.litros as litrox,
-          tc_sakbe_combustibles.id_patrocinado as id_patrocinadox,
           tc_sakbe_combustibles.*
         from      
           tc_sakbe_combustibles
@@ -491,6 +490,8 @@
       <select id="igual">
         select      
           tc_sakbe_suministros.id_suministro as id_key,
+          tc_sakbe_suministros.litros as litrox,
+          tc_sakbe_suministros.id_patrocinado as id_patrocinadox        
           tc_sakbe_suministros.*
         from      
           tc_sakbe_suministros
@@ -653,6 +654,7 @@
         where 
           tc_sakbe_tipos_combustibles.id_tipo_insumo in ({idTipoInsumo})
         order by
+          tc_sakbe_tipos_insumos.nombre,
           tc_sakbe_tipos_combustibles.nombre
       </select>
       <select id="tipo">
@@ -667,7 +669,8 @@
         where 
           tc_sakbe_tipos_combustibles.id_tipo_insumo in ({idTipoInsumo})
         order by
-          tc_sakbe_tipos_combustibles.id_tipo_combustible   
+          tc_sakbe_tipos_insumos.nombre,
+          tc_sakbe_tipos_combustibles.nombre
       </select>
       <select id="grupo">
         select      

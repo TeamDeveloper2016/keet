@@ -424,11 +424,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));
+      params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));      
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
       if(regresar== null || regresar.isEmpty()) {
         regresar= new Entity(-1L);
+        regresar.put("idTipoInsumo", new Value("idTipoInsumo", ((UISelectEntity)this.attrs.get("idTipoCombustible")).toLong("idTipoInsumo")));
         regresar.put("saldo", new Value("saldo", 0D));
         regresar.put("litros", new Value("litros", 0D));
         regresar.put("tickets", new Value("tickets", 0D));
@@ -472,9 +473,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // toLoadTiposCombustibles 
   
-  public void doLoadPorcentajes() throws Exception {
-    this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
-    this.attrs.put("porcentaje", this.toLoadCombustible());
+  public void doLoadPorcentajes() {
+    try {
+      List<UISelectEntity> insumos= (List<UISelectEntity>) this.attrs.get("tiposCombustibles");
+      if (insumos!= null && !insumos.isEmpty()) {
+        int index = insumos.indexOf((UISelectEntity) this.attrs.get("idTipoCombustible"));
+        if (index >= 0) 
+          this.attrs.put("idTipoCombustible", insumos.get(index));
+      } // if
+      this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      this.attrs.put("porcentaje", this.toLoadCombustible());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

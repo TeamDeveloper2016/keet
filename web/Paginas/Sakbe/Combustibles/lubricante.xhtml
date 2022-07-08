@@ -87,13 +87,23 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
+                <p:outputLabel for="idTipoCombustible" value="Lubricante:"/>
+                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesLubricante.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCombustiblesLubricante.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Tipo">
+                    <h:outputText value="#{item.grupo}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
 								<p:outputLabel for="ticket" value="Factura:"/>
 								<p:inputText id="ticket" value="#{sakbeCombustiblesLubricante.combustible.ticket}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="lugar" value="Proveedor:"/>
 								<p:inputText id="lugar" value="#{sakbeCombustiblesLubricante.combustible.lugar}" styleClass="janal-wid-100-txt"/>
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesLubricante.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
-								<p:outputLabel for="litros" value="Litros:"/>
+								<p:outputLabel for="litros" value="Litro(s):"/>
 								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesLubricante.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesLubricante.doUpdateTotal}"/>
                 </p:inputNumber>  
@@ -126,16 +136,6 @@
                 </p:selectOneMenu>
                 <p:outputLabel for="referencia" value="Referencia:" styleClass="banco" style="display: #{sakbeCombustiblesLubricante.attrs.isBanco? '': 'none'}"/>
                 <p:inputText id="referencia" value="#{sakbeCombustiblesLubricante.combustible.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" style="display: #{sakbeCombustiblesLubricante.attrs.isBanco? '': 'none'}"/>
-                <p:outputLabel for="idTipoCombustible" value="Lubricante:"/>
-                <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesLubricante.combustible.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{sakbeCombustiblesLubricante.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                  <p:column headerText="Tipo">
-                    <h:outputText value="#{item.grupo}"/>
-                  </p:column>   
-                </p:selectOneMenu>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
   							<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{sakbeCombustiblesLubricante.combustible.observaciones}"/>
                 <p:outputLabel for="evidencias" value="Evidencia(s):"/>
@@ -254,7 +254,7 @@
                 </p:column>
                 <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.litros}">
                   <f:facet name="header">
-                    <h:outputText value="Litros"/>
+                    <h:outputText value="Litro(s)"/>
                   </f:facet>
                   <h:outputText value="#{row['litros']}"/>
                 </p:column>

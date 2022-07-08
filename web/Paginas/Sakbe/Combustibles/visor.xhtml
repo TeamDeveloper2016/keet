@@ -57,19 +57,22 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
 					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
-						<p:tab id="avance" title="Litros disponibles:">
+            <p:tab id="avance" title="Litro(s)/Pieza(s) disponible(s):">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-                <p:outputLabel for="idTipoCombustible" value="Combustible:"/>
+                <p:outputLabel for="idTipoCombustible" value="Insumo:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesVisor.doLoadPorcentajes}"/>
                   <f:selectItems value="#{sakbeCombustiblesVisor.attrs.tiposCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Tipo">
+                    <h:outputText value="#{item.grupo}"/>
+                  </p:column>   
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
                 <p:panelGrid columns="3" styleClass="janal-wid-100">
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
-								    <p:outputLabel value="Litro(s):"/>
+								    <p:outputLabel value="#{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'Pieza(s)': 'Litro(s)'}:" styleClass="avance"/>
                     <p:inputText value="#{sakbeCombustiblesVisor.attrs.porcentaje.litros}" styleClass="janal-wid-100-txt janal-column-center avance" readonly="true"/>  
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -82,7 +85,7 @@
                   </p:panelGrid>  
                 </p:panelGrid>  
  								<p:commandLink process="@this" update="tabla" title="Modificar" action="#{sakbeCombustiblesVisor.doSuministros()}">
-                  <p:progressBar value="#{sakbeCombustiblesVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesVisor.attrs.porcentaje.saldo} LTS #{sakbeCombustiblesVisor.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
+                  <p:progressBar value="#{sakbeCombustiblesVisor.attrs.porcentaje.porcentaje.toLong}" labelTemplate="{value}% [#{sakbeCombustiblesVisor.attrs.porcentaje.saldo} #{sakbeCombustiblesVisor.attrs.porcentaje.idTipoInsumo.toLong eq 4? 'PZA': 'LTS'} #{sakbeCombustiblesVisor.attrs.porcentaje.combustible}]" displayOnly="true" style="background:red;" styleClass="avance"/>
                 </p:commandLink>  
               </p:panelGrid>   
 						</p:tab>
@@ -101,6 +104,9 @@
                 <p:outputLabel for="ixTipoCombustible" value="Combustible:"/>
                 <p:selectOneMenu id="ixTipoCombustible" value="#{sakbeCombustiblesVisor.attrs.ixTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{sakbeCombustiblesVisor.attrs.itemsCombustibles}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Tipo">
+                    <h:outputText value="#{item.grupo}"/>
+                  </p:column>   
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
@@ -137,9 +143,9 @@
               <div class="janal-wid-100">
                 <span class="janal-float-left">
                   <p:commandButton title="Suministrar" icon="fa fa-gas-pump" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doSuministros()}" process="@this" styleClass="janal-text-white"/>
-                  <p:commandButton title="Agregar combustible" icon="fa fa-burn" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
-                  <p:commandButton title="Agregar lubricante" icon="fa fa-oil-can" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doLubricante('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
-                  <p:commandButton title="Agregar herramienta" icon="fa fa-tools" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doHerramienta('AGREGAR')}" process="@this" styleClass="janal-text-white"/>
+                  <p:commandButton title="Agregar combustible" icon="fa fa-burn" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR', 'accion')}" process="@this" styleClass="janal-text-white"/>
+                  <p:commandButton title="Agregar lubricante" icon="fa fa-oil-can" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR', 'lubricante')}" process="@this" styleClass="janal-text-white"/>
+                  <p:commandButton title="Agregar herramienta" icon="fa fa-tools" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" action="#{sakbeCombustiblesVisor.doAccion('AGREGAR', 'herramienta')}" process="@this" styleClass="janal-text-white"/>
                 </span>  
                 <span class="janal-align-right">  
                   <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{sakbeCombustiblesVisor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>

@@ -116,12 +116,25 @@ public class Filtro extends IBaseFilter implements Serializable {
     UIBackingUtilities.resetDataTable();
   }
   
-  public String doModificar(Entity seleccionado) {
-    this.attrs.put("seleccionado", seleccionado);
-    return this.doAccion("MODIFICAR");
+  public String doModificar(Entity row) {
+    String pagina= "accion";
+    this.attrs.put("seleccionado", row);
+    switch(row.toLong("idTipoInsumo").intValue()) {
+      case 1:
+        pagina= "accion";
+        break;
+      case 2:
+      case 3:
+        pagina= "lubricante";
+        break;
+      case 4:
+        pagina= "herramienta";
+        break;
+    } // switch
+    return this.doAccion("MODIFICAR", pagina);
   }
   
-  public String doAccion(String accion) {
+  public String doAccion(String accion, String pagina) {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
@@ -133,38 +146,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Sakbe/Combustibles/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Sakbe/Combustibles/".concat(pagina).concat(Constantes.REDIRECIONAR);
   } // doAccion  
-	
-  public String doLubricante(String accion) {
-    EAccion eaccion= null;
-		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", this.toPagina());		
-			JsfBase.setFlashAttribute("idCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return "/Paginas/Sakbe/Combustibles/lubricante".concat(Constantes.REDIRECIONAR);
-  } // doLubricante  
-	
-  public String doHerramientas(String accion) {
-    EAccion eaccion= null;
-		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", this.toPagina());		
-			JsfBase.setFlashAttribute("idCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return "/Paginas/Sakbe/Combustibles/herramienta".concat(Constantes.REDIRECIONAR);
-  } // doHerramientas  
 	
   public String toPagina() {
     return "/Paginas/Sakbe/Combustibles/filtro";
@@ -357,9 +340,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			this.attrs.put("itemsCombustibles", UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "row", params, "nombre"));
-			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "row", params);
+			params.put("idTipoInsumo", "1,2,3,4");
+			this.attrs.put("itemsCombustibles", UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "nombre"));
+			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
 			this.attrs.put("idTipoCombustible", tiposCombustibles.get(0));
       if(!tiposCombustibles.isEmpty()) 
@@ -380,12 +363,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   private Entity toLoadCombustible() {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
-    try {      
+    try {   
       params.put("idTipoCombustible", this.attrs.get("ikTipoCombustible"));      
       params.put("disponibles", ECombustiblesEstatus.ACEPTADO.getKey()+ ","+ ECombustiblesEstatus.EN_PROCESO.getKey());      
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
       if(regresar== null || regresar.isEmpty()) {
         regresar= new Entity(-1L);
+        regresar.put("idTipoInsumo", new Value("idTipoInsumo", ((UISelectEntity)this.attrs.get("idTipoCombustible")).toLong("idTipoInsumo")));
         regresar.put("saldo", new Value("saldo", 0D));
         regresar.put("litros", new Value("litros", 0D));
         regresar.put("tickets", new Value("tickets", 0D));
@@ -401,9 +385,21 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   }
 
-  public void doLoadPorcentajes() throws Exception {
-    this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
-    this.attrs.put("porcentaje", this.toLoadCombustible());
+  public void doLoadPorcentajes() {
+    try {
+      List<UISelectEntity> insumos= (List<UISelectEntity>) this.attrs.get("tiposCombustibles");
+      if (insumos!= null && !insumos.isEmpty()) {
+        int index = insumos.indexOf((UISelectEntity) this.attrs.get("idTipoCombustible"));
+        if (index >= 0) 
+          this.attrs.put("idTipoCombustible", insumos.get(index));
+      } // if
+      this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+      this.attrs.put("porcentaje", this.toLoadCombustible());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 	public String doMovimientos() {

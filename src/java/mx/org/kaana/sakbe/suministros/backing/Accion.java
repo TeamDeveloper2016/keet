@@ -486,6 +486,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaCombustiblesDto", "litros", params);
       if(regresar== null || regresar.isEmpty()) {
         regresar= new Entity(-1L);
+        regresar.put("idTipoInsumo", new Value("idTipoInsumo", 1L));
         regresar.put("saldo", new Value("saldo", 0D));
         regresar.put("litros", new Value("litros", 0D));
         regresar.put("tickets", new Value("tickets", 0D));
