@@ -174,12 +174,24 @@
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Especificación">
-              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeSuministrosAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt maquinaria" rowIndexVar="index" var="row" value="#{sakbeSuministrosAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
                 <f:facet name="header">
                   <div class="janal-column-left">
                     <p:outputLabel value="Combustibles, lubricantes, aceites y herramientas registrados" styleClass="janal-color-white"/>
                   </div>
                 </f:facet>
+                <p:column styleClass="MarAuto Responsive janal-wid-2">		
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <p:outputLabel value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-15">		
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.grupo}"/>
+                </p:column>
                 <p:column styleClass="MarAuto Responsive janal-wid-20">		
                   <f:facet name="header">
                     <h:outputText value="Insumo(s)"/>
@@ -188,7 +200,7 @@
                 </p:column>
                 <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
                   <f:facet name="header">
-                    <h:outputText value="Capacidad"/>
+                    <h:outputText value="Horas/Capacidad"/>
                   </f:facet>
                   <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.capacidad}"/>
                 </p:column>	
@@ -197,6 +209,12 @@
                     <h:outputText value="Rendimiento"/>
                   </f:facet>
                   <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.rendimiento}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">		
+                  <f:facet name="header">
+                    <h:outputText value="Máximo"/>
+                  </f:facet>
+                  <p:outputLabel styleClass="janal-wid-100-txt" value="#{row.maximo}"/>
                 </p:column>	
                 <p:column styleClass="MarAuto Responsive">		
                   <f:facet name="header">
