@@ -50,12 +50,13 @@
 				'contenedorGrupos\\:comprado'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:ultimaTarjeta'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:responsable'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        'idTipoCombustible': {multiple: '$', validaciones: 'requerido', mascara: 'libre'},
-        'capacidad'        : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
-        'rendimiento'      : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
-        'maximo'           : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'},
-        'idHerramienta'    : {multiple: '$', validaciones: 'requerido', mascara: 'libre'},
-        'horas'            : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'}
+        'combustible'  : {multiple: '$', validaciones: 'libre', mascara: 'libre'},
+        'lubricante'   : {multiple: '$', validaciones: 'libre', mascara: 'libre'},
+        'aceite'       : {multiple: '$', validaciones: 'libre', mascara: 'libre'},
+        'herramienta'  : {multiple: '$', validaciones: 'libre', mascara: 'libre'},
+        'capacidad'    : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
+        'rendimiento'  : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre'},
+        'maximo'       : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto":0})', mascara: 'libre'}
 			};	
 			
     	$(document).ready(function() {
@@ -172,12 +173,12 @@
 						</p:tab>
 						<p:tab title="Insumos">
               <p:outputLabel value="Combustible(s)" styleClass="janal-color-black janal-font-bold janal-wid-100-txt"/>
-              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 1)}">
-                <p:column styleClass="MarAuto Responsive janal-wid-20 idTipoCombustible">		
+              <p:dataTable id="combustibles" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.combustibles}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 1)}">
+                <p:column styleClass="MarAuto Responsive janal-wid-20 combustible">		
                   <f:facet name="header">
                     <h:outputText value="Combustible"/>
                   </f:facet>
-                  <p:selectOneMenu id="idTipoCombustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:selectOneMenu id="combustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" update="@(.combustibles)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.combustibles}" var="element" itemValue="#{element}" itemLabel="#{element.grupo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                     <p:column headerText="Grupo" styleClass="janal-wid-40">
@@ -230,12 +231,12 @@
               </p:dataTable>	
               <p:spacer height="3px"/>
               <p:outputLabel value="Lubricante(s)" styleClass="janal-color-black janal-font-bold janal-wid-100-txt"/>
-              <p:dataTable id="lubricantes" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 2)}">
-                <p:column styleClass="MarAuto Responsive janal-wid-20 idTipoCombustible">		
+              <p:dataTable id="lubricantes" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.lubricantes}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 2)}">
+                <p:column styleClass="MarAuto Responsive janal-wid-20 lubricante">		
                   <f:facet name="header">
                     <h:outputText value="Lubricantes"/>
                   </f:facet>
-                  <p:selectOneMenu id="idTipoCombustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:selectOneMenu id="lubricante" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" update="@(.lubricantes)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.lubricantes}" var="element" itemValue="#{element}" itemLabel="#{element.grupo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                     <p:column headerText="Grupo" styleClass="janal-wid-40">
@@ -288,12 +289,12 @@
               </p:dataTable>	
               <p:spacer height="3px"/>
               <p:outputLabel value="Aceite(s)" styleClass="janal-color-black janal-font-bold janal-wid-100-txt"/>
-              <p:dataTable id="aceites" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 3)}">
-                <p:column styleClass="MarAuto Responsive janal-wid-20 idTipoCombustible">		
+              <p:dataTable id="aceites" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.aceites}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 3)}">
+                <p:column styleClass="MarAuto Responsive janal-wid-20 aceite">		
                   <f:facet name="header">
                     <h:outputText value="Aceites"/>
                   </f:facet>
-                  <p:selectOneMenu id="idTipoCombustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:selectOneMenu id="aceite" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" update="@(.aceites)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.aceites}" var="element" itemValue="#{element}" itemLabel="#{element.grupo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                     <p:column headerText="Grupo" styleClass="janal-wid-40">
@@ -346,12 +347,12 @@
               </p:dataTable>	
               <p:spacer height="3px"/>
               <p:outputLabel value="Herramienta(s)" styleClass="janal-color-black janal-font-bold janal-wid-100-txt"/>
-              <p:dataTable id="herramientas" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.insumos}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 4)}">
-                <p:column styleClass="MarAuto Responsive janal-wid-20 idTipoCombustible">		
+              <p:dataTable id="herramientas" styleClass="janal-wid-100-txt" rowIndexVar="index" var="row" value="#{sakbeCatalogosMaquinariaAccion.herramientas}" rows="20" paginator="false" reflow="true" rowKey="#{row.idMaquinariaInsumo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"  rowStyleClass="#{sakbeCatalogosMaquinariaAccion.doColor(row, 4)}">
+                <p:column styleClass="MarAuto Responsive janal-wid-20 herramienta">		
                   <f:facet name="header">
                     <h:outputText value="Herramienta"/>
                   </f:facet>
-                  <p:selectOneMenu id="idTipoCombustible" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:selectOneMenu id="herramienta" value="#{row.ikTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" update="@(.herramientas)" listener="#{sakbeCatalogosMaquinariaAccion.doActualizar(row)}"/>
                     <f:selectItems value="#{sakbeCatalogosMaquinariaAccion.attrs.herramientas}" var="element" itemValue="#{element}" itemLabel="#{element.grupo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                     <p:column headerText="Grupo" styleClass="janal-wid-40">

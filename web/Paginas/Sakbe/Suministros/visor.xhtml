@@ -58,7 +58,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
 					<p:accordionPanel id="panelBusqueda" activeIndex="2" multiple="true" dynamic="true">
-						<p:tab id="avance" title="Litro(s)/Pieza(s) disponible(s):">
+						<p:tab id="avance" title="Insumo(s) disponible(s):">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
                 <p:outputLabel for="idTipoCombustible" value="Insumo:"/>
                 <p:selectOneMenu id="idTipoCombustible" value="#{sakbeSuministrosVisor.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">

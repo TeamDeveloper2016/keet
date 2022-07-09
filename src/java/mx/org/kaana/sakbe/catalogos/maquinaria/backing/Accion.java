@@ -2,6 +2,7 @@ package mx.org.kaana.sakbe.catalogos.maquinaria.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.sakbe.catalogos.maquinaria.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Herramienta;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Insumo;
 import mx.org.kaana.sakbe.catalogos.maquinaria.beans.Maquinaria;
 import org.apache.commons.logging.Log;
@@ -46,7 +46,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private EAccion accion;
   private Maquinaria maquinaria;
   private List<Insumo> insumos;
-  private List<Herramienta> herramientas;
+  private List<Insumo> combustibles;
+  private List<Insumo> lubricantes;
+  private List<Insumo> aceites;
+  private List<Insumo> herramientas;
   
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -60,22 +63,38 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     this.maquinaria = maquinaria;
   }
 
-  public List<Insumo> getInsumos() {
-    return insumos;
+  public List<Insumo> getCombustibles() {
+    return combustibles;
   }
 
-  public void setInsumos(List<Insumo> insumos) {
-    this.insumos = insumos;
+  public void setCombustibles(List<Insumo> combustibles) {
+    this.combustibles = combustibles;
   }
 
-  public List<Herramienta> getHerramientas() {
+  public List<Insumo> getLubricantes() {
+    return lubricantes;
+  }
+
+  public void setLubricantes(List<Insumo> lubricantes) {
+    this.lubricantes = lubricantes;
+  }
+
+  public List<Insumo> getAceites() {
+    return aceites;
+  }
+
+  public void setAceites(List<Insumo> aceites) {
+    this.aceites = aceites;
+  }
+
+  public List<Insumo> getHerramientas() {
     return herramientas;
   }
 
-  public void setHerramientas(List<Herramienta> herramientas) {
+  public void setHerramientas(List<Insumo> herramientas) {
     this.herramientas = herramientas;
   }
-  
+
 	@PostConstruct
   @Override
   protected void init() {		
@@ -97,12 +116,15 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      this.combustibles= new ArrayList<>();
+      this.lubricantes= new ArrayList<>();
+      this.aceites= new ArrayList<>();
+      this.herramientas= new ArrayList<>();
       params.put("idMaquinaria", this.attrs.get("idMaquinaria"));
       switch (this.accion) {
         case AGREGAR:											
           this.maquinaria= new Maquinaria(-1L);
           this.insumos= new ArrayList<>();
-          this.herramientas= new ArrayList<>();
           break;
         case MODIFICAR:			
         case CONSULTAR:											
@@ -115,12 +137,20 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           if(this.insumos!= null && !this.insumos.isEmpty())
             for (Insumo item: this.insumos) {
               item.setIkTipoCombustible(new UISelectEntity(item.getIdTipoCombustible()));
-              item.setSql(ESql.SELECT);
-            } // for
-          this.herramientas= (List<Herramienta>)DaoFactory.getInstance().toEntitySet(Herramienta.class, "TcSakbeMaquinariasHerramientasDto", "maquinaria", params);
-          if(this.herramientas!= null && !this.herramientas.isEmpty())
-            for (Herramienta item: this.herramientas) {
-              item.setIkHerramienta(new UISelectEntity(item.getIdHerramienta()));
+              switch(item.getIdTipoInsumo().intValue()) {
+                case 1:
+                  this.combustibles.add(item);
+                  break;
+                case 2:
+                  this.lubricantes.add(item);
+                  break;
+                case 3:
+                  this.aceites.add(item);
+                  break;
+                case 4:
+                  this.herramientas.add(item);
+                  break;
+              } // switch
               item.setSql(ESql.SELECT);
             } // for
           break;
@@ -202,16 +232,16 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		Map<String, Object>params  = new HashMap<>();
 		try {
 			params.put("idTipoInsumo", 1L);
-			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			insumo= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("combustibles", insumo);
 			params.put("idTipoInsumo", 2L);
-			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			insumo= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("lubricantes", insumo);
 			params.put("idTipoInsumo", 3L);
-			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			insumo= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("aceites", insumo);
 			params.put("idTipoInsumo", 4L);
-			insumo= UIEntity.seleccione("TcSakbeTiposCombustiblesDto", "grupo", params, "grupo");
+			insumo= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("herramientas", insumo);
 		} // try
     catch (Exception e) {
@@ -222,23 +252,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			Methods.clean(params);
 		} // finally
 	} // toLoadTiposCombustibles  
-  
-	private void toLoadHerramientas() {
-		List<UISelectEntity> accesorios= null;
-		Map<String, Object>params      = new HashMap<>();
-		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			accesorios= UIEntity.seleccione("TcSakbeHerramientasDto", "row", params, "nombre");
-			this.attrs.put("herramientas", accesorios);
-		} // try
-    catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // toLoadHerramientas  
   
 	private void toLoadMaquinariasGrupos() {
 		List<Columna> columns     = null;
@@ -317,8 +330,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Transaccion transaccion= null;
     String regresar        = null;
 		try {
-      if(this.checkInsumos() && checkHerramientas()) {
-        transaccion = new Transaccion(this.maquinaria, this.insumos, this.herramientas);
+      if(this.checkInsumos()) {
+        transaccion = new Transaccion(this.maquinaria, this.insumos, Collections.EMPTY_LIST);
         if (transaccion.ejecutar(this.accion)) {
           if(!this.accion.equals(EAccion.CONSULTAR)) 
             JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la maquinaria"), ETipoMensaje.INFORMACION);
@@ -368,20 +381,30 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
   public void doAgregar(Long idTipoInsumo) {
     try {      
-      this.insumos.add(new Insumo());
-      this.insumos.get(this.insumos.size()- 1).setIdTipoInsumo(idTipoInsumo);
       switch(idTipoInsumo.intValue()) {
         case 1:
-          this.insumos.get(this.insumos.size()- 1).setGrupo("COMBUSTIBLES");
+          this.combustibles.add(new Insumo());
+          this.combustibles.get(this.combustibles.size()- 1).setIdTipoInsumo(idTipoInsumo);
+          this.combustibles.get(this.combustibles.size()- 1).setIkTipoCombustible(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("combustibles")));
+          this.combustibles.get(this.combustibles.size()- 1).setGrupo("COMBUSTIBLES");
           break;
         case 2:
-          this.insumos.get(this.insumos.size()- 1).setGrupo("LUBRICANTES");
+          this.lubricantes.add(new Insumo());
+          this.lubricantes.get(this.lubricantes.size()- 1).setIdTipoInsumo(idTipoInsumo);
+          this.lubricantes.get(this.lubricantes.size()- 1).setIkTipoCombustible(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("lubricantes")));
+          this.lubricantes.get(this.lubricantes.size()- 1).setGrupo("LUBRICANTES");
           break;
         case 3:
-          this.insumos.get(this.insumos.size()- 1).setGrupo("ACEITES");
+          this.aceites.add(new Insumo());
+          this.aceites.get(this.aceites.size()- 1).setIdTipoInsumo(idTipoInsumo);
+          this.aceites.get(this.aceites.size()- 1).setIkTipoCombustible(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("aceites")));
+          this.aceites.get(this.aceites.size()- 1).setGrupo("ACEITES");
           break;
         case 4:
-          this.insumos.get(this.insumos.size()- 1).setGrupo("HERRAMIENTAS");
+          this.herramientas.add(new Insumo());
+          this.herramientas.get(this.herramientas.size()- 1).setIdTipoInsumo(idTipoInsumo);
+          this.herramientas.get(this.herramientas.size()- 1).setIkTipoCombustible(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("herramientas")));
+          this.herramientas.get(this.herramientas.size()- 1).setGrupo("HERRAMIENTAS");
           break;
       } // switch
     } // try
@@ -391,35 +414,34 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // catch	
   }
   
-  public void doSumar() {
-    try {      
-      this.herramientas.add(new Herramienta());
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-  }
-  
   public void doEliminar(Insumo row) {
     try {      
-      if(Objects.equals(ESql.INSERT, row.getSql()))
-        this.insumos.remove(row);
-      else
-        row.setSql(ESql.DELETE);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-  }
-  
-  public void doEliminar(Herramienta row) {
-    try {      
-      if(Objects.equals(ESql.INSERT, row.getSql()))
-        this.herramientas.remove(row);
-      else
-        row.setSql(ESql.DELETE);
+      switch(row.getIdTipoInsumo().intValue()) {
+        case 1:
+          if(Objects.equals(ESql.INSERT, row.getSql()))
+            this.combustibles.remove(row);
+          else
+            row.setSql(ESql.DELETE);
+          break;
+        case 2:
+          if(Objects.equals(ESql.INSERT, row.getSql()))
+            this.lubricantes.remove(row);
+          else
+            row.setSql(ESql.DELETE);
+          break;
+        case 3:
+          if(Objects.equals(ESql.INSERT, row.getSql()))
+            this.aceites.remove(row);
+          else
+            row.setSql(ESql.DELETE);
+          break;
+        case 4:
+          if(Objects.equals(ESql.INSERT, row.getSql()))
+            this.herramientas.remove(row);
+          else
+            row.setSql(ESql.DELETE);
+          break;
+      } // switch
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -428,17 +450,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   }
   
   public void doRecuperar(Insumo row) {
-    try {      
-      if(Objects.equals(ESql.DELETE, row.getSql()))
-        row.setSql(ESql.UPDATE);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-  }
- 
-  public void doRecuperar(Herramienta row) {
     try {      
       if(Objects.equals(ESql.DELETE, row.getSql()))
         row.setSql(ESql.UPDATE);
@@ -460,20 +471,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // catch	
   }
  
-  public void doActualizar(Herramienta row) {
-    try {      
-      if(!Objects.equals(ESql.DELETE, row.getSql()) && !Objects.equals(ESql.INSERT, row.getSql()))
-        row.setSql(ESql.UPDATE);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-  }
- 
   private Boolean checkInsumos() {
     Boolean regresar= Boolean.TRUE;
     StringBuilder sb= new StringBuilder("|");
+    this.insumos.clear();
+    this.insumos.addAll(this.combustibles);
+    this.insumos.addAll(this.lubricantes);
+    this.insumos.addAll(this.aceites);
+    this.insumos.addAll(this.herramientas);
     for (Insumo item: this.insumos) {
       if(sb.indexOf("|"+ item.getIdTipoCombustible()+ "|")> 0) {
         JsfBase.addMessage("Esta duplicado un tipo de combustible / lubricante", ETipoMensaje.ALERTA);      			
@@ -482,21 +487,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       } // if
       else
         sb.append(item.getIdTipoCombustible()).append("|");
-    } // for
-    return regresar;
-  }
-
-  private Boolean checkHerramientas() {
-    Boolean regresar= Boolean.TRUE;
-    StringBuilder sb= new StringBuilder("|");
-    for (Herramienta item: this.herramientas) {
-      if(sb.indexOf("|"+ item.getIdHerramienta()+ "|")> 0) {
-        JsfBase.addMessage("Esta duplicado una herramienta", ETipoMensaje.ALERTA);      			
-        regresar= Boolean.FALSE;
-        break;
-      } // if
-      else
-        sb.append(item.getIdHerramienta()).append("|");
     } // for
     return regresar;
   }

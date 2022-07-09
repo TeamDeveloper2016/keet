@@ -51,7 +51,7 @@
 								<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{sakbeCombustiblesDesarrollos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 							</div>
 						</p:tab>
-						<p:tab title="Litro(s)/Pieza(s) disponible(s):">
+						<p:tab title="Insumo(s) disponible(s):">
               <p:outputLabel for="idTipoCombustible" value="Insumo:"/>
               <p:selectOneMenu id="idTipoCombustible" value="#{sakbeCombustiblesDesarrollos.attrs.idTipoCombustible}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" process="@this" update="@(.avance)" listener="#{sakbeCombustiblesDesarrollos.doLoadPorcentajes}"/>

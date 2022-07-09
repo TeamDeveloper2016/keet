@@ -104,7 +104,7 @@
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{sakbeCombustiblesHerramienta.combustible.fecha}" pattern="dd/MM/yyyy" locale="es" />
 								<p:outputLabel for="litros" value="Pieza(s):"/>
-								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesHerramienta.combustible.litros}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+								<p:inputNumber id="litros" styleClass="janal-wid-100-" value="#{sakbeCombustiblesHerramienta.combustible.litros}" decimalPlaces="0" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
                   <p:ajax event="change" process="@this" update="@(.diferencia)" listener="#{sakbeCombustiblesHerramienta.doUpdateTotal}"/>
                 </p:inputNumber>  
 								<p:outputLabel for="precio" value="Precio por pieza:"/>

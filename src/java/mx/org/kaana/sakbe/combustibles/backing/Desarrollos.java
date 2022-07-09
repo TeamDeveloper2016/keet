@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -78,7 +79,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
             this.attrs.put("ikTipoInsumo", "2,3");
             break;
           case HERRAMIENTA:
-            this.attrs.put("ikTipoCombustible", 4L);
+            this.attrs.put("ikTipoCombustible", 10L);
             this.attrs.put("ikTipoInsumo", 4L);
             break;
           default:
@@ -242,7 +243,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   }
  
-  private Entity toLoadCombustible() throws Exception {
+  private Entity toLoadCombustible() {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -267,15 +268,22 @@ public class Desarrollos extends IBaseFilter implements Serializable {
     return regresar;
   }
  
-	private void toLoadTiposCombustibles() throws Exception {
+	private void toLoadTiposCombustibles() {
 		List<UISelectEntity> tiposCombustibles= null;
 		Map<String, Object>params             = new HashMap<>();
 		try {
 			params.put("idTipoInsumo", this.attrs.get("ikTipoInsumo"));
 			tiposCombustibles= UIEntity.build("TcSakbeTiposCombustiblesDto", "grupo", params);
 			this.attrs.put("tiposCombustibles", tiposCombustibles);
-      if(!tiposCombustibles.isEmpty()) 
-	      this.attrs.put("idTipoCombustible", new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
+      if(!tiposCombustibles.isEmpty()) {
+        int index= tiposCombustibles.indexOf(new UISelectEntity((Long)this.attrs.get("ikTipoCombustible")));
+        if (index>= 0) 
+          this.attrs.put("idTipoCombustible", tiposCombustibles.get(index));
+        else {
+	        this.attrs.put("idTipoCombustible", UIBackingUtilities.toFirstKeySelectEntity(tiposCombustibles));
+          this.attrs.put("ikTipoCombustible", ((UISelectEntity)this.attrs.get("idTipoCombustible")).getKey());
+        } // else  
+      } // if  
       else  
   			this.attrs.put("idTipoCombustible", new UISelectEntity(-1L));
       this.doLoadPorcentajes();
@@ -289,7 +297,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 		} // finally
 	} // toLoadTiposCombustibles 
 
-  public void doLoadPorcentajes() throws Exception {
+  public void doLoadPorcentajes() {
     UISelectEntity idTipoCombustible= (UISelectEntity)this.attrs.get("idTipoCombustible");
     try {
       this.attrs.put("ikTipoCombustible", idTipoCombustible.getKey());
