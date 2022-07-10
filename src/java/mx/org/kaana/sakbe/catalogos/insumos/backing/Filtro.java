@@ -24,8 +24,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.sakbe.catalogos.tipos.beans.TipoMaquinaria;
-import mx.org.kaana.sakbe.catalogos.tipos.reglas.Transaccion;
+import mx.org.kaana.sakbe.catalogos.insumos.beans.TipoCombustible;
+import mx.org.kaana.sakbe.catalogos.insumos.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -104,7 +104,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
       params.put("idTipoCombustible", seleccionado.getKey());
-			transaccion= new Transaccion((TipoMaquinaria)DaoFactory.getInstance().toEntity(TipoMaquinaria.class, "TcSakbeTiposCombustibleDto", "igual", params));
+			transaccion= new Transaccion((TipoCombustible)DaoFactory.getInstance().toEntity(TipoCombustible.class, "TcSakbeTiposCombustiblesDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El tipo de combustible se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
