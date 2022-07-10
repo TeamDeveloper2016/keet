@@ -1,4 +1,4 @@
-package mx.org.kaana.sakbe.catalogos.tipos.backing;
+package mx.org.kaana.sakbe.catalogos.insumos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import mx.org.kaana.sakbe.catalogos.tipos.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "sakbeCatalogosTiposFiltro")
+@Named(value = "sakbeCatalogosInsumosFiltro")
 @ViewScoped 
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -42,11 +42,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idTipoMaquinaria", JsfBase.getFlashAttribute("idTipoMaquinaria"));
+      this.attrs.put("idTipoCombustible", JsfBase.getFlashAttribute("idTipoCombustible"));
 			this.toLoadCatalogos();
-      if(this.attrs.get("idTipoMaquinaria")!= null) {
+      if(this.attrs.get("idTipoCombustible")!= null) {
 			  this.doLoad();
-        this.attrs.put("idTipoMaquinaria", null);
+        this.attrs.put("idTipoCombustible", null);
       } // if  
     } // try
     catch (Exception e) {
@@ -60,12 +60,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_sakbe_tipos_maquinarias.registro desc");
+      params.put("sortOrder", "order by tc_sakbe_tipos_combustibles.registro desc");
       columns = new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-      this.lazyModel= new FormatCustomLazy("VistaTiposMaquinariasDto", params, columns);
+      this.lazyModel= new FormatCustomLazy("VistaTiposCombustiblesDto", params, columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -82,14 +82,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idTipoMaquinaria", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Catalogos/Tipos/filtro".concat(Constantes.REDIRECIONAR));		
+			JsfBase.setFlashAttribute("idTipoCombustible", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Sakbe/Catalogos/Insumos/filtro".concat(Constantes.REDIRECIONAR));		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Sakbe/Catalogos/Tipos/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Sakbe/Catalogos/Insumos/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar(Entity seleccionado) {
@@ -103,12 +103,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= new HashMap<>();	
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      params.put("idTipoMaquinaria", seleccionado.getKey());
-			transaccion= new Transaccion((TipoMaquinaria)DaoFactory.getInstance().toEntity(TipoMaquinaria.class, "TcSakbeTiposMaquinariasDto", "igual", params));
+      params.put("idTipoCombustible", seleccionado.getKey());
+			transaccion= new Transaccion((TipoMaquinaria)DaoFactory.getInstance().toEntity(TipoMaquinaria.class, "TcSakbeTiposCombustibleDto", "igual", params));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El tipo de maquinaria se ha eliminado correctamente", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar", "El tipo de combustible se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el tipo de maquinaria", ETipoMensaje.ALERTA);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el tipo de combustible", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -122,14 +122,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idTipoMaquinaria")) && !this.attrs.get("idTipoMaquinaria").toString().equals("-1"))
-  		sb.append("(tc_sakbe_tipos_maquinarias.id_tipo_maquinaria= ").append(this.attrs.get("idTipoMaquinaria")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("clave")))
-  		sb.append("(tc_sakbe_tipos_maquinarias.clave like '%").append(((UISelectEntity)this.attrs.get("clave")).getKey()).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipoCombustible")) && !this.attrs.get("idTipoCombustible").toString().equals("-1"))
+  		sb.append("(tc_sakbe_tipos_combustibles.id_tipo_combustible= ").append(this.attrs.get("idTipoCombustible")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
-  		sb.append("(tc_sakbe_tipos_maquinarias.nombre like '%").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("idMaquinariaGrupo")) && !this.attrs.get("idMaquinariaGrupo").toString().equals("-1"))
-  		sb.append("(tc_sakbe_tipos_maquinarias.id_maquinaria_grupo= ").append(this.attrs.get("idMaquinariaGrupo")).append(") and ");
+  		sb.append("(tc_sakbe_tipos_combustibles.nombre like '%").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("descripcion")))
+  		sb.append("(tc_sakbe_tipos_combustibles.descripcion like '%").append(((UISelectEntity)this.attrs.get("descripcion")).getKey()).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipoInsumo")) && !this.attrs.get("idTipoInsumo").toString().equals("-1"))
+  		sb.append("(tc_sakbe_tipos_combustibles.id_tipo_insumo= ").append(this.attrs.get("idTipoInsumo")).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -143,10 +143,9 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
   		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
 			columns= new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("maquinariasGrupos", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeMaquinariasGruposDto", "row", params, columns, "nombre"));			
-			this.attrs.put("idMaquinariaGrupo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("maquinariasGrupos")));			
+      this.attrs.put("insumos", (List<UISelectEntity>) UIEntity.seleccione("TcSakbeTiposInsumosDto", "row", params, columns, "nombre"));			
+			this.attrs.put("idTipoInsumo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("insumos")));			
     } // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

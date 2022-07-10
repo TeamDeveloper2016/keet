@@ -4,6 +4,24 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaTiposCombustiblesDto">
+			<select id="lazy">
+        select
+          tc_sakbe_tipos_combustibles.id_tipo_combustible as id_key,
+          tc_sakbe_tipos_insumos.id_tipo_insumo,
+          tc_sakbe_tipos_insumos.nombre as grupo,
+          tc_sakbe_tipos_combustibles.nombre,
+          tc_sakbe_tipos_combustibles.descripcion,
+          tc_sakbe_tipos_combustibles.registro
+        from
+          tc_sakbe_tipos_combustibles
+        inner join
+          tc_sakbe_tipos_insumos on tc_sakbe_tipos_combustibles.id_tipo_insumo= tc_sakbe_tipos_insumos.id_tipo_insumo
+        where
+          {condicion}
+        {sortOrder}
+      </select>  
+    </unit>  
     <unit id="VistaTiposMaquinariasDto">
 			<select id="lazy">
         select

@@ -133,6 +133,7 @@
 								<f:facet name="header">
 									<h:outputText value="Incidente"/>
 								</f:facet>
+                <i class="fa fa-fw fa-fw fa-comments janal-color-orange janal-float-right" title="Observaciones: #{empty row['observaciones']? '': row['observaciones']}"></i>
 								<h:outputText value="#{row['tipoIncidente']}"/>
 							</p:column>					
 							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">

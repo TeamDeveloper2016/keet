@@ -157,7 +157,8 @@
     <unit id="TcSakbeTiposInsumosDto">
       <select id="row">
         select      
-          *
+          tc_sakbe_tipos_insumos.id_tipo_insumo as id_key,
+          tc_sakbe_tipos_insumos.*
         from      
           tc_sakbe_tipos_insumos
         where 
@@ -682,6 +683,18 @@
           tc_sakbe_tipos_insumos on tc_sakbe_tipos_combustibles.id_tipo_insumo= tc_sakbe_tipos_insumos.id_tipo_insumo
         where 
           {condicion} 
+      </select>
+      <select id="igual">
+        select      
+          tc_sakbe_tipos_combustibles.id_tipo_combustible as id_key,
+          tc_sakbe_tipos_insumos.nombre as grupo,
+          tc_sakbe_tipos_combustibles.*
+        from      
+          tc_sakbe_tipos_combustibles
+        inner join
+          tc_sakbe_tipos_insumos on tc_sakbe_tipos_combustibles.id_tipo_insumo= tc_sakbe_tipos_insumos.id_tipo_insumo
+        where 
+          tc_sakbe_tipos_combustibles.id_tipo_combustible= {idTipoCombustible}
       </select>
     </unit>    
     <unit id="TrSakbeMaquinariaDesarrolloDto">

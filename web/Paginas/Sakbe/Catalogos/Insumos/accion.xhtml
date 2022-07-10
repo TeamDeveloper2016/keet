@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{sakbeCatalogosInsumosAccion.attrs.nombreAccion} tipo de insumo"/>
+  <ui:param name="janalBackingPage" value="#{sakbeCatalogosInsumosAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">
+	   Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idTipoInsumo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido|texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:descripcion' : {validaciones: 'texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'}
+			};	
+			
+    	$(document).ready(function() {
+        disabledComponent();
+				janal.decimals= 4;
+      });
+			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{sakbeCatalogosInsumosAccion.attrs.nombreAccion}')", 500);
+      }      
+      
+			function execute() {
+				var ok= janal.execute();
+				janal.desbloquear();
+				return ok;
+			} // execute		
+		</script>   
+		<style type="text/css">
+		</style>			
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="EL TIPO DE INSUMO [#{sakbeCatalogosInsumosAccion.maquinaria.clave}] SE (AUTO)GUARDO EL DIA #{sakbeCatalogosInsumosAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(sakbeCatalogosInsumosAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+					</div>
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{sakbeCatalogosInsumosAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); disabledComponent(); "/>
+            <p:tab title="General">							
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                <p:outputLabel for="idTipoInsumo" value="Grupo:"/>
+                <p:selectOneMenu id="idTipoInsumo" value="#{sakbeCatalogosInsumosAccion.maquinaria.ikTipoInsumo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{sakbeCatalogosInsumosAccion.attrs.insumos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
+                <p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosInsumosAccion.maquinaria.nombre}"/>
+                <p:outputLabel for="descripcion" value="Descripción:"/>
+								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{sakbeCatalogosInsumosAccion.maquinaria.descripcion}"/>
+              </p:panelGrid>
+						</p:tab>
+          </p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{sakbeCatalogosInsumosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{sakbeCatalogosInsumosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton title="Aceptar" icon="fa fa-check" process="@form" action="#{sakbeCatalogosInsumosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{sakbeCatalogosInsumosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
