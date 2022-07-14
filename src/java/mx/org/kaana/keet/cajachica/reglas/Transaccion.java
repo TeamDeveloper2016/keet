@@ -624,6 +624,8 @@ public class Transaccion extends IBaseTnx {
 		TcKeetGastosDto gastoDto= null;
 		try {
 			gastoDto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.idGasto);
+      if(Objects.equals(gastoDto.getIdGastoEstatus(), EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()))
+        gastoDto.setIdGastoEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
 			gastoDto.setRevisado(1L);
 			regresar= DaoFactory.getInstance().update(sesion, gastoDto)>= 1L;
 		} // try
