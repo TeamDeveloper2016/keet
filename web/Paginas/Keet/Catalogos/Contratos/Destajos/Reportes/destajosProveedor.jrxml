@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosProveedor" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="1381"/>
+	<property name="ireport.x" value="1809"/>
 	<property name="ireport.y" value="372"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -85,6 +85,7 @@
 	<field name="SUBTOTAL" class="java.lang.Double"/>
 	<field name="IMAGEN" class="java.lang.String"/>
 	<field name="ID_ESTACION_ESTATUS" class="java.math.BigDecimal"/>
+	<field name="ACUMULADO" class="java.math.BigDecimal"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -539,7 +540,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ($F{PORCENTAJE}.intValue()+ "/100"): ("100/100")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{ACUMULADO}.intValue()+ "/100")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

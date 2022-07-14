@@ -80,6 +80,7 @@
 	<field name="ANTICIPO" class="java.math.BigDecimal"/>
 	<field name="IMAGEN" class="java.lang.String"/>
 	<field name="ID_ESTACION_ESTATUS" class="java.math.BigDecimal"/>
+	<field name="ACUMULADO" class="java.math.BigDecimal"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -430,7 +431,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{PORCENTAJE}.doubleValue()< 100D && $F{ID_ESTACION_ESTATUS}.longValue()== 2L? ($F{PORCENTAJE}.intValue()+ "/100"): ("100/100")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{ACUMULADO}.intValue()+ "/100")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
