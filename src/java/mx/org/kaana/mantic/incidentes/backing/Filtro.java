@@ -77,10 +77,9 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -101,12 +100,10 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 		List<UISelectItem> estatus= null;
     try {
-			columns= new ArrayList<>();			
-			params = new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -156,7 +153,7 @@ public class Filtro extends Comun implements Serializable {
 		else 
 			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
 				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-				sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
+				sb.append("(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '.*").append(nombre).append(".*') and ");				
 			} // if			  			
 		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
 			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
@@ -183,11 +180,9 @@ public class Filtro extends Comun implements Serializable {
 	}	// doCompleteOrden
 	
 	public void doUpdateOrdenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("orden", EFormatoDinamicos.MAYUSCULAS));      
 			String orden= (String)this.attrs.get("orden"); 
 			orden= !Cadena.isVacio(orden) ? orden.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";			
@@ -215,11 +210,10 @@ public class Filtro extends Comun implements Serializable {
 	}	// doCompleteNombreEmpleado
 	
 	public void doUpdateNombresEmpleados() {
-		List<Columna> columns       = null;
-    Map<String, Object> params  = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> nombres= null;		
     try {
-			columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
 			String nombreEmpleado= (String)this.attrs.get("nombreEmpleado"); 
 			nombreEmpleado= !Cadena.isVacio(nombreEmpleado) ? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
@@ -257,11 +251,10 @@ public class Filtro extends Comun implements Serializable {
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectItem> allEstatus= null;		
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();			
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);

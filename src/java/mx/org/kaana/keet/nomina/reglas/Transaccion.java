@@ -961,7 +961,18 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
 			params.put("personalDestajo", sujeto.toString("contratista"));
-			params.put("correo", ECorreos.DESTAJOS.getEmail());		
+			params.put("correo", ECorreos.DESTAJOS.getEmail());	
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+      		params.put("correo", "jjose.fuentes@cafuconstrucciones.com");	
+          break;
+        case "gylvi": 
+      		params.put("correo", "luis.lopez@gmail.com");	
+          break;
+        case "triana":
+      		params.put("correo", "jesus.villalpando@gmail.com");	
+          break;
+      } // swtich
       params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
       params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporte(sesion, jasper, sujeto);

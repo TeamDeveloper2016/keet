@@ -226,6 +226,7 @@ public class Nomina implements Serializable {
         case "cafu":
           break;
         case "gylvi":
+          // regresar= 5;
           break;
         case "triana":
           regresar= 5;

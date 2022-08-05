@@ -185,14 +185,12 @@ public class Accion extends IBaseFilter implements Serializable {
 	}
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns           = null;
-    Map<String, Object> params      = null;		
+		List<Columna> columns           = new ArrayList<>();
+    Map<String, Object> params      = new HashMap<>();		
 		List<UISelectEntity> desarrollos= null;
     try {
-			params= new HashMap<>();					
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + this.estimaciones.getEstimacion().getIkEmpresa().getKey());
-			columns= new ArrayList<>();
+  		params.put(Constantes.SQL_CONDICION, "tc_keet_proyectos.id_empresa=" + this.estimaciones.getEstimacion().getIkEmpresa().getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");

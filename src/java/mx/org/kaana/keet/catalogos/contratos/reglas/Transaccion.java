@@ -91,7 +91,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case AGREGAR:					
-					siguiente= toSiguiente(sesion);
+					siguiente= this.toSiguiente(sesion);
 					this.contrato.getContrato().setConsecutivo(siguiente.getConsecutivo());
 					this.contrato.getContrato().setOrden(siguiente.getOrden());
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
