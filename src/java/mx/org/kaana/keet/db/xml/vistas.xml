@@ -3202,8 +3202,12 @@
 					tc_mantic_puestos.id_puesto,
 					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_empresa_personal.clave,
-					tr_mantic_empresa_personal.id_activo,
-					tr_mantic_empresa_personal.id_nomina as id_pago,
+          tr_mantic_empresa_personal.id_activo,
+          if(tr_mantic_empresa_personal.id_activo= 1, "SI", "NO") as activo,
+          tr_mantic_empresa_personal.id_nomina as id_pago,
+          if(tr_mantic_empresa_personal.id_nomina= 1, "SI", "NO") as depositar,
+          ifnull(tc_keet_personas_bancos.cuenta, 'SIN CUENTA') as cuenta,
+          ifnull(tc_mantic_bancos.nombre, 'SIN BANCO') as banco,
 					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
@@ -3234,6 +3238,10 @@
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
         left join
           tc_keet_nominas_desarrollos on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina and tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_desarrollos.id_empresa_persona
+        left join
+          tc_keet_personas_bancos on tc_keet_personas_bancos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona and tc_keet_personas_bancos.id_principal= 1
+        left join
+          tc_mantic_bancos on tc_keet_personas_bancos.id_banco= tc_mantic_bancos.id_banco
 				where
 					{condicion}
 				) as principal
@@ -3268,8 +3276,12 @@
 					tc_mantic_puestos.id_puesto,
 					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_empresa_personal.clave,
-					tr_mantic_empresa_personal.id_activo,
-					tr_mantic_empresa_personal.id_nomina as id_pago,
+          tr_mantic_empresa_personal.id_activo,
+          if(tr_mantic_empresa_personal.id_activo= 1, "SI", "NO") as activo,
+          tr_mantic_empresa_personal.id_nomina as id_pago,
+          if(tr_mantic_empresa_personal.id_nomina= 1, "SI", "NO") as depositar,
+          ifnull(tc_keet_personas_bancos.cuenta, 'SIN CUENTA') as cuenta,
+          ifnull(tc_mantic_bancos.nombre, 'SIN BANCO') as banco,
 					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
@@ -3301,6 +3313,10 @@
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
         left join
           tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona
+        left join
+          tc_keet_personas_bancos on tc_keet_personas_bancos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona and tc_keet_personas_bancos.id_principal= 1
+        left join
+          tc_mantic_bancos on tc_keet_personas_bancos.id_banco= tc_mantic_bancos.id_banco
 				where
 					{condicion}
 				) principal
@@ -4342,7 +4358,7 @@
             tc_keet_contratos_lotes_contratistas.id_contrato_lote,
             1 as id_tipo,
             tc_keet_contratos_destajos_contratistas.id_nomina,
-            sum(tc_keet_contratos_destajos_contratistas.porcentaje) as porcentake,
+            sum(tc_keet_contratos_destajos_contratistas.porcentaje) as porcentaje,
             sum(tc_keet_contratos_destajos_contratistas.costo) as costo,
             sum(tc_keet_contratos_destajos_contratistas.anticipo) as anticipo
           from

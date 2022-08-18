@@ -233,6 +233,30 @@
 							</f:facet>
 							<h:outputText value="#{row['neto']}"/>
 						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+							<f:facet name="header">
+								<h:outputText value="Activo"/>
+							</f:facet>
+							<h:outputText value="#{row['activo']}"/>
+						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-2 janal-display-none">
+							<f:facet name="header">
+								<h:outputText value="Depositar"/>
+							</f:facet>
+							<h:outputText value="#{row['depositar']}"/>
+						</p:column>	
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
+							<f:facet name="header">
+								<h:outputText value="Banco"/>
+							</f:facet>
+							<h:outputText value="#{row['banco']}"/>
+						</p:column>	
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
+							<f:facet name="header">
+								<h:outputText value="Cuenta"/>
+							</f:facet>
+							<h:outputText value="#{row['cuenta']}"/>
+						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
