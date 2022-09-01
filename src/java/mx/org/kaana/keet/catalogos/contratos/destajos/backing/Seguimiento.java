@@ -3,6 +3,7 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map; 
@@ -15,7 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Codigo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
@@ -39,7 +40,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
   private static final Log LOG = LogFactory.getLog(Seguimiento.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
-  private List<Concepto> model;
+  private List<Codigo> model;
   private List<Lote> fields;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
@@ -50,7 +51,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
 		this.registroDesarrollo = registroDesarrollo;
 	}			
 
-  public List<Concepto> getModel() {
+  public List<Codigo> getModel() {
     return model;
   }
 
@@ -58,7 +59,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     return fields;
   }
 
-  public Boolean isConcepto(Concepto row) {
+  public Boolean isConcepto(Codigo row) {
     return !row.getCodigo().startsWith("#");
   }
   
@@ -73,8 +74,8 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
       this.fields = new ArrayList<>();
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			//opcion      = EOpcionesResidente.SEGUIMIENTO;
-			//idDesarrollo= 1L;			
+			// opcion      = EOpcionesResidente.SEGUIMIENTO;
+			// idDesarrollo= 1L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -170,31 +171,21 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     List<Entity> lotes       = null;
-    List<Entity> codigos     = null;
     String anterior          = "";
     try {
-      this.model.clear();
       this.attrs.put("detalle", Boolean.FALSE);
       params.put("clave", this.toTokenClave());
-      codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
-      if(codigos!= null && !codigos.isEmpty()) {
-        int count= 0;
-        for (Entity codigo: codigos) {
-          Concepto concepto= new Concepto(count++, codigo.toString("codigo"), codigo.toString("nombre"));
-          this.model.add(concepto);
-        } // for
-      } // if
-      this.fields.clear();
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
+      this.prepare(lotes);
+      this.fields.clear();
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
-          int index= this.model.indexOf(new Concepto(item.toString("codigo")));
+          int index= this.model.indexOf(new Codigo(item.toString("codigo")));
           if(index>= 0) {
-            Concepto concepto= this.model.get(index);
+            Codigo concepto= this.model.get(index);
             concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus")));
             if(!Objects.equal(lote, anterior)) {
               this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
@@ -215,10 +206,42 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally				
   } // doLoad	
 	
+  private void prepare(List<Entity> lotes) throws Exception {
+    this.model.clear();
+    try {      
+      if(lotes!= null && !lotes.isEmpty()) {
+        int count     = 0;
+        String partida= "";
+        String clave  = "";
+        for (Entity codigo: lotes) {
+          clave= codigo.toString("codigo");
+          if(codigo.toString("codigo").trim().startsWith("#")) {
+            partida   = codigo.toString("codigo");
+            String pre= partida.substring(0, partida.lastIndexOf("A")+ 1);
+            String pos= partida.substring(partida.lastIndexOf("A")+ 1);
+            if(pos.trim().length()== 1)
+              partida= pre.concat("0").concat(pos);
+            clave= "";
+          } // if  
+          Codigo concepto= new Codigo(count++, partida.concat(Constantes.SEPARADOR).concat(clave), codigo.toString("codigo"), codigo.toString("nombre"));
+          int index= this.model.indexOf(concepto);
+          if(index< 0)
+            this.model.add(concepto);
+        } // for
+        Collections.sort(this.model);
+//        for (Codigo codigo: this.model) {
+//          LOG.info(codigo.getId()+ ".- "+ codigo.getClave()+ "; "+ codigo.getNombre());
+//        }
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
 	public String doCancelar() {
     String regresar                   = null;    
 		EOpcionesResidente opcion         = null;		
@@ -251,7 +274,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
 		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
   
-  public void doDetalle(Concepto row) {
+  public void doDetalle(Codigo row) {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     try {
@@ -279,7 +302,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     } // finally				
 	}
  
-	public String doColor(Concepto row) {
+	public String doColor(Codigo row) {
 		return ((String)row.get("codigo")).startsWith("#")? "janal-tr-diferencias": "";
 	}
   

@@ -187,12 +187,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadManzanas() {
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectEntity> manzanas= null;
     try {      
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
@@ -211,44 +210,44 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadEspecialidades() {
-		List<UISelectItem>especialidades= null;
-		Map<String, Object>params       = null;
+		List<UISelectEntity>especialidades= null;
+		Map<String, Object>params         = new HashMap<>();
+		List<Columna> columns             = new ArrayList<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			especialidades= UIEntity.build("VistaCapturaDestajosDto", "especialidades", params, columns);
 			this.attrs.put("especialidades", especialidades);
       if(especialidades!= null && !especialidades.isEmpty()) {
         if(this.attrs.get("idDepartamento")!= null) {
-          int index= especialidades.indexOf(new UISelectItem(this.attrs.get("idDepartamento")));
+          int index= especialidades.indexOf(new UISelectEntity((Long)this.attrs.get("idDepartamento")));
           if(index>= 0)
-			      this.attrs.put("especialidad", this.attrs.get("idDepartamento"));
+			      this.attrs.put("especialidad", new UISelectEntity((Long)this.attrs.get("idDepartamento")));
         } // if  
         else
-			    this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
+			    this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectEntity(especialidades));
       } // if  
       this.doLoadFiguras();
 		} // try
 		finally {
 			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally
 	} // loadEspecialidades
 	
 	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
-		Map<String, Object>params   = null;
-		List<Columna> columns       = null;
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> columns       = new ArrayList<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idDepartamento", this.attrs.get("especialidad"));
+			params.put("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
 			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, columns);
@@ -468,7 +467,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params= new HashMap<>();
 			for(Entity mzaLote: this.lotes) {
 				params.clear();
-				params.put("idDepartamento", this.attrs.get("especialidad"));
+				params.put("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
 				params.put("clave", this.toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusManzanaLote", params);
 				if(estatus.toString("total")!= null) {
@@ -521,7 +520,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
 			JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
-			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
+			JsfBase.setFlashAttribute("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");			
@@ -648,9 +647,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
           parametros.put("REPORTE_DESARROLLO_CP", getRegistroDesarrollo().getDomicilio().getCodigoPostal()); 
           parametros.put("REPORTE_FIGURA", figura.toString("puesto").concat(": ").concat(figura.toString("nombreCompleto")));
         } // else
-        index= ((List<UISelectItem>)this.attrs.get("especialidades")).indexOf(new UISelectItem(Long.valueOf(this.attrs.get("especialidad").toString())));
+        index= ((List<UISelectEntity>)this.attrs.get("especialidades")).indexOf((UISelectEntity)this.attrs.get("especialidad"));
         parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
-        parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
+        parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectEntity>)this.attrs.get("especialidades")).get(index).toString("nombre"));
         parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
         parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
         parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
