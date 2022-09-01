@@ -2,12 +2,15 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.comun;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Codigo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -15,6 +18,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -279,5 +283,37 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		Methods.clean(this.correos);
 		Methods.clean(this.selectedCorreos);
 	}	// finalize
+
+  protected void prepare(List<Codigo> model, List<Entity> lotes) throws Exception {
+    model.clear();
+    try {      
+      if(lotes!= null && !lotes.isEmpty()) {
+        int count     = 0;
+        String partida= "";
+        String clave  = "";
+        for (Entity codigo: lotes) {
+          clave= Cadena.rellenar(String.valueOf(count), 4, '0', true);
+          if(codigo.toString("codigo").trim().startsWith("#")) {
+            partida   = codigo.toString("codigo");
+            String pre= partida.substring(0, partida.lastIndexOf("A")+ 1);
+            String pos= partida.substring(partida.lastIndexOf("A")+ 1);
+            if(pos.trim().length()== 1)
+              partida= pre.concat("0").concat(pos);
+            clave= "";
+          } // if  
+          Codigo concepto= new Codigo(count, partida.concat(Constantes.SEPARADOR).concat(clave), codigo.toString("codigo"), codigo.toString("nombre"));
+          int index= model.indexOf(concepto);
+          if(index< 0) {
+            model.add(concepto);
+            count++;
+          } // if  
+        } // for
+        Collections.sort(model);
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
   
 }

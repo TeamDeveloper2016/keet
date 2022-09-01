@@ -181,10 +181,8 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
         params.put("semana", semana.toString("semana"));
       else
         params.put("semana", "2000-0");
-      
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "control", params, Constantes.SQL_TODOS_REGISTROS);
-      this.prepare(lotes);
-      
+      this.prepare(this.model, lotes);
       this.fields.clear();
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
@@ -216,39 +214,6 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
     } // finally				
   } // doLoad	
 	
-  private void prepare(List<Entity> lotes) throws Exception {
-    this.model.clear();
-    try {      
-      if(lotes!= null && !lotes.isEmpty()) {
-        int count     = 0;
-        String partida= "";
-        String clave  = "";
-        for (Entity codigo: lotes) {
-          clave= codigo.toString("codigo");
-          if(codigo.toString("codigo").trim().startsWith("#")) {
-            partida   = codigo.toString("codigo");
-            String pre= partida.substring(0, partida.lastIndexOf("A")+ 1);
-            String pos= partida.substring(partida.lastIndexOf("A")+ 1);
-            if(pos.trim().length()== 1)
-              partida= pre.concat("0").concat(pos);
-            clave= "";
-          } // if  
-          Codigo concepto= new Codigo(count++, partida.concat(Constantes.SEPARADOR).concat(clave), codigo.toString("codigo"), codigo.toString("nombre"));
-          int index= this.model.indexOf(concepto);
-          if(index< 0)
-            this.model.add(concepto);
-        } // for
-        Collections.sort(this.model);
-//        for (Codigo codigo: this.model) {
-//          LOG.info(codigo.getId()+ ".- "+ codigo.getClave()+ "; "+ codigo.getNombre());
-//        }
-      } // if
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch	
-  }
-  
 	public String doCancelar() {
     String regresar                   = null;    
 		EOpcionesResidente opcion         = null;		

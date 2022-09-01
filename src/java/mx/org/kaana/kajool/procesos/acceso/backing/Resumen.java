@@ -174,11 +174,11 @@ public class Resumen extends Respaldos implements Serializable {
   }
 
   private void toLoadNomina() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     Entity idNomina           = null;
     try {
-			columns= new ArrayList<>();
+			// columns= ;
 			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_NOMBRE_DIA));
 			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_NOMBRE_DIA));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
