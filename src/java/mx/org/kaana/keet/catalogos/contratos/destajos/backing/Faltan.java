@@ -18,7 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Codigo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
@@ -58,7 +58,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 	private Nomina ultima;  
   private String costoTotal;
   private String costoAnticipo;
-  private List<Concepto> model;
+  private List<Codigo> model;
   private List<Lote> fields;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
@@ -81,7 +81,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     return costoAnticipo;
   }
 
-  public List<Concepto> getModel() {
+  public List<Codigo> getModel() {
     return model;
   }
 
@@ -398,7 +398,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   public void doLoad() {
 		List<UISelectEntity> figuras= null;
 		UISelectEntity figura       = null;
-    List<Columna> columns       = null;
 		Map<String, Object>params   = new HashMap<>();
     List<Entity> casas          = null;
     List<Entity> rubros         = null;
@@ -429,21 +428,15 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         else
           params.put("semana", "2000-0");
         codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
-        if(codigos!= null && !codigos.isEmpty()) {
-          int count= 0;
-          for (Entity codigo: codigos) {
-            Concepto concepto= new Concepto(count++, codigo.toString("codigo"), codigo.toString("nombre"));
-            this.model.add(concepto);
-          } // for
-        } // if
+        this.prepare(this.model, codigos);
         this.fields.clear();
         casas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", idXml, params, Constantes.SQL_TODOS_REGISTROS);
         if(casas!= null && !casas.isEmpty()) {
           for (Entity item: casas) {
             String lote= item.toString("lote").replaceAll("-", "");
-            index= this.model.indexOf(new Concepto(item.toString("codigo")));
+            index= this.model.indexOf(new Codigo(item.toString("codigo")));
             if(index>= 0) {
-              Concepto concepto= this.model.get(index);
+              Codigo concepto= this.model.get(index);
               concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
               if(!com.google.common.base.Objects.equal(lote, anterior)) {
                 this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-col-85"));
@@ -455,13 +448,13 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
           } // for
           rubros= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "rubros", params, Constantes.SQL_TODOS_REGISTROS);
           StringBuilder sb= new StringBuilder(Constantes.SEPARADOR);
-          for (Entity rubro : rubros) {
+          for (Entity rubro: rubros) {
             sb.append(rubro.toString("codigo")).append(Constantes.SEPARADOR);
           } // for
           // LIMPIAR LOS CONCEPTOS QUE NO PERTENECEN AL DEPARTAMENTO
           index= 0;
           while (index< this.model.size()) {
-            Concepto concepto= this.model.get(index);
+            Codigo concepto= this.model.get(index);
             if(!concepto.getCodigo().startsWith("#"))
               if(sb.indexOf(Constantes.SEPARADOR.concat(concepto.getCodigo()).concat(Constantes.SEPARADOR))<= 0)
                 this.model.remove(index);
@@ -474,7 +467,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
           index        = 0;
           String codigo= null;
           while (index< this.model.size()) {
-            Concepto concepto= this.model.get(index);
+            Codigo concepto= this.model.get(index);
             if(codigo!= null && codigo.startsWith("#") && concepto.getCodigo().startsWith("#"))
               this.model.remove(index- 1);
             else
@@ -501,7 +494,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally				
   } // doPartidas	
   
@@ -757,15 +749,15 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     } // finally
   }
  
-	public String doColor(Concepto row) {
+	public String doColor(Codigo row) {
 		return ((String)row.get("codigo")).startsWith("#")? "janal-tr-diferencias": "";
 	}
  
-  public Boolean isConcepto(Concepto row) {
+  public Boolean isConcepto(Codigo row) {
     return !row.getCodigo().startsWith("#");
   }
  
-  public String doDetalle(Concepto row, String key) {
+  public String doDetalle(Codigo row, String key) {
     String regresar             = null;    		
 		List<UISelectEntity> figuras= null;
 		UISelectEntity figura       = null;

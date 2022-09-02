@@ -15,7 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Codigo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
@@ -39,7 +39,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
   private static final Log LOG = LogFactory.getLog(Control.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
-  private List<Concepto> model;
+  private List<Codigo> model;
   private List<Lote> fields;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
@@ -50,7 +50,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		this.registroDesarrollo = registroDesarrollo;
 	}			
 
-  public List<Concepto> getModel() {
+  public List<Codigo> getModel() {
     return model;
   }
 
@@ -58,7 +58,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     return fields;
   }
   
-  public Boolean isConcepto(Concepto row) {
+  public Boolean isConcepto(Codigo row) {
     return !row.getCodigo().startsWith("#");
   }
 
@@ -170,10 +170,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     List<Entity> lotes       = null;
-    List<Entity> codigos     = null;
     String anterior          = "";
     try {
       this.model.clear();
@@ -185,22 +183,15 @@ public class Control extends IBaseReporteDestajos implements Serializable {
         params.put("semana", semana.toString("semana"));
       else
         params.put("semana", "2000-0");
-      codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
-      if(codigos!= null && !codigos.isEmpty()) {
-        int count= 0;
-        for (Entity codigo: codigos) {
-          Concepto concepto= new Concepto(count++, codigo.toString("codigo"), codigo.toString("nombre"));
-          this.model.add(concepto);
-        } // for
-      } // if
-      this.fields.clear();
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "control", params, Constantes.SQL_TODOS_REGISTROS);
+      this.prepare(this.model, lotes);
+      this.fields.clear();
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
-          int index= this.model.indexOf(new Concepto(item.toString("codigo")));
+          int index= this.model.indexOf(new Codigo(item.toString("codigo")));
           if(index>= 0) {
-            Concepto concepto= this.model.get(index);
+            Codigo concepto= this.model.get(index);
             concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
             if(!Objects.equal(lote, anterior)) {
               this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
@@ -221,7 +212,6 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally				
   } // doLoad	
 	
@@ -257,7 +247,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
   
-  public void doDetalle(Concepto row) {
+  public void doDetalle(Codigo row) {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     try {
@@ -285,7 +275,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     } // finally				
 	}
  
-	public String doColor(Concepto row) {
+	public String doColor(Codigo row) {
 		return ((String)row.get("codigo")).startsWith("#")? "janal-tr-diferencias": "";
 	}
   

@@ -68,9 +68,9 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>	
-            <p:column class="janal-column-center MarAuto Responsive janal-col-18">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-2">
 							<f:facet name="header">
-								<h:outputText value=""/>
+								<h:outputText value="."/>
 							</f:facet>
               <p:commandLink process="@this" update="detalle" title="#{row['nombre']}" actionListener="#{keetCatalogosContratosDestajosSeguimiento.doDetalle(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage('#detalle')">
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
