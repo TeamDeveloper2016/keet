@@ -4231,7 +4231,7 @@
         group by
 				  tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente,
 				  tc_keet_contratos_destajos_residentes.id_nomina,
-				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.consecutivo
 				{sortOrder}			
 			</select>
 			<select id="costoProveedor">

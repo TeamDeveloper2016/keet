@@ -527,7 +527,7 @@
         group by
 				  tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista,
 				  tc_keet_contratos_destajos_contratistas.id_nomina,
-				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.consecutivo
 				order by 
           tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>

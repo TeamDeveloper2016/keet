@@ -4751,7 +4751,7 @@
       </select>
       <select id="siguiente">
         select 
-					max(cast(replace(descripcion, 'PAQUETE ', '')as int)+ 1) siguiente
+					max(cast(replace(descripcion, 'PAQUETE ', '') as signed)+ 1) siguiente
 				from 
 				  tc_keet_puntos_grupos
 				where
