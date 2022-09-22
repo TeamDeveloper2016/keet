@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="destajosProveedor" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="1809"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="372"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -157,7 +157,7 @@
 						<rightPen lineWidth="1.25"/>
 					</box>
 					<staticText>
-						<reportElement x="64" y="0" width="105" height="15" forecolor="#FFFFFF" uuid="5c3d2aa8-2cda-4e95-8e6d-dff7c60f01f1"/>
+						<reportElement x="36" y="0" width="133" height="15" forecolor="#FFFFFF" uuid="5c3d2aa8-2cda-4e95-8e6d-dff7c60f01f1"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -171,7 +171,7 @@
 						<text><![CDATA[Código]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="0" y="0" width="64" height="15" forecolor="#FFFFFF" uuid="fe1316bd-583c-46dc-bd47-7145de2b15ba"/>
+						<reportElement x="0" y="0" width="36" height="15" forecolor="#FFFFFF" uuid="fe1316bd-583c-46dc-bd47-7145de2b15ba"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -467,14 +467,14 @@
 				<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="64" height="14" uuid="475c62ad-fe2a-40c7-98c1-c196950c3f83"/>
+				<reportElement x="0" y="0" width="36" height="14" uuid="475c62ad-fe2a-40c7-98c1-c196950c3f83"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMINA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="64" y="0" width="105" height="14" uuid="fef2b799-99fd-42cb-a68d-dbdbb26a0581"/>
+				<reportElement mode="Transparent" x="36" y="0" width="133" height="14" uuid="fef2b799-99fd-42cb-a68d-dbdbb26a0581"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
