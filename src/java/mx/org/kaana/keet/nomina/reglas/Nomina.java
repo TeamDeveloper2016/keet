@@ -249,7 +249,6 @@ public class Nomina implements Serializable {
           if(Objects.equals(concepto.getNombre(), "FALTA"))
             this.toCalculateFaltas(concepto, item);
 					concepto.setFecha(item.getInicio());
-					// concepto.setRegistro(item.getInicio());
 					if(incidente.recuperar())
 						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));
 					particulares.add(concepto);

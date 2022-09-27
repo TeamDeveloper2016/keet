@@ -3412,7 +3412,7 @@
 					tc_keet_nominas_detalles.nombre as detalle,
 					tc_keet_nominas_detalles.formula,
 					tc_keet_nominas_detalles.valor,
-				  tc_keet_nominas_detalles.registro as fecha
+				  tc_keet_nominas_detalles.fecha
 				from
 					tc_keet_nominas_detalles
 				inner join

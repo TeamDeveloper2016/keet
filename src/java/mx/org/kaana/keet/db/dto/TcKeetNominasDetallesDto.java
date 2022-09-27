@@ -44,9 +44,9 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="clave")
   private String clave;
-  @Column (name="registro")
-  private LocalDate fecha;
   @Column (name="fecha")
+  private LocalDate fecha;
+  @Column (name="registro")
   private LocalDateTime registro;
 
   public TcKeetNominasDetallesDto() {
