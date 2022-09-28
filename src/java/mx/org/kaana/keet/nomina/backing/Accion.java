@@ -105,12 +105,12 @@ public class Accion extends IBaseFilter implements Serializable {
 					0D, // Double percepciones
           ((Nomina)this.attrs.get("nomina")).getIdCompleta()// Long idCompleta     
 				);
-  			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
+  			transaccion= new Transaccion(nomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar());
 			} // if
       else {
    			nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, idNomina);
         nomina.setIdCompleta(((Nomina)this.attrs.get("nomina")).getIdCompleta());
-  			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
+  			transaccion= new Transaccion(nomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar());
       } // else  
 			if(transaccion.ejecutar(EAccion.AGREGAR))
 				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);

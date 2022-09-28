@@ -19,6 +19,7 @@ public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
 	private Long idTipoNomina;
 	private Long idNominaEstatus;
 	private Long idCompleta;
+	private String[] idNotificar;
 	private Long proveedores;
 	private Long personas;
 	private Double total;
@@ -36,6 +37,7 @@ public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
 		this.idTipoNomina= 2L;
 		this.idNominaEstatus= idNominaEstatus;
 		this.idCompleta= idCompleta;
+		this.idNotificar= new String[] {"1", "4"};
 		this.estatus= "";
 		this.proveedores= 0L;
 		this.personas= 0L;
@@ -73,6 +75,14 @@ public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
 
   public void setIdCompleta(Long idCompleta) {
     this.idCompleta = idCompleta;
+  }
+
+  public String[] getIdNotificar() {
+    return idNotificar;
+  }
+
+  public void setIdNotificar(String[] idNotificar) {
+    this.idNotificar = idNotificar;
   }
 
 	public String getEstatus() {

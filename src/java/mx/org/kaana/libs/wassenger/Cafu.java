@@ -388,6 +388,10 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendDestajo(Session sesion) {
+    this.doSendDestajo(sesion, this.toSaludo());
+  }
+  
+  public void doSendDestajo(Session sesion, String saludo) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
@@ -397,7 +401,7 @@ public final class Cafu implements Serializable {
         params.put("reporte", this.reporte);
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
-        params.put("saludo", this.toSaludo());
+        params.put("saludo", saludo);
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
@@ -447,16 +451,20 @@ public final class Cafu implements Serializable {
   }
 
   public void doSendResidentes(Session sesion) {
+    this.doSendResidentes(sesion, this.toSaludo());
+  }
+  
+  public void doSendResidentes(Session sesion, String saludo) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
-      Message message= null;
-      Map<String, Object> params = new HashMap<>();        
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
       try {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("desarrollo", this.desarrollo);
-        params.put("saludo", this.toSaludo());
+        params.put("saludo", saludo);
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
@@ -702,7 +710,7 @@ public final class Cafu implements Serializable {
     } // finally
   }
   
-  private String toSaludo() {
+  public String toSaludo() {
     String regresar= null;
     Calendar calendar= Calendar.getInstance();
     int hour= calendar.get(Calendar.HOUR_OF_DAY);
