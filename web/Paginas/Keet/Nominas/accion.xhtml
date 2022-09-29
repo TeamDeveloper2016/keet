@@ -97,13 +97,13 @@
                       <f:selectItem itemValue="1" itemLabel="SI"/>
                       <f:selectItem itemValue="2" itemLabel="NO"/>
                     </p:selectOneMenu>																	
-                    <p:selectManyCheckbox id="notificar" value="#{keetNominasAccion.attrs.nomina.idNotificar}" styleClass="janal-wid-100-txt">
+                    <p:selectCheckboxMenu id="notificar" value="#{keetNominasAccion.attrs.nomina.idNotificar}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true" style="margin-top: -6px;">
                       <p:ajax event="change" onstart="return janal.bloquear();" process="@this" oncomplete="janal.desbloquear();"/>
                       <f:selectItem itemValue="1" itemLabel="ADMINISTRADORES"/>
                       <f:selectItem itemValue="2" itemLabel="RESIDENTES"/>
                       <f:selectItem itemValue="3" itemLabel="CONTRATISTAS"/>
                       <f:selectItem itemValue="4" itemLabel="SUBCONTRATISTAS"/>
-                    </p:selectManyCheckbox>																	
+                    </p:selectCheckboxMenu>																	
                   </p:panelGrid>  
                 </p:panelGrid>  
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center">

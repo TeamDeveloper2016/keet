@@ -1254,10 +1254,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         finally {
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
         } // finally	
-        if(contratista.length()> 0)
-          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
-        else
-          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
 		} // try // try
 		catch(Exception e) {
@@ -1294,10 +1290,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
           notificar.doSendResidentes(sesion);
         } // for
-        if(!residentes.isEmpty())
-          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
-        else
-          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
 		} // try 
 		catch(Exception e) {
