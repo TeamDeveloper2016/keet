@@ -159,13 +159,13 @@ public final class Especial implements Serializable {
 	}
 
 	private String toParameter (ServletContextEvent servletContextEvent , String parameter) {
-   return servletContextEvent.getServletContext().getInitParameter(parameter);
+    return servletContextEvent.getServletContext().getInitParameter(parameter);
   }
 
   private void addParameters (ServletContextEvent cfg) throws SchedulerException {
     this.scheduler.getContext().put("pathContext", cfg.getServletContext().getRealPath("").concat("/"));
     this.scheduler.getContext().put("application", cfg.getServletContext());
-    this.scheduler.getContext().put("servidor", toParameter(cfg,"servidor"));
+    this.scheduler.getContext().put("servidor", this.toParameter(cfg, "servidor"));
   }	
 	
 	public void init() {

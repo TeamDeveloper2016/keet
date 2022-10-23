@@ -30,7 +30,7 @@ public class Demo implements Job, Serializable {
 		DetalleConfiguracion detalleConfiguracion = null;
 		List<TareaServidor> tareaServidor         = null;		
 		try {
-		  tareaServidor=Especial.getInstance().getTareaServidor();
+		  tareaServidor= Especial.getInstance().getTareaServidor();
 			LOG.info("Ejecutó la tarea demo en el servidor");
 		  for (TareaServidor recordTarea: tareaServidor) {
         detalleConfiguracion=recordTarea.toDetalleConfiguracion();

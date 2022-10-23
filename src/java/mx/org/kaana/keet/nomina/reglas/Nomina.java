@@ -82,9 +82,8 @@ public class Nomina implements Serializable {
   }
 
 	private void load() throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			List<Entity> entities= DaoFactory.getInstance().toEntitySet(this.sesion, "TcKeetNominasConstantesDto", "todos", Collections.EMPTY_MAP);
 			this.constants= new HashMap<>();

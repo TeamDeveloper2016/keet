@@ -806,15 +806,19 @@ public class Transaccion extends IBaseTnx {
 		Cafu notificar = null;
 		try {
       if(residente!= null) {
-        notificar= new Cafu(sujeto.toString("residente"), residente, sujeto.toString("total"), sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
+        notificar= new Cafu(
+          sujeto.toString("residente"), 
+          residente, 
+          sujeto.toString("total"), 
+          sujeto.toString("nomina"), 
+          "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*"
+        );
         LOG.info("Enviando mensaje por whatsapp al celular: "+ residente);
         notificar.doSendGasto(sesion);
-        if(residente.length()> 0)
-          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residente+ "] !", ETipoMensaje.INFORMACION);
-        else
+        if(residente.length()<= 0)
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
-		} // try // try
+		} // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -834,6 +838,7 @@ public class Transaccion extends IBaseTnx {
           case "cafu":
             administradores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             administradores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
+            administradores.put("Claro Lidia Flores Alcantara", encriptar.desencriptar("d745383f3f39201f107797"));
             break;
           case "gylvi":
             administradores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
@@ -850,9 +855,7 @@ public class Transaccion extends IBaseTnx {
           LOG.info("Enviando mensaje de whatsup al celular: "+ administrador);
           notificar.doSendCajaChica(sesion);
         } // for
-        if(!administradores.isEmpty())
-          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ administradores.toString()+ "] !", ETipoMensaje.INFORMACION);
-        else
+        if(administradores.isEmpty())
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
 		} // try // try

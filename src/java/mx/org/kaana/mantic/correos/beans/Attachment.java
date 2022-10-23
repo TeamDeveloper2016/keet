@@ -26,7 +26,7 @@ public class Attachment implements Serializable {
 			
 	
 	public Attachment(String absolute, Boolean cid) {
-		this(JsfBase.getRealPath(""), absolute, cid, true);
+		this(JsfBase.getRealPath(""), absolute, cid, Boolean.FALSE);
 	}
 	
 	public Attachment(String path, String absolute, Boolean cid, Boolean principal) {

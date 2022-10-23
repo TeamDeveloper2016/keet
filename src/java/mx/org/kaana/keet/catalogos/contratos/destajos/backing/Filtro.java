@@ -759,9 +759,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
           finally {
             LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
           } // finally	
-          if(contratista.length()> 0)
-            JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
-          else
+          if(contratista.length()<= 0)
             JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
         } // if  
       } // if

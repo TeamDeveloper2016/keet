@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.faces.context.FacesContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EEtapaServidor;
@@ -74,6 +75,8 @@ public final class Cafu implements Serializable {
   private Map<String, Object> contratistas;
   private String url;
   private String correo;
+  private String realPath;
+  private Long idUsuario;
 
   public Cafu() {
     this("", "");  
@@ -88,7 +91,11 @@ public final class Cafu implements Serializable {
   }
   
   public Cafu(String nombre, String celular, String reporte, String nomina, String periodo) {
-    this(nombre, celular, nomina, periodo, Collections.EMPTY_MAP, "");
+    this(nombre, celular, reporte, nomina, periodo, JsfBase.getRealPath());
+  }
+  
+  public Cafu(String nombre, String celular, String reporte, String nomina, String periodo, String realPath) {
+    this(nombre, celular, nomina, periodo, "", "", Collections.EMPTY_MAP, "", realPath);
     this.reporte= reporte;
   }
 
@@ -105,6 +112,10 @@ public final class Cafu implements Serializable {
   }
 
   public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas, String desarrollo) {
+    this(nombre, celular, nomina, periodo, ticket, fecha, contratistas, desarrollo, JsfBase.getRealPath());
+  }
+  
+  public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas, String desarrollo, String realPath) {
     this.nombre = Cadena.nombrePersona(nombre);
     this.celular= this.clean(celular);
     this.nomina = nomina;
@@ -113,13 +124,15 @@ public final class Cafu implements Serializable {
     this.fecha  = fecha;
     this.token  = System.getenv(IMOX_TOKEN);
     this.contratistas= contratistas;
-    this.desarrollo= desarrollo;
+    this.desarrollo  = desarrollo;
+    this.realPath    = realPath;
     this.prepare();
     this.empresa= Configuracion.getInstance().getEmpresa("titulo");
     this.url    = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     if(!this.url.endsWith("/"))
       this.url= this.url.concat("/");
-    this.correo = "";
+    this.correo   = "";
+    this.idUsuario= FacesContext.getCurrentInstance()!= null? JsfBase.getIdUsuario(): 2L;
   }
   
   public String getNombre() {
@@ -258,7 +271,7 @@ public final class Cafu implements Serializable {
             message.setIdSendStatus(new Long(response.getStatus()));
             message.setSendStatus(response.getStatusText());
             message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
-            message.setIdUsuario(JsfBase.getIdUsuario());
+            message.setIdUsuario(this.idUsuario);
             if(sesion!= null)
               DaoFactory.getInstance().insert(sesion, message);
             else
@@ -316,7 +329,7 @@ public final class Cafu implements Serializable {
         message.setIdSendStatus(new Long(response.getStatus()));
         message.setSendStatus(response.getStatusText());
         message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-        message.setIdUsuario(JsfBase.getIdUsuario());
+        message.setIdUsuario(this.idUsuario);
         if(sesion!= null)
           DaoFactory.getInstance().insert(sesion, message);
         else
@@ -368,7 +381,7 @@ public final class Cafu implements Serializable {
         message.setIdSendStatus(new Long(response.getStatus()));
         message.setSendStatus(response.getStatusText());
         message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-        message.setIdUsuario(JsfBase.getIdUsuario());
+        message.setIdUsuario(this.idUsuario);
         if(sesion!= null)
           DaoFactory.getInstance().insert(sesion, message);
         else
@@ -432,7 +445,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -496,7 +509,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -554,7 +567,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -613,7 +626,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -636,7 +649,7 @@ public final class Cafu implements Serializable {
     String[] files = destajos.toArray(new String[0]);
 		try {
 			Zip zip= new Zip(Boolean.TRUE, Boolean.FALSE);
-			zip.comprimir(JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(regresar)), files);
+			zip.comprimir(this.realPath.concat("/".concat(EFormatos.PDF.toPath()).concat(regresar)), files);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -667,7 +680,7 @@ public final class Cafu implements Serializable {
               key= key.substring(key.indexOf("-")+ 1);
             params.put("contratista", key);
             archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
-            files.add(construccion.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ JsfBase.getRealPath("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
+            files.add(construccion.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ this.realPath.concat("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
           } // else  
         } // for
         String concentado= this.toZipFile(files);
@@ -768,7 +781,7 @@ public final class Cafu implements Serializable {
             message.setIdSendStatus(new Long(response.getStatus()));
             message.setSendStatus(response.getStatusText());
             message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
-            message.setIdUsuario(JsfBase.getIdUsuario());
+            message.setIdUsuario(this.idUsuario);
             if(sesion!= null)
               DaoFactory.getInstance().insert(sesion, message);
             else
@@ -845,7 +858,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -959,7 +972,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -1019,7 +1032,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.SUPERVISOR.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -1144,7 +1157,7 @@ public final class Cafu implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.GERENTES.getId());
-          message.setIdUsuario(2L);
+          message.setIdUsuario(this.idUsuario);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -1165,7 +1178,7 @@ public final class Cafu implements Serializable {
   public static void main(String ... args) {
 //    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Irma de Lourdes Hernandez Romo"};
 //    String celulares[]= {"4491813810", "4491152255", "4491285890"};
-    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
+    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021", "");
     message.doSendSaludo();
 //    for (int x= 0; x < nombres.length; x++) {
 //      message.setNombre(nombres[x]);

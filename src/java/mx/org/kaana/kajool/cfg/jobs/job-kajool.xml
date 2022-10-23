@@ -8,13 +8,14 @@
 -->
 <tareas>  	     
    <tarea id="kajool" load="true">
-     <clase expresion="0 1/5 * * * ?"      id="test"        description="job demo"                   load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Demo</clase>     				
-		 <clase expresion="0 0 2 1/1 * ? *"    id="respaldos"   description="realiza respaldo de la BD"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Respaldos</clase>
-		 <clase expresion="0 0/30 * 1/1 * ? *" id="facturas"    description="sincronización de facturas" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Facturas</clase>
-		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="descargas de respaldos"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Descargas</clase>
-		 <clase expresion="0 0,30 0/1 ? * * *" id="facturacion" description="facturación automatica"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Timbrado</clase>		 
-		 <clase expresion="0 0 4 1/1 * ? *"    id="depuracion"  description="depuración de archivos"     load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Depuracion</clase>		 
-		 <clase expresion="0 0 8 1/1 * ? *"    id="garantias"   description="fondos de garantias"        load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Garantias</clase>		 
-		 <clase expresion="0 0 17 ? * FRI *"   id="balance"     description="estados de cuenta"          load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Balance</clase>		 
+     <clase expresion="0 1/5 * * * ?"      id="test"        description="job demo"                load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Demo</clase>     				
+		 <clase expresion="0 0 2 1/1 * ? *"    id="respaldos"   description="respaldar BD"            load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Respaldos</clase>
+		 <clase expresion="0 0/30 * 1/1 * ? *" id="facturas"    description="sincronización facturas" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Facturas</clase>
+		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="descargas de respaldos"  load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Descargas</clase>
+		 <clase expresion="0 0,30 0/1 ? * * *" id="facturacion" description="facturación automatica"  load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Timbrado</clase>		 
+		 <clase expresion="0 0 4 1/1 * ? *"    id="depuracion"  description="depuración de archivos"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Depuracion</clase>		 
+		 <clase expresion="0 0 8 1/1 * ? *"    id="garantias"   description="fondos de garantias"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Garantias</clase>		 
+		 <clase expresion="0 0 17 ? * FRI *"   id="balance"     description="estados de cuenta"       load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Balance</clase>		 
+		 <clase expresion="0 0 8 ? * SAT *"    id="cierre"      description="cierre de nómina"        load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
    </tarea>      	        
 </tareas>

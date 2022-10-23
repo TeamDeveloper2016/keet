@@ -81,13 +81,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-    List<Columna> columns    = null;		
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
+    List<Columna> columns    = new ArrayList<>();		
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
       this.toLoadContratos();
@@ -99,12 +97,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	} // toLadCatalogos	
 	
 	private void toLoadContratos() {
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {      
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			contratos= UIEntity.build("VistaTableroDto", "contratos", params);
+			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
       if(Cadena.isVacio(this.attrs.get("contrato"))) 
   			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
@@ -120,15 +117,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadManzanas() {
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectEntity> manzanas= null;
     try {      
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
+			manzanas= UIEntity.seleccione("VistaTableroDto", "unicas", params, "nombre");
 			this.attrs.put("manzanas", manzanas);
       if(Cadena.isVacio(this.attrs.get("manzana"))) 
   			this.attrs.put("manzana", UIBackingUtilities.toFirstKeySelectEntity(manzanas));
@@ -234,6 +230,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("entrega", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("recibio", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("arranque", EFormatoDinamicos.FECHA_CORTA));    
       this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "lotesDisponibles", params);		
       casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesDisponibles", params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
       this.attrs.put("lotes", casas);

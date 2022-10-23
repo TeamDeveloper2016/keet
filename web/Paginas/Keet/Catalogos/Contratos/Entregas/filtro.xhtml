@@ -32,28 +32,25 @@
 								<p:inputText value="#{keetCatalogosContratosEntregasFiltro.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
                 <p:outputLabel value="Domicilio:"/>
 								<p:inputText value="#{keetCatalogosContratosEntregasFiltro.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
-                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-                    <p:outputLabel for="contratos" value="Contratos:"/>
-                    <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosEntregasFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoadManzanas}" update="manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes(); reload();"/>
-                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                      <p:column headerText="Clave">
-                        <h:outputText value="#{item.clave}"/>
-                      </p:column>   
-                      <p:column headerText="Nombre">
-                        <h:outputText value="#{item.nombre}"/>
-                      </p:column>   
-                    </p:selectOneMenu>
-                  </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100 janal-display-none">
+                  <p:outputLabel for="contratos" value="Contratos:"/>
+                  <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosEntregasFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoadManzanas}" update="manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes(); reload();"/>
+                    <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                     <p:outputLabel for="manzanas" value="Manzanas:"/>
                     <p:selectOneMenu id="manzanas" value="#{keetCatalogosContratosEntregasFiltro.attrs.manzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                       <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoadCasas}" update="lotes destajo" oncomplete="janal.desbloquear(); reloadLotes(); reload();"/>
-                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.manzana or element.manzana eq ''? '': '|'} #{element.manzana}"/>
-                      <p:column headerText="Contato">
-                        <h:outputText value="#{item.nombre}"/>
-                      </p:column>   
+                      <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.manzana}"/>
                       <p:column headerText="Manzana">
                         <h:outputText value="#{item.manzana}"/>
                       </p:column>   

@@ -288,6 +288,7 @@ public class Seguimiento extends IBaseTnx {
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
 			contratoLote.setArranque(inicio ? LocalDate.now() : null);			
+			contratoLote.setConcluyo(inicio ? LocalDate.now() : null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
 		} // try
 		catch (Exception e) {

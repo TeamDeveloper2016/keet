@@ -532,9 +532,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 					sb.append(mail.getDescripcion()).append(", ");
 			} // for
 		} // if
+    if(sb.length()<= 1)
+      sb.append("  ");
 		Map<String, Object> params= new HashMap<>();
 		//String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
-		String[] emails= {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+    String[] emails= null;
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        sb.append("auxadministrativo@cafuconstrucciones.com, ");
+        emails= sb.substring(0, sb.length()- 2).split("[,]");
+        break;
+      case "gylvi":
+		    emails= sb.substring(0, sb.length()- 2).split("[,]");
+        break;
+      case "triana":
+     		emails= sb.substring(0, sb.length()- 2).split("[,]");
+        break;
+    } // swtich   
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
@@ -592,7 +606,16 @@ public class Filtro extends IBaseFilter implements Serializable {
         } // for
       } // if
       if(sb.length()> 0) {
-        this.doReporte("ORDEN_DETALLE", true);        
+        this.doReporte("ORDEN_DETALLE", true); 
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            sb.append("4491501250, ");
+            break;
+          case "gylvi":
+            break;
+          case "triana":
+            break;
+        } // swtich        
         Cafu notificar= new Cafu(seleccionado.toString("proveedor"), "celular", this.reporte.getAlias(), "ticket", "fecha");
         String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
         for (String phone: phones) {

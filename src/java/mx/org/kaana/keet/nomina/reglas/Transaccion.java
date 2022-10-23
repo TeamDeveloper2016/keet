@@ -94,7 +94,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	private Long idTipoFigura;
 	private Correo correo;
 	private String texto;
+	private String realPath;
   private String[] notificar;
+  private Boolean automatico;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -102,14 +104,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 
 	public Transaccion(Long idNomina, Autentifica autentifica) {
 		this(idNomina, autentifica, -1L, -1L, new String[] {"1", "4"});
-	}
-
-	public Transaccion(Long idNomina, Autentifica autentifica, TcKeetNominasBitacoraDto bitacora) {
-    super(new TcKeetPrestamosPagosDto());
-		this.idNomina   = idNomina;
-		this.autentifica= autentifica;
-		this.bitacora   = bitacora;
-    this.notificar  = new String[] {"1", "4"};
 	}
 
 	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar) {
@@ -132,6 +126,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.idEmpresaPersona= idEmpresaPersona;
 		this.idProveedor     = idProveedor;
     this.notificar       = idNotificar;
+    this.realPath        = JsfBase.getRealPath();
+    this.automatico      = Boolean.FALSE;
 	}
 
 	public Transaccion(Long idFigura, Long idTipoFigura, Correo correo) {
@@ -139,9 +135,21 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.idFigura    = idFigura;
 		this.idTipoFigura= idTipoFigura;
 		this.correo      = correo;
-    this.notificar  = new String[] {"1", "4"};
+    this.notificar   = new String[] {"1", "4"};
+    this.realPath    = JsfBase.getRealPath();
+    this.automatico  = Boolean.FALSE;
 	}	
-	
+
+	public Transaccion(Long idNomina, Autentifica autentifica, TcKeetNominasBitacoraDto bitacora, String realPath, Boolean automatico) {
+    super(new TcKeetPrestamosPagosDto());
+		this.idNomina   = idNomina;
+		this.autentifica= autentifica;
+		this.bitacora   = bitacora;
+    this.notificar  = new String[] {"1", "4"};
+    this.realPath   = realPath;
+    this.automatico = automatico;
+	}
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= true;
@@ -260,9 +268,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	
 	private TcKeetNominasProveedoresDto existProveedor(Session sesion, Long idProveedor) throws Exception {
 		TcKeetNominasProveedoresDto regresar= null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		try {		
-			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", idProveedor);
 			regresar= (TcKeetNominasProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasProveedoresDto.class, "TcKeetNominasProveedoresDto", "identically", params);
@@ -295,9 +302,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void cleanPersona(Session sesion, Long idEmpresaPersona) throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		try {		
-			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params, "persona");
@@ -311,9 +317,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void cleanProveedor(Session sesion, Long idProveedor) throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		try {		
-			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", idProveedor);
 			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "persona");
@@ -347,12 +352,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void procesarPersonas(Session sesion, String proceso) throws Exception {
-		Map<String, Object> params       = null;
+		Map<String, Object> params       = new HashMap<>();
 		TcKeetNominasPersonasDto empleado= null;
 		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
-			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
@@ -402,12 +406,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void reprocesarPersonas(Session sesion) throws Exception {
-		Map<String, Object> params       = null;
+		Map<String, Object> params       = new HashMap<>();
 		TcKeetNominasPersonasDto empleado= null;
 		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
-			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
@@ -460,10 +463,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void reprocesarProveedores(Session sesion, Monitoreo monitoreo) throws Exception {
-		Map<String, Object> params           = null;
+		Map<String, Object> params           = new HashMap<>();
 		TcKeetNominasProveedoresDto proveedor= null;
 		try {
-			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
@@ -503,12 +505,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void proveedor(Session sesion) throws Exception {
-		Map<String, Object> params           = null;
+		Map<String, Object> params           = new HashMap<>();
 		TcKeetNominasProveedoresDto proveedor= null;
 		Monitoreo monitoreo                  = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
-			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
@@ -550,12 +551,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void persona(Session sesion) throws Exception {
-		Map<String, Object> params       = null;
+		Map<String, Object> params       = new HashMap<>();
 		TcKeetNominasPersonasDto empleado= null;
 		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
-			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
@@ -604,9 +604,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 
 	private void closeIncidentes(Session sesion) throws Exception {
-    Map<String, Object> params=null;
+    Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			List<TcManticIncidentesDto> prestamos= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params, Constantes.SQL_TODOS_REGISTROS);
 			if(prestamos!= null && !prestamos.isEmpty()) {		
@@ -669,9 +668,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 
 	private void toTakeOutPersonas(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasPersonasDto", "personas", params);
 			this.nomina.setPersonas(entity.toLong("personas"));
@@ -686,9 +684,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void toTakeOutProveedores(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasProveedoresDto", "proveedores", params);
       if(entity!= null && !entity.isEmpty()) {
@@ -710,9 +707,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 
 	private void toAddNewNomina(Session sesion) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			if(this.nomina.getIdTipoNomina()== 1L) {
 				params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 				Value value= DaoFactory.getInstance().toField(sesion, "TcKeetNominasDto", "existe", params, "idNominaEstatus");
@@ -733,10 +729,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						periodo.getTermino().plusDays(-2), // LocalDate fechaDispersion, 
 						periodo.getKey(), // Long idNominaPeriodo, 
 						0D, // Double iva, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
 						0D, // Double subtotal, 
 						"", // String observaciones, 
-						JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
+						this.autentifica.getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 						0D, // Double percepciones
             2L // Long idCompleta
 					);
@@ -744,7 +740,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					this.bitacora= new TcKeetNominasBitacoraDto(
 						"CREAR NOMINA TEMPORAL", // String justificacion, 
 						this.nomina.getIdNominaEstatus(), // Long idNominaEstatus, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
 						-1L, // Long idNominaBitacora, 
 						siguiente.getIdNomina()// Long idNomina
 					);		
@@ -773,9 +769,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void toOpenNewNomina(Session sesion) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			if(this.nomina.getIdTipoNomina()== 1L) {
 				params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 				TcKeetNominasDto open= (TcKeetNominasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasDto.class, "TcKeetNominasDto", "existe", params);
@@ -785,7 +780,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					this.bitacora= new TcKeetNominasBitacoraDto(
 						"APERTURA DE NOMINA AUTOMATICO", // String justificacion, 
 						open.getIdNominaEstatus(), // Long idNominaEstatus, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
 						-1L, // Long idNominaBitacora, 
 						open.getIdNomina()// Long idNomina
 					);		
@@ -892,12 +887,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	} // toProveedorTipoContacto
 
   private void notificarCorreo(Session sesion) throws Exception {
-    List<Columna> columns     = null;		
+    List<Columna> columns     = new ArrayList<>();		
     Map<String, Object> params= new HashMap<>();
     StringBuilder sb          = new StringBuilder();
     Reporte jasper            = null; 
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
@@ -957,16 +951,15 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }
   
 	public void toSendMail(Session sesion, Reporte jasper, String correos, Entity sujeto) throws Exception {		
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("inicio")+ " al "+ sujeto.toString("termino");
 		List<Attachment> files    = null; 
 		IBaseAttachment notificar = null;
 		Attachment attachments    = null;
 		try {
-			params= new HashMap<>();
 			params.put("header", "...");
 			params.put("footer", "...");
-			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
+			params.put("empresa", this.autentifica.getEmpresa().getNombre());			
 			params.put("personalDestajo", sujeto.toString("contratista"));
 			params.put("correo", ECorreos.DESTAJOS.getEmail());	
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -984,10 +977,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporte(sesion, jasper, sujeto);
 			params.put("tipo", "Reporte - "+ titulo);			
-			attachments= new Attachment(jasper.getNombre(), false);
+			attachments= new Attachment(this.realPath, jasper.getNombre(), Boolean.FALSE, Boolean.FALSE);
 			files= new ArrayList<>();
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.DESTAJOS.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
+			files.add(new Attachment(this.realPath, "logo", ECorreos.DESTAJOS.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(correos)) {
@@ -1000,10 +993,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         if(attachments.getFile().exists()) 
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
       } // finally	
-			if(correos.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
-			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+			if(!this.automatico)
+        if(correos.length()> 0)
+          JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			throw e;
@@ -1017,10 +1011,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     String regresar              = null;
 		Map<String, Object>parametros= null;
 		EReportes seleccion          = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
     try {
-      params = new HashMap<>();  
       comunes= new Parametros(this.autentifica.getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       seleccion= figura.toLong("idTipoFigura").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
@@ -1030,7 +1023,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_ICON", this.realPath.concat("/resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       params.put("loNuevo", "");
@@ -1041,11 +1034,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar(""+ figura.getKey(), 5, '0', true)+ "-"+ Cadena.rellenar(""+ figura.toLong("idDesarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
-      String name= JsfBase.getRealPath(jasper.getNombre());
+      String name= this.realPath.concat(this.realPath.endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
       File file= new File(name);
       if(file.exists())
         file.delete();
-      jasper.toProcess(sesion);
+    	jasper.toProcess(sesion, this.realPath, this.automatico);
       LOG.info("Reporte generado: "+ name);
     } // try
     catch(Exception e) {
@@ -1131,16 +1124,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }
   
 	public void toControlResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity periodo, String desarrollo) throws Exception {		
-		Cafu notificar = null;
+		Cafu cafu = null;
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
-        notificar= new Cafu(periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", contratistas, desarrollo);
+        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.realPath);
         for (String residente: residentes.keySet()) {
-          notificar.setNombre(Cadena.nombrePersona(residente));
-          notificar.setCelular((String)residentes.get(residente));
+          cafu.setNombre(Cadena.nombrePersona(residente));
+          cafu.setCelular((String)residentes.get(residente));
           LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
-          notificar.doSendResidentes(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(notificar.toSaludo()));
+          cafu.doSendResidentes(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(cafu.toSaludo()));
         } // for
       } // if  
 		} // try 
@@ -1151,14 +1144,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   
 	public String toControlMessage(Session sesion, Reporte jasper, String contratista, Entity sujeto, Boolean enviar) throws Exception {		
     String regresar= "";
-		Cafu notificar = null;
+		Cafu cafu      = null;
 		try {
 			regresar= this.toReporte(sesion, jasper, sujeto);
       if(contratista!= null && enviar) {
         try {
-          notificar= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
+          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.realPath);
           LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
-          notificar.doSendDestajo(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(notificar.toSaludo()));
+          cafu.doSendDestajo(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(cafu.toSaludo()));
         } // try
         finally {
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
@@ -1172,14 +1165,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	} // toControlMessage
   
   private void notificarResidentes(Session sesion) throws Exception {
-    List<Columna> columns           = null;		
+    List<Columna> columns           = new ArrayList<>();		
     Map<String, Object> params      = new HashMap<>();
     Map<String, Object> residentes  = new HashMap<>();
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new HashMap<>();
     String desarrollo               = "";
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
@@ -1242,14 +1234,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 
 	public String toSendMessage(Session sesion, Reporte jasper, String contratista, Entity sujeto) throws Exception {		
     String regresar= "";
-		Cafu notificar = null;
+		Cafu cafu      = null;
 		try {
 			regresar= this.toReporte(sesion, jasper, sujeto);
       if(contratista!= null) {
         try {
-          notificar= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
+          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.realPath);
           LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
-          notificar.doSendDestajo(sesion);
+          cafu.doSendDestajo(sesion);
         } // try
         finally {
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
@@ -1263,7 +1255,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	} // toSendWessage
   
 	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity periodo, String desarrollo) throws Exception {		
-		Cafu notificar = null;
+		Cafu cafu = null;
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
@@ -1283,12 +1275,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             residentes.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
             break;
         } // swtich
-        notificar= new Cafu(periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", contratistas, desarrollo);
+        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.realPath);
         for (String residente: residentes.keySet()) {
-          notificar.setNombre(Cadena.nombrePersona(residente));
-          notificar.setCelular((String)residentes.get(residente));
+          cafu.setNombre(Cadena.nombrePersona(residente));
+          cafu.setCelular((String)residentes.get(residente));
           LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
-          notificar.doSendResidentes(sesion);
+          cafu.doSendResidentes(sesion);
         } // for
       } // if  
 		} // try 
@@ -1312,15 +1304,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           break;
       } // switch
 			TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
-      Cafu notificar= new Cafu("compañero(s)", group, this.texto, 
+      Cafu cafu= new Cafu("compañero(s)", group, this.texto, 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
-        "*");
+        "*",
+        this.realPath);
       LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
-      notificar.doSendCorteNomina(sesion);
+      cafu.doSendCorteNomina(sesion);
 		} // try 
 		catch(Exception e) {
 			throw e;
@@ -1342,15 +1335,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           break;
       } // switch
 			TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
-      Cafu notificar= new Cafu("compañero(s)", group, "", 
+      Cafu cafu= new Cafu("compañero(s)", group, "", 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
-        "*");
+        "*",
+        this.realPath);
       LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
-      notificar.doSendCierreNomina(sesion);
+      cafu.doSendCierreNomina(sesion);
 		} // try 
 		catch(Exception e) {
 			throw e;
@@ -1367,9 +1361,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }  
   
   private void toMovePersonalDesarrollo(Session sesion) throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
 			params.put("idNomina", this.idNomina);
       List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "TcKeetNominasPersonasDto", "desarrollo", params);
 			if(personal!= null && !personal.isEmpty()) {      
@@ -1393,9 +1386,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }  
 
   private void toAddPagoAnticipo(Session sesion) throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idNomina", this.idNomina);
       List<Entity> contratistas= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "anticiposContratistas", params);
       if(contratistas!= null && !contratistas.isEmpty()) {
@@ -1441,9 +1433,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       params.put("idEmpresa", idEmpresa);      
       Value value = DaoFactory.getInstance().toField("TcManticEmpresasDto", "logo", params, "imagen");
       if(value!= null && value.getData()!= null)
-        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(value.toString());
+        regresar= this.realPath.concat(Constantes.RUTA_IMAGENES).concat(value.toString());
       else
-        regresar= JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
+        regresar= this.realPath.concat(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1456,12 +1448,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   } 
 
   private void notificarResumenDestajos(Session sesion) throws Exception {
-    List<Columna> columns           = null;		
+    List<Columna> columns           = new ArrayList<>();		
     Map<String, Object> params      = new HashMap<>();
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new LinkedHashMap<>();
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
@@ -1494,7 +1485,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }
 
   public void toNotificarSupervisor(Session sesion, Map<String, Object> contratistas, Entity periodo) throws Exception {		
-		Cafu notificar                = null;
+		Cafu cafu                     = null;
     Map<String, Object> residentes= new HashMap<>();
 		try {
       LOG.error("-------------- ENTRO AL PROCESO DE NOTIFICAR --------------------------");
@@ -1532,17 +1523,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             break;
         } // swtich
       } // if
-      notificar= new Cafu(periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", contratistas);
+      cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.realPath);
       for (String residente: residentes.keySet()) {
-        notificar.setNombre(Cadena.nombrePersona(residente));
-        notificar.setCelular((String)residentes.get(residente));
+        cafu.setNombre(Cadena.nombrePersona(residente));
+        cafu.setCelular((String)residentes.get(residente));
         LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
-        notificar.doSendSupervisor(sesion);
+        cafu.doSendSupervisor(sesion);
       } // for
-      if(!residentes.isEmpty())
-        JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
-      else
-        JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
+      if(!this.automatico)
+        if(residentes.isEmpty())
+          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try 
 		catch(Exception e) {
 			throw e;

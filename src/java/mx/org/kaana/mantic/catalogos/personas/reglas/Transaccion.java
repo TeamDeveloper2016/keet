@@ -364,6 +364,7 @@ public class Transaccion extends IBaseTnx {
 				empresaPersonal.setContratacion(this.persona.getEmpresaPersona().getContratacion());
 				empresaPersonal.setSueldoSemanal(this.persona.getEmpresaPersona().getSueldoSemanal());
 				empresaPersonal.setSueldoMensual(this.persona.getEmpresaPersona().getSueldoMensual());
+				empresaPersonal.setSobreSueldo(this.persona.getEmpresaPersona().getSobreSueldo());
 				empresaPersonal.setNss(this.persona.getEmpresaPersona().getNss());
 				empresaPersonal.setDiarioImss(this.persona.getEmpresaPersona().getDiarioImss());
 				empresaPersonal.setSueldoImss(this.persona.getEmpresaPersona().getSueldoImss());
@@ -411,7 +412,7 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					if(key.equals("idNomina"))
 						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO");						
-					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(toIdContratista(sesion))){
+					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(this.toIdContratista(sesion))) {
 						if(!cleanPersonalAsignado(sesion, empresaPersonal.getIdEmpresaPersona())){
 							empresaPersonal.setIdPuesto(empresaPersonalOld.getIdPuesto());
 							this.messageAlert= "No es posible, hacer el cambio de puesto, tiene trabajo realizado como contratista.";
@@ -788,10 +789,10 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			countLotesPersona= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesContratistasDto", "trabajoLotes", params, "total").toLong();
-			if(countLotesPersona.equals(0L)){
-				if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosLotesContratistasDto", "depuracionCambioPerfil", params)>= 0L){
+			if(countLotesPersona.equals(0L)) {
+				// if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosLotesContratistasDto", "depuracionCambioPerfil", params)>= 0L) {
 					regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TrManticEmpresaPersonalDto", "depuracionCambioPerfil", params)>= 0;
-				} // if
+				// } // if
 			} // if
 		} // try
 		catch (Exception e) {			

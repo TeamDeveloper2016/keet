@@ -349,10 +349,14 @@ public class Reporte extends BaseReportes implements Serializable {
 	}
 
 	public void toProcess(Session sesion) throws Exception {
-		this.toProcess(sesion, JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
-	} // doAceptarSimple
+		this.toProcess(sesion, JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES), JsfBase.getRealPath(), Boolean.FALSE);
+	} // toProcess
+  
+	public void toProcess(Session sesion, String realPath, Boolean automatico) throws Exception {
+		this.toProcess(sesion, realPath.concat(this.ireporte.getJrxml().concat(".jasper")), realPath.concat(Constantes.RUTA_IMAGENES), realPath, automatico);
+	} // toProcess
 	
-	public void toProcess(Session sesion, String source, String imagenes, String path) throws Exception {
+	public void toProcess(Session sesion, String source, String imagenes, String path, Boolean automatico) throws Exception {
 		mx.org.kaana.libs.reportes.scriptlets.Reporte generar= null;		
 		InputStream input= null;
 		try {
@@ -370,12 +374,12 @@ public class Reporte extends BaseReportes implements Serializable {
 			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
       this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
-			generar= this.reporteConnection(source, this.fileName, path);
+			generar= this.reporteConnection(source, this.fileName, path.concat(path.endsWith(File.separator)? "": File.separator));
 			if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
 				generar.procesar(sesion, this.idFormato, input);
 			else 
 				generar.procesar(sesion, this.idFormato);			
-			if (UIBackingUtilities.getCurrentInstance()!= null)
+			if (!automatico && UIBackingUtilities.getCurrentInstance()!= null)
 				UIBackingUtilities.addCallbackParam("janalOK", true);
 			if (previsualizar) {
 				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());

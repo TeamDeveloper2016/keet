@@ -564,6 +564,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
 			contratoLote.setArranque(inicio? LocalDate.now(): null);			
+			contratoLote.setConcluyo(inicio? LocalDate.now(): null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
 		} // try
 		catch (Exception e) {
@@ -612,6 +613,7 @@ public class Transaccion extends IBaseTnx {
               // INICIARLIZAR LA FECHA DE INICIO DEL LOTE CUANDO SE REGISTRE EL PRIMER DESTAJO
               if(Cadena.isVacio(contratoLote.getArranque()))
            			contratoLote.setArranque(LocalDate.now());			
+           		contratoLote.setConcluyo(LocalDate.now());			
 			        DaoFactory.getInstance().update(sesion, contratoLote);
             } // if
           } // if  
