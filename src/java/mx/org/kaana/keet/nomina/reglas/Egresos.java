@@ -10,12 +10,6 @@ import java.util.Objects;
 import jxl.CellView;
 import jxl.Workbook;
 import jxl.format.Alignment;
-import jxl.format.Colour;
-import jxl.format.UnderlineStyle;
-import jxl.write.Label;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WriteException;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -320,43 +314,6 @@ public class Egresos extends XlsBase implements Serializable {
     } // catch	
   }
   
-  private void toAddView(int column, int characters) {
-    CellView cell= this.hoja.getColumnView(column);
-    cell.setSize(characters* 256 + 100);
-    this.hoja.setColumnView(column, cell);      
-  }
-  
-  private WritableCellFormat toCellFormat(Colour colour) throws WriteException {
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, colour);
-    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
-    return regresar;
-  }  
-  
-  private WritableCellFormat toCellColorFormat(Colour colour) throws WriteException {
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.WHITE);
-    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
-    regresar.setBorder(jxl.format.Border.BOTTOM, jxl.format.BorderLineStyle.THIN);
-    regresar.setAlignment(Alignment.CENTRE);
-    regresar.setBackground(colour);
-    return regresar;
-  }  
-  
-  private WritableCellFormat toCellCostoFormat(Alignment alignment) throws WriteException {
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
-    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
-    regresar.setAlignment(alignment);
-    return regresar;
-  }  
-  
-  private WritableCellFormat toCellTotalFormat(Alignment alignment, Boolean line) throws WriteException {
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
-    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
-    if(line)
-      regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
-    regresar.setAlignment(alignment);
-    return regresar;
-  }  
-  
   private String toTokenClave(Entity contrato) {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.toLong("orden")), 3, '0', true));
@@ -446,69 +403,6 @@ public class Egresos extends XlsBase implements Serializable {
     } // catch
   }
   
-  protected void addCell(int column, int row, String data) throws Exception {
-    try {
-      Label label= new Label(column, row, data);
-      this.hoja.addCell(label);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  private void addCellColor(int column, int row, String data) throws Exception {
-    try {
-      this.addCellColor(column, row, data, jxl.format.Colour.BLUE_GREY);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  protected void addCellColor(int column, int row, String data, Colour color) throws Exception {
-    try {
-      Label label= new Label(column, row, data, this.toCellColorFormat(color));
-      this.hoja.addCell(label);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  protected void addFontColor(int column, int row, String data, Colour color) throws Exception {
-    try {
-      Label label= new Label(column, row, data, this.toCellFormat(color));
-      this.hoja.addCell(label);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  protected void addCellCosto(int column, int row, String data) throws Exception {
-    this.addCellCosto(column, row, data, Alignment.CENTRE);
-  }
-  
-  private void addCellCosto(int column, int row, String data, Alignment alignment) throws Exception {
-    try {
-      Label label= new Label(column, row, data, this.toCellCostoFormat(alignment));
-      this.hoja.addCell(label);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  private void addCellTotal(int column, int row, String data, Alignment alignment, Boolean line) throws Exception {
-    try {
-      Label label= new Label(column, row, data, this.toCellTotalFormat(alignment, line));
-      this.hoja.addCell(label);
-    } // trt
-    catch(Exception e) {
-      throw e;
-    } // catch
-  }
-
   private Entity toCalcultePersonal(Entity contrato) throws Exception {
     Entity regresar           = null;
     Map<String, Object> params= new HashMap<>();
@@ -566,7 +460,6 @@ public class Egresos extends XlsBase implements Serializable {
     Methods.clean(this.resumen);
     super.finalize(); 
   }
-
   
   public static void main(String ... args) throws Exception {
     Egresos corte= new Egresos(-1L, 5L);

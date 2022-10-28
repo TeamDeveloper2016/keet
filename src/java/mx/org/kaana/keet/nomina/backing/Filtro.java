@@ -32,6 +32,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
+import mx.org.kaana.keet.nomina.reglas.Empleados;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -84,6 +85,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.fecha = fecha;
 	}
 
+  public StreamedContent getListado() {
+		StreamedContent regresar= null;		
+    Empleados empleados     = null;
+		try {
+	  	empleados  = new Empleados(((Entity)this.attrs.get("seleccionado")).getKey());
+      String name= empleados.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
+  
   @PostConstruct
   @Override
   protected void init() {

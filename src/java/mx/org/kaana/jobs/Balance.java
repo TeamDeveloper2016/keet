@@ -67,7 +67,7 @@ public class Balance implements Job, Serializable {
           case "cafu":
             actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-            actores.put("Claro Lidia Flores Alcantara", encriptar.desencriptar("d745383f3f39201f107797"));
+            actores.put("Claro Liliana Flores Alcantara", encriptar.desencriptar("d745383f3f39201f107797"));
             break;
           case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
             actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));

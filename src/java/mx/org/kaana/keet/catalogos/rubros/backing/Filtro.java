@@ -117,7 +117,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
 			sb.append("(tc_keet_rubros.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("paquete")))
-			sb.append("(tc_keet_rubros_grupos.paquetes >= ").append(this.attrs.get("paquete")).append(") and ");
+			sb.append("(tc_keet_rubros_grupos.paquetes >= '").append(this.attrs.get("paquete")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("extra")))
 			sb.append("(tc_keet_rubros.id_extra = ").append(this.attrs.get("extra")).append(") and ");
 		if(unidad!= null && unidad.getKey()>0L)

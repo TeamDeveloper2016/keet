@@ -3,10 +3,20 @@ package mx.org.kaana.libs.archivo;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
+import jxl.CellView;
+import jxl.format.Alignment;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.write.Blank;
 import jxl.write.Label;
 import jxl.write.Number;
+import jxl.write.NumberFormat;
+import jxl.write.WritableCell;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableWorkbook;
 import jxl.write.WritableSheet;
+import jxl.write.WriteException;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Error;
@@ -227,4 +237,170 @@ public abstract class XlsBase implements Serializable {
     }    
     return celda;
   } 
+
+  protected WritableCellFormat toCellFormat(Colour colour) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, colour);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    return regresar;
+  }  
+  
+  protected WritableCellFormat toCellColorFormat(Colour colour) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.WHITE);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    regresar.setBorder(jxl.format.Border.BOTTOM, jxl.format.BorderLineStyle.THIN);
+    regresar.setAlignment(Alignment.CENTRE);
+    regresar.setBackground(colour);
+    return regresar;
+  }  
+  
+  protected WritableCellFormat toCellCostoFormat(Alignment alignment) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    regresar.setAlignment(alignment);
+    return regresar;
+  }  
+  
+  protected WritableCellFormat toCellTotalFormat(Alignment alignment, Boolean line) throws WriteException {
+    return this.toCellTotalFormat(alignment, line, Colour.WHITE);
+  }
+  
+  protected WritableCellFormat toCellTotalFormat(Alignment alignment, Boolean line, Colour colour) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    if(line)
+      regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
+    regresar.setAlignment(alignment);
+    regresar.setBackground(colour);
+    return regresar;
+  }  
+  
+   protected void addCell(int column, int row, String data) throws Exception {
+    try {
+      Label label= new Label(column, row, data);
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellColor(int column, int row, String data) throws Exception {
+    try {
+      this.addCellColor(column, row, data, jxl.format.Colour.BLUE_GREY);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellColor(int column, int row, String data, Colour color) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellColorFormat(color));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addFontColor(int column, int row, String data, Colour color) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellFormat(color));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellCosto(int column, int row, String data) throws Exception {
+    this.addCellCosto(column, row, data, Alignment.CENTRE);
+  }
+  
+  protected void addCellCosto(int column, int row, String data, Alignment alignment) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellCostoFormat(alignment));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellTotal(int column, int row, String data, Alignment alignment, Boolean line) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellTotalFormat(alignment, line));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+ 
+  protected void addCellTotal(int column, int row, String data, Alignment alignment, Boolean line, Colour colour) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellTotalFormat(alignment, line, colour));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+ 
+  protected WritableCellFormat toCell(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    if(line)
+      regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
+    regresar.setAlignment(alignment);
+    regresar.setBackground(background);
+    return regresar;
+  }  
+  
+  protected void addCell(int column, int row, String data, Alignment alignment, Colour background, Colour foreground, Boolean line) throws Exception {
+    try {
+      WritableCell cell= null;
+      if(data== null)
+        cell= new Blank(column, row, this.toCell(alignment, background, foreground, line));
+      else        
+        cell= new Label(column, row, data, this.toCell(alignment, background, foreground, line));
+      this.hoja.addCell(cell);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+
+
+  protected WritableCellFormat toNumber(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
+    NumberFormat numberFormat = new NumberFormat("###,###.00");
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts, numberFormat);
+    if(line)
+      regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
+    regresar.setAlignment(alignment);
+    regresar.setBackground(background);
+    return regresar;
+  }  
+  
+  protected void addNumber(int column, int row, Double data, Alignment alignment, Colour background, Colour foreground, Boolean line) throws Exception {
+    try {
+      WritableCell cell= null;
+      if(data== null || data== 0D)
+        cell= new Blank(column, row, this.toCell(alignment, background, foreground, line));
+      else        
+        cell= new Number(column, row, data, this.toNumber(alignment, background, foreground, line));
+      this.hoja.addCell(cell);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+ 
+  protected void toAddView(int column, int characters) {
+    CellView cell= this.hoja.getColumnView(column);
+    cell.setSize(characters* 256 + 100);
+    this.hoja.setColumnView(column, cell);      
+  }
+
 }
