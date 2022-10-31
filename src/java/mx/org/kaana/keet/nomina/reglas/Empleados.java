@@ -92,6 +92,7 @@ public class Empleados extends XlsBase implements Serializable {
   private String process() throws Exception {
     String regresar           = "";
     String desarrollo         = "";
+    Map<Long, Object> caja    = new HashMap<>();
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idNomina", this.idNomina);      
@@ -106,6 +107,12 @@ public class Empleados extends XlsBase implements Serializable {
               concat(this.nomina.toString("semana").
               concat(" DEL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("inicio")).toUpperCase()).
               concat(" AL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("termino")).toUpperCase())));
+      List<Entity> residentes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "residentes", params);
+      if(residentes!= null && !residentes.isEmpty()) {
+        for (Entity residente: residentes) {
+          caja.put(residente.toLong("idEmpresaPersona"), residente.toDouble("gasto"));
+        } // for
+      } // if
       List<Entity> personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarEmpleados", params);
       if(personas!= null && !personas.isEmpty()) {
         this.toAddTitulo("LISTADO DE ADMINISTRATIVOS Y DESTAJISTAS");
@@ -122,7 +129,11 @@ public class Empleados extends XlsBase implements Serializable {
             desarrollo= item.toString("desarrollo");
             this.init();
           } // if  
-          this.toEmpleado(item);
+          // SI ES RESIDENTE RECUPERAR EL IMPORTE DE CAJA CHICA DE LA SEMANA 
+          Double deposito= 0D;
+          if(Objects.equals(item.toLong("idPuesto"), 6L) && caja.containsKey(item.toLong("idEmpresaPersona")))
+            deposito= (Double)caja.get(item.toLong("idEmpresaPersona"));
+          this.toEmpleado(item, deposito);
           // break;
         } // for
         if(!Objects.equals(desarrollo, "")) 
@@ -193,7 +204,6 @@ public class Empleados extends XlsBase implements Serializable {
         this.addCellColor(this.posicionColumna, this.posicionFila, "LA NOMINA NO TIENE EMPLEADOS", jxl.format.Colour.BLUE);
         this.toAddView(0, 80);
       } // else      
-
       if((personas!= null && !personas.isEmpty()) || (proveedores!= null && !proveedores.isEmpty())) {
         this.toAddView(0, 23);
         this.toAddView(1, 30);
@@ -209,6 +219,7 @@ public class Empleados extends XlsBase implements Serializable {
       throw e;
     } // catch	
     finally {
+      Methods.clean(caja);
       Methods.clean(params);
   	  this.libro.write();
       this.libro.close();
@@ -273,15 +284,10 @@ public class Empleados extends XlsBase implements Serializable {
     this.totales.put(desarrollo, this.subTotales.get("total"));
   }
   
-  public void toEmpleado(Entity item) throws Exception {
+  public void toEmpleado(Entity item, Double cajaChica) throws Exception {
     Map<String, Object> params= new HashMap<>();
     try {      
       this.posicionFila++;
-      Double cajaChica= 0D;
-      if(Objects.equals(item.toLong("idPuesto"), 6L)) {
-        // SI ES RESIDENTE RECUPERAR EL IMPORTE DE CAJA CHICA DE LA SEMANA 
-        cajaChica= 0D;
-      } // if
       this.addCell(this.posicionColumna, this.posicionFila, item.toString("puesto"));
       this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("clave"));

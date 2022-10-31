@@ -2730,6 +2730,25 @@
 			</select>	      
     </unit>  
 		<unit id="VistaComprasAlmacenDto">
+			<select id="residentes">
+				select
+					tc_keet_gastos.id_gasto as id_key,
+          tc_keet_gastos.id_empresa_persona,
+          sum(tc_keet_gastos.importe) as gasto
+				from
+					tc_keet_gastos
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+				inner join
+				  tc_keet_nominas on tc_keet_nominas.id_nomina_periodo= tc_keet_cajas_chicas_cierres.id_nomina_periodo	
+				where
+				  tc_keet_nominas.id_nomina= {idNomina}
+          and tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus= 3
+				group by
+					tc_keet_gastos.id_empresa_persona        
+      </select>  
 			<select id="compras">
 				select
 					tc_keet_gastos_detalles.id_articulo as id_key,
@@ -4378,9 +4397,11 @@
         select
           tc_keet_nominas_personas.id_nomina_persona as id_key,
           concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+          tc_keet_desarrollos.id_desarrollo,
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_puestos.id_puesto,
           tc_mantic_puestos.nombre as puesto,
+          tr_mantic_empresa_personal.id_empresa_persona,
           tt_keet_departamentos.departamento,
           tr_mantic_empresa_personal.clave,
           concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
