@@ -348,7 +348,7 @@ public abstract class XlsBase implements Serializable {
   }
  
   protected WritableCellFormat toCell(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
+    WritableFont cellFonts     = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
     WritableCellFormat regresar= new WritableCellFormat(cellFonts);
     if(line)
       regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
@@ -373,8 +373,8 @@ public abstract class XlsBase implements Serializable {
 
 
   protected WritableCellFormat toNumber(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
-    NumberFormat numberFormat = new NumberFormat("###,###.00");
-    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
+    NumberFormat numberFormat= new NumberFormat("###,###.00");
+    WritableFont cellFonts   = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
     WritableCellFormat regresar= new WritableCellFormat(cellFonts, numberFormat);
     if(line)
       regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
@@ -390,6 +390,20 @@ public abstract class XlsBase implements Serializable {
         cell= new Blank(column, row, this.toCell(alignment, background, foreground, line));
       else        
         cell= new Number(column, row, data, this.toNumber(alignment, background, foreground, line));
+      this.hoja.addCell(cell);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+ 
+  protected void addNumber(int column, int row, Double data, WritableCellFormat format) throws Exception {
+    try {
+      WritableCell cell= null;
+      if(data== null || data== 0D)
+        cell= new Blank(column, row, format);
+      else        
+        cell= new Number(column, row, data, format);
       this.hoja.addCell(cell);
     } // trt
     catch(Exception e) {

@@ -11,6 +11,7 @@ import java.util.Objects;
 import jxl.Workbook;
 import jxl.format.Alignment;
 import jxl.format.Colour;
+import jxl.write.WritableCellFormat;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -42,12 +43,16 @@ public class Empleados extends XlsBase implements Serializable {
   private Map<String, Double> subTotales;
   private Map<String, Double> totales;
   private String path;
-
-  public Empleados(Long idNomina) {
+  private WritableCellFormat number;
+  private WritableCellFormat total;
+          
+  public Empleados(Long idNomina) throws Exception {
     this.idNomina  = idNomina;
     this.subTotales= new HashMap<>();
     this.totales   = new HashMap<>();
     this.path      = "";
+    this.number    = this.toNumber(Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.total     = this.toNumber(Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
     this.init();
   }
 
@@ -55,7 +60,7 @@ public class Empleados extends XlsBase implements Serializable {
     return idNomina;
   }
 
-  private void init() {
+  private void init() { 
     this.subTotales.clear();
     this.subTotales.put("percepciones", 0D);
     this.subTotales.put("deducciones", 0D);
@@ -131,9 +136,10 @@ public class Empleados extends XlsBase implements Serializable {
           } // if  
           // SI ES RESIDENTE RECUPERAR EL IMPORTE DE CAJA CHICA DE LA SEMANA 
           Double deposito= 0D;
-          if(Objects.equals(item.toLong("idPuesto"), 6L) && caja.containsKey(item.toLong("idEmpresaPersona")))
+          if(Objects.equals(item.toLong("idPuesto"), 20L) && caja.containsKey(item.toLong("idEmpresaPersona")))
             deposito= (Double)caja.get(item.toLong("idEmpresaPersona"));
-          this.toEmpleado(item, deposito);
+          if(item.toDouble("neto")!= null && item.toDouble("neto")> 0)
+            this.toEmpleado(item, deposito);
           // break;
         } // for
         if(!Objects.equals(desarrollo, "")) 
@@ -148,11 +154,11 @@ public class Empleados extends XlsBase implements Serializable {
         Collections.sort(nombres);
         for (String key: nombres) {
           this.addCell(this.posicionColumna, this.posicionFila, key);
-          this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(this.totales.get(key)), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+          this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(this.totales.get(key)), this.number);
           suma+= this.totales.get(key);
         } // for
         this.addTotal();
-        this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(suma), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
+        this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(suma), this.total);
       } // if
       else {
         this.posicionFila++;
@@ -193,11 +199,11 @@ public class Empleados extends XlsBase implements Serializable {
         Collections.sort(nombres);
         for (String key: nombres) {
           this.addCell(this.posicionColumna, this.posicionFila, key);
-          this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(this.totales.get(key)), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+          this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(this.totales.get(key)), this.number);
           suma+= this.totales.get(key);
         } // for
         this.addTotal();
-        this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(suma), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
+        this.addNumber(this.posicionColumna+ 7, this.posicionFila++, Numero.toRedondearSat(suma), this.total);
       } // if
       else {
         this.posicionFila++;
@@ -271,16 +277,16 @@ public class Empleados extends XlsBase implements Serializable {
 
   protected void toAddSubtotalesEmpleado(String desarrollo) throws Exception {
     this.posicionFila++;
-    this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
-    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK,Boolean.TRUE);
-    this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK,Boolean.TRUE); 
-    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK,Boolean.TRUE);
+    this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
+    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
+    this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
+    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("neto"));
   }
   
   protected void toAddSubtotalesProveedor(String desarrollo) throws Exception {
     this.posicionFila++;
-    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
+    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("total"));
   }
   
@@ -292,10 +298,10 @@ public class Empleados extends XlsBase implements Serializable {
       this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("clave"));
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-      this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-      this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(cajaChica), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE); 
-      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.number);
+      this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.number);
+      this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(cajaChica), this.number); 
+      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
@@ -317,7 +323,7 @@ public class Empleados extends XlsBase implements Serializable {
       this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("clave"));
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
       this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
     } // try
     catch (Exception e) {
