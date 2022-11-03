@@ -136,7 +136,7 @@ public class Empleados extends XlsBase implements Serializable {
           } // if  
           // SI ES RESIDENTE RECUPERAR EL IMPORTE DE CAJA CHICA DE LA SEMANA 
           Double deposito= 0D;
-          if(Objects.equals(item.toLong("idPuesto"), 20L) && caja.containsKey(item.toLong("idEmpresaPersona")))
+          if((Objects.equals(item.toLong("idPuesto"), 8L) || Objects.equals(item.toLong("idPuesto"), 20L)) && caja.containsKey(item.toLong("idEmpresaPersona")))
             deposito= (Double)caja.get(item.toLong("idEmpresaPersona"));
           if(item.toDouble("neto")!= null && item.toDouble("neto")> 0)
             this.toEmpleado(item, deposito);

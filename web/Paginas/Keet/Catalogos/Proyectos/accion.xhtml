@@ -94,8 +94,8 @@
 								<p:outputLabel for="costo" value="Costo:"/>
 								<p:inputNumber id="costo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
               </p:panelGrid>
-              <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
               <p:remoteCommand name="reloadClientes" process="@this" update="idCliente"/>
+              <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
 						</p:tab>		
 						<p:tab title="Siembra" >	
               <p:outputLabel value="*Los prototipos estan asociados a los clientes, verifique de favor que el cliente tenga prototipos asignados" styleClass="janal-color-blue"/>

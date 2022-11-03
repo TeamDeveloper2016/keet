@@ -65,6 +65,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
+      this.attrs.put("validar", Boolean.FALSE);
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
@@ -78,7 +79,6 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto((Long)this.attrs.get("idProyecto"));
-          this.attrs.put("validar", Boolean.FALSE);
           this.toLoadCatalogos();
           this.toLoadPrototipos();
           List<UISelectEntity> prototipos= (List<UISelectEntity>)this.attrs.get("prototipos");
@@ -109,7 +109,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.toLoadEmpresas();
       List<UISelectEntity> tipoObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", params, "tipoObra");
       this.attrs.put("tipoObras", tipoObras);
-      if(tipoObras!= null && tipoObras.isEmpty()) {
+      if(tipoObras!= null && !tipoObras.isEmpty()) {
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
           this.attrs.put("idTipoObra", UIBackingUtilities.toFirstKeySelectEntity(tipoObras));
           this.proyecto.getProyecto().setIkTipoObra((UISelectEntity)this.attrs.get("idTipoObra"));
@@ -150,7 +150,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("empresas", empresas);
-      if(empresas!= null && empresas.isEmpty()) {
+      if(empresas!= null && !empresas.isEmpty()) {
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
           this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
           this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
@@ -167,8 +167,10 @@ public class Accion extends IBaseAttribute implements Serializable {
           } // else  
         } // else
       } // if
-      else
+      else {
         this.attrs.put("idEmpresa", new UISelectEntity(-1L)); 
+        this.proyecto.getProyecto().setIkEmpresa((UISelectEntity)this.attrs.get("idEmpresa"));
+      } // if   
       this.doLoadClientes();
 		} // try
 		catch (Exception e) {
@@ -187,7 +189,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put("sucursales", this.proyecto.getProyecto().getIkEmpresa());
   		List<UISelectEntity> clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("clientes", clientes);
-      if(clientes!= null && clientes.isEmpty()) {
+      if(clientes!= null && !clientes.isEmpty()) {
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {      
           this.attrs.put("idCliente", UIBackingUtilities.toFirstKeySelectEntity(clientes));
           this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
@@ -204,8 +206,10 @@ public class Accion extends IBaseAttribute implements Serializable {
           } // else  
         } // else
       } // if  
-      else
+      else {
         this.attrs.put("idCliente", new UISelectEntity(-1L)); 
+        this.proyecto.getProyecto().setIkCliente((UISelectEntity)this.attrs.get("idCliente"));
+      } // if   
       this.doLoadDesarrollos();
 		} // try
 		catch (Exception e) {
@@ -223,7 +227,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put("idCliente", this.proyecto.getProyecto().getIkCliente());
       List<UISelectEntity>desarrollos= UIEntity.build("TcKeetDesarrollosDto", "cliente", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("desarrollos", desarrollos);
-      if(desarrollos!= null && desarrollos.isEmpty()) {
+      if(desarrollos!= null && !desarrollos.isEmpty()) {
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR)) {
           this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
           this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
@@ -240,8 +244,10 @@ public class Accion extends IBaseAttribute implements Serializable {
           } // else  
         } // else
       } // if
-      else 
+      else {
         this.attrs.put("idDesarrollo", new UISelectEntity(-1L)); 
+        this.proyecto.getProyecto().setIkDesarrollo((UISelectEntity)this.attrs.get("idDesarrollo"));
+      } // if   
       this.toLoadPrototipos();
 		} // try
 		catch (Exception e) {
