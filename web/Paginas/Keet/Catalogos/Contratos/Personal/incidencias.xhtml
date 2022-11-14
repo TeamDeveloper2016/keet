@@ -32,24 +32,26 @@
 			function hidePanelIncidencia() {
 				$('#panelIncidencia').css('display','none');
 				var text= $('#idSelectionEvent').text();
-				top.location.href = '#'.concat(text.substring(1));
+				//top.location.href = '#'.concat(text.substring(1));
 			} // hidePanelIncidencia
 			
 			function applyIdEvent() {
 				var text= $('#idSelectionEvent').text();
 				var event = $(text);
 				event.attr('id', text.substring(1));
-				top.location.href = '#'.concat(text.substring(1));
+				//top.location.href = '#'.concat(text.substring(1));
 				janal.html('a'+ event.val()+' span.fc-title');
+        setTimeout('updateRefreshButton();', 2000);
 			} // applyIdEvent
 			
 			function applyIdEventHide() {
 				$('#panelIncidencia').css('display', 'none');
-				var text= $('#idSelectionEvent').text();
-				var event = $(text);
+				var text = $('#idSelectionEvent').text();
+				var event= $(text);
 				event.attr('id', text.substring(1));
-				top.location.href = '#'.concat(text.substring(1));
+				//top.location.href = '#'.concat(text.substring(1));
 				janal.html('a'+ event.val()+' span.fc-title');
+        setTimeout('updateRefreshButton();', 2000);
 			} // applyIdEvent
 			
 			function updateIndicencias() {
@@ -62,9 +64,16 @@
 						});
 				});
 			}
-			
+
+			function updateRefreshButton() {
+        $('.fc-prev-button, .fc-next-button, .fc-today-button').on('click', function() {
+           setTimeout('updateIndicencias();', 2000);
+        });
+      }
+  
 			$(document).ready(function () {
 				setTimeout('updateIndicencias();', 2000);
+				setTimeout('updateRefreshButton();', 2000);
 			});	
     </script>		
 		<style type="text/css">    			
@@ -170,15 +179,16 @@
 							</div>
 						</div>	
           </p:panel>        
-					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" styleClass="janal-column-center" >
+          <p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="calendario" styleClass="janal-column-center"  initialDate="#{keetCatalogosContratosPersonalIncidencias.actual}">
 						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
 						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow(); janal.refresh()"/>
 						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalIncidencias.onEventMove}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
 						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalIncidencias.onEventResize}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
+						<p:ajax event="viewChange" update="dataEmpleados" oncomplete="findSelectEvent()"/>
 					</p:schedule>	
 					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idSelectionEvent}" style="display: none !important"/>
 					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>
-					<p:remoteCommand name="findSelectEventShow" oncomplete="applyIdEvent();showPanelIncidencia();"/>
+					<p:remoteCommand name="findSelectEventShow" oncomplete="applyIdEvent(); showPanelIncidencia();"/>
 					<p:remoteCommand name="findSelectEventOk" oncomplete="applyIdEventHide();" />
 				</div>						        
       </div>

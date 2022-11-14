@@ -609,7 +609,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.doReporte("ORDEN_DETALLE", true); 
         switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
           case "cafu":
-            sb.append("4491501250, ");
+            // sb.append("4491501250, ");
             break;
           case "gylvi":
             break;

@@ -51,6 +51,15 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	private ContratoPersonal contratoPersonal;		
 	private Integer count;
 	private List<Incidente> incidenciasDelete;
+	private LocalDate actual;
+
+  public LocalDate getActual() {
+    return actual;
+  }
+
+  public void setActual(LocalDate actual) {
+    this.actual = actual;
+  }
 
 	public ContratoPersonal getContratoPersonal() {
 		return contratoPersonal;
@@ -95,6 +104,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.incidenciasDelete= new ArrayList<>();
 			this.loadTiposIncidentes();
 			this.loadEmpleado();
+      this.actual= LocalDate.now();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -186,7 +196,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		boolean editable                 = true;
 		try {			
 			this.count++;
-			newIncidente= loadNewIncidente(selectEvent);
+			newIncidente= this.loadNewIncidente(selectEvent);
 			editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.FALTA.getKey());			
 			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)) {
 				String icon= this.toShowIcon(newIncidente);
@@ -203,6 +213,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 								.build();	
 				this.eventModel.addEvent(defaultEvent);
 				this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
+        this.actual= selectEvent.getObject().toLocalDate();
 			} // if
 			else
 				JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha.", ETipoMensaje.INFORMACION);

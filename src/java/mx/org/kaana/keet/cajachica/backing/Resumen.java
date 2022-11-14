@@ -229,7 +229,11 @@ public class Resumen extends IBaseFilter implements Serializable {
   
 	public void doLoadImportados() {
   	String dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
-		String url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+    String url= null;
+    if(dns.contains(JsfBase.getContext()))
+		  url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+    else
+		  url= dns.concat((String)this.attrs.get("pathPivote"));
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		try {

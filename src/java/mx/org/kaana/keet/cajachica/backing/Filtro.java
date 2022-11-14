@@ -287,7 +287,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String url               = null;
 		try {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
-			url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+      if(dns.contains(JsfBase.getContext()))
+			  url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+      else
+			  url= dns.concat((String)this.attrs.get("pathPivote"));
 			campos = new ArrayList<>();
       campos.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
