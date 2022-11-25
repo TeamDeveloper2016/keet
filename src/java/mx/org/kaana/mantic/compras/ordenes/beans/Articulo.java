@@ -854,6 +854,13 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return regresar;
 	}
 	
+  @Override
+  public Map toMap() {
+    Map regresar = super.toMap();
+		regresar.put("observaciones", getObservacion());
+    return regresar;
+  } // toMap
+  
 	public static void main(String ... args) {
 		Articulo articulo= new Articulo(-1L);
 		articulo.setCosto(1131.63);

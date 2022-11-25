@@ -15,6 +15,7 @@ import jxl.write.WritableCellFormat;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Fecha;
@@ -118,7 +119,11 @@ public class Empleados extends XlsBase implements Serializable {
           caja.put(residente.toLong("idEmpresaPersona"), residente.toDouble("gasto"));
         } // for
       } // if
-      List<Entity> personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarEmpleados", params);
+      List<Entity> personas= null;
+      if(Objects.equals(this.nomina.toLong("idNominaEstatus"), -1L) || Objects.equals(this.nomina.toLong("idNominaEstatus"), ENominaEstatus.TERMINADA))
+        personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarEmpleados", params);
+      else
+        personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarCalculada", params);
       if(personas!= null && !personas.isEmpty()) {
         this.toAddTitulo("LISTADO DE ADMINISTRATIVOS Y DESTAJISTAS");
         this.posicionFila--;

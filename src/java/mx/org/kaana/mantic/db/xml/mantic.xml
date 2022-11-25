@@ -2096,7 +2096,9 @@
 				update 
 				  tc_mantic_faltantes 
 				set 
-				  id_vigente= 2, actualizado= current_timestamp, observaciones= '{observaciones}'
+				  id_vigente= 2, 
+          actualizado= current_timestamp, 
+          observaciones= '{observaciones}'
 				where 
 				  id_articulo= {idArticulo} 
 				  and id_vigente= 1
@@ -3502,7 +3504,8 @@
           precio= {precio},
           menudeo= {precio},
           medio_mayoreo= {precio},
-          mayoreo= {precio}
+          mayoreo= {precio},
+          actualizado= current_timestamp
         where 
           id_articulo= {idArticulo}
 			</update>

@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -242,11 +243,12 @@ public class Transaccion extends Inventarios implements Serializable {
           else
             if(articulo.isModificado())
               DaoFactory.getInstance().update(sesion, item);
-          articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-          DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
-          // ACTUALIZAR EL PRECIOS BASE Y EL PRECIO DEL PROVEEDOR CON BASE AL PRECIO CAPTURADO EN LA ORDEN DE COMPRA
           params.put("idArticulo", articulo.getIdArticulo());      
+          params.put("idEmpresa", this.orden.getIdEmpresa());      
           params.put("precio", articulo.getCosto());      
+          params.put("observaciones", "ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+          DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+          // ACTUALIZAR EL PRECIOS BASE Y EL PRECIO DEL PROVEEDOR CON BASE AL PRECIO CAPTURADO EN LA ORDEN DE COMPRA
           DaoFactory.getInstance().updateAll(sesion, TcManticArticulosDto.class, params, "precios");
           params.put("idProveedor", this.orden.getIdProveedor());      
           TcKeetArticulosProveedoresDto precio= (TcKeetArticulosProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetArticulosProveedoresDto.class, "TcKeetArticulosProveedoresDto", "identically", params);
@@ -264,12 +266,16 @@ public class Transaccion extends Inventarios implements Serializable {
             DaoFactory.getInstance().insert(sesion, precio);
           } // if
           else {
-            precio.setPrecioBase(articulo.getCosto());
+            precio.setPrecioEspecial(articulo.getCosto());
             precio.setPrecioLista(articulo.getCosto());
             precio.setPrecioBase(articulo.getCosto());
             precio.setActualizado(LocalDateTime.now());
             DaoFactory.getInstance().update(sesion, precio);
           } // else
+          // ACTUALIZAR EL PRECIO CONVENIO SI ES QUE EL CLIENTE Y PROVEEDOR TIENE UN PRECIO PACTADO 17/11/2022
+          params.put("idCliente", this.orden.getIdCliente());      
+          params.put("idUsuario", JsfBase.getIdUsuario());      
+          DaoFactory.getInstance().updateAll(sesion, TrKeetArticuloProveedorClienteDto.class, params, "precio");
         } // if
       } // for
     } // try

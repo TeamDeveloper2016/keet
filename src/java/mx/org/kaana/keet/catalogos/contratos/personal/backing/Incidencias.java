@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,10 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -27,6 +30,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
@@ -213,7 +217,6 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 								.build();	
 				this.eventModel.addEvent(defaultEvent);
 				this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
-        this.actual= selectEvent.getObject().toLocalDate();
 			} // if
 			else
 				JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha.", ETipoMensaje.INFORMACION);
@@ -288,7 +291,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		return regresar;
 	} // verificaExistenteAllTipos
 	
-	private Incidente loadNewIncidente(SelectEvent<LocalDateTime> selectEvent){
+	private Incidente loadNewIncidente(SelectEvent<LocalDateTime> selectEvent) {
 		Incidente regresar= null;
 		try {
 			regresar= new Incidente();
@@ -300,8 +303,24 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			regresar.setIdEmpresaPersona(this.contratoPersonal.getIdEmpresaPersona());
 			regresar.setIdTipoIncidente(ETiposIncidentes.FALTA.getKey());
 			regresar.setTipoIncidente(ETiposIncidentes.FALTA.getNombre());
-			regresar.setVigenciaInicio(selectEvent.getObject().toLocalDate());
-			regresar.setVigenciaFin(selectEvent.getObject().toLocalDate());
+      this.actual= selectEvent.getObject().toLocalDate();
+      if(!Configuracion.getInstance().getEtapaServidor().equals(EEtapaServidor.DESARROLLO)) {
+        if(!Objects.equals(this.actual.getMonthValue(), LocalDate.now().getMonthValue()) && 
+          ((this.actual.getMonthValue()< LocalDate.now().getMonthValue() && Objects.equals(this.actual.getYear(), LocalDate.now().getYear())) || 
+          (Objects.equals(this.actual.getMonthValue(), 12) && Objects.equals(LocalDate.now().getMonthValue(), 1)))) {
+//          this.actual= this.actual.plusDays(1);
+//          if(!Objects.equals(this.actual.getMonthValue()+ 1, LocalDate.now().getMonthValue())) 
+//            this.actual= this.actual.plusDays(1);
+//          else { 
+            LocalDate first= LocalDate.now().plusDays((LocalDate.now().getDayOfMonth()* -1)+ 1);
+            if((Math.abs(this.actual.getDayOfYear()- first.getDayOfYear())!= 1) || 
+              ((first.getDayOfYear()== 1) && Objects.equals(this.actual.getYear()+ 1, LocalDate.now().getYear())))
+              this.actual= this.actual.plusDays(1);
+//          } // if  
+        } // if
+      } // if
+			regresar.setVigenciaInicio(this.actual);
+			regresar.setVigenciaFin(this.actual);
 			regresar.setEstatusAsociados("2");			
 		} // try
 		catch (Exception e) {			

@@ -1798,7 +1798,10 @@
         from      
           tr_keet_articulo_proveedor_cliente
         where      
-          precio_convenio = {precioConvenio} and id_proveedor = {idProveedor} and id_cliente = {idCliente} and id_articulo_proveedor_cliente = {idArticuloProveedorCliente} and id_articulo = {idArticulo}
+          precio_convenio = {precioConvenio} 
+          and id_proveedor= {idProveedor} 
+          and id_cliente  = {idCliente} 
+          and id_articulo = {idArticulo}
       </select>    
       <select id="igual">
         select      
@@ -1814,6 +1817,20 @@
         from      
           tr_keet_articulo_proveedor_cliente
 			</select>
+      <update id="precio">
+        update
+          tr_keet_articulo_proveedor_cliente
+        set 
+          precio_convenio= {precio},
+          precio_anterior= precio_convenio,
+          id_usuario= {idUsuario},
+          actualizado= current_timestamp
+        where      
+          id_proveedor= {idProveedor} 
+          and id_cliente = {idCliente} 
+          and id_articulo= {idArticulo}
+          and precio_convenio!= {precio}
+      </update>    
 			<delete id="rows">
         delete from tr_keet_articulo_proveedor_cliente where id_proveedor={idProveedor}
       </delete>
@@ -3644,7 +3661,7 @@
         from      
           tc_keet_nominas_rubros
         where      
-          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = '{lote}'
+          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = '{lote}' and id_contrato_lote= {idContratoLote}
       </select>
 			<delete id="nomina">
 				delete

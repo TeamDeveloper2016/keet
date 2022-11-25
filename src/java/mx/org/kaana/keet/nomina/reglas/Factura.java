@@ -64,16 +64,21 @@ public class Factura implements Serializable {
 				this.rubros= (List<Rubro>)DaoFactory.getInstance().toEntitySet(this.sesion, Rubro.class, "VistaNominaDto", "rubros", params);
 				DaoFactory.getInstance().insert(this.sesion, proveedor);
 				// ALMACENAR EL DETALLE DE CALCULO DE LA NOMINA DEL PROVEEDOR
-				for (Rubro rubro: this.rubros) {
-					rubro.setIdNominaProveedor(proveedor.getIdNominaProveedor());
-          importe= Numero.toRedondearSat(rubro.getDestajo()- rubro.getAnticipo());
-          rubro.setPorcentajeFondo(proveedor.getPorcentajeFondo());
-          rubro.setFondoGarantia(Numero.toRedondearSat(importe* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
-          rubro.setSubtotal(Numero.toRedondearSat(importe- rubro.getFondoGarantia()));
-          rubro.setIva(Numero.toRedondearSat(rubro.getSubtotal()* Constantes.PORCENTAJE_IVA));
-          rubro.setTotal(Numero.toRedondearSat(rubro.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
-					DaoFactory.getInstance().insert(this.sesion, rubro);
-				} // for		
+        for (Rubro rubro: this.rubros) {
+          try {
+            rubro.setIdNominaProveedor(proveedor.getIdNominaProveedor());
+            importe= Numero.toRedondearSat(rubro.getDestajo()- rubro.getAnticipo());
+            rubro.setPorcentajeFondo(proveedor.getPorcentajeFondo());
+            rubro.setFondoGarantia(Numero.toRedondearSat(importe* Numero.toRedondearSat(proveedor.getPorcentajeFondo()/ 100)));
+            rubro.setSubtotal(Numero.toRedondearSat(importe- rubro.getFondoGarantia()));
+            rubro.setIva(Numero.toRedondearSat(rubro.getSubtotal()* Constantes.PORCENTAJE_IVA));
+            rubro.setTotal(Numero.toRedondearSat(rubro.getSubtotal()* (1+ Constantes.PORCENTAJE_IVA)));
+            DaoFactory.getInstance().insert(this.sesion, rubro);
+          } // try
+          catch(Exception e) {
+            LOG.error("FALLO: "+ rubro);
+          } // catch
+        } // for		
 			} // if
 		} // try
 		finally {
