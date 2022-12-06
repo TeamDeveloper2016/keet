@@ -37,7 +37,7 @@ public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
 		this.idTipoNomina= 2L;
 		this.idNominaEstatus= idNominaEstatus;
 		this.idCompleta= idCompleta;
-		this.idNotificar= new String[] {"1", "4"};
+		this.idNotificar= new String[] {"1", "2", "4"};
 		this.estatus= "";
 		this.proveedores= 0L;
 		this.personas= 0L;

@@ -4767,32 +4767,45 @@
       </select>  
 			<select id="personalEnDesarrollo">
         select
-          tc_keet_nominas_desarrollos.id_nomina_desarrollo as id_key,
-          tc_keet_desarrollos.id_desarrollo,
-          tc_keet_nominas.id_nomina,
-          if(tc_keet_nominas_periodos.ejercicio is null, '1900-1', min(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as minimo,
-          if(tc_keet_nominas_periodos.ejercicio is null, '1900-54', max(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden))) as maximo,
-          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_dia,
-          sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as por_obra
-        from
-          tc_keet_nominas_desarrollos
-        inner join  
-          tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_nominas_desarrollos.id_desarrollo
-        inner join  
-          tc_keet_nominas on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
-        inner join 
-          tc_keet_nominas_periodos on tc_keet_nominas_periodos.id_nomina_periodo= tc_keet_nominas.id_nomina_periodo
-        inner join
-          tr_mantic_empresa_personal on tc_keet_nominas_desarrollos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-        inner join 
-          tc_keet_nominas_personas on tc_keet_nominas_desarrollos.id_nomina= tc_keet_nominas_personas.id_nomina and tc_keet_nominas_desarrollos.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
-        inner join 
-          tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-        where
-          tc_keet_nominas_desarrollos.id_desarrollo= {idDesarrollo}
-          and tc_keet_nominas.id_nomina in ({nominas})
-          and tr_mantic_empresa_personal.id_contratista is null
-          and tc_mantic_personas.id_tipo_persona!= 1
+          tt_keet_salarios.id_key,
+          tt_keet_salarios.id_desarrollo,
+          min(tt_keet_salarios.nomina) as minimo,
+          max(tt_keet_salarios.nomina) as maximo,
+          sum(tt_keet_salarios.por_dia) as por_dia,
+          sum(tt_keet_salarios.por_obra) as por_obra     
+        from (      
+          select
+            tc_keet_nominas_desarrollos.id_nomina_desarrollo as id_key,
+            tc_keet_desarrollos.id_desarrollo,
+            if(tc_keet_nominas_periodos.ejercicio is null,'1900-1',concat(tc_keet_nominas_periodos.ejercicio,'-', if(tc_keet_nominas_periodos.orden&lt; 9, concat('0', tc_keet_nominas_periodos.orden), tc_keet_nominas_periodos.orden))) as nomina,
+            if(position(concat('|',tr_mantic_empresa_personal.id_puesto,'|') in '|7|14|')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0) as por_dia,
+            if(position(concat('|',tr_mantic_empresa_personal.id_puesto,'|') in '|1|4|20|25|')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto,0) as por_obra         
+          from
+            tc_keet_nominas_desarrollos         
+          inner join
+            tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo         
+          inner join  
+            tc_keet_nominas on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
+          inner join 
+            tc_keet_nominas_periodos on tc_keet_nominas_periodos.id_nomina_periodo= tc_keet_nominas.id_nomina_periodo
+          inner join
+            tr_mantic_empresa_personal on tc_keet_nominas_desarrollos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+          inner join 
+            tc_keet_nominas_personas on tc_keet_nominas_desarrollos.id_nomina= tc_keet_nominas_personas.id_nomina and tc_keet_nominas_desarrollos.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
+          inner join 
+            tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+          where
+            tc_keet_nominas_desarrollos.id_desarrollo= {idDesarrollo}
+            and tc_keet_nominas.id_nomina in ({nominas})
+            and tr_mantic_empresa_personal.id_contratista is null
+            and tc_mantic_personas.id_tipo_persona!= 1
+            and tr_mantic_empresa_personal.id_puesto in (7,14,1,4,20,25)
+            and tc_keet_nominas_personas.neto> 0
+          group by
+            tc_keet_desarrollos.id_desarrollo,
+            tc_keet_nominas.id_nomina,
+            tr_mantic_empresa_personal.id_empresa_persona
+        ) as tt_keet_salarios
 			</select>
 			<select id="contratos">
         select

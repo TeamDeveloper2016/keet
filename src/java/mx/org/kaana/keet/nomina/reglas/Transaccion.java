@@ -1512,6 +1512,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           case "cafu":
             residentes.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             residentes.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
+            residentes.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
             break;
           case "gylvi":
             residentes.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));

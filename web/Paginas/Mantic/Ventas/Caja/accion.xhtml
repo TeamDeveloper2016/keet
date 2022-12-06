@@ -654,7 +654,7 @@
 									<p:outputLabel for="localidad" value="Localidad:"/>
 									<p:outputLabel for="codigoPostal" value="Código postal:"/>
 									<p:selectOneMenu id="entidad" value="#{manticVentasCajaAccion.domicilio.idEntidad}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaMunicipios}" process="@this panelDetalleDireccion" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaMunicipios}" process="@this panelDetalleDireccion" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();reloadMunicipio();reloadLocalidad();"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -664,7 +664,7 @@
 										</p:column>  
 									</p:selectOneMenu>														
 									<p:selectOneMenu id="municipio" value="#{manticVentasCajaAccion.domicilio.idMunicipio}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaLocalidades}" process="@this panelDetalleDireccion" update="localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaLocalidades}" process="@this panelDetalleDireccion" update="localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();reloadLocalidad();"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -701,7 +701,9 @@
 									<p:outputLabel for="ycalle" value="Y calle:"/>									
 									<p:inputText id="entreCalle" placeholder="Ej. Aguila" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.domicilio.entreCalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>							
 									<p:inputText id="ycalle" placeholder="Ej. 3er Anillo" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.domicilio.ycalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>	
-								</p:panelGrid>					
+								</p:panelGrid>	
+                <p:remoteCommand name="reloadMunicipio" process="@this" update="contenedorGrupos:municipio"/>
+                <p:remoteCommand name="reloadLocalidad" process="@this" update="contenedorGrupos:localidad"/>
 							</p:fieldset>
 							<p:fieldset id="fieldContacto" legend="Contacto">
 								<p:panelGrid id="panelContacto" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">

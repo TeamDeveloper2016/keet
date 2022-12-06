@@ -839,6 +839,7 @@ public class Transaccion extends IBaseTnx {
             administradores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
             administradores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
             administradores.put("Claro Liliana Flores Alcantara", encriptar.desencriptar("d745383f3f39201f107797"));
+            administradores.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
             break;
           case "gylvi":
             administradores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));

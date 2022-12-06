@@ -113,7 +113,7 @@
 									<p:spacer height="10px"/><p:spacer height="10px"/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosEmpresasAccion.registroEmpresa.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-                    <p:ajax event="change" listener="#{manticCatalogosEmpresasAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
+                    <p:ajax event="change" listener="#{manticCatalogosEmpresasAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();reloadMunicipio();reloadLocalidad();janal.alignCp();"/>
 										<f:selectItems value="#{manticCatalogosEmpresasAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -124,7 +124,7 @@
                   </p:selectOneMenu>								
                   <p:outputLabel for="municipio" value="Municipio:"/>
                   <p:selectOneMenu id="municipio" value="#{manticCatalogosEmpresasAccion.registroEmpresa.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-                    <p:ajax event="change" listener="#{manticCatalogosEmpresasAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
+                    <p:ajax event="change" listener="#{manticCatalogosEmpresasAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();reloadLocalidad();janal.alignCp();"/>
 										<f:selectItems value="#{manticCatalogosEmpresasAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -166,6 +166,8 @@
 									<p:selectBooleanCheckbox id="principal" value="#{manticCatalogosEmpresasAccion.registroEmpresa.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
                 </p:panelGrid>
               </p:panelGrid>
+              <p:remoteCommand name="reloadMunicipio" process="@this" update="contenedorGrupos:municipio"/>
+              <p:remoteCommand name="reloadLocalidad" process="@this" update="contenedorGrupos:localidad"/>
             </p:tab>
             <p:tab title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">

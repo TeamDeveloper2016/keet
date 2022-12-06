@@ -63,11 +63,13 @@ public class Cierre implements Job, Serializable {
           String path= this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().substring(0, this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().indexOf("/WEB-INF/"));
           Transaccion transaccion= new Transaccion(nomina.toLong("idNomina"), autentifica, bitacora, path, Boolean.TRUE);
           if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 
-            LOG.info("La nómina se cerró de forma correcta !");
+            LOG.info("La nómina se cerró de forma correcta [".concat(nomina.toString("nomina")).concat("] !"));
         } // if  
         else
-          LOG.info("La nómina no tiene el estatus para cerrarse !");
+          LOG.info("La nómina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
       } // if  
+      else
+        LOG.error("Entró a cerrar la nómina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);

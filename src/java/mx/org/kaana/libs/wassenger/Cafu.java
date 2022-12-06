@@ -245,7 +245,7 @@ public final class Cafu implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -303,7 +303,7 @@ public final class Cafu implements Serializable {
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
       params.put("empresa", this.empresa);
-      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+      if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -355,7 +355,7 @@ public final class Cafu implements Serializable {
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
       params.put("empresa", this.empresa);
-      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+      if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -417,7 +417,7 @@ public final class Cafu implements Serializable {
         params.put("saludo", saludo);
         params.put("empresa", this.empresa);
         params.put("url", this.url);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -481,7 +481,7 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -539,7 +539,7 @@ public final class Cafu implements Serializable {
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
         params.put("empresa", this.empresa);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -598,7 +598,7 @@ public final class Cafu implements Serializable {
         params.put("saludo", this.toSaludo());
         params.put("empresa", this.empresa);
         params.put("url", this.url);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -755,7 +755,7 @@ public final class Cafu implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -830,7 +830,7 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("correo", this.correo);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -944,7 +944,7 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("correo", this.correo);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1004,7 +1004,7 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1065,7 +1065,7 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("fecha", Fecha.getHoy());
         params.put("contratos", contratos);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GARANTIA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1129,7 +1129,7 @@ public final class Cafu implements Serializable {
         params.put("periodo", this.periodo);
         params.put("url", this.url);
         params.put("reporte", this.reporte);
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ESTADO_CUENTA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")

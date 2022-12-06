@@ -16,6 +16,6 @@
 		 <clase expresion="0 0 4 1/1 * ? *"    id="depuracion"  description="depuración de archivos"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Depuracion</clase>		 
 		 <clase expresion="0 0 8 1/1 * ? *"    id="garantias"   description="fondos de garantias"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Garantias</clase>		 
 		 <clase expresion="0 0 17 ? * FRI *"   id="balance"     description="estados de cuenta"       load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Balance</clase>		 
-		 <clase expresion="0 0 8 ? * SAT *"    id="cierre"      description="cierre de nómina"        load="false"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
+		 <clase expresion="0 0 8 ? * SAT *"    id="cierre"      description="cierre de nómina"        load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
    </tarea>      	        
 </tareas>

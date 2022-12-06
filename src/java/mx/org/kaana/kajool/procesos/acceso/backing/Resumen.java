@@ -341,6 +341,7 @@ public class Resumen extends Respaldos implements Serializable {
         case "cafu":
           actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
           actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
+          actores.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
           break;
         case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
           actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));

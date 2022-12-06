@@ -317,14 +317,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void loadMunicipios() {
     List<UISelectEntity> municipios= null;
     Map<String, Object> params= null;
-		List<Columna>campos= null;
+		List<Columna>columns= null;
     try {
 			if(!this.registroCliente.getDomicilio().getIdEntidad().getKey().equals(-1L)) {
 				params = new HashMap<>();
 				params.put("idEntidad", this.registroCliente.getDomicilio().getIdEntidad().getKey());
-				campos= new ArrayList<>();
-				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				columns= new ArrayList<>();
+				columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, columns, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("municipios", municipios);
 				this.registroCliente.getDomicilio().setIdMunicipio(municipios.get(0));
 			} // if
@@ -570,8 +570,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaMunicipios() {
     try {
-      loadMunicipios();
-      loadLocalidades();      
+      this.loadMunicipios();
+      this.loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
