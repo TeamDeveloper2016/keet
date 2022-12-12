@@ -1310,8 +1310,11 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
       if(!almacenistas.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(0));
-        else  
-          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(almacenistas.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacenista())));
+        else {
+          int index= almacenistas.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacenista());
+          if(index>= 0)
+            ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(index));
+        } // else
 		} // try
 		catch (Exception e) {			
 			throw e;

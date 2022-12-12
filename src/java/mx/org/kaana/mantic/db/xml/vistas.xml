@@ -6074,6 +6074,35 @@
 			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+      <select id="comprasProveedores">
+        select
+          tc_mantic_ordenes_compras.ejercicio,
+          tc_mantic_empresas.nombre as empresa,
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_ordenes_estatus.nombre as estatus,
+          count(*) as ordenes,
+          sum(tc_mantic_ordenes_compras.total) as total
+        from
+          tc_mantic_ordenes_compras
+        inner join
+          tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join
+          tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+        inner join
+          tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+        where
+          tc_mantic_ordenes_estatus.id_orden_estatus in (3, 4, 5, 6, 7)
+        group by
+          tc_mantic_ordenes_compras.ejercicio,
+          tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_ordenes_compras.id_proveedor,
+          tc_mantic_ordenes_compras.id_orden_estatus
+        order by  
+          tc_mantic_ordenes_compras.ejercicio,
+          tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_ordenes_compras.id_proveedor,
+          tc_mantic_ordenes_compras.id_orden_estatus
+      </select>  
       <select id="precios">
         select
           tr_keet_articulo_proveedor_cliente.precio_convenio as precio

@@ -7,6 +7,36 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNotificacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_notificaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_notificaciones
+        where      
+          contacto = '{contacto}' and empresa = '{empresa}' and nombre = '{nombre}'
+      </select>
+      <select id="cuentas">
+        select      
+          *
+        from      
+          tc_keet_notificaciones
+        where      
+          ((empresa = '{empresa}' and proceso = '{proceso}') or (empresa = 'admin'))
+          and id_activo = 1
+        order by
+         empresa,
+         nombre
+      </select>
+    </unit>    
     <unit id="TcNominasContratosCostosDto">
       <select id="row">
         select      

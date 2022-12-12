@@ -230,7 +230,7 @@ public final class Cafu implements Serializable {
   }
 
   public void doSendMessage(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Value value    = null; 
       Map<String, Object> params = new HashMap<>();        
@@ -405,7 +405,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendDestajo(Session sesion, String saludo) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -468,7 +468,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendResidentes(Session sesion, String saludo) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message           = null;
       Map<String, Object> params= new HashMap<>();        
       try {
@@ -528,7 +528,7 @@ public final class Cafu implements Serializable {
   }
 
   public void doSendGasto(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -586,7 +586,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendCajaChica(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -738,7 +738,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendProveedor(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Value value    = null; 
       Map<String, Object> params = new HashMap<>();        
@@ -817,7 +817,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendFactura(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -877,7 +877,7 @@ public final class Cafu implements Serializable {
   } // doSendFactura  
 
   public void doSendSaludo() {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -931,7 +931,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendOrdenCompra(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -991,7 +991,7 @@ public final class Cafu implements Serializable {
   } // doSendOrdenCompra
   
   public void doSendSupervisor(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message           = null;
       Map<String, Object> params= new HashMap<>();        
       try {
@@ -1055,7 +1055,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendGarantia(Session sesion, String contratos) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {
@@ -1116,7 +1116,7 @@ public final class Cafu implements Serializable {
   }
   
   public void doSendEstadoCuenta(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
       Map<String, Object> params = new HashMap<>();        
       try {

@@ -42,13 +42,13 @@ import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.Cuentas;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -185,12 +185,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							this.reprocesarPersonas(sesion);
 							break;
 					} // switch
+          sesion.flush();
           this.notificarResumenDestajos(sesion);
           this.notificarControl(sesion);
 					this.toAddNewNomina(sesion);
 					break;
 				case CALCULAR:
 					this.reprocesarPersonas(sesion);
+          sesion.flush();
           this.notificarResumenDestajos(sesion);
           this.notificarControl(sesion);
 					this.toAddNewNomina(sesion);
@@ -1259,22 +1261,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
-        Encriptar encriptar= new Encriptar();
-        residentes.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-          case "cafu":
-            residentes.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
-            residentes.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-            break;
-          case "gylvi":
-            residentes.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
-            residentes.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
-            break;
-          case "triana":
-            residentes.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
-            residentes.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
-            break;
-        } // swtich
+        Cuentas cuentas= new Cuentas("residentes");
+        residentes.putAll(cuentas.all());
+        
         cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.realPath);
         for (String residente: residentes.keySet()) {
           cafu.setNombre(Cadena.nombrePersona(residente));
@@ -1491,7 +1480,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       LOG.error("-------------- ENTRO AL PROCESO DE NOTIFICAR --------------------------");
       LOG.error("Con un total de contratistas: "+ contratistas.size());
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
-      Encriptar encriptar= new Encriptar();
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":
           residentes.put("Grupo CAFU", Cafu.IMOX_GROUP_CAFU);
@@ -1506,24 +1494,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           residentes.put("Grupo CAFU", Cafu.IMOX_GROUP_CAFU);
           break;
       } // switch
-      residentes.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-      if(Arrays.toString(this.notificar).contains("1")) {
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-          case "cafu":
-            residentes.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
-            residentes.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-            residentes.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
-            break;
-          case "gylvi":
-            residentes.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
-            residentes.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
-            break;
-          case "triana":
-            residentes.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
-            residentes.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
-            break;
-        } // swtich
-      } // if
+
+      Cuentas cuentas= new Cuentas("supervisor");
+      if(Arrays.toString(this.notificar).contains("1")) 
+        residentes.putAll(cuentas.all());
+      else
+        residentes.putAll(cuentas.admin());
       cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.realPath);
       for (String residente: residentes.keySet()) {
         cafu.setNombre(Cadena.nombrePersona(residente));

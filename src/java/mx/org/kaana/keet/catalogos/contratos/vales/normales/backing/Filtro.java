@@ -253,7 +253,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			for(Entity mzaLote: this.lotes){
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
-				params.put("clave", toClaveEstacion(mzaLote));
+				params.put("clave", this.toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaMaterialesDto", "estatusManzanaLote", params);
 				if(estatus.toString("total")!= null){
 					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
@@ -273,9 +273,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	} // toEstatusManzanaLote
 	
 	private String toClaveEstacion(Entity lote) {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {			
-			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
 			regresar.append(Fecha.getAnioActual());
 			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));

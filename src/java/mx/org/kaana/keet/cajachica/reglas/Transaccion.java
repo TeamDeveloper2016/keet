@@ -34,13 +34,13 @@ import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.Cuentas;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -831,24 +831,11 @@ public class Transaccion extends IBaseTnx {
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(administradores!= null && !administradores.isEmpty()) {
-        Encriptar encriptar= new Encriptar();
   			String nombre= this.toReporte(sesion, jasper, sujeto, idNominaPeriodo);
-        administradores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-          case "cafu":
-            administradores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
-            administradores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-            administradores.put("Claro Liliana Flores Alcantara", encriptar.desencriptar("d745383f3f39201f107797"));
-            administradores.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
-            break;
-          case "gylvi":
-            administradores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
-            administradores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
-            break;
-          case "triana":
-            administradores.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
-            administradores.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
-        } // swtich
+
+        Cuentas cuentas= new Cuentas("caja");
+        administradores.putAll(cuentas.all());
+        
         notificar= new Cafu("", "", nombre, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
         for (String administrador: administradores.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(administrador));

@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,19 +10,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -49,6 +56,8 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticComprasOrdenesFiltro")
 @ViewScoped 
@@ -56,6 +65,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID= 8793667741599428332L;
+  private static final String COLUMN_DATA_FILE_COMPRAS= "EJERCICIO,EMPRESA,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
+  
+  
 	private Reporte reporte;
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
@@ -126,6 +138,32 @@ public class Filtro extends IBaseFilter implements Serializable {
     this.celular = celular;
   }
 	
+  public StreamedContent getCompras() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		Map<String, Object>params= null;
+		String template         = "FALTAS";
+		try {
+	  	params=new HashMap<>();
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "comprasProveedores", template), COLUMN_DATA_FILE_COMPRAS);	
+			if(xls.procesar()) {
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -631,7 +669,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
-  
+
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

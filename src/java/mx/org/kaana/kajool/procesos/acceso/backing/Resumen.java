@@ -37,6 +37,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.Cuentas;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -335,23 +336,8 @@ public class Resumen extends Respaldos implements Serializable {
         nomina = idNomina.toString("semana");
         periodo= idNomina.toString("inicio").concat(" al ").concat(idNomina.toString("termino"));
       } // if  
-      Encriptar encriptar= new Encriptar();
-      actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "cafu":
-          actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
-          actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-          actores.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
-          break;
-        case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
-          actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
-          actores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
-          break;
-        case "triana":
-          actores.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
-          actores.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
-          break;
-      } // swtich
+      Cuentas cuentas= new Cuentas("resumen");
+      actores.putAll(cuentas.all());
       this.toReporte(Boolean.TRUE);
       Cafu notificar= new Cafu("", "", this.reporte.getAlias(), nomina, periodo);
       for (String actor: actores.keySet()) {

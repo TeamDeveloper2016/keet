@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.Cuentas;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import org.apache.commons.logging.Log;
@@ -45,7 +46,6 @@ public class Garantias implements Job, Serializable {
     Map<String, Object> params = new HashMap<>();
     Map<String, Object> actores= new HashMap<>();
 		try {      
-      Encriptar encriptar= new Encriptar();
       params.put("fecha", Fecha.getHoyEstandar());      
       columns = new ArrayList<>();
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
@@ -58,24 +58,10 @@ public class Garantias implements Job, Serializable {
       garantias= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "garantias", params, Constantes.SQL_TODOS_REGISTROS);
       if(garantias!= null && !garantias.isEmpty()) {
         UIBackingUtilities.toFormatEntitySet(garantias, columns);
-        actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-          case "cafu":
-            actores.put("Carlos Alberto Calderon Solano", encriptar.desencriptar("dc58cd49352018057c9fff"));
-            actores.put("Irma de Lourdes Hernandez Romo", encriptar.desencriptar("150075e05dc2b3a69fea2b"));
-            actores.put("Alejandro Días Ochoa", encriptar.desencriptar("433027100d0c0b0f090e71"));
-            break;
-          case "gylvi": // AQUI FALTA AGREGAR EL CELULAR DE VIZCAINO
-            actores.put("Luis Cesar Lopez Manzur", encriptar.desencriptar("89f468ef6bec68d249b0d1"));
-            actores.put("Jordi Alfonso Fariña Quiroz", encriptar.desencriptar("b8a5989f9b9e999e93fa00"));
-            break;
-          case "triana":
-            actores.put("Jesús Fernando Villalpando Cisneros", encriptar.desencriptar("c2bfb2a5999c9b9f99fe01"));
-            actores.put("José Refugio Villalpando Vargas", encriptar.desencriptar("69d448cf47cdb4a495fa1e"));
-            break;
-        } // swtich
+        Cuentas cuentas= new Cuentas("garantias");
+        actores.putAll(cuentas.all());
         StringBuilder sb= new StringBuilder();
-        Cafu notificar= new Cafu();
+        Cafu notificar  = new Cafu();
         for (Entity item: garantias) {
           params.put("contrato", item.toString("nombre"));
           params.put("periodo", "*"+ item.toString("inicio")+ "* al *"+ item.toString("termino")+ "*");

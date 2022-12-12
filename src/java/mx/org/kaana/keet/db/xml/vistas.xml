@@ -11050,6 +11050,7 @@
 			<select id="lotesContratistas">
 				select 
 					tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_proyectos.id_empresa,
 					tc_keet_contratos_lotes.*,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
           tc_keet_prototipos.nombre as prototipo,
@@ -11079,6 +11080,7 @@
 			<select id="lotesSubContratistas">
 				select 
 					tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_proyectos.id_empresa,
 					tc_keet_contratos_lotes.*,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
           tc_keet_prototipos.nombre as prototipo,

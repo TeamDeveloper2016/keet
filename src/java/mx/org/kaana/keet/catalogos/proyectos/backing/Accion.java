@@ -262,7 +262,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void toLoadPrototipos() {
 		Map<String, Object>params= new HashMap<>();
     try {
-      params.put("idCliente", ((UISelectEntity)attrs.get("idCliente")).getKey());
+      params.put("idCliente", this.proyecto.getProyecto().getIkCliente());
       this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", params, "nombre"));
       if((Boolean)this.attrs.get("validar"))
 			  this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
