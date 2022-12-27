@@ -48,6 +48,7 @@ public class Cierre implements Job, Serializable {
         case "triana":
           break;
       } // swtich
+      LOG.error("ENTRO AL PROCESO DE CERRAR LA NOMINA DE FORMA AUTOMATICA ["+ process+ "]");
       if(process) {
         params.put("idTipoNomina", 1L);      
         Entity nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
@@ -63,13 +64,13 @@ public class Cierre implements Job, Serializable {
           String path= this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().substring(0, this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().indexOf("/WEB-INF/"));
           Transaccion transaccion= new Transaccion(nomina.toLong("idNomina"), autentifica, bitacora, path, Boolean.TRUE);
           if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 
-            LOG.info("La nómina se cerró de forma correcta [".concat(nomina.toString("nomina")).concat("] !"));
+            LOG.error("La nómina se cerró de forma correcta [".concat(nomina.toString("nomina")).concat("] !"));
         } // if  
         else
-          LOG.info("La nómina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
+          LOG.error("La nomina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
-        LOG.error("Entró a cerrar la nómina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
+        LOG.error("Entro a cerrar la nOmina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);

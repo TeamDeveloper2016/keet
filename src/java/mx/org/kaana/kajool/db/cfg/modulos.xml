@@ -38,5 +38,12 @@
      <file-xml>mx/org/kaana/sakbe/db/xml/ireport.xml</file-xml>
      <file-xml>mx/org/kaana/sakbe/db/xml/josql.xml</file-xml> 
    </module>
+   <module id="imox" load="true" mapping="true" backing="false" dto="mx.org.kaana.imox.db.dto" msg="/mx/org/kaana/imox/msg">
+     <file-xml>mx/org/kaana/sakbe/db/xml/imox.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/vistas.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/foxpro.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/ireport.xml</file-xml>
+     <file-xml>mx/org/kaana/sakbe/db/xml/josql.xml</file-xml> 
+   </module>
 
 </modulos>

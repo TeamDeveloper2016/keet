@@ -30,7 +30,7 @@ public class Attachment implements Serializable {
 	}
 	
 	public Attachment(String path, String absolute, Boolean cid, Boolean principal) {
-		this.absolute= path.concat(absolute);
+		this.absolute= path.concat(path.endsWith(File.separator)? "": File.separator).concat(absolute);
 		this.file= new File(this.absolute);
 		this.init(cid);
 	} 

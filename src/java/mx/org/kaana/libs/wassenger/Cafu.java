@@ -48,10 +48,15 @@ public final class Cafu implements Serializable {
   public static final String  IMOX_GROUP_TRIANA = "120363022138069700@g.us";
   private static final String BODY_MESSAGE      = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de {empresa}, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot_).\"";
   private static final String BODY_DESTAJO      = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
+  private static final String GROUP_DESTAJO     = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
   private static final String BODY_RESIDENTE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\n{empresa}\"";
+  private static final String GROUP_RESIDENTE   = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\n{empresa}\"";
   private static final String BODY_SUPERVISOR   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el *resumen* de todos los destajos de los *contratistas* y/o *subcontratistas* para su revisión, del corte *preliminar* de nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes y *revisar los importes*.\\n\\n{empresa}\"";
+  private static final String GROUP_SUPERVISOR  = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el *resumen* de todos los destajos de los *contratistas* y/o *subcontratistas* para su revisión, del corte *preliminar* de nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes y *revisar los importes*.\\n\\n{empresa}\"";
   private static final String BODY_GASTO_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n{empresa}\"";
+  private static final String GROUP_GASTO_CHICA = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n{empresa}\"";
   private static final String BODY_CAJA_CHICA   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n{empresa}\"";
+  private static final String GROUP_CAJA_CHICA  = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n{empresa}\"";
   private static final String BODY_OPEN_NOMINA  = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\n{empresa}\"";
   private static final String BODY_CLOSE_NOMINA = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos se vera reflejado para la siguiente nómina ó _semana_ (_soy un chatbot_).\\n\\n{empresa}\"";
   private static final String PATH_REPORT       = "{numero}.- {contratista}\\n   {url}Temporal/Pdf/{reporte}\\n";
@@ -60,7 +65,8 @@ public final class Cafu implements Serializable {
   private static final String BODY_ORDEN_COMPRA = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la dirección del almacen de entrega.\\n\\nPara cualquier duda o aclaración *{correo}*.\\n\\n{empresa}.\"";
   private static final String BODY_GARANTIA     = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber que el día de hoy *{fecha}* venció el plazo del *fondo de garantía* de los siguiente(s) contrato(s)\\n\\n{contratos}Por lo que se solicita, se tomen las previsiones necesarias para hacer la recuperación de dicho fondo de garantía.\\n\\n{empresa}\"";
   private static final String BODY_ESTADO_CUENTA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber el *resumen de estimación de obra* de la semana *{nomina}* del periodo *{periodo}*, favor de descargar el reporte para consultar el detalle.\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nSe tienes *24 hrs* para descargar el reporte para su revisión\\n\\n{empresa}\"";
-  private static final int LENGTH_CELL_PHONE    = 10;
+  private static final String GROUP_ESTADO_CUENTA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, por medio del presente se le hace saber el *resumen de estimación de obra* de la semana *{nomina}* del periodo *{periodo}*, favor de descargar el reporte para consultar el detalle.\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nSe tienes *24 hrs* para descargar el reporte para su revisión\\n\\n{empresa}\"";
+  private static final int LENGTH_CELL_PHONE     = 10;
 
   private String token;
   private String nombre;
@@ -418,12 +424,12 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_DESTAJO: BODY_DESTAJO, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_DESTAJO: BODY_DESTAJO, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -433,13 +439,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_DESTAJO: BODY_DESTAJO, params, true)+ "}");
             } // else  
           } // if  
           else {
             LOG.error("[doSendDestajo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_DESTAJO: BODY_DESTAJO, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -482,12 +488,12 @@ public final class Cafu implements Serializable {
         params.put("url", this.url);
         params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_RESIDENTE: BODY_RESIDENTE, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_RESIDENTE: BODY_RESIDENTE, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -497,13 +503,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_RESIDENTE: BODY_RESIDENTE, params, true)+ "}");
             } // else  
           } // if  
           else {
             LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_RESIDENTE: BODY_RESIDENTE, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -540,12 +546,12 @@ public final class Cafu implements Serializable {
         params.put("saludo", this.toSaludo());
         params.put("empresa", this.empresa);
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_GASTO_CHICA: BODY_GASTO_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_GASTO_CHICA:BODY_GASTO_CHICA, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -555,13 +561,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_GASTO_CHICA:BODY_GASTO_CHICA, params, true)+ "}");
             } // else  
           } // if  
           else {
             LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_GASTO_CHICA:BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -599,12 +605,12 @@ public final class Cafu implements Serializable {
         params.put("empresa", this.empresa);
         params.put("url", this.url);
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_CAJA_CHICA: BODY_CAJA_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_CAJA_CHICA: BODY_CAJA_CHICA, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -614,13 +620,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_CAJA_CHICA: BODY_CAJA_CHICA, params, true)+ "}");
             } // else  
           } // if  
           else {
             LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_CAJA_CHICA: BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -1005,12 +1011,12 @@ public final class Cafu implements Serializable {
         params.put("url", this.url);
         params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_SUPERVISOR: BODY_SUPERVISOR, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_SUPERVISOR: BODY_SUPERVISOR, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -1020,13 +1026,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_SUPERVISOR: BODY_SUPERVISOR, params, true)+ "}");
             } // else  
           } // if  
           else {
-            LOG.error("[doSendGerente] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendSupervisor] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_SUPERVISOR, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_SUPERVISOR: BODY_SUPERVISOR, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -1130,12 +1136,12 @@ public final class Cafu implements Serializable {
         params.put("url", this.url);
         params.put("reporte", this.reporte);
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ESTADO_CUENTA, params, true)+ "}");
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_ESTADO_CUENTA: BODY_ESTADO_CUENTA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
           .header("Content-Type", "application/json")
           .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_ESTADO_CUENTA, params, true)+ "}")
+          .body("{"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_ESTADO_CUENTA: BODY_ESTADO_CUENTA, params, true)+ "}")
           .asString();
           if(Objects.equals(response.getStatus(), 201)) {
             LOG.warn("Enviado: "+ response.getBody());
@@ -1145,13 +1151,13 @@ public final class Cafu implements Serializable {
               message.init();
             else {
               message= new Message();
-              message.setMessage(" {"+ Cadena.replaceParams(BODY_ESTADO_CUENTA, params, true)+ "}");
+              message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_ESTADO_CUENTA: BODY_ESTADO_CUENTA, params, true)+ "}");
             } // else  
           } // if  
           else {
             LOG.error("[doSendEstadoCuenta] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_ESTADO_CUENTA, params, true)+ "}");
+            message.setMessage(" {"+ Cadena.replaceParams(this.celular.contains("@")? GROUP_ESTADO_CUENTA: BODY_ESTADO_CUENTA, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));

@@ -956,7 +956,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Map<String, Object> params= new HashMap<>();
 		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("inicio")+ " al "+ sujeto.toString("termino");
 		List<Attachment> files    = null; 
-		IBaseAttachment notificar = null;
+		IBaseAttachment avisar    = null;
 		Attachment attachments    = null;
 		try {
 			params.put("header", "...");
@@ -986,8 +986,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(correos)) {
-          notificar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - ").concat(titulo), params, files);
-          notificar.send();
+          avisar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - ").concat(titulo), params, files);
+          avisar.send();
           LOG.info("Enviando correo a la cuenta: "+ correos);
         } // if	
       } // try

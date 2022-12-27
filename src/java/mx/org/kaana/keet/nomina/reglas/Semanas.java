@@ -214,7 +214,7 @@ public class Semanas {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Semanas semanas= new Semanas(2);
+		Semanas semanas= new Semanas(3);
 		semanas.process();
 	}
 	
