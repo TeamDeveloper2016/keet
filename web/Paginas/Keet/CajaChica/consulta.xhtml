@@ -113,7 +113,7 @@
 					<p:dataGrid id="tabla" var="row" value="#{keetCajaChicaConsulta.gastos}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCajaChicaConsulta.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.consecutivo}" style="text-align:center; border: 0px;">							
+						<p:panel header="#{row.consecutivo} [ #{row.nomina} ]" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
                   <p:outputLabel value="$#{row.importe}" styleClass="lg-pantalla amanzana-lote-font" style="cursor: pointer;"/>
@@ -122,7 +122,7 @@
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">																		
 									<h:outputText value="&lt;b&gt;Persona:&lt;/b&gt; #{row.residente}" escape="false"/>
-									<h:outputText value="&lt;b&gt;Articulos:&lt;/b&gt; #{row.articulos}" escape="false"/>
+									<h:outputText value="&lt;b&gt;Articulos:&lt;/b&gt; #{row.articulos}, &lt;span class='janal-color-blue'&gt;#{row.desarrollo}&lt;/span&gt;" escape="false"/>
 									<h:outputText value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.registro}" escape="false"/>									
 								</p:panelGrid>								
 							</h:panelGrid>

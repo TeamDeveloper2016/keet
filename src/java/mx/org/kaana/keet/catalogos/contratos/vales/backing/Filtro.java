@@ -60,10 +60,9 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("material", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -82,10 +81,9 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -149,12 +147,11 @@ public class Filtro extends Comun implements Serializable {
 	} // toCondicion
 
   public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -189,14 +186,12 @@ public class Filtro extends Comun implements Serializable {
 	}	// doUpdateArticulos
 	
 	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = null;
-    Map<String, Object> params    = null;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
@@ -267,11 +262,9 @@ public class Filtro extends Comun implements Serializable {
 	} // doFindArticulo
 		
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -303,13 +296,12 @@ public class Filtro extends Comun implements Serializable {
 	}	// doCompleteCodigo
 
   public void doLoadDetalle() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_vales.registro desc, cantidad desc");
 			params.put("idArticulo", entity.toLong("idArticulo"));
-      columns= new ArrayList<>();
       columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));

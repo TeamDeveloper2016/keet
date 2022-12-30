@@ -11573,6 +11573,7 @@
 				select 
 					tc_keet_gastos.id_gasto as id_key,
 					tc_keet_gastos.id_empresa,
+          tc_keet_desarrollos.nombres as desarrollo,
 					tc_keet_gastos.id_caja_chica_cierre,
 					tc_keet_gastos.id_empresa_persona,
 					tc_keet_gastos.consecutivo,
@@ -11583,6 +11584,7 @@
 					tc_keet_gastos.id_abono,
 					tc_keet_gastos.id_gasto_estatus,
           concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 					tc_keet_gastos.registro
 				from
 					tc_keet_gastos
@@ -11592,6 +11594,14 @@
           tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join				
 					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+				inner join
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
 				  and {condicion}
