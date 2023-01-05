@@ -1716,6 +1716,14 @@
 				group by 
 				  ejercicio desc
 			</select>
+			<select id="importe">
+        select 
+				  sum(importe) as importe
+				from 
+				  tc_keet_gastos 
+				where  
+					id_caja_chica_cierre= {idCajaChicaCierre}
+      </select>  
 			<update id="disponibles">
 				update 
          tc_keet_gastos 
