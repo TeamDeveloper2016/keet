@@ -181,12 +181,12 @@ public class Pagar extends IBaseFilter implements Serializable {
 			transaccion = new Transaccion(((UISelectEntity)this.attrs.get("semana")).getKey(), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);
-        UISelectEntity semana= null;
         List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
         int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
-        if(index>= 0)
-			    semana= semanas.get(index);
-        UIBackingUtilities.execute("janal.alert('Se realiz\\u00F3 el cierre de caja chica de la semana ["+ semana.toLong("ejercicio")+ "-"+ semana.toLong("orden")+ "]');");
+        if(index>= 0) {
+			    UISelectEntity semana= semanas.get(index);
+          UIBackingUtilities.execute("janal.alert('Se realiz\\u00F3 el cierre de caja chica de la semana ["+ semana.toLong("ejercicio")+ "-"+ semana.toLong("orden")+ "]');");
+        } // if  
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
@@ -253,6 +253,7 @@ public class Pagar extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa_persona");
       params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());
+      params.put("idGastoEstatus", "2, 4");
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       this.lazyModelResidentes= new FormatCustomLazy("VistaCierresCajasChicasDto", "residentes", params, columns);
       UIBackingUtilities.resetDataTable("tablaResidentes");			        
@@ -270,13 +271,13 @@ public class Pagar extends IBaseFilter implements Serializable {
 	public void doReporte() throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
 		try {		  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.CAJA_CHICA;
-      params = new HashMap<>();
       params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());
+      params.put("idGastoEstatus", "2, 4");
       this.reporte= JsfBase.toReporte();
       parametros  = comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());

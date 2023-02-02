@@ -6078,12 +6078,17 @@
         select
           tc_mantic_ordenes_compras.ejercicio,
           tc_mantic_empresas.nombre as empresa,
+          tc_keet_contratos.nombre as contrato,
+          tc_keet_contratos.costo as presupuesto,
+          tc_keet_contratos.materiales,
           tc_mantic_proveedores.razon_social as proveedor,
           tc_mantic_ordenes_estatus.nombre as estatus,
           count(*) as ordenes,
           sum(tc_mantic_ordenes_compras.total) as total
         from
           tc_mantic_ordenes_compras
+        inner join
+          tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
         inner join
           tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
         inner join
@@ -6095,11 +6100,13 @@
         group by
           tc_mantic_ordenes_compras.ejercicio,
           tc_mantic_ordenes_compras.id_empresa,
+          tc_keet_contratos.nombre,
           tc_mantic_ordenes_compras.id_proveedor,
           tc_mantic_ordenes_compras.id_orden_estatus
         order by  
           tc_mantic_ordenes_compras.ejercicio,
           tc_mantic_ordenes_compras.id_empresa,
+          tc_keet_contratos.nombre,
           tc_mantic_ordenes_compras.id_proveedor,
           tc_mantic_ordenes_compras.id_orden_estatus
       </select>  

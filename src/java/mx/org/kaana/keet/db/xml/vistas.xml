@@ -11787,6 +11787,7 @@
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				where
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+          and tc_keet_gastos.id_gasto_estatus in ({idGastoEstatus})
           and {condicion}
         group by
           tr_mantic_empresa_personal.id_empresa_persona           

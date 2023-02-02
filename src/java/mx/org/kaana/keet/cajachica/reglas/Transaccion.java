@@ -693,6 +693,7 @@ public class Transaccion extends IBaseTnx {
             if(Objects.equals(this.idAfectaNomina, 1L)) {
               this.idDesarrollo= item.getIdDesarrollo();
               params.put("idNominaPeriodo", activa.getIdNominaPeriodo());      
+              params.put("idGastoEstatus", "2, 4");
               params.put(Constantes.SQL_CONDICION, "tc_keet_cajas_chicas.id_desarrollo= "+ this.idDesarrollo);      
               params.put("sortOrder", "");      
               List<Entity> residentes= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaCierresCajasChicasDto", "residentes", params);
@@ -799,6 +800,7 @@ public class Transaccion extends IBaseTnx {
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       params.put("idNominaPeriodo", idNominaPeriodo);
+      params.put("idGastoEstatus", "2, 4");
       params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa_persona");
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaCierresCajasChicasDto", "residentes", params);

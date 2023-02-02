@@ -65,7 +65,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_COMPRAS= "EJERCICIO,EMPRESA,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
+  private static final String COLUMN_DATA_FILE_COMPRAS= "EJERCICIO,EMPRESA,CONTRATO,PRESUPUESTO,MATERIALES,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
   
   
 	private Reporte reporte;
@@ -141,10 +141,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   public StreamedContent getCompras() {
 		StreamedContent regresar= null;
 		Xls xls                 = null;
-		Map<String, Object>params= null;
-		String template         = "FALTAS";
+		Map<String, Object>params= new HashMap<>();
+		String template         = "COMPRAS";
 		try {
-	  	params=new HashMap<>();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "comprasProveedores", template), COLUMN_DATA_FILE_COMPRAS);	
@@ -183,11 +182,10 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
-      columns = new ArrayList<>();
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
@@ -286,10 +284,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -316,18 +313,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public void doLoadDesarrollos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 //		UISelectEntity empresa    = null;
     try {
-			params= new HashMap<>();			
 //			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
 //			if(empresa.getKey()>= 1L)
 //        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
 //			else
 		  params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
@@ -397,11 +392,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_orden_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticOrdenesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);

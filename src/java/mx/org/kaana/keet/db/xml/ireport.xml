@@ -117,6 +117,7 @@
           tc_mantic_tipos_medios_pagos on tc_keet_gastos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				where
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+          and tc_keet_gastos.id_gasto_estatus in ({idGastoEstatus})
         order by
           tc_mantic_personas.id_persona,
           tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
