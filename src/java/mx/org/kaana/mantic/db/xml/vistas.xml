@@ -6193,9 +6193,9 @@
 				inner join 
 					tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				inner join 
-					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
 				inner join 
-					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 

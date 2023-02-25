@@ -119,9 +119,9 @@
                 </p:column>   
               </p:selectOneMenu>	
 							<p:outputLabel for="departamento" value="Departamento:"/>
-							<p:selectOneMenu id="departamento" value="#{keetNominasPersonas.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+              <p:selectCheckboxMenu id="departamento" value="#{keetNominasPersonas.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true" style="margin-top: -6px;">
 								<f:selectItems value="#{keetNominasPersonas.attrs.departamentos}"/>
-							</p:selectOneMenu>								
+							</p:selectCheckboxMenu>								
 							<p:outputLabel for="puesto" value="Puesto:"/>
 							<p:selectOneMenu id="puesto" value="#{keetNominasPersonas.attrs.idPuesto}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItems value="#{keetNominasPersonas.attrs.puestos}"/>

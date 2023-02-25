@@ -47,6 +47,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	private static final long serialVersionUID = 6319984968937774153L;
 	private FormatLazyModel lazyDetalle;
 	private FormatLazyModel lazyDestajo;  
+  private String[] idDepartamento;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -78,6 +79,14 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, (Double)this.attrs.get("totalDestajoContratista"));
 	}
 
+  public String[] getIdDepartamento() {
+    return idDepartamento;
+  }
+
+  public void setIdDepartamento(String[] idDepartamento) {
+    this.idDepartamento = idDepartamento;
+  }
+
 	@PostConstruct
   @Override
   protected void init() {
@@ -107,6 +116,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idEmpresaPersona", new UISelectEntity(-1L));
 		  }
+      this.idDepartamento= new String[] {};
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -116,12 +126,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina desc, desarrollo, nombre_completo");
-      columns= new ArrayList<>();
       columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -145,11 +154,9 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   } // doLoad
 
 	private void toLoadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -167,9 +174,8 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 
   public String doAccion() {
 		String regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
 			params.put("idNomina", entity.toLong("idNomina"));
@@ -246,8 +252,15 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
     } // if  
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
-		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+		if(this.idDepartamento!= null && this.idDepartamento.length> 0) {
+      StringBuilder departamentos= new StringBuilder();
+      for (String item: this.idDepartamento) {
+        if(!Objects.equals(item, "-1"))
+          departamentos.append(item).append(", ");
+      } // for
+      if(departamentos.length()> 0)
+			  sb.append("tc_keet_departamentos.id_departamento in (").append(departamentos.substring(0, departamentos.length()- 2)).append(") and ");
+    } // if  
 		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
 			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
@@ -269,10 +282,9 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	} // toPrepare
 
 	private void toLoadCatalogs() {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
 			this.toLoadEmpresas();
-			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
       this.attrs.put("estatus", new UISelectEntity(-1L));
@@ -280,7 +292,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			Catalogos.toLoadEjercicios(this.attrs);
 			Catalogos.toLoadSemanas(this.attrs);
 			Catalogos.toLoadTiposNominas(this.attrs);
-			Catalogos.toLoadDepartamentos(this.attrs);
+			Catalogos.toLoadTodosDepartamentos(this.attrs);
 			Catalogos.toLoadPuestos(this.attrs);
 			Catalogos.toLoadContratistas(this.attrs);
       this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "clave"));
@@ -323,18 +335,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	} // loadCatalogs
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
-//		UISelectEntity empresa    = null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();			
-//			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
-//			if(empresa.getKey()>= 1L)
-//        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
-//			else
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
@@ -351,9 +356,8 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   
   public String doExportar() {
 		String regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 			params.put("idNomina", entity.toLong("idNomina"));
@@ -382,12 +386,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	public void doReporte(String nombre, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
     Entity entity                = null;
     Map<String,Object>paramsPpal = null;
     try {
-      params= new HashMap<>();  
       reporteSeleccion= EReportes.valueOf(nombre);  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
@@ -443,7 +446,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   } // doReporte 		
 	
   public void doLoadDetalle() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
@@ -452,7 +455,6 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
-      columns= new ArrayList<>();
       columns.add(new Columna("valor", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
@@ -476,7 +478,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   } // doLoadDetalle
 	
   public void doLoadDestajo() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
@@ -488,7 +490,6 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
 			this.attrs.put("idFiguraCorreo", entity.toLong("idPersona"));
 			this.attrs.put("figuraNombreCompletoCorreo", entity.toString("nombreCompleto"));
-      columns= new ArrayList<>();
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
@@ -513,12 +514,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   
   public String doCheckIncidente(Entity row) {
     String regresar          = "";
-    Map<String, Object>params= null;
-    List<Columna>columns     = null;		
+    Map<String, Object>params= new HashMap<>();
+    List<Columna>columns     = new ArrayList<>();		
 		try {		
-      params= new HashMap<>();      
       params.put("idEmpresaPersona", row.toLong("idEmpresaPersona"));
- 			columns= new ArrayList<>();
 			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticIncidentesDto", "incidente", params);

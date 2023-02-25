@@ -30,9 +30,8 @@ import mx.org.kaana.libs.reflection.Methods;
 public final class Catalogos {
 	
 	public static void toLoadResidentes(Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params= null;		
+		Map<String, Object> params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
 			attrs.put("departamentos", UISelect.seleccione("TcKeetDepartamentosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 		} // try
@@ -42,9 +41,8 @@ public final class Catalogos {
 	} // toLoadResidentes
   
 	public static void toLoadEspecialidades(Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params= null;		
+		Map<String, Object> params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
 			attrs.put("departamentos", UISelect.seleccione("TcKeetDepartamentosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 		} // try
@@ -54,9 +52,8 @@ public final class Catalogos {
 	} // toLoadEspecialidades
 
   public static void toLoadTiposGastos(Map<String, Object> attrs) throws Exception {    
-    Map<String,Object> params= null;
+    Map<String,Object> params= new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			attrs.put("tiposGastos", UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS));
     } // try
@@ -69,9 +66,8 @@ public final class Catalogos {
   } // toLoadTiposGastos
   
 	public static void toLoadDepartamentos(Long idTipoGasto, Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params= null;		
+		Map<String, Object> params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
       if(idTipoGasto> 0)
         params.put(Constantes.SQL_CONDICION, "id_tipo_gasto= "+ idTipoGasto);
       else
@@ -86,6 +82,17 @@ public final class Catalogos {
 	public static void toLoadDepartamentos(Map<String, Object> attrs) throws Exception {
     toLoadDepartamentos(-1L, attrs);
   }
+
+	public static void toLoadTodosDepartamentos(Map<String, Object> attrs) throws Exception {
+		Map<String, Object> params= new HashMap<>();		
+		try {
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			attrs.put("departamentos", UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	} // toLoadTodosDepartamentos
   
 	public static void toLoadEjercicios(Map<String, Object> attrs) throws Exception {
 		Map<String, Object> params      = null;		
@@ -101,11 +108,9 @@ public final class Catalogos {
 	} // toLoadEjercicios
 	
 	public static void toLoadNominas(Map<String, Object> attrs) throws Exception {
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;		
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
-      columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -114,7 +119,7 @@ public final class Catalogos {
       if(nominas!= null && !nominas.isEmpty()) {
         attrs.put("nominas", nominas);
 				attrs.put("idNomina", UIBackingUtilities.toFirstKeySelectEntity(nominas));
-			}
+			} // if
 			else
 			  attrs.put("idNomina", new UISelectEntity(-1L));
 		} // try
@@ -125,13 +130,11 @@ public final class Catalogos {
 	} // toLoadNominas
 	
 	public static void toLoadSemanas(Map<String, Object> attrs) throws Exception {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;		
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();		
     try {
-      columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
       attrs.put("semana", new UISelectEntity(-1L));
@@ -143,9 +146,8 @@ public final class Catalogos {
 	} // toLoadSemanas
 	
 	public static void toLoadTiposNominas(Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params= null;		
+		Map<String, Object> params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> items= UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"); 
       if(items!= null && !items.isEmpty()) {
@@ -162,9 +164,8 @@ public final class Catalogos {
 	
 	public static void toLoadPuestos(Map<String, Object> attrs) throws Exception {
 		List<UISelectItem> puestos= null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       // params.put(Constantes.SQL_CONDICION, "id_empresa=" + attrs.get("idEmpresa"));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
@@ -181,10 +182,9 @@ public final class Catalogos {
 	} // toLoadPuestos
 	
 	public static List<UISelectEntity> toContratistasPorElDia(boolean seleccione) throws Exception {
-		List<Columna> columns        = null;
+		List<Columna> columns        = new ArrayList<>();
 		List<UISelectEntity> regresar= null;
 		try {
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       if(seleccione) 
@@ -224,9 +224,8 @@ public final class Catalogos {
 
 	public static void toLoadDesarrollos(Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>desarrollos= null;
-    Map<String, Object> params     = null;
+    Map<String, Object> params     = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("desarrollos", desarrollos);
@@ -239,9 +238,8 @@ public final class Catalogos {
   
 	public static void toLoadDesarrollosEmpresa(Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>desarrollos= null;
-    Map<String, Object> params     = null;
+    Map<String, Object> params     = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
   		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("desarrollos", desarrollos);
@@ -254,9 +252,8 @@ public final class Catalogos {
 
 	public static void toLoadDesarrollosCliente(Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>desarrollos= null;
-    Map<String, Object> params     = null;
+    Map<String, Object> params     = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idCliente", ((UISelectEntity)attrs.get("idCliente")).getKey());
   		desarrollos= UIEntity.build("TcKeetDesarrollosDto", "cliente", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       attrs.put("desarrollos", desarrollos);
@@ -269,9 +266,8 @@ public final class Catalogos {
 
 	public static void toLoadContratos(Long idDesarrollos, Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>contratos= null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idDesarrollo", idDesarrollos);
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
@@ -285,9 +281,8 @@ public final class Catalogos {
 
 	public static void toLoadClientesEmpresa(Map<String, Object> attrs) throws Exception {
 		List<UISelectEntity>clientes= null;
-    Map<String, Object> params  = null;
+    Map<String, Object> params  = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("sucursales", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
   		clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       attrs.put("clientes", clientes);

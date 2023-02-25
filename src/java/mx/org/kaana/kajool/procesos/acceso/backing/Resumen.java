@@ -29,7 +29,6 @@ import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;

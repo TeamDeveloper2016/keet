@@ -4021,6 +4021,8 @@
           and tc_keet_contratos_destajos_contratistas.id_estacion_estatus in (2, 3)
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
           and {condicion}
+        group by
+          id_key  
         union all 
         select 
 				  convert(concat('2', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor), unsigned integer) as id_key,
@@ -4082,6 +4084,8 @@
           and tc_keet_contratos_destajos_proveedores.id_estacion_estatus in (2, 3)
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
           and {condicion}
+        group by
+          id_key  
         ) as tt_keet_temporal
         {sortOrder}	                    
       </select>  

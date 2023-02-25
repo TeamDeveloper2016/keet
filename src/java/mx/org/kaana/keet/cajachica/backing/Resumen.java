@@ -65,12 +65,11 @@ public class Resumen extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		Entity desarrollo        = null;
 		Entity gasto             = null;		
-		Map<String, Object>params= null;		
+		Map<String, Object>params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
@@ -96,20 +95,18 @@ public class Resumen extends IBaseFilter implements Serializable {
 		} // finally	
 	} // loadCatalogos				
 	
-	private void loadCajaChica() throws Exception{
-		Map<String, Object>params= null;
+	private void loadCajaChica() throws Exception {
+		Map<String, Object>params= new HashMap<>();
 		Entity cajaChica         = null;		
-		List<Columna>campos      = null;
+		List<Columna>columns     = new ArrayList<>();
     try {    			
-			campos= new ArrayList<>();
-			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
-			params= new HashMap<>();
+			columns.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params.put("idCajaChicaCierre", this.attrs.get("idCajaChicaCierre"));			
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findCajaChicaCierre", params);
-			UIBackingUtilities.toFormatEntity(cajaChica, campos);
+			UIBackingUtilities.toFormatEntity(cajaChica, columns);
 			this.attrs.put("cajaChica", cajaChica);		
 		} // try
 		catch (Exception e) {			
@@ -122,17 +119,15 @@ public class Resumen extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params= null;
-    List<Columna> campos     = null;						
+		Map<String, Object>params= new HashMap<>();
+    List<Columna> columns    = new ArrayList<>();						
     try {    			
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));						
-			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-			campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
-			campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
-			params= new HashMap<>();
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));						
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
+			columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
+			columns.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params.put(Constantes.SQL_CONDICION, "id_gasto=".concat(this.attrs.get("idGasto").toString()));				
-			this.lazyModel= new FormatLazyModel("TcKeetGastosDetallesDto", "row", params, campos);
+			this.lazyModel= new FormatLazyModel("TcKeetGastosDetallesDto", "row", params, columns);
 			UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -140,7 +135,7 @@ public class Resumen extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {      
-      Methods.clean(campos);
+      Methods.clean(columns);
       Methods.clean(params);
     } // finally		
   } // doLoad	  						
@@ -166,7 +161,7 @@ public class Resumen extends IBaseFilter implements Serializable {
   } // doAceptar
 	
 	public String doRechazar() {
-    String regresar= null;    				
+    String regresar        = null;    				
     Transaccion transaccion= null;
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("gasto")).getKey(), false);
