@@ -7,6 +7,40 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosMaterialesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="igual">
+        select      
+          tc_keet_proyectos.id_empresa,
+          tc_keet_proyectos.id_desarrollo,
+          tc_keet_contratos_materiales.*
+        from      
+          tc_keet_contratos_materiales
+        inner join
+          tc_keet_contratos on tc_keet_contratos_materiales.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where 
+          id_contrato_material= {idContratoMaterial}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_materiales
+        where      
+          codigo = '{codigo}' and id_contrato = {idContrato} and id_prototipo = {idPrototipo} and id_archivo = {idArchivo} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
     <unit id="TcKeetNotificacionesDto">
       <select id="row">
         select      
@@ -3273,7 +3307,7 @@
         inner join
           tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
         where 
-          tc_mantic_clientes.id_empresa= {idEmpresa} 
+          (tc_mantic_clientes.id_empresa= {idEmpresa} or {idEmpresa}= -1)
       </select>
       <select id="cliente">
         select      

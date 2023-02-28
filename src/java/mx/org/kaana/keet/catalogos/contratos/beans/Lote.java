@@ -22,12 +22,12 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable {
 		this.accion= accion;		
 	}
 	
-	public UISelectEntity getIkPrototipo() {
-		return ikPrototipo;
-	}
-
 	public UISelectEntity getIkFachada() {
 		return ikFachada;
+	}
+
+	public UISelectEntity getIkPrototipo() {
+		return ikPrototipo;
 	}
 
 	public void setIkPrototipo(UISelectEntity ikPrototipo) {

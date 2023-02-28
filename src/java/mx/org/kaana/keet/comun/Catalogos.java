@@ -166,7 +166,6 @@ public final class Catalogos {
 		List<UISelectItem> puestos= null;
     Map<String, Object> params= new HashMap<>();
     try {
-      // params.put(Constantes.SQL_CONDICION, "id_empresa=" + attrs.get("idEmpresa"));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
@@ -273,6 +272,21 @@ public final class Catalogos {
   		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("contratos", contratos);
       attrs.put("idContrato", contratos!= null? UIBackingUtilities.toFirstKeySelectEntity(contratos): new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
+	public static void toLoadPrototipos(Long idContrato, Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>prototipos= null;
+    Map<String, Object> params    = new HashMap<>();
+    try {
+      params.put("idContrato", idContrato);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		prototipos= UIEntity.seleccione("VistaContratosDto", "findPrototipos", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      attrs.put("prototipos", prototipos);
+      attrs.put("idPrototipo", prototipos!= null? UIBackingUtilities.toFirstKeySelectEntity(prototipos): new UISelectEntity(-1L));
 		} // try
 		finally {
 			Methods.clean(params);

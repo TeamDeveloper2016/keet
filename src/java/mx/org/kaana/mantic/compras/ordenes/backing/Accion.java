@@ -124,10 +124,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } // doLoad  
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -180,15 +179,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // toLoadCatalog
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns           = null;
-    Map<String, Object> params      = null;		
+		List<Columna> columns           = new ArrayList<>();
+    Map<String, Object> params      = new HashMap<>();		
 		List<UISelectEntity> desarrollos= null;
     try {
-			params= new HashMap<>();						
 			//params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("idContratoEstatus", EContratosEstatus.FIRMADO.getKey());
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
@@ -233,9 +230,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doLoadContratos() {
 		List<UISelectEntity> contratos= null;
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
@@ -257,10 +253,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doLoadLotes() {
 		List<UISelectEntity> lotes= null;
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
     Object[] list             = null;
 		try {
-			params = new HashMap<>();
 			params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
 			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
@@ -304,10 +299,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // toCalculateFechaEstimada
 	
 	private void toLoadCondiciones(UISelectEntity proveedor) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
@@ -370,11 +364,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private void toUpdateFamilias() throws Exception {
 		UISelectEntity proveedor     = null;
 		List<UISelectEntity> familias= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
     Object[] list                = null;
 		try {
 			proveedor= (UISelectEntity) this.attrs.get("proveedor");
-			params= new HashMap<>();
 			params.put("idProveedor", proveedor.getKey());
 			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
@@ -397,7 +390,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           } // if  
         } // if  
       if(list== null)
-        list= new Object[]{};
+        list= new Object[] {};
       this.attrs.put("familiasSeleccion",  list);
 		} // try
 		catch (Exception e) {		
@@ -447,11 +440,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doTabChange
   
   public void doLoadHistorico() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
-      columns= new ArrayList<>();
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("familia", EFormatoDinamicos.MAYUSCULAS));
@@ -472,13 +464,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	private void toLoadArticulos(List<Object> familiasSeleccion, List<Object> lotesSeleccion) {
 		List<Entity> articulos    = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		UISelectEntity proveedor  = null;
 		StringBuilder familias    = new StringBuilder();
 		int count                 = 0;
 		try {
 			if(getAdminOrden().getArticulos().isEmpty()) {
-				params   = new HashMap<>();
 				proveedor= (UISelectEntity) this.attrs.get("proveedor");
         StringBuilder sb= new StringBuilder();
         for (Object lote: lotesSeleccion) {
@@ -638,10 +629,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	private String toOrdenContratoLote(Long idContratoLote) throws Exception{
 		String regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		Entity contratoLote       = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_contrato_lote=" + idContratoLote );
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			regresar= Cadena.rellenar(contratoLote.toString("orden"), 3, '0', true);
@@ -653,10 +643,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // toOrdenContratoLote
 	
 	private void checkDevolucionesPendientes(Long idProveedor) {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		List<Entity> pendientes   = null;
 		try {
-			params    = new HashMap<>();
 			params.put("idProveedor", idProveedor);
 			pendientes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "pendientes", params);
 			this.attrs.put("pendientes", "<hr class='ui-separator ui-state-default ui-corner-all'/>");
@@ -758,9 +747,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doGlobalEvent
 
   public void toSearchCodigos() {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
@@ -805,18 +793,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doUpdateCliente() {
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
-		List<Columna> columns           = null;
-		Map<String, Object>params       = null;
+		List<Columna> columns           = new ArrayList<>();
+		Map<String, Object>params       = new HashMap<>();
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
 			desarrollo = ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo();
       UISelectEntity cliente= desarrollos.get(desarrollos.indexOf(desarrollo));
 			this.attrs.put("cliente", cliente.toString("razonSocial"));			
       ((OrdenCompra)this.getAdminOrden().getOrden()).setIkCliente(cliente);
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
@@ -887,9 +873,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	private void toLoadTiposMediosPagos() {
 		List<UISelectEntity> tiposMediosPagos= null;
-		Map<String, Object>params            = null;
+		Map<String, Object>params            = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
@@ -909,12 +894,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
 	private void toLoadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> columns      = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			bancos= UIEntity.seleccione("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
@@ -935,9 +918,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
 	private void toLoadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -957,9 +939,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
 	private void toLoadAlmacenistas() {
 		List<UISelectEntity> almacenistas= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
-			params= new HashMap<>();
  			params.put("campoLlave", "tc_mantic_personas.id_persona");
 			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
 			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_puesto= 1");
@@ -986,9 +967,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
 	private void toLoadEmpresaTipoContacto() {
 		List<UISelectEntity> empresaTiposContactos= null;
-		Map<String, Object>params                 = null;
+		Map<String, Object>params                 = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresa", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
 			params.put("idTipoContacto", "9, 10, 11, 15, 16, 17, 18");
 			empresaTiposContactos= UIEntity.build("TrManticEmpresaTipoContactoDto", "tipos", params);

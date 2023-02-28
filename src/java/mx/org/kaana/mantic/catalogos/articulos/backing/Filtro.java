@@ -104,10 +104,9 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
@@ -123,10 +122,9 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -209,11 +207,9 @@ public class Filtro extends Comun implements Serializable {
   } // doAccion
   
 	public void doOpenDialog(EAccion accion, Long idArticulo){
-		Map<String, List<String>> params= null;
-		List<String> options            = null;		
+		Map<String, List<String>> params= new HashMap<>();
+		List<String> options            = new ArrayList<>();		
 		try {						
-			params = new HashMap<>();		
-			options= new ArrayList<>();		
 			options.add(accion.name());
 			options.add(idArticulo.toString());
 			params.put("data", options);
@@ -239,19 +235,18 @@ public class Filtro extends Comun implements Serializable {
 	} // onReturnValues
 	
   public void doEliminar() {
-    Transaccion transaccion = null;
-    Entity seleccionado = null;
-    RegistroArticulo registro = null;
+    Transaccion transaccion  = null;
+    Entity seleccionado      = null;
+    RegistroArticulo registro= null;
     try {
       seleccionado = (Entity) this.attrs.get("seleccionado");
       registro = new RegistroArticulo();
       registro.setIdArticulo(seleccionado.getKey());
       transaccion = new Transaccion(registro, 0D, true);
-      if (transaccion.ejecutar(EAccion.ELIMINAR)) {
+      if (transaccion.ejecutar(EAccion.ELIMINAR)) 
         JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
-      } else {
+      else
         JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);
-      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -260,12 +255,11 @@ public class Filtro extends Comun implements Serializable {
   } // doEliminar
 	
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -300,14 +294,12 @@ public class Filtro extends Comun implements Serializable {
 	}	// doUpdateArticulos
 	
 	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = null;
-    Map<String, Object> params    = null;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 

@@ -66,11 +66,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
@@ -131,14 +130,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
           
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = null;
-    Map<String, Object> params= null;		
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();		
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
   		params.put("codigo", toCodigo(codigo));			
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", (String) this.attrs.get("idXml"), params, columns, 40L));			
@@ -187,4 +184,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doPagina
+  
 }

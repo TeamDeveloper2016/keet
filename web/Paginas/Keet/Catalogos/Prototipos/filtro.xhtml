@@ -99,7 +99,6 @@
               <p:inputNumber id="metrosMenor" value="#{keetCatalogosPrototiposFiltro.attrs.metrosMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
 							<p:outputLabel for="metrosMayor" value="Metros mayor a:" title="Metros cuadrados."/>
               <p:inputNumber id="metrosMayor" value="#{keetCatalogosPrototiposFiltro.attrs.metrosMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
-              <p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetCatalogosPrototiposFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
@@ -205,9 +204,9 @@
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
-      <p:outputLabel value="Clave: "/>
+      <p:outputLabel value="Clave:"/>
       <p:outputLabel value="#{keetCatalogosPrototiposFiltro.attrs.seleccionado.clave}"/>
-      <p:outputLabel value="Nombre "/>
+      <p:outputLabel value="Nombre:"/>
       <p:outputLabel value="#{keetCatalogosPrototiposFiltro.attrs.seleccionado.nombre}"/>
     </h:panelGrid>			
   </ui:define>
