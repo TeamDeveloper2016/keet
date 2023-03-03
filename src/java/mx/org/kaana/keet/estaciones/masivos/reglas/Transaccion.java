@@ -212,9 +212,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Long toFindUnidadMedida(Session sesion, String codigo) {
 		Long regresar= 1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "unidad", params, "idEmpaqueUnidadMedida");
 			if(value!= null && value.getData()!= null)
@@ -231,9 +230,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private TcKeetContratosLotesDto toContratoLote(Session sesion) throws Exception {
 		TcKeetContratosLotesDto regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params      = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idContatoLote", this.idContatoLote);
 			regresar= (TcKeetContratosLotesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosLotesDto.class, "TcKeetContratosLotesDto", "igual", params);
 		} // try
@@ -248,9 +246,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Entity toContratoDatos(Session sesion) throws Exception {
 		Entity regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idContratoLote", this.idContatoLote);
 			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaContratosLotesDto", "lote", params);
 		} // try
@@ -269,9 +266,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Estacion toEstacion(Session sesion, String clave) throws Exception {
 		Estacion regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estacion", params);
 		} // try
@@ -286,9 +282,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Control toControlEstacion(Session sesion, String clave) throws Exception {
 		Control regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			regresar= (Control)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaControlesLotesDto", "estacion", params);
 		} // try
@@ -303,9 +298,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Material toPartida(Session sesion, String clave, Long nivel) throws Exception {
 		Material regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			params.put("nivel", nivel);
 			regresar= (Material)DaoFactory.getInstance().toEntity(sesion, Material.class, "VistaContratosLotesMaterialesDto", "estacion", params);
@@ -321,9 +315,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		
 	private Estacion toDeleteEstaciones(Session sesion, Estaciones estaciones, String prototipo) throws Exception {
 		Estacion regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", estaciones.toKey(4));
   		params.put("orden", "");
 			if(Objects.equals(this.idLimpiar, 1L)) 
@@ -349,9 +342,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Estacion toUltimaEstacion(Session sesion, Estaciones estaciones) throws Exception {
 		Estacion regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", estaciones.toKey(4));
   		regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "ultima", params);
 			if(regresar!= null)
@@ -369,9 +361,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Material toDeleteMateriales(Session sesion, Estaciones estaciones, String prototipo) throws Exception {
 		Material regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", estaciones.toKey(4));
 			if(Objects.equals(this.idLimpiar, 1L))
 	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetMaterialesDto.class, params);
@@ -398,9 +389,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Entity toRubro(Session sesion, String proceso, String codigo) throws Exception {
 		Entity regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, proceso, "buscar", params);
 		} // try
@@ -419,9 +409,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   
 	private Estacion toConcepto(Session sesion, String clave, String codigo, Long nivel) throws Exception {
 		Estacion regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			params.put("codigo", codigo);
 			params.put("nivel", nivel);
@@ -437,10 +426,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}
 	
 	private Control toControlConcepto(Session sesion, String clave, String codigo) throws Exception {
-		Control regresar         = null;
-		Map<String, Object> params= null;
+		Control regresar          = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			params.put("codigo", codigo);
 			regresar= (Control)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaControlesLotesDto", "concepto", params);
@@ -456,9 +444,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Material toMaterial(Session sesion, String clave, String codigo) throws Exception {
 		Material regresar         = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave);
 			params.put("codigo", codigo);
 			regresar= (Material)DaoFactory.getInstance().toEntity(sesion, Material.class, "VistaContratosLotesMaterialesDto", "material", params);
@@ -888,9 +875,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Workbook workbook	      = null;
 		Sheet sheet             = null;
 		TcManticMasivasBitacoraDto bitacora= null;
-		Map<String, Object> params         = null;
+		Map<String, Object> params         = new HashMap<>();
 		try {
-			params=new HashMap<>();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1018,9 +1004,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private Long toLookForPuesto(Session sesion, String nombre) throws Exception {
 		Long regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("nombre", nombre);
   		Value value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticPuestosDto", "igual", params, "idPuesto");
 			if(value!= null && value.getData()!= null)
@@ -1037,9 +1022,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private Long toLookForDepartamento(Session sesion, String nombre) throws Exception {
 		Long regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("nombre", nombre);
   		Value value= (Value)DaoFactory.getInstance().toField(sesion, "TcKeetDepartamentosDto", "igual", params, "idDepartamento");
 			if(value!= null && value.getData()!= null)
@@ -1056,9 +1040,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private Long toLookForContratista(Session sesion, String contratista) throws Exception {
 		Long regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", contratista);
   		Value value= (Value)DaoFactory.getInstance().toField(sesion, "TrManticEmpresaPersonalDto", "igual", params, "idEmpresaPersona");
 			if(value!= null && value.getData()!= null)
@@ -1074,10 +1057,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}
 
 	private void toUpdateEstaciones(Session sesion, String clave) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
 			sesion.flush();
-			params=new HashMap<>();
 			Semanas semanas= new Semanas();
 			params.put("semana", semanas.getSemana(sesion));
 			// RECORRER TODAS LAS EMPRESAS PORQUE LA CLAVE DE LA ESTACION TIENE EL ID DE LA EMPRESA
@@ -1742,9 +1724,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private TcManticClientesDto toFindCliente(Session sesion, String rfc) {
 		TcManticClientesDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("rfc", rfc);
 			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDto.class, "VistaCargasMasivasDto", "cliente", params);
 		} // try
@@ -1759,9 +1740,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
   private TcManticProveedoresDto toFindProveedor(Session sesion, String rfc) {
 		TcManticProveedoresDto regresar= null;
-		Map<String, Object> params     = null;
+		Map<String, Object> params     = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("rfc", rfc);
 			regresar= (TcManticProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcManticProveedoresDto.class, "VistaCargasMasivasDto", "proveedor", params);
 		} // try
@@ -1776,9 +1756,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private TcManticArticulosDto toFindArticulo(Session sesion, String codigo, String auxiliar, Long idArticuloTipo) {
 		TcManticArticulosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params   = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			params.put("auxiliar", auxiliar);
 			params.put("idArticuloTipo", idArticuloTipo);
@@ -1798,9 +1777,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Workbook workbook= null;
 		Sheet sheet      = null;
 		TcManticMasivasBitacoraDto bitacora= null;
-		Map<String, Object> params         = null;
+		Map<String, Object> params         = new HashMap<>();
 		try {
-			params=new HashMap<>();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1909,9 +1887,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Workbook workbook= null;
 		Sheet sheet      = null;
 		TcManticMasivasBitacoraDto bitacora= null;
-		Map<String, Object> params         = null;
+		Map<String, Object> params         = new HashMap<>();
 		try {
-			params=new HashMap<>();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -2017,9 +1994,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 
 	private Control toDeleteControles(Session sesion, Controles controles, String prototipo) throws Exception {
 		Control regresar          = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", controles.toKey(4));
 			if(Objects.equals(this.idLimpiar, 1L))
 	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetControlesDto.class, params);

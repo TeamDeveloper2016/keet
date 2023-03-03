@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -107,7 +106,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion(this.material);
       this.doUpdateContrato();
       this.doUpdatePrototipo();
-      // FALTA CALCULAR EL CAMPO DE EXPANSION BASADO EN LA UNIDAD DE MEDIDA Y LA CANTIDAD CAPTURADA
+      // FALTA CALCULAR EL CAMPO DE EXPANSION BASADO EN LA UNIDAD DE MEDIDA Y LA CANTIDAD DEL ARCHIVO
       if(this.material.getCantidad()> 0D) 
         this.material.setExpansion(this.material.getCantidad()* 1000);
 			if (transaccion.ejecutar(this.accion)) {
@@ -299,7 +298,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         int index= contratos.indexOf(this.material.getIkContrato());
         if(index>= 0) {
           this.material.setIkContrato(contratos.get(index));
-          this.material.setContrato(contratos.get(index).toString("nombre"));
+          this.material.setContrato(contratos.get(index).toString("clave"));
         } // if
         else 
           throw new RuntimeException("No se tiene seleccionado un contrato !");

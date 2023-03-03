@@ -33,6 +33,10 @@ public class Material extends TcKeetContratosMaterialesDto implements Serializab
     this.idDesarrollo= -1L;
   }
 
+  public Material(String codigo, Long idContratoMaterial, String contrato, String nombre, Double expansion, Double precioUnitario, String prototipo, Long idUsuario, Long idContrato, Long idPrototipo, Long idArchivo, Double cantidad, Long idArticulo) {
+    super(codigo, idContratoMaterial, contrato, nombre, expansion, precioUnitario, prototipo, idUsuario, idContrato, idPrototipo, idArchivo, cantidad, idArticulo);
+  }
+  
   public Long getIdEmpresa() {
     return idEmpresa;
   }

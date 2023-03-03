@@ -18,6 +18,7 @@
       </select>
       <select id="igual">
         select      
+          tc_keet_contratos_materiales.id_contrato_material as id_key,
           tc_keet_proyectos.id_empresa,
           tc_keet_proyectos.id_desarrollo,
           tc_keet_contratos_materiales.*
@@ -30,16 +31,20 @@
         inner join
           tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where 
-          id_contrato_material= {idContratoMaterial}
+          tc_keet_contratos_materiales.id_contrato_material= {idContratoMaterial}
       </select>
       <select id="identically">
         select      
-          *
+          tc_keet_contratos_materiales.id_contrato_material as id_key,
+          tc_keet_contratos_materiales.*
         from      
           tc_keet_contratos_materiales
         where      
-          codigo = '{codigo}' and id_contrato = {idContrato} and id_prototipo = {idPrototipo} and id_archivo = {idArchivo} and id_articulo = {idArticulo}
+          id_contrato = {idContrato} and id_prototipo = {idPrototipo} and id_articulo = {idArticulo}
       </select>
+      <delete id="rows">
+        delete from tc_keet_contratos_materiales where id_contrato= {idContrato}
+      </delete>
     </unit>    
     <unit id="TcKeetNotificacionesDto">
       <select id="row">

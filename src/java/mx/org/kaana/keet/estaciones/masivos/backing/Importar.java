@@ -319,14 +319,16 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "importar");
-		return "movimientos".concat(Constantes.REDIRECIONAR);
+		JsfBase.setFlashAttribute("retorno", this.attrs.get("regreso"));
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Estaciones/Masivos/importar");
+		return "/Paginas/Keet/Estaciones/Masivos/movimientos".concat(Constantes.REDIRECIONAR);
 	} // doMovimientos
 	
 	public String doDetalles() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "importar");
-		return "detalles".concat(Constantes.REDIRECIONAR);
+		JsfBase.setFlashAttribute("retorno", this.attrs.get("regreso"));
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Estaciones/Masivos/importar");
+		return "/Paginas/Keet/Estaciones/Masivos/detalles".concat(Constantes.REDIRECIONAR);
 	} // doDetalles	
 
 	private void toLoadContratosLotes() {

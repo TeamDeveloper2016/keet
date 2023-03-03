@@ -35,7 +35,8 @@ public class Movimientos extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idMasivaArchivo", JsfBase.getFlashAttribute("idMasivaArchivo"));
-      this.attrs.put("regreso", "filtro");
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso")== null? "filtro": JsfBase.getFlashAttribute("regreso"));
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -69,7 +70,8 @@ public class Movimientos extends IBaseFilter implements Serializable {
 	
 	public String doRegresar() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", this.attrs.get("idMasivaArchivo"));
-		return "importar".concat(Constantes.REDIRECIONAR);
+		JsfBase.setFlashAttribute("regreso", this.attrs.get("retorno"));
+		return ((String)this.attrs.get("regreso")).concat(Constantes.REDIRECIONAR);
 	}
 	
 }

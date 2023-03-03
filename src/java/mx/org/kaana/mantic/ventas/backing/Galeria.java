@@ -112,6 +112,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			else
 				search= "";
   		params.put("codigo", search);	
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());	
 			switch(buscarCodigoPor) {      
 				case 0: 
           params.put("sortOrder", this.sort.getSort());

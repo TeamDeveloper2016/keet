@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetCatalogosMaterialesFiltro")
 @ViewScoped
@@ -241,13 +242,16 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
   }
   
-  public void doMasivo() {
-    try {      
+  public String doMasivo() {
+    try {
+      JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PLANEACION.getId());
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Materiales/filtro");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+    return "importar".concat(Constantes.REDIRECIONAR);
   }
   
 	public List<UISelectEntity> doCompleteArticulo(String query) {
