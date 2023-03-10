@@ -123,7 +123,7 @@
               </p:panel>
 							<p:outputLabel id="registros" value="#{keetNominasAccion.attrs.tuplas}" styleClass="importado" style="display: none"/>
             </p:tab>
-						<p:tab title="Detalle">
+						<p:tab title="Movimientos">
 							<p:panelGrid columns="1" class="janal-wid-100-txt">
 								<p:outputLabel for="nombre" value="Nombre del empleado(a):" styleClass="janal-wid-100-txt"/>							
 								<p:inputText id="nombre" placeholder="Nombre empleado" styleClass="janal-wid-100-txt" value="#{keetNominasAccion.attrs.nombre}">
@@ -212,7 +212,7 @@
 								<p:menuitem id="proveedores" action="#{keetNominasAccion.doConsultar('LISTAR')}" icon="fa fa-truck" ajax="false" value="Subcontratistas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetNominasAccion.attrs.seleccionado.idTipoProceso eq '2'}"/>					
 						  </p:contextMenu>
 						</p:tab>
-						<p:tab title="Movimientos">
+						<p:tab title="Destajos">
               <p:dataTable lazy="true" id="movimientos" widgetVar="kajoolMovimientos" var="row" reflow="true" value="#{keetNominasAccion.lazyMovimientos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.destajo}" selectionMode="single" paginator="#{keetNominasAccion.lazyMovimientos.rowCount gt keetNominasAccion.lazyMovimientos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
                 <f:facet name="header">
                   <p:menuButton styleClass="lg-pantalla" value="Opciones">

@@ -208,6 +208,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             this.idNomina= this.nomina.getIdNomina();
 					  this.nomina.setIdNominaEstatus(this.bitacora.getIdNominaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
+            LOG.error("SE REALIZO EL PROCESO DE CIERRE AUTOMATICO DE NÓMINA");
             this.notificarCorreo(sesion);
             this.notificarResidentes(sesion);
             this.cierre(sesion);
@@ -787,6 +788,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						open.getIdNomina()// Long idNomina
 					);		
 					DaoFactory.getInstance().insert(sesion, bitacora);
+          LOG.error("SE REALIZO LA APERTURA DE NOMINA AUTOMATICO");
 				} // if			
 			} // if			
 		} // try

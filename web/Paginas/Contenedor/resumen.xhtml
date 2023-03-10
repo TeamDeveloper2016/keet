@@ -107,16 +107,21 @@
                 </div>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                   <p:outputLabel for="idEmpresa" value="Empresa:" rendered="#{kajoolResumen.attrs.isMatriz}"/>
-                  <p:selectOneMenu id="idEmpresa" value="#{kajoolResumen.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" listener="#{kajoolResumen.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato @(.contrato)" oncomplete="reloadDesarrollos(); reloadContratos();"/>
-                    <f:selectItems value="#{kajoolResumen.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                    <p:column headerText="Clave">
-                      <h:outputText value="#{item.clave}"/>
-                    </p:column>
-                    <p:column headerText="Nombre">
-                      <h:outputText value="#{item.nombre}"/>
-                    </p:column>
-                  </p:selectOneMenu>
+                  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                    <p:selectOneMenu id="idEmpresa" value="#{kajoolResumen.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kajoolResumen.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato @(.contrato)" oncomplete="reloadDesarrollos(); reloadContratos();"/>
+                      <f:selectItems value="#{kajoolResumen.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>
+                    </p:selectOneMenu>
+                    <p:commandButton icon="fa fa-hand-holding-usd" title="Resumen general" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                      <p:fileDownload value="#{kajoolResumen.resumen}" />
+                    </p:commandButton>
+                  </p:panelGrid>  
                   <p:outputLabel for="idDesarrollo" value="Obra:"/>
                   <p:selectOneMenu id="idDesarrollo" value="#{kajoolResumen.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" listener="#{kajoolResumen.doLoadContratos}" update="idContrato @(.contrato)" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>

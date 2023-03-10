@@ -147,17 +147,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doCancelar	
 
   private void toLoadRubrosConceptos() {
-    List<Columna> columns       = null;    
-    Map<String, Object> params  = null;
+    List<Columna> columns       = new ArrayList<>();    
+    Map<String, Object> params  = new HashMap<>();
     List<UISelectEntity>partidas= null;
     List<UISelectEntity>rubros  = null;
     Estaciones estaciones       = null;
     try {      
       estaciones= new Estaciones();
-      params = new HashMap<>();      
       params.put("clave", estaciones.toKey(this.pivote.getClave(), this.pivote.getNivel().intValue()));      
       params.put("nivel", this.pivote.getNivel()+ 1);      
-      columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
     	partidas= UIEntity.seleccione("VistaEstacionesDto", "partidas", params, columns, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("partidas", partidas);

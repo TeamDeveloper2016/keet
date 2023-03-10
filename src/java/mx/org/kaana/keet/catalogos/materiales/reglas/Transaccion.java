@@ -79,18 +79,20 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= Boolean.FALSE;
 		try {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro el material");
-      if(this.material!= null) {
-        this.material.setIdUsuario(JsfBase.getIdUsuario());
-        this.material.setRegistro(LocalDateTime.now());
-      } // if  
 			switch(accion) {
 				case AGREGAR:
+          this.material.setIdUsuario(JsfBase.getIdUsuario());
+          this.material.setRegistro(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().insert(sesion, this.material)>= 1L;
 					break;
 				case MODIFICAR:
+          this.material.setIdUsuario(JsfBase.getIdUsuario());
+          this.material.setRegistro(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().update(sesion, this.material)>= 1L;
 					break;				
 				case ELIMINAR:
+          this.material.setIdUsuario(JsfBase.getIdUsuario());
+          this.material.setRegistro(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().delete(sesion, this.material)>= 1L;
 					break;
 				case PROCESAR:
@@ -308,8 +310,8 @@ public class Transaccion extends IBaseTnx {
                   else {
                     this.material.setIdArchivo(this.idArchivo);
                     this.material.setCantidad(cantidad);
-                    this.material.setExpansion(cantidad* factor);
                     this.material.setPrecioUnitario(costo);
+                    this.material.setExpansion(cantidad* factor);
                     this.material.setRegistro(LocalDateTime.now());
                     if(cantidad<= 0D || costo<= 0D)
                       DaoFactory.getInstance().delete(sesion, this.material);
@@ -342,7 +344,7 @@ public class Transaccion extends IBaseTnx {
 					} // for
 				} // if
 				else 
-					throw new RuntimeException("El contrato no existe en el contrato, por favor verifique");
+					throw new RuntimeException("El contrato no existe en el catalogo, por favor verifique");
 				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
   			DaoFactory.getInstance().insert(sesion, bitacora);
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);

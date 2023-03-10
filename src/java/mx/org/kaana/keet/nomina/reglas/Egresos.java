@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import jxl.CellView;
 import jxl.Workbook;
 import jxl.format.Alignment;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -46,11 +45,13 @@ public class Egresos extends XlsBase implements Serializable {
   public static final String CAFU_PUESTOS_OBRA = "(ALMACENISTA, CHOFER, RESIDENTE DE OBRA, VELADOR)";
   public static final String CAFU_PERSONAL_DIA = "|2|7|14|15|16|18|19|";
   public static final String CAFU_PERSONAL_OBRA= "|1|4|20|25|";
+  public static final String CAFU_PERSONAL     = "2,7,14,15,16,18,19,1,4,20,25";
 
   public static final String GYLVI_PUESTOS_DIA  = "(DETALLISTA, LIMPIEZA)";
   public static final String GYLVI_PUESTOS_OBRA = "(ALMACENISTA, CHOFER, RESIDENTE DE OBRA, VELADOR)";
   public static final String GYLVI_PERSONAL_DIA = "|7|14|";
   public static final String GYLVI_PERSONAL_OBRA= "|1|4|20|25|";
+  public static final String GYLVI_PERSONAL     = "7,14,1,4,20,25";
   
   private Long idNomina;
   private Long idContrato;

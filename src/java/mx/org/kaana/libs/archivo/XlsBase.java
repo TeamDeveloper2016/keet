@@ -253,6 +253,13 @@ public abstract class XlsBase implements Serializable {
     return regresar;
   }  
   
+  protected WritableCellFormat toCellFormatNegritas(Alignment alignment) throws WriteException {
+    WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts);
+    regresar.setAlignment(alignment);
+    return regresar;
+  }  
+  
   protected WritableCellFormat toCellCostoFormat(Alignment alignment) throws WriteException {
     WritableFont cellFonts = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
     WritableCellFormat regresar= new WritableCellFormat(cellFonts);
@@ -274,9 +281,29 @@ public abstract class XlsBase implements Serializable {
     return regresar;
   }  
   
-   protected void addCell(int column, int row, String data) throws Exception {
+  protected void addCell(int column, int row, String data) throws Exception {
     try {
       Label label= new Label(column, row, data);
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCell(int column, int row, String data, Alignment alignment) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellCostoFormat(alignment));
+      this.hoja.addCell(label);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  protected void addCellNegritas(int column, int row, String data, Alignment alignment) throws Exception {
+    try {
+      Label label= new Label(column, row, data, this.toCellFormatNegritas(alignment));
       this.hoja.addCell(label);
     } // trt
     catch(Exception e) {
@@ -371,7 +398,17 @@ public abstract class XlsBase implements Serializable {
     } // catch
   }
 
-
+  protected WritableCellFormat toNumberNegritas(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
+    NumberFormat numberFormat= new NumberFormat("###,###.00");
+    WritableFont cellFonts   = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
+    WritableCellFormat regresar= new WritableCellFormat(cellFonts, numberFormat);
+    if(line)
+      regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
+    regresar.setAlignment(alignment);
+    regresar.setBackground(background);
+    return regresar;
+  }  
+  
   protected WritableCellFormat toNumber(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
     NumberFormat numberFormat= new NumberFormat("###,###.00");
     WritableFont cellFonts   = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
@@ -404,6 +441,17 @@ public abstract class XlsBase implements Serializable {
         cell= new Blank(column, row, format);
       else        
         cell= new Number(column, row, data, format);
+      this.hoja.addCell(cell);
+    } // trt
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+ 
+  protected void addDouble(int column, int row, Double data, WritableCellFormat format) throws Exception {
+    try {
+      WritableCell cell= null;
+      cell= new Number(column, row, data, format);
       this.hoja.addCell(cell);
     } // trt
     catch(Exception e) {

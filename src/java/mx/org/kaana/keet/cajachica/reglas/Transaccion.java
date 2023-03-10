@@ -764,7 +764,7 @@ public class Transaccion extends IBaseTnx {
     Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
     try {
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      comunes   = new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
@@ -774,6 +774,7 @@ public class Transaccion extends IBaseTnx {
       parametros.put("REPORTE_DEPARTAMENTO", JsfBase.getAutentifica().getPersona().getNombreCompleto());
       parametros.put("REPORTE_PERIODO", figura.toString("inicio")+ " al "+ figura.toString("termino"));
       params.put("idNominaPeriodo", idNominaPeriodo);
+      params.put("idGastoEstatus", "2, 4");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros));		
       regresar= jasper.getAlias();
       String name= JsfBase.getRealPath(jasper.getNombre());

@@ -17,6 +17,8 @@ import org.primefaces.model.TreeNode;
 @Named(value = "keetEstacionesEstructura")
 @ViewScoped
 public class Estructura extends IBaseAttribute implements Serializable {
+
+  private static final long serialVersionUID = 4534803108384959391L;
 	
 	protected TcKeetEstacionesDto current;
 	private TreeNode root;

@@ -413,6 +413,22 @@ public class Resumen extends Respaldos implements Serializable {
 		} // else
 	} // doVerificarReporte	  
 
+  public StreamedContent getResumen() {
+		StreamedContent regresar = null;		
+    Egresos egresos          = null;
+		try {
+	  	egresos    = new Egresos(-1L, ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+      String name= egresos.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getResumen
+  
   public StreamedContent getPagados() {
 		StreamedContent regresar = null;		
     Egresos egresos          = null;
