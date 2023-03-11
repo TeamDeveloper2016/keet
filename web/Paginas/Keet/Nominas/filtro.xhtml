@@ -248,6 +248,10 @@
 						<p:menuitem value="Egresos" icon="fa fa-file-invoice-dollar" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
 	  					<p:fileDownload value="#{keetNominasFiltro.egresos}" />
   					</p:menuitem>
+            <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+						<p:menuitem value="Comparativo" icon="fa fa-sellsy" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+	  					<p:fileDownload value="#{keetNominasFiltro.resumen}" />
+  					</p:menuitem>
           </p:contextMenu>
         </div>
       </div>

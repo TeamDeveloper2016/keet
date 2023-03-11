@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.nomina.reglas.Comparativo;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Estimados;
 import mx.org.kaana.libs.Constantes;
@@ -178,7 +179,6 @@ public class Resumen extends Respaldos implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Entity idNomina           = null;
     try {
-			// columns= ;
 			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_NOMBRE_DIA));
 			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_NOMBRE_DIA));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -414,15 +414,15 @@ public class Resumen extends Respaldos implements Serializable {
 	} // doVerificarReporte	  
 
   public StreamedContent getResumen() {
-		StreamedContent regresar = null;		
-    Egresos egresos          = null;
+		StreamedContent regresar= null;		
+    Comparativo cifras           = null;
 		try {
-	  	egresos    = new Egresos(-1L, ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-      String name= egresos.execute();
+	  	cifras     = new Comparativo(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L);
+      String name= cifras.execute();
       String contentType= EFormatos.XLS.getContent();
       InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
       regresar          = new DefaultStreamedContent(stream, contentType, name);				
-		} // try 
+		} // try  // try 
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch		

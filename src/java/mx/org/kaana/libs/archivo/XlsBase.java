@@ -163,11 +163,11 @@ public abstract class XlsBase implements Serializable {
         break;
         case 1: // formato moneda
           valor = Double.parseDouble(celda);
-          celda = Numero.formatear("$ ###,###.00", valor);
+          celda = Numero.formatear("$ ###,##0.00", valor);
           break;
         case 2: // separacion de miles
           valor = Double.parseDouble(celda);
-          celda = Numero.formatear("###,###.00", valor);
+          celda = Numero.formatear("###,##0.00", valor);
           break;
         case 3: // separacion de miles sin decimales
           valor = Double.parseDouble(celda);
@@ -197,7 +197,7 @@ public abstract class XlsBase implements Serializable {
           break;
         case 16: // wakko
           valor = Double.parseDouble(celda);
-          celda = Numero.formatear("#.00", valor);
+          celda = Numero.formatear("0.00", valor);
           break;
       }// switch
       if (codigo > 7 && codigo < 14) {
@@ -399,7 +399,7 @@ public abstract class XlsBase implements Serializable {
   }
 
   protected WritableCellFormat toNumberNegritas(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
-    NumberFormat numberFormat= new NumberFormat("###,###.00");
+    NumberFormat numberFormat= new NumberFormat("###,##0.00");
     WritableFont cellFonts   = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
     WritableCellFormat regresar= new WritableCellFormat(cellFonts, numberFormat);
     if(line)
@@ -410,7 +410,7 @@ public abstract class XlsBase implements Serializable {
   }  
   
   protected WritableCellFormat toNumber(Alignment alignment, Colour background, Colour foreground, Boolean line) throws WriteException {
-    NumberFormat numberFormat= new NumberFormat("###,###.00");
+    NumberFormat numberFormat= new NumberFormat("###,##0.00");
     WritableFont cellFonts   = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, foreground);
     WritableCellFormat regresar= new WritableCellFormat(cellFonts, numberFormat);
     if(line)

@@ -118,7 +118,7 @@
                         <h:outputText value="#{item.nombre}"/>
                       </p:column>
                     </p:selectOneMenu>
-                    <p:commandButton icon="fa fa-hand-holding-usd" title="Resumen general" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                    <p:commandButton icon="fa fa-sellsy" title="Comparativo" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
                       <p:fileDownload value="#{kajoolResumen.resumen}" />
                     </p:commandButton>
                   </p:panelGrid>  

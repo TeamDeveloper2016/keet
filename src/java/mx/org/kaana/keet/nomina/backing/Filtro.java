@@ -30,6 +30,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.nomina.reglas.Comparativo;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Empleados;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
@@ -689,6 +690,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;		
 	} // getEgresos
+  
+  public StreamedContent getResumen() {
+		StreamedContent regresar= null;		
+    Comparativo comparativo = null;
+		try {
+	  	comparativo= new Comparativo(Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L)? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): ((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), ((Entity)this.attrs.get("seleccionado")).toLong("idNomina"));
+      String name= comparativo.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try  // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // getResumen
   
 	public StreamedContent getGlobal() {
 		StreamedContent regresar = null;		

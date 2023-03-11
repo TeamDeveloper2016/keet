@@ -40,9 +40,9 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Resumen extends XlsBase implements Serializable {
+public class Comparativo extends XlsBase implements Serializable {
   
-  private static final Log LOG = LogFactory.getLog(Resumen.class);
+  private static final Log LOG = LogFactory.getLog(Comparativo.class);
   private static final long serialVersionUID = -3364636967422678893L;
   public static final String[] TITULOS= new String[] {"Desarrollos:", "Contratos:", "Destajos:", "Gente por el día admon:", "Porcentaje vs total fraccionamiento:", "Porcentaje vs nómina global:", "Gente por el día obra:", "Porcentaje vs total fraccionamiento:", "Porcentaje vs nómina global:", "Total por contrato en $:", "Total por fraccionamiento en $:", "Ponderado por contrato vs Fraccionamiento:", "Ponderado por contrato vs Global:", "Ponderado fraccionamiento vs global"};
   
@@ -68,11 +68,11 @@ public class Resumen extends XlsBase implements Serializable {
   private WritableCellFormat number;
   private WritableCellFormat negritas;
 
-  public Resumen() throws Exception {
+  public Comparativo() throws Exception {
     this(-1L, -1L);  
   }
   
-  public Resumen(Long idEmpresa, Long idNomina) throws Exception {
+  public Comparativo(Long idEmpresa, Long idNomina) throws Exception {
     this.idEmpresa= idEmpresa;
     this.idNomina = idNomina;
     this.indice   = 0;
@@ -140,12 +140,15 @@ public class Resumen extends XlsBase implements Serializable {
     try {      
       params.put("idNomina", this.idNomina);      
       params.put("idTipoNomina", 1L);      
+      params.put("equals", "!=");      
+      params.put("orden", "desc");      
+      params.put("sucursales", this.idEmpresa);      
       if(Objects.equals(this.idNomina, -1L))
-        this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+        this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "secuencia", params);
       else
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
       params.put("idEmpresa", this.idEmpresa);
-      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosMaterialesDto", params);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosMaterialesDto", "contratos", params);
       if(items!= null && !items.isEmpty()) {
         regresar= Archivo.toFormatNameFile("IMOX", "RESUMEN-SEMANA-".concat(nomina.toString("semana")).concat("_").concat(items.get(0).toString("empresa")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
         this.posicionFila   = 0;
@@ -471,7 +474,8 @@ public class Resumen extends XlsBase implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    Resumen corte= new Resumen(1L, 123L);
+    // Comparativo corte= new Comparativo(1L, 123L);
+    Comparativo corte= new Comparativo(1L, -1L);
     LOG.info(corte.local());
   }
   
