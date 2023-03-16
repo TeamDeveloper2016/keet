@@ -299,7 +299,7 @@ public class Comparativo extends XlsBase implements Serializable {
             this.addDouble(this.posiciones.get(idDesarrollo), this.posicionFila+ 4, Numero.toRedondearSat(0D), this.number);
           } // else  
         } // for
-      // ES EL TOTAL DE PERSONAL POR EL DIA ADMIN
+      // ES EL TOTAL DE PERSONAS POR EL DIA ADMIN
       this.addDouble(this.contratos.size()+ 1, this.posicionFila, Numero.toRedondearSat(this.gentePorDia.get(0L)), this.negritas);
       // ES EL TOTAL DE PERSONAL POR EL DIA DE OBRA
       this.addDouble(this.contratos.size()+ 1, this.posicionFila+ 4, Numero.toRedondearSat(this.gentePorObra.get(0L)), this.negritas);
@@ -323,7 +323,7 @@ public class Comparativo extends XlsBase implements Serializable {
     Double sumaPorObra      = 0D;
     Double porcentajeTotal  = 0D;
     Double porcentajeGeneral= 0D;
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
       this.posicionColumna= 0;
       this.posicionFila+= 1;
