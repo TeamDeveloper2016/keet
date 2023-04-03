@@ -167,7 +167,7 @@ public void doSendmail() {
         File file= new File(factura.toString("ruta").concat(factura.toString("nombre")));
 			  files.add(new Attachment(file, Boolean.FALSE));
       } // if  
-			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {

@@ -96,17 +96,19 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
   private Long idEmpresaTipoContacto;
   @Column (name="id_orden_fuente")
   private Long idOrdenFuente;
+  @Column (name="id_tipo_orden")
+  private Long idTipoOrden;
 
   public TcManticOrdenesComprasDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, -1L, -1L, -1L, null, -1L, -1L, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, -1L, -1L, -1L, null, -1L, -1L, null, 1L);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo, Long idContrato, Long idBanco, Long idTipoMedioPago, Long idTipoPago, String referencia, Long idAlmacenista, Long idEmpresaTipoContacto, Long idOrdenFuente) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo, Long idContrato, Long idBanco, Long idTipoMedioPago, Long idTipoPago, String referencia, Long idAlmacenista, Long idEmpresaTipoContacto, Long idOrdenFuente, Long idTipoOrden) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setExcedentes(excedentes);
@@ -140,6 +142,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
     this.idAlmacenista= idAlmacenista;
     this.idEmpresaTipoContacto= idEmpresaTipoContacto;
     this.idOrdenFuente= idOrdenFuente;
+    this.idTipoOrden= idTipoOrden;
  }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
@@ -405,6 +408,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
   public void setIdOrdenFuente(Long idOrdenFuente) {
     this.idOrdenFuente = idOrdenFuente;
   }
+
+  public Long getIdTipoOrden() {
+    return idTipoOrden;
+  }
+
+  public void setIdTipoOrden(Long idTipoOrden) {
+    this.idTipoOrden = idTipoOrden;
+  }
 	
   @Transient
   @Override
@@ -486,6 +497,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
 		regresar.append(getIdEmpresaTipoContacto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenFuente());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoOrden());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -526,13 +539,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
 		regresar.put("idAlmacenista", getIdAlmacenista());
 		regresar.put("idEmpresaTipoContacto", getIdEmpresaTipoContacto());
 		regresar.put("idOrdenFuente", getIdOrdenFuente());
+		regresar.put("idTipoOrden", getIdTipoOrden());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo(), getIdContrato(), getIdBanco(), getIdTipoMedioPago(), getIdTipoPago(), getReferencia(), getIdAlmacenista(), getIdEmpresaTipoContacto(), getIdOrdenFuente()
+			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo(), getIdContrato(), getIdBanco(), getIdTipoMedioPago(), getIdTipoPago(), getReferencia(), getIdAlmacenista(), getIdEmpresaTipoContacto(), getIdOrdenFuente(), getIdTipoOrden()
     };
     return regresar;
   }

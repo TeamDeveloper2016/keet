@@ -30,6 +30,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikTipoPago;
 	private UISelectEntity ikAlmacenista;
 	private UISelectEntity ikEmpresaTipoContacto;
+	private UISelectEntity ikTipoOrden;
 
 	public OrdenCompra() {
 		this(-1L);
@@ -40,7 +41,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
-		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L, null);
+		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L, null, 1L);
 	}
 
 	public UISelectEntity getIkEmpresa() {
@@ -161,6 +162,16 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     this.ikEmpresaTipoContacto = ikEmpresaTipoContacto;
 		if(this.ikEmpresaTipoContacto!= null)
 		  this.setIdEmpresaTipoContacto(this.ikEmpresaTipoContacto.getKey());
+  }
+	
+  public UISelectEntity getIkTipoOrden() {
+    return ikTipoOrden;
+  }
+
+  public void setIkTipoOrden(UISelectEntity ikTipoOrden) {
+    this.ikTipoOrden = ikTipoOrden;
+		if(this.ikTipoOrden!= null)
+		  this.setIdTipoOrden(this.ikTipoOrden.getKey());
   }
 	
 	@Override

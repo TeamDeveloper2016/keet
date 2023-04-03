@@ -132,7 +132,7 @@ public class Configuracion {
   } // getPropiedadDouble
 
   public String getPropiedad(String secion, String id) {
-    return getPropiedad(secion.concat(".").concat(id));
+    return this.getPropiedad(secion.concat(".").concat(id));
   } // getPropiedad
 
   private Properties getProperties() {
@@ -155,8 +155,8 @@ public class Configuracion {
   public String getPropiedadServidor(String id) {
     try {
       String servidor= getEtapaServidor().toLowerCase();
-      id=id.concat(".").concat(servidor);
-      return getProperties().getProperty(id);
+      id= id.concat(".").concat(servidor);
+      return this.getProperties().getProperty(id);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));
@@ -164,7 +164,7 @@ public class Configuracion {
     return null;
   }	// getPropiedadServidor
 	
-	public String getVersion () {
+	public String getVersion() {
 	  return Configuracion.getInstance().getPropiedad("sistema.version");
 	} // getVersion
 	
@@ -182,7 +182,7 @@ public class Configuracion {
   public String getEstiloPersonalizado() {
     String css= "kajool";
     try {
-      css= getProperties().getProperty("sistema.css").concat(".css");
+      css= this.getProperties().getProperty("sistema.css").concat(".css");
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat("sistema.css").concat(". !"));

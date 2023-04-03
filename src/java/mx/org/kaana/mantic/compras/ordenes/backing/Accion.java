@@ -115,6 +115,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.toLoadTiposPagos();
       this.toLoadAlmacenistas();
       this.toLoadEmpresaTipoContacto();
+      this.toLoadTipoOrden();
 			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
     } // try
     catch (Exception e) {
@@ -926,8 +927,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(!tiposPagos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(0));
-        else  
-          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(tiposPagos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkTipoPago())));
+        else  {
+          int index= tiposPagos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkTipoPago());
+          if(index>= 0)
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(index));
+          else
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(0));
+        } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -976,8 +982,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(!empresaTiposContactos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(0));
-        else  
-          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(empresaTiposContactos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresaTipoContacto())));
+        else {
+          int index= empresaTiposContactos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresaTipoContacto());
+          if(index>= 0)
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(index));
+          else
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(0));
+        } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -986,6 +997,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Methods.clean(params);
 		} // finally
 	} // loadEmpresaTipoContacto
+ 
+	private void toLoadTipoOrden() {
+		List<UISelectEntity> tiposOrdenes= null;
+		Map<String, Object>params        = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposOrdenes= UIEntity.build("TcKeetTiposOrdenesDto", "row", params);
+			this.attrs.put("tiposOrdenes", tiposOrdenes);
+      if(!tiposOrdenes.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoOrden(tiposOrdenes.get(0));
+        else {
+          int index= tiposOrdenes.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkTipoOrden());
+          if(index>= 0)
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoOrden(tiposOrdenes.get(index));
+          else
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoOrden(tiposOrdenes.get(0));
+        } // if  
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTipoOrden
  
 	public void doCheckTipoMedioPago() {
 		Long tipoMedioPago= null;

@@ -196,12 +196,19 @@
 									<p:column styleClass="janal-column-right" headerText="No. viviendas">
 										<p:outputLabel value="#{list.noViviendas}"/>
 									</p:column>   
-								</p:selectOneMenu>																						
+								</p:selectOneMenu>	
 								<p:outputLabel for="lote" value="Lotes:"/>							
                 <p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" converter="janal.convertidor.Entity" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-100-txt" multiple="true" onchange="loadArtsLotes();" panelStyleClass="janal-wid-90" >
                   <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.lotes}" var="two" itemValue="#{two.key}" itemLabel="#{two.descripcion}"/>
 								</p:selectCheckboxMenu>
+                <p:outputLabel for="idTipoOrden" value="Tipo de orden:"/>
+                <p:selectOneMenu id="idTipoOrden" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikTipoOrden}" var="tipo" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt todos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                  <f:selectItems value="#{manticComprasOrdendesAccion.attrs.tiposOrdenes}" var="tipos" itemValue="#{tipos}" itemLabel="#{tipos.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{tipo.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
               </p:panelGrid>	
 							<p:remoteCommand name="loadArtsLotes" onstart="return janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato idAlmacenista" oncomplete="janal.desbloquear();"/>

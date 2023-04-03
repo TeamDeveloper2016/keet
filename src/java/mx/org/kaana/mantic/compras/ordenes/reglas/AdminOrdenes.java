@@ -45,6 +45,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkTipoPago(new UISelectEntity(new Entity(this.orden.getIdTipoPago())));
       this.orden.setIkAlmacenista(new UISelectEntity(new Entity(this.orden.getIdAlmacenista())));
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(new Entity(this.orden.getIdEmpresaTipoContacto())));
+      this.orden.setIkTipoOrden(new UISelectEntity(new Entity(this.orden.getIdTipoOrden())));
 		}	// if
 		else {
 		  this.setArticulos(new ArrayList<>());
@@ -62,6 +63,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkTipoPago(new UISelectEntity(-1L));
       this.orden.setIkAlmacenista(new UISelectEntity(-1L));
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(-1L));
+      this.orden.setIkTipoOrden(new UISelectEntity(1L));
 		} // else	
 		this.toStartCalculate();
 	}

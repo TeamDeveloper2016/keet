@@ -7,6 +7,25 @@
   </model>
 
   <dml>
+    <unit id="TcKeetTiposOrdenesDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_ordenes.id_tipo_orden as id_key,
+          tc_keet_tipos_ordenes.*
+        from      
+          tc_keet_tipos_ordenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_ordenes
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKeetContratosMaterialesDto">
       <select id="row">
         select      
