@@ -34,6 +34,7 @@ import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -194,10 +195,9 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		TcKeetContratosDestajosProveedoresDto dto= null;
 		TcKeetEstacionesDto estacion             = null;
-		Map<String, Object>params                = null;
+		Map<String, Object>params                = new HashMap<>();
 		try {
 			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
-			params  = new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idEstacion", this.revision.getIdEstacion());
 			params.put("idContratoLoteProveedor", this.revision.getIdFigura());
@@ -222,7 +222,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setAnticipo(dto.getAnticipo()+ ((estacion.getAnticipo()* this.factorAcumulado)/ 100));
 				dto.setIdEstacionEstatus(toIdEstacionEstatus());
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
-					params= new HashMap<>();
+					params.clear();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
           String columna= "cargo".concat(dto.getSemana().toString());
 					params.put("cargo", estacion.getCargo()+ dto.getCosto());
@@ -273,18 +273,18 @@ public class Transaccion extends IBaseTnx {
 				if(this.processRechazosContratistas(sesion, idUsuario, puntoRevision, dto.getIdContratoDestajoContratista())) {
 					estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
 					dto.setPorcentaje(porcentaje- this.factorAcumulado);
-          double calculo  = (estacion.getCosto()* this.factorAcumulado)/ 100;
-          double retencion= (estacion.getAnticipo()* this.factorAcumulado)/ 100;
-					dto.setCosto(costo- calculo);
-					dto.setAnticipo(anticipo- retencion);
+          Double calculo  = (estacion.getCosto()* this.factorAcumulado)/ 100;
+          Double retencion= (estacion.getAnticipo()* this.factorAcumulado)/ 100;
+					dto.setCosto(Numero.toRedondearSat(costo- calculo));
+					dto.setAnticipo(Numero.toRedondearSat(anticipo- retencion));
 					dto.setIdEstacionEstatus(dto.getCosto()<= 0D? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 						params.clear();
-						params.put("idEstacionEstatus", (estacion.getCargo()- calculo)<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
+						params.put("idEstacionEstatus", (estacion.getCargo().longValue()- calculo.longValue())<= 0L? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
             String columna= "cargo".concat(dto.getSemana().toString());
-            params.put("cargo", estacion.getCargo()- calculo);
-            params.put("retencion", estacion.getRetencion()- retencion);
-            params.put(columna, (Double)estacion.toValue(columna)- calculo);										
+            params.put("cargo", Numero.toRedondearSat(estacion.getCargo()- calculo));
+            params.put("retencion", Numero.toRedondearSat(estacion.getRetencion()- retencion));
+            params.put(columna, Numero.toRedondearSat((Double)estacion.toValue(columna)- calculo));
             params.put("entrega", LocalDate.now());
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 							regresar= this.actualizaEstacionPadre(sesion, estacion, calculo, retencion, dto.getSemana().toString(), false, this.revision.getIdContratoLote());											
@@ -309,14 +309,13 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		TcKeetContratosDestajosProveedoresDto dto= null;
 		TcKeetEstacionesDto estacion= null;
-		Map<String, Object>params   = null;
+		Map<String, Object>params   = new HashMap<>();
 		Double costo                = 0D;
 		Double anticipo             = 0D;
 		Double porcentaje           = 0D;
 		try {
 			for(Entity puntoRevision: this.revision.getPuntosRevision()) {
 				this.factorAcumulado= 0D;
-				params= new HashMap<>();
 				params.put("idEstacion", this.revision.getIdEstacion());
 				params.put("idContratoLoteProveedor", this.revision.getIdFigura());
 				params.put("idEstacionEstatus", EEstacionesEstatus.CANCELADO.getKey());
@@ -328,18 +327,18 @@ public class Transaccion extends IBaseTnx {
 				if(this.processRechazosSubContratistas(sesion, idUsuario, puntoRevision, dto.getIdContratoDestajoProveedor())){
 					estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
 					dto.setPorcentaje(porcentaje- this.factorAcumulado);
-          double calculo  = (estacion.getCosto()* this.factorAcumulado)/ 100;
-          double retencion= (estacion.getAnticipo()* this.factorAcumulado)/ 100;
-					dto.setCosto(costo- calculo);
-					dto.setAnticipo(anticipo- retencion);
+          Double calculo  = (estacion.getCosto()* this.factorAcumulado)/ 100;
+          Double retencion= (estacion.getAnticipo()* this.factorAcumulado)/ 100;
+					dto.setCosto(Numero.toRedondearSat(costo- calculo));
+					dto.setAnticipo(Numero.toRedondearSat(anticipo- retencion));
 					dto.setIdEstacionEstatus(dto.getCosto()<= 0D? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
-						params= new HashMap<>();
-						params.put("idEstacionEstatus", (estacion.getCargo()- calculo)<= 0D? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
+						params.clear();
+						params.put("idEstacionEstatus", (estacion.getCargo().longValue()- calculo.longValue())<= 0L? EEstacionesEstatus.INICIAR.getKey(): this.toIdEstacionEstatus());
             String columna= "cargo".concat(dto.getSemana().toString());
-            params.put("cargo", estacion.getCargo()- calculo);
-            params.put("retencion", estacion.getRetencion()- retencion);
-            params.put(columna, (Double)estacion.toValue(columna)- calculo);										
+            params.put("cargo", Numero.toRedondearSat(estacion.getCargo()- calculo));
+            params.put("retencion", Numero.toRedondearSat(estacion.getRetencion()- retencion));
+            params.put(columna, Numero.toRedondearSat((Double)estacion.toValue(columna)- calculo));
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 							regresar= this.actualizaEstacionPadre(sesion, estacion, calculo, retencion, dto.getSemana().toString(), false, this.revision.getIdContratoLote());											
 					} // if

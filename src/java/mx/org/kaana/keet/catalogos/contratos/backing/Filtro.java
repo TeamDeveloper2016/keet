@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -260,6 +261,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 				-1L, // Long idContratoBitacora, 
 				seleccionado.getKey() // Long idContrato 
 			);	
+      if(contrato!= null) {
+        if(Objects.equals(contrato.getIdTipoMedioPago(), -1L))
+          contrato.setIdTipoMedioPago(null);
+        if(Objects.equals(contrato.getIdBanco(), -1L))
+          contrato.setIdBanco(null);
+      } // if
 			transaccion= new Transaccion(new RegistroContrato(contrato), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
@@ -384,5 +391,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;		
 	} // getGlobalEstimados
-  
+ 
+  public String doMateriales() {
+    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Materiales/filtro".concat(Constantes.REDIRECIONAR);
+  }
+        
+        
 }

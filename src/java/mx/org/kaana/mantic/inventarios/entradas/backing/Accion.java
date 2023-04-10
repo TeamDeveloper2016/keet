@@ -466,11 +466,10 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	
 	public void doLoadLotes() {
 		List<UISelectEntity> lotes= null;
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
     List<Entity> items        = null; 
     Object[] list             = null;
 		try {
-			params = new HashMap<>();
 			params.put("idContrato", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdContrato());
 			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						

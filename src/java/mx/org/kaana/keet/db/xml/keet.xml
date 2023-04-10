@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKeetOrdenesCodigosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ordenes_codigos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ordenes_codigos
+        where      
+          codigo = '{codigo}'
+      </select>
+    </unit>    
+    <unit id="TcKeetOrdenesMaterialesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ordenes_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ordenes_materiales
+        where      
+          id_orden_compra = {idOrdenCompra} and id_contrato_lote = {idContratoLote} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
     <unit id="TcKeetTiposOrdenesDto">
       <select id="row">
         select      

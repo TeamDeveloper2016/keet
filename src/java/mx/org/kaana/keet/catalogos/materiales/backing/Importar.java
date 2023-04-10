@@ -161,6 +161,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		long tuplas            = this.masivo.getTuplas();
 		UISelectEntity idSelect= null;
 		try {
+      this.masivo.setIdMasivaArchivo(-1L);
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
       idSelect= ((UISelectEntity)this.attrs.get("idContrato"));

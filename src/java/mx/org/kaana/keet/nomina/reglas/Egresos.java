@@ -422,18 +422,22 @@ public class Egresos extends XlsBase implements Serializable {
         case "cafu":
           params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
           params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          params.put("personal", CAFU_PERSONAL);      
           break;
         case "gylvi":
           params.put("puestosPorDia", GYLVI_PERSONAL_DIA);      
           params.put("puestosPorObra", GYLVI_PERSONAL_OBRA);      
+          params.put("personal", GYLVI_PERSONAL);      
           break;
         case "triana":
           params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
           params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          params.put("personal", CAFU_PERSONAL);      
           break;
         default:  
           params.put("puestosPorDia", CAFU_PERSONAL_DIA);      
           params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
+          params.put("personal", CAFU_PERSONAL);      
           break;
       } // switch
       regresar= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "personalEnDesarrollo", params);

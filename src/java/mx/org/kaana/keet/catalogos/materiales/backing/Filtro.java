@@ -68,6 +68,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
+      this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato")== null? -1L: JsfBase.getFlashAttribute("idContrato"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Catalogos/Contratos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadCatalogos();
 			if(JsfBase.getFlashAttribute("idMaterialProcess")!= null) {
 				this.doLoad();
@@ -229,9 +232,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idContratoMaterial", seleccionado.getKey());
       transaccion = new Transaccion((Material)DaoFactory.getInstance().toEntity(Material.class, "TcKeetContratosMaterialesDto", "igual", params));
       if (transaccion.ejecutar(EAccion.ELIMINAR)) 
-        JsfBase.addMessage("Eliminar material", "El material se ha eliminado correctamente.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar material", "El material se ha eliminado correctamente !", ETipoMensaje.ERROR);
       else
-        JsfBase.addMessage("Eliminar material", "Ocurrió un error al eliminar el material.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar material", "Ocurrió un error al eliminar el material !", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -22,6 +22,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosMaterialesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -41,7 +42,7 @@ public class Transaccion extends IBaseTnx {
 	private Material material;	
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
-	private Long idContato;
+	private Long idContrato;
 	private Long idArchivo;
 	private Long idLimpiar;
 	private int errores;
@@ -52,12 +53,12 @@ public class Transaccion extends IBaseTnx {
 		this.material= material;		
 	} // Transaccion
 
-  public Transaccion(TcManticMasivasArchivosDto masivo, Long idContato, ECargaMasiva categoria, Long idLimpiar, Long idArchivo) {
+  public Transaccion(TcManticMasivasArchivosDto masivo, Long idContrato, ECargaMasiva categoria, Long idLimpiar, Long idArchivo) {
 		this.masivo    = masivo;		
 		this.categoria = categoria;
 		this.errores   = 0;
 		this.procesados= 0;
-		this.idContato = idContato;
+		this.idContrato= idContrato;
 		this.idLimpiar = idLimpiar;
     this.idArchivo = idArchivo;
 	} // Transaccion
@@ -103,7 +104,12 @@ public class Transaccion extends IBaseTnx {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar
@@ -168,7 +174,7 @@ public class Transaccion extends IBaseTnx {
 		Entity regresar           = null;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("idContrato", this.idContato);
+			params.put("idContrato", this.idContrato);
 			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosDto", "byId", params);
 		} // try
     catch(Exception e) {
@@ -184,7 +190,7 @@ public class Transaccion extends IBaseTnx {
 		List<Prototipo> regresar  = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("idContrato", this.idContato);
+			params.put("idContrato", this.idContrato);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaContratosDto", "findPrototipos", params);
       if(items!= null && !items.isEmpty())
@@ -204,7 +210,7 @@ public class Transaccion extends IBaseTnx {
 	private void toDeleteMateriales(Session sesion) throws Exception {
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("idContrato", this.idContato);
+			params.put("idContrato", this.idContrato);
 			if(Objects.equals(this.idLimpiar, 1L))
 	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosMaterialesDto.class, params);
 		} // try
@@ -276,15 +282,15 @@ public class Transaccion extends IBaseTnx {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
 									if(!Objects.equals(contrato.toString("clave"), clave))
-										throw new RuntimeException("El archivo contiene un número de contrato incorrecto");
+										throw new RuntimeException("El archivo contiene un número de contrato incorrecto [".concat(clave).concat("]"));
                   int index= prototipos.indexOf(new Prototipo(prototipo));
 									if(index< 0)
-										throw new RuntimeException("El archivo contiene un nombre de prototipo incorrecto");
+										throw new RuntimeException("El archivo contiene un nombre de prototipo incorrecto [".concat(prototipo).concat("]"));
                   // FALTA RECUPERAR LA UNIDAD DE MEDIDA PARA GENERAR EL VALOR DE LA EXPANSIÓN BASADO EN LA CANTIDAD PARA OBTENER UN VALOR EN UNIDADES
                   Double factor= 100D;
                   Entity articulo= this.toArticulo(sesion, codigo);
 									if(articulo== null || articulo.isEmpty())
-										throw new RuntimeException("El archivo contiene un código de material incorrecto");
+										throw new RuntimeException("El archivo contiene un código de material incorrecto [".concat(codigo).concat("]"));
                   params.put("idContrato", contrato.toLong("idContrato"));
                   params.put("idPrototipo", prototipos.get(index).getIdPrototipo());
                   params.put("idArticulo", articulo.toLong("idArticulo"));
@@ -336,7 +342,7 @@ public class Transaccion extends IBaseTnx {
 						} // try
 						catch(Exception e) {
 							LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
-							mx.org.kaana.libs.formato.Error.mensaje(e);
+							Error.mensaje(e);
 							throw e;
 						} // catch
 						this.procesados= count;
