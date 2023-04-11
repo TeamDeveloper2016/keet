@@ -17,16 +17,16 @@ public class General extends Material implements Serializable {
   private static final long serialVersionUID = -8548824091384382152L;
 
   public General() {
-    this(-1L);
+    this(-1L, -1L);
   }
 
-  public General(Long idArticulo) {
+  public General(Long idOrdenCompra, Long idArticulo) {
     this(
       "", // String descripcion, 
       0.0D, // Double precioUnitario, 
       "", // String codigo, 
       JsfBase.getIdUsuario(), // Long idUsuario, 
-      -1L, // Long idOrdenCompra, 
+      idOrdenCompra, // Long idOrdenCompra, 
       -1L, // Long idContratoLote, 
       0.0, // Double cantidad, 
       -1L, // Long idOrdenMaterial, 
@@ -41,6 +41,7 @@ public class General extends Material implements Serializable {
   @Override
   public int hashCode() {
     int hash = 5;
+    hash = 79 * hash + Objects.hashCode(this.getIdOrdenCompra());
     hash = 79 * hash + Objects.hashCode(this.getIdArticulo());
     return hash;
   }
@@ -53,10 +54,16 @@ public class General extends Material implements Serializable {
       return false;
     if (getClass() != obj.getClass()) 
       return false;
-    final Individual other = (Individual)obj;
+    final General other = (General) obj;
+    if (!Objects.equals(this.getIdOrdenCompra(), other.getIdOrdenCompra())) 
+      return false;
     if (!Objects.equals(this.getIdArticulo(), other.getIdArticulo())) 
       return false;
     return true;
   }
+  
+  public Boolean equals(Material item) {
+    return Objects.equals(item.getIdArticulo(), this.getIdArticulo());
+  } 
    
 }

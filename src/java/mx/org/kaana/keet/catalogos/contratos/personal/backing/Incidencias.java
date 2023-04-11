@@ -307,21 +307,21 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			regresar.setIdTipoIncidente(ETiposIncidentes.FALTA.getKey());
 			regresar.setTipoIncidente(ETiposIncidentes.FALTA.getNombre());
       this.actual= selectEvent.getObject().toLocalDate();
-      if(!Configuracion.getInstance().getEtapaServidor().equals(EEtapaServidor.DESARROLLO)) {
-        if(!Objects.equals(this.actual.getMonthValue(), LocalDate.now().getMonthValue()) && 
-          ((this.actual.getMonthValue()< LocalDate.now().getMonthValue() && Objects.equals(this.actual.getYear(), LocalDate.now().getYear())) || 
-          (Objects.equals(this.actual.getMonthValue(), 12) && Objects.equals(LocalDate.now().getMonthValue(), 1)))) {
-//          this.actual= this.actual.plusDays(1);
-//          if(!Objects.equals(this.actual.getMonthValue()+ 1, LocalDate.now().getMonthValue())) 
-//            this.actual= this.actual.plusDays(1);
-//          else { 
-            LocalDate first= LocalDate.now().plusDays((LocalDate.now().getDayOfMonth()* -1)+ 1);
-            if((Math.abs(this.actual.getDayOfYear()- first.getDayOfYear())!= 1) || 
-              ((first.getDayOfYear()== 1) && Objects.equals(this.actual.getYear()+ 1, LocalDate.now().getYear())))
-              this.actual= this.actual.plusDays(1);
-//          } // if  
-        } // if
-      } // if
+//      if(!Configuracion.getInstance().getEtapaServidor().equals(EEtapaServidor.DESARROLLO)) {
+//        if(!Objects.equals(this.actual.getMonthValue(), LocalDate.now().getMonthValue()) && 
+//          ((this.actual.getMonthValue()< LocalDate.now().getMonthValue() && Objects.equals(this.actual.getYear(), LocalDate.now().getYear())) || 
+//          (Objects.equals(this.actual.getMonthValue(), 12) && Objects.equals(LocalDate.now().getMonthValue(), 1)))) {
+////          this.actual= this.actual.plusDays(1);
+////          if(!Objects.equals(this.actual.getMonthValue()+ 1, LocalDate.now().getMonthValue())) 
+////            this.actual= this.actual.plusDays(1);
+////          else { 
+//            LocalDate first= LocalDate.now().plusDays((LocalDate.now().getDayOfMonth()* -1)+ 1);
+//            if((Math.abs(this.actual.getDayOfYear()- first.getDayOfYear())!= 1) || 
+//              ((first.getDayOfYear()== 1) && Objects.equals(this.actual.getYear()+ 1, LocalDate.now().getYear())))
+//              this.actual= this.actual.plusDays(1);
+////          } // if  
+//        } // if
+//      } // if
 			regresar.setVigenciaInicio(this.actual);
 			regresar.setVigenciaFin(this.actual);
 			regresar.setEstatusAsociados("2");			

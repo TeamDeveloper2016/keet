@@ -104,9 +104,9 @@
               <p:outputLabel for="factura" value="No factura:" rendered="false"/>
               <p:inputText id="factura" value="#{keetEstimacionesFiltro.attrs.factura}" styleClass="janal-wid-100-txt" rendered="false"/> 
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-              <p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+              <p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetEstimacionesFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{keetEstimacionesFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{keetEstimacionesFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>

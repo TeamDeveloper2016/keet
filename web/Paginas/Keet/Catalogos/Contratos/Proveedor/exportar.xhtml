@@ -53,9 +53,9 @@
 							<p:outputLabel for="nombre" value="Nombre:"/>							
 							<p:autoComplete id="nombre" var="custom" placeholder="Subcontratista" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosProveedorExportar.attrs.nombre}" completeMethod="#{keetCatalogosContratosProveedorExportar.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
-							<p:calendar id="fechaInicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>							
+							<p:calendar id="fechaInicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>							
               <p:outputLabel for="fechaFin" value="Vigencia termino:"/>
-							<p:calendar id="fechaFin" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaFin" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
 							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:" rendered="false"/>
 							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosProveedorExportar.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt" rendered="false">
 								<f:selectItems value="#{keetCatalogosContratosProveedorExportar.attrs.incidentes}"/>

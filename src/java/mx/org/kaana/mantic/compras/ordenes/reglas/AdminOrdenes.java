@@ -46,6 +46,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkAlmacenista(new UISelectEntity(new Entity(this.orden.getIdAlmacenista())));
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(new Entity(this.orden.getIdEmpresaTipoContacto())));
       this.orden.setIkTipoOrden(new UISelectEntity(new Entity(this.orden.getIdTipoOrden())));
+      this.orden.toLoadTemporal();
 		}	// if
 		else {
 		  this.setArticulos(new ArrayList<>());

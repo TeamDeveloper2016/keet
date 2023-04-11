@@ -135,9 +135,9 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoTermino"/>
@@ -523,7 +523,7 @@
         </p:panelGrid>
         <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
           <p:outputLabel for="limite" value="Vencimiento:" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
-          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{manticCatalogosClientesCuentasSaldos.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
+          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{manticCatalogosClientesCuentasSaldos.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
         </p:panelGrid>   
         <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
         <p:inputTextarea id="justificacion" rows="2" value="#{manticCatalogosClientesCuentasSaldos.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	
@@ -617,9 +617,9 @@
 				</h:panelGrid>	
         <h:panelGrid id="panelFechas" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-45">
 					<h:outputLabel for="vigenciaIni" value="Periodo:"/>
-          <p:calendar id="vigenciaIni" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
           <h:outputLabel for="vigenciaFin" value=" al "/>
-          <p:calendar id="vigenciaFin" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
 				</h:panelGrid>
         <hr class="ui-widget-content"/>
 				<div class="janal-line-button">

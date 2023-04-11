@@ -6171,6 +6171,7 @@
 			<select id="lazy">
 				select
 					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_ordenes_compras.id_tipo_orden,
 					tc_mantic_ordenes_compras.id_empresa,  
           tc_mantic_ordenes_compras.id_almacen,
           tc_mantic_almacenes.nombre as almacen,

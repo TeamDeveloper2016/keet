@@ -57,9 +57,9 @@
                 </p:column>                
               </p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Ultimo ingreso inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" />
               <p:outputLabel for="fechaTermino" value="Ultimo ingreso termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" />
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" />
               <p:outputLabel for="estatus" value="Estatus:"/>
               <p:selectOneMenu id="estatus" value="#{kajoolUsuariosFiltro.attrs.estatus}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItem itemValue="2" itemLabel="TODOS"/>

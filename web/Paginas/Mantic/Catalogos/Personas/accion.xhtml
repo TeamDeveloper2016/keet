@@ -88,7 +88,7 @@
 								<p:outputLabel for="materno" value="Apellido materno:"/>
 								<p:inputText id="materno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.materno}" />              
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
-								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>																						
+								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" showOn="button"/>																						
 								<p:outputLabel for="curp" value="CURP:"/>
 								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    								
 								<p:outputLabel for="rfc" value="RFC:"/>
@@ -130,9 +130,9 @@
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="ingreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="ingreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.ingreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="ingreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.ingreso}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="contrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="contrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contratacion}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="contrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contratacion}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
 								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
@@ -311,7 +311,7 @@
                   <p:outputLabel for="maternoB" value="Apellido materno:"/>
                   <p:inputText id="maternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.paterno}"/>	
   								<p:outputLabel for="nacimientoB" value="Fecha de nacimiento:"/>
-	  							<p:calendar id="nacimientoB" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>																						
+	  							<p:calendar id="nacimientoB" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" showOn="button"/>																						
                   <p:outputLabel for="parentesco" value="Parentesco:"/>
                   <p:selectOneMenu id="parentesco" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.idTipoParentesco}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.parentescos}"/>

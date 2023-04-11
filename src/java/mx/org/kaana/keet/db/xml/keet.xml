@@ -24,6 +24,15 @@
         where      
           codigo = '{codigo}'
       </select>
+      <select id="existe">
+        select      
+          tc_keet_ordenes_codigos.id_orden_codigo as id_key,
+          tc_keet_ordenes_codigos.*
+        from      
+          tc_keet_ordenes_codigos
+        where      
+          codigo = '{codigo}'
+      </select>
     </unit>    
     <unit id="TcKeetOrdenesMaterialesDto">
       <select id="row">
@@ -42,6 +51,20 @@
         where      
           id_orden_compra = {idOrdenCompra} and id_contrato_lote = {idContratoLote} and id_articulo = {idArticulo}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_keet_ordenes_materiales
+        where 
+          id_orden_compra = {idOrdenCompra} 
+      </select>
+      <delete id="rows">
+        delete from      
+          tc_keet_ordenes_materiales
+        where
+          id_contrato_lote is {cuales} null
+      </delete>  
     </unit>    
     <unit id="TcKeetTiposOrdenesDto">
       <select id="row">
@@ -1630,6 +1653,19 @@
           tc_keet_ordenes_contratos_lotes
         where      
           id_orden_compra = {idOrdenCompra}
+        group by
+          id_contrato_lote
+      </select>
+      <select id="familias">
+        select      
+          tc_keet_ordenes_contratos_lotes.id_orden_contrato_lote as id_key,
+          tc_keet_ordenes_contratos_lotes.*
+        from      
+          tc_keet_ordenes_contratos_lotes
+        where      
+          id_orden_compra = {idOrdenCompra}
+        group by
+          id_familia
       </select>
       <delete id="rows">
         delete from

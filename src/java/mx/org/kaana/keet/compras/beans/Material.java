@@ -3,7 +3,7 @@ package mx.org.kaana.keet.compras.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesMaterialesDto;
-import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.formato.Numero;
 
 /**
  *@company KAANA
@@ -142,6 +142,10 @@ public class Material extends TcKeetOrdenesMaterialesDto implements Serializable
     this.modificado = modificado;
   }
 
+  public String getCalculo() {
+     return this.total<= this.diferencia? "": Numero.redondearSat(this.total- this.diferencia);
+  }
+  
   @Override
   public int hashCode() {
     int hash = 5;

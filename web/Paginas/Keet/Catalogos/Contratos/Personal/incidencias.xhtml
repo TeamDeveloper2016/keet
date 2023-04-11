@@ -179,7 +179,7 @@
 							</div>
 						</div>	
           </p:panel>        
-          <p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="calendario" styleClass="janal-column-center"  initialDate="#{keetCatalogosContratosPersonalIncidencias.actual}">
+          <p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="calendario" styleClass="janal-column-center" initialDate="#{keetCatalogosContratosPersonalIncidencias.actual}" locale="mx" timeFormat="LT">
 						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>
 						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow(); janal.refresh()"/>
 						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalIncidencias.onEventMove}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent(); janal.refresh()"/>

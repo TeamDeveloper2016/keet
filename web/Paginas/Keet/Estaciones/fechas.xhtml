@@ -124,7 +124,7 @@
             <p:tab title="Dias">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-90">
                 <p:outputLabel for="pivote" value="Fecha de arranque:"/>
-                <p:calendar id="pivote" inputStyleClass="janal-wid-95" styleClass="janal-wid-100" value="#{keetEstacionesFechas.pivote}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+                <p:calendar id="pivote" inputStyleClass="janal-wid-95" styleClass="janal-wid-100" value="#{keetEstacionesFechas.pivote}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx">
                   <p:ajax event="dateSelect" listener="#{keetEstacionesFechas.doProcessDates}" process="@this" update="partidas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 </p:calendar>  
               </p:panelGrid>  

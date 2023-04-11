@@ -75,10 +75,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
-      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+//      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			this.attrs.put("procesado", Boolean.FALSE);
+      this.accion   = EAccion.MODIFICAR;
+      this.attrs.put("idOrdenCompra", 7042L);
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.DIRECTA: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+//      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -89,6 +92,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("textGlobal", "");
 			this.attrs.put("textIndividual", "");
 			this.doLoad();
+			this.attrs.put("procesado", Boolean.TRUE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -281,6 +285,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(list== null)
         list= new Object[] {};
       this.attrs.put("lotesSeleccion", list);
+      if((Boolean)this.attrs.get("procesado"))
+        this.doEraseArticulos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -379,7 +385,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(!familias.isEmpty())
         if(!this.accion.equals(EAccion.AGREGAR)) {
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "familias", params);
           if(!items.isEmpty()) {
             list     = new Object[items.size()];
             int count= 0;
@@ -420,14 +426,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       case "Articulos":
         Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
         Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
-        if(familias.length> 0 && lotes.length> 0) {
+        if(familias.length> 0) {
           this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
           UIBackingUtilities.update("contenedorGrupos:sinIva");
           UIBackingUtilities.update("contenedorGrupos:paginator");
         } // if
         else {
           getAdminOrden().getArticulos().clear();
-          UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote.'},{summary: 'Proveedor:', detail: 'No tiene definido una familia.'}]);"); 
+          UIBackingUtilities.execute("janal.show([{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
+          // UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote'},{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
         } // else			
         break;
       case "Faltantes":
@@ -714,6 +721,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		  if(position>= 0)
         this.attrs.put("seleccionado", articulos.get(position));
 		} // if	
+    // AQUI SE AGREGAN LOS ARTICULOS PARA LA ORDEN DE COMPRA Y RECUPERAR LOS LOS ARTICULOS POR CONTRATO Y POR LOTE
+    this.toLoadPartidas();
 	} 
 
 	public void doAutoSaveOrden() {
@@ -825,11 +834,52 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Methods.clean(columns);
 		} // finally
 	} 
+  
+  public void doCheckArticulos() {
+  	OrdenCompraProcess orden= null;
+    String todos            = null; 
+    StringBuilder sb        = new StringBuilder();
+    try {			
+			orden= new OrdenCompraProcess();
+			orden.setOrdenCompra((OrdenCompra)this.getAdminOrden().getOrden());
+			orden.setArticulos(this.getAdminOrden().getArticulos());
+			orden.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
+      // VERIFICAR SI LA ORDEN DE COMPRA ES ORDINARIA VERIFICAR LOS UMBRALES POR CONTRATO Y POR LOTE
+      if(Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L)) {
+        sb.append(orden.getOrdenCompra().toCheckGeneral());
+        if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
+          if(sb.length()> 0)
+            sb.append(",");
+          sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
+        } // if  
+        todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
+        if(!Cadena.isVacio(todos))
+          sb.append(sb.length()== 0? "": ",").append(todos);
+      } // if
+      // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
+      if(sb.length()> 0) {
+        sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+        UIBackingUtilities.execute(sb.toString()); 
+        JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
+      } // if
+      else
+        JsfBase.addMessage("Todo esta correcto con la orden de compra !", ETipoMensaje.ALERTA);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      orden= null;
+    } // 
+  }
 	
 	public String doAceptar() {  
     Transaccion transaccion = null;
     String regresar         = null;
-		OrdenCompraProcess orden= null;
+  	OrdenCompraProcess orden= null;
+    String todos            = null; 
+    StringBuilder sb        = new StringBuilder();
     try {			
 			 // this.getAdminOrden().toCheckTotales();
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
@@ -842,21 +892,41 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			orden.setArticulos(this.getAdminOrden().getArticulos());
 			orden.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			orden.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
-			transaccion = new Transaccion(orden);
-			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
-				else
-					this.getAdminOrden().toStartCalculate();
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ALERTA);      			
+      // VERIFICAR SI LA ORDEN DE COMPRA ES ORDINARIA VERIFICAR LOS UMBRALES POR CONTRATO Y POR LOTE
+      if(Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L)) {
+        sb.append(orden.getOrdenCompra().toCheckGeneral());
+        if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
+          if(sb.length()> 0)
+            sb.append(",");
+          sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
+        } // if  
+        todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
+        if(!Cadena.isVacio(todos))
+          sb.append(sb.length()== 0? "": ",").append(todos);
+      } // if
+      // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
+      if(sb.length()> 0) {
+        sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+        UIBackingUtilities.execute(sb.toString()); 
+        JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
+      } // if
+      else {
+  			transaccion= new Transaccion(orden);
+	  		this.getAdminOrden().toAdjustArticulos();
+        if (transaccion.ejecutar(this.accion)) {
+          if(this.accion.equals(EAccion.AGREGAR)) {
+            regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+            UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+          } // if	
+          else
+            this.getAdminOrden().toStartCalculate();
+          if(!this.accion.equals(EAccion.CONSULTAR)) 
+            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
+          JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar la orden de compra", ETipoMensaje.ALERTA);      			
+      } // else
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -874,6 +944,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     this.getAdminOrden().getArticulos().clear();
     if(this.getAdminOrden().getArticulos().size()> 0)
       this.getAdminOrden().toCalculate();
+    ((OrdenCompra)this.getAdminOrden().getOrden()).toCleanPartidas();
   }
 
 	private void toLoadTiposMediosPagos() {
@@ -1073,25 +1144,63 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   }
  
 	public String toColorGeneral(General row) {
-    String regresar= row.getDiferencia()< 0D? "janal-tr-orange": "";
+    String regresar= (row.getDiferencia()< 0D) || (row.getTotal()!= 0D && row.getTotal()> row.getDiferencia())? "janal-tr-orange": "";
     String text= (String)this.attrs.get("textGlobal");
     if(!Cadena.isVacio(text))
-      regresar= row.getCodigo().indexOf(text)> 0 || row.getNombre().indexOf(text)> 0? regresar: "janal-display-none";
+      regresar= row.getCodigo().contains(text.toUpperCase()) || row.getNombre().contains(text.toUpperCase())? regresar: "janal-display-none";
 		return regresar;
 	} 
   
-  public void doUpdateIndividualTotal(General row) {
-    LOG.info(row);
+	public String toColorIndividual(Individual row) {
+    String regresar= (row.getDiferencia()< 0D) || (row.getTotal()!= 0D && row.getTotal()> row.getDiferencia())? "janal-tr-orange": "";
+    String text= (String)this.attrs.get("textIndividual");
+    if(!Cadena.isVacio(text))
+      regresar= row.getLote().contains(text.toUpperCase()) || row.getCodigo().contains(text.toUpperCase()) || row.getNombre().contains(text.toUpperCase()) ? regresar: "janal-display-none";
+		return regresar;
+	} 
+
+  public void doUpdateIndividualTotal(Individual row) {
     if(Objects.equals(row.getCantidad(), Numero.redondearSat(row.getDiferencia()+ row.getTotal())))
       row.setModificado(Boolean.TRUE);
   }
+
+  private void toLoadPartidas() {
+    try {
+      StringBuilder articulos= new StringBuilder();
+      for (Articulo item: this.getAdminOrden().getArticulos()) {
+        if(!Objects.equals(item.getIdArticulo(), -1L))
+          articulos.append(item.getIdArticulo()).append(",");
+      } // for
+      StringBuilder lotes= new StringBuilder();
+      Object[] items= (Object[])this.attrs.get("lotesSeleccion");
+      for (Object item: items) {
+        if(!Objects.equals(((UISelectEntity)item).getKey(), -1L))
+          lotes.append(((UISelectEntity)item).getKey()).append(",");
+      } // for
+      if(articulos.length()> 0 && lotes.length()> 0)
+        ((OrdenCompra)this.getAdminOrden().getOrden()).toLoadArticulos(articulos.substring(0, articulos.length()- 1), lotes.substring(0, lotes.length()- 1));
+      else
+        if(articulos.length()> 0)
+          ((OrdenCompra)this.getAdminOrden().getOrden()).toLoadArticulos(articulos.substring(0, articulos.length()- 1));
+ 		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+  }
   
-	public String toColorIndividual(Individual row) {
-    String regresar= row.getDiferencia()< 0D? "janal-tr-orange": "";
-    String text= (String)this.attrs.get("textIndividual");
-    if(!Cadena.isVacio(text))
-      regresar= row.getCodigo().indexOf(text)> 0 || row.getNombre().indexOf(text)> 0? regresar: "janal-display-none";
-		return regresar;
-	} 
+  @Override
+	public void doCalculate(Integer index) {
+		super.doCalculate(index);
+ 		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) 
+      ((OrdenCompra)this.getAdminOrden().getOrden()).toLookArticulos(this.getAdminOrden().getArticulos().get(index));
+	}	
+ 
+  @Override
+	public void doDeleteArticulo(Integer index) {
+ 		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) 
+      ((OrdenCompra)this.getAdminOrden().getOrden()).toEraseArticulos(this.getAdminOrden().getArticulos().get(index));
+    super.doDeleteArticulo(index);
+  }
   
 }

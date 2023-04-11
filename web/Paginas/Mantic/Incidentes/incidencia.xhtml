@@ -46,13 +46,13 @@
                       <p:outputLabel for="inicio" value="Inicio:" styleClass="termino" style="display: #{not(manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23)? '': 'none'}"/>
                       <p:outputLabel for="inicio" value="Fecha:" styleClass="termino" style="display: #{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23? '': 'none'}"/>
                     </p:panelGrid>  
-                    <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.inicio}" pattern="dd/MM/yyyy" locale="es">
+                    <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.inicio}" pattern="dd/MM/yyyy" locale="mx">
                       <p:ajax event="dateSelect" process="@this" update="@(.termino)" listener="#{manticIncidentesIncidencia.doChangeInicio()}"/>
                     </p:calendar>  
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="termino" value="Termino:" styleClass="termino"/>
-                    <p:calendar id="termino" inputStyleClass="janal-wid-100-txt termino" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.termino}" pattern="dd/MM/yyyy" locale="es" disabled="#{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23}">
+                    <p:calendar id="termino" inputStyleClass="janal-wid-100-txt termino" styleClass="janal-wid-100" value="#{manticIncidentesIncidencia.repercusion.termino}" pattern="dd/MM/yyyy" locale="mx" disabled="#{manticIncidentesIncidencia.repercusion.idTipoIncidente eq 1 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 7 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 8 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 9 or manticIncidentesIncidencia.repercusion.idTipoIncidente eq 23}">
                       <p:ajax event="dateSelect" process="@this" update="@(.inicio)" listener="#{manticIncidentesIncidencia.doChangeTermino()}"/>
                     </p:calendar>  
                   </p:panelGrid>  

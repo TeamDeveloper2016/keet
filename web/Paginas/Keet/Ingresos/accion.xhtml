@@ -186,14 +186,14 @@
                   <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikTipoComprobante.nombre}" readonly="true"/>
                 </p:panelGrid>
 								<p:outputLabel for="fechaFactura" value="Timbrado factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-95 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.timbrado}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-95 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.timbrado}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="mx" readonly="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>
                 <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-95" styleClass="janal-wid-100 todos" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-95" styleClass="janal-wid-100 todos" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="mx"/>
                 <p:outputLabel for="fechaVencimiento" value="Fecha vencimiento:"/>
-								<p:calendar id="fechaVencimiento" inputStyleClass="janal-wid-95" styleClass="janal-wid-100 todos" value="#{keetIngresosAccion.comprobante.vencimiento}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es"/>
+								<p:calendar id="fechaVencimiento" inputStyleClass="janal-wid-95" styleClass="janal-wid-100 todos" value="#{keetIngresosAccion.comprobante.vencimiento}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
               </p:panelGrid>
               <p:dataTable id="tablaRetenciones" widgetVar="retencionesTable" var="row" value="#{keetIngresosAccion.retenciones}" styleClass="importado" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetIngresosAccion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContratoRetencion}" style="#{keetIngresosAccion.retenciones ne null and keetIngresosAccion.retenciones.size() gt 0}">
                 <f:facet name="header">

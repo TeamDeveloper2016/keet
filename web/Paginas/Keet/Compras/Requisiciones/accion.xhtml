@@ -134,9 +134,9 @@
 								<p:outputLabel value="Solicita:"/>												
 								<p:inputText value="#{keetComprasRequisicionesAccion.attrs.solicita}" styleClass="janal-wid-100-txt" readonly="true"/>																				
 								<p:outputLabel value="Fecha pedido:"/>																		
-								<p:calendar value="#{keetComprasRequisicionesAccion.registroRequisicion.requisicion.pedido}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
+								<p:calendar value="#{keetComprasRequisicionesAccion.registroRequisicion.requisicion.pedido}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
 								<p:outputLabel value="Fecha entrega:"/>																		
-								<p:calendar value="#{keetComprasRequisicionesAccion.registroRequisicion.requisicion.entrega}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>		
+								<p:calendar value="#{keetComprasRequisicionesAccion.registroRequisicion.requisicion.entrega}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>		
                 <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="contrato prototipo proveedor" oncomplete="janal.desbloquear();"/>
                 <p:remoteCommand name="reloadFamilias" onstart="return janal.bloquear();" process="@this" update="familia" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>									

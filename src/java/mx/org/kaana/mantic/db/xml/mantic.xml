@@ -5491,7 +5491,7 @@
         where 
           {condicion} 
 				order by 
-				  id_orden_estatus
+				  id_orden_estatus desc
       </select>
       <select id="identically">
         select      

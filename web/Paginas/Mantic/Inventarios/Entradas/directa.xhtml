@@ -188,7 +188,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="total" value="Deuda:"/>
@@ -200,7 +200,7 @@
               <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt">
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="diasPlazo" value="Dias plazo:"/>
@@ -210,7 +210,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx">
                     <p:ajax event="dateSelect" listener="#{manticInventariosEntradasDirecta.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
                   </p:calendar>
                 </p:panelGrid>  

@@ -17,6 +17,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
@@ -31,6 +32,9 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializable {
 
 	private static final long serialVersionUID=3088884892456452488L;
+  private static final String ERROR_ARTICULO_EXCEDE = "summary: '{tipo}:', detail: '[{codigo}] {nombre}, SE EXCEDE CON LA CANTIDAD DE {cantidad}'";
+  private static final String ERROR_ARTICULO_DIFIERE= "summary: '{tipo}:', detail: '[{codigo}] {nombre}, DIFIERE SU CANTIDAD DE {cantidad} A {diferencia}'";
+  private static final String ERROR_ARTICULO_TODOS  = "summary: '{tipo}:', detail: '[{codigo}] {nombre}, ESTE ARTICULOS NO ESTA PRESUPUESTADO, {cantidad}'";
 	
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
@@ -47,6 +51,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikTipoOrden;
   private List<General> general;
   private List<Individual> individual;
+  private List<Individual> temporal;
 
 	public OrdenCompra() {
 		this(-1L);
@@ -60,6 +65,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L, null, 1L);
     this.general   = new ArrayList<>();
     this.individual= new ArrayList<>();
+    this.temporal  = new ArrayList<>();
 	}
 
 	public UISelectEntity getIkEmpresa() {
@@ -225,16 +231,33 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     Methods.clean(this.individual);
   }
 
-  private void toLoadGeneral(Long idContrato) {
+  public void toLoadArticulos(String articulos) {
+    this.toLoadGeneral(this.getIdContrato(), articulos);
+  }
+  
+  public void toLoadArticulos(String articulos, String lotes) {
+    this.toLoadGeneral(this.getIdContrato(), articulos);
+    this.toLoadIndividual(this.getIdContrato(), lotes, articulos);
+  }
+  
+  public void toCleanPartidas() {
+    this.general.clear();
+    this.individual.clear();
+  }
+
+  private void toLoadGeneral(Long idContrato, String articulos) {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
       Methods.clean(this.general);
       if(!Objects.equals(idContrato, -1L)) {
         params.put("idContrato", idContrato);      
+        params.put("articulos", articulos);      
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
         columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
         this.general= (List<General>)DaoFactory.getInstance().toEntitySet(General.class, "VistaContratosMaterialesDto", "general", params, Constantes.SQL_TODOS_REGISTROS);
+        if(this.general!= null && !this.general.isEmpty()) 
+          this.toValuesGeneral();
       } // if
     } // try
     catch (Exception e) {
@@ -246,31 +269,19 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     } // finally
   }
   
-  private void toLoadIndividual(Long idContrato) {
-    this.toLoadIndividual(idContrato, null);
-  }
-  
-  public void toLoadIndividual(List<UISelectEntity> lotes) {
-    StringBuilder sb= new StringBuilder();
-    lotes.forEach((item) -> {
-      sb.append(item.getKey()).append(",");
-    }); // for
-    this.toLoadIndividual(this.getIdContrato(), sb.substring(0, sb.length()- 1));
-  }
-  
-  private void toLoadIndividual(Long idContrato, String lotes) {
+  private void toLoadIndividual(Long idContrato, String lotes, String articulos) {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {    
       Methods.clean(this.individual);
       if(!Objects.equals(idContrato, -1L)) {
         params.put("idContrato", idContrato);      
-        if(Cadena.isVacio(lotes))
-          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
-        else
-          params.put(Constantes.SQL_CONDICION, "tt_keet_contratos_lotes.id_contrato_lote in (".concat(lotes).concat(")"));      
+        params.put("articulos", articulos);      
+        params.put(Constantes.SQL_CONDICION, "(tt_keet_contratos_lotes.id_contrato_lote in (".concat(lotes).concat("))"));      
         columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
         this.individual= (List<Individual>)DaoFactory.getInstance().toEntitySet(Individual.class, "VistaContratosMaterialesDto", "individual", params, Constantes.SQL_TODOS_REGISTROS);
+        if(this.individual!= null && !this.individual.isEmpty()) 
+          this.toValuesIndividual();
       } // if
     } // try
     catch (Exception e) {
@@ -281,5 +292,213 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
       Methods.clean(columns);
     } // finally
   }
+
+  public void toLoadTemporal() {
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder articulos   = new StringBuilder(",");
+    StringBuilder lotes       = new StringBuilder(",");
+    try {
+      if(this.isValid()) {
+        params.put("idOrdenCompra", this.getIdOrdenCompra());      
+        this.temporal= (List<Individual>)DaoFactory.getInstance().toEntitySet(Individual.class, "TcKeetOrdenesMaterialesDto", "detalle", params);      
+        if(this.temporal== null)
+          this.temporal= new ArrayList<>();
+        else {
+          for (Individual item: this.temporal) {
+            if(articulos.indexOf(","+ item.getIdArticulo()+",")< 0)
+              articulos.append(item.getIdArticulo()).append(",");
+            if(!Objects.equals(item.getIdContratoLote(), null) && !Objects.equals(item.getIdContratoLote(), -1L))
+              if(lotes.indexOf(","+ item.getIdContratoLote()+",")< 0)
+                lotes.append(item.getIdContratoLote()).append(",");
+          } // for
+          if(lotes.length()> 1)
+            this.toLoadArticulos(articulos.substring(1, articulos.length()- 1), lotes.substring(1, lotes.length()- 1));
+          else
+            this.toLoadArticulos(articulos.substring(1, articulos.length()- 1));
+        } // if
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void toLookArticulos(Articulo articulo) {
+    Integer count= 0;
+    try { 
+      for (Individual item: this.individual) {
+        if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo()))
+          count++;
+      } // for
+      // SI SE ENCUENTRA MAS DE UN CONCEPTO REALIZAR EL REEMPLAZO
+      if(count> 0) {
+        Double sum  = 0D;
+        Double value= Numero.toRedondearSat(articulo.getCantidad()/ count);
+        for (Individual item: this.individual) {
+          if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo())) {
+            if(sum+ value>= articulo.getCantidad())
+              item.setTotal(Numero.toRedondearSat(articulo.getCantidad()- sum));
+            else  
+              item.setTotal(value);
+            sum+= value;
+          } // if  
+        } // for
+      } // if  
+      for (General item: this.general) {
+        if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo()))
+          item.setTotal(articulo.getCantidad());
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+  }
+  
+  public String toCheckGeneral() {
+    StringBuilder regresar    = new StringBuilder();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      for (General item: this.general) {
+        if((item.getTotal()> 0D) && (item.getTotal()> item.getDiferencia())) {
+          params.put("tipo", "Contrato");
+          params.put("codigo", item.getCodigo());
+          params.put("nombre", item.getNombre());
+          params.put("cantidad", Numero.redondearSat(item.getTotal()- item.getDiferencia()));
+          regresar.append("{").append(Cadena.replaceParams(ERROR_ARTICULO_EXCEDE, params)).append("},");
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.length()> 0? regresar.substring(0, regresar.length()- 1): "";
+  }
+  
+  public String toCheckIndividual(List<Articulo> articulos) {
+    StringBuilder regresar    = new StringBuilder();
+    Double sum                = null; 
+    Boolean find              = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      for (Articulo articulo: articulos) {
+        sum = 0D;
+        find= Boolean.FALSE;
+        for (Individual item: this.individual) {
+          if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo())) {
+            sum+= item.getTotal();
+            find= Boolean.TRUE;
+          } // if  
+        } // for
+        if(!Objects.equals(articulo.getIdArticulo(), -1L) && Numero.toRedondearSat(sum)!= articulo.getCantidad() && find) {
+          params.put("tipo", "Partida");
+          params.put("codigo", articulo.getPropio());
+          params.put("nombre", articulo.getNombre());
+          params.put("cantidad", articulo.getCantidad());
+          params.put("diferencia", Numero.redondearSat(sum));
+          regresar.append("{").append(Cadena.replaceParams(ERROR_ARTICULO_DIFIERE, params)).append("},");
+        } // if  
+      } // for
+      for (Individual item: this.individual) {
+        if((item.getTotal()> 0D) && (item.getTotal()> item.getDiferencia())) {
+          params.put("tipo", "Lote");
+          params.put("codigo", item.getCodigo());
+          params.put("nombre", item.getNombre());
+          params.put("cantidad", Numero.redondearSat(item.getTotal()- item.getDiferencia()));
+          regresar.append("{").append(Cadena.replaceParams(ERROR_ARTICULO_EXCEDE, params)).append("},");
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.length()> 0? regresar.substring(0, regresar.length()- 1): "";
+  }
+  
+  public String toCheckTodos(List<Articulo> articulos) {
+    StringBuilder regresar    = new StringBuilder();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(!Objects.equals(this.getIdContrato(), -1L)) 
+        for (Articulo articulo: articulos) {
+          int index= this.general.indexOf(new General(this.getIdOrdenCompra(), articulo.getIdArticulo()));
+          if(!Objects.equals(articulo.getIdArticulo(), -1L) && (index< 0)) {
+            params.put("tipo", "No existe");
+            params.put("codigo", articulo.getPropio());
+            params.put("nombre", articulo.getNombre());
+            params.put("cantidad", articulo.getCantidad());
+            regresar.append("{").append(Cadena.replaceParams(ERROR_ARTICULO_TODOS, params)).append("},");
+          } // if
+        } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.length()> 0? regresar.substring(0, regresar.length()- 1): "";
+  }
+  
+  public void toEraseArticulos(Articulo articulo) {
+    int index= 0;
+    while (index< this.general.size()) {
+      if(Objects.equals(articulo.getIdArticulo(), this.general.get(index).getIdArticulo())) 
+        this.general.remove(index);
+      else
+        index++;
+    } // while
+    index= 0;
+    while (index< this.individual.size()) {
+      if(Objects.equals(articulo.getIdArticulo(), this.individual.get(index).getIdArticulo())) 
+        this.individual.remove(index);
+      else
+        index++;
+    } // while
+  }
+
+  private void toValuesGeneral() {
+    Double sum= null;
+    for (General item: this.general) {
+      sum= 0D;
+      for (Individual value: this.temporal) {
+        if(Objects.equals(item.getIdArticulo(), value.getIdArticulo())) 
+          sum+= value.getCantidad();
+      } // for
+      item.setIdOrdenCompra(this.getIdOrdenCompra());
+      item.setTotal(Numero.toRedondearSat(sum));
+    } // for
+  }  
+
+  private void toValuesIndividual() {
+    for (Individual item: this.individual) {
+      int index= this.temporal.indexOf(new Individual(this.getIdOrdenCompra(), item.getIdContratoLote(), item.getIdArticulo()));
+      if(index>= 0) {
+        item.setIdOrdenMaterial(this.temporal.get(index).getIdOrdenMaterial());
+        item.setIdOrdenCompra(this.getIdOrdenCompra());
+        item.setTotal(this.temporal.get(index).getCantidad());
+        item.setComprados(Numero.toRedondearSat(item.getComprados()- this.temporal.get(index).getCantidad()));
+        item.setDiferencia(Numero.toRedondearSat(item.getCantidad()- item.getComprados()));
+      } // if        
+//      for (Individual value: this.temporal) {
+//        if(item.equals(value)) {
+//          item.setIdOrdenMaterial(value.getIdOrdenMaterial());
+//          item.setIdOrdenCompra(this.getIdOrdenCompra());
+//          item.setTotal(value.getCantidad());
+//          item.setComprados(Numero.toRedondearSat(item.getComprados()- value.getCantidad()));
+//          item.setDiferencia(Numero.toRedondearSat(item.getCantidad()- item.getComprados()));
+//          break;
+//        } // if  
+//      } // for
+    } // for
+  }  
   
 }

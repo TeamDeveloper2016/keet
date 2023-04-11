@@ -173,6 +173,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.toLoadCatalog();
       if(this.attrs.get("idOrdenCompra")!= null) 
 			  this.doLoad();
+      this.attrs.put("activa", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -400,6 +401,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			allEstatus= UISelect.build("TcManticOrdenesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
+			this.attrs.put("activa", !Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && Objects.equals(seleccionado.toLong("idOrdenEstatus"), 1L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -414,29 +416,55 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion            = null;
 		TcManticOrdenesBitacoraDto bitacora= null;
 		Entity seleccionado                = null;
+    Entity exists                      = null;
+    Boolean continuar                  = Boolean.TRUE;
+		Map<String, Object>params          = new HashMap<>();
+    Long idOrdenCodigo                 = -1L;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
-			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
-			transaccion = new Transaccion(orden, bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
-        // SI CAMBIA EL ESTATUS A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA A LOS PROVEEDORES
-        if(Objects.equals(orden.getIdOrdenEstatus(), 3L)) {
-          this.doLoadMails();
-          UIBackingUtilities.update("dialogoCorreos");
-          UIBackingUtilities.execute("PF('dlgCorreos').show();");
+      if(!Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && Objects.equals((Long)this.attrs.get("estatus"), 3L)) {
+        params.put("codigo", this.attrs.get("codigo"));
+        exists= (Entity)DaoFactory.getInstance().toEntity("TcKeetOrdenesCodigosDto", "existe", params);
+        if(exists!= null && !exists.isEmpty()) {
+          if(Objects.equals(exists.toLong("idOrdenCompra"), null)) 
+            idOrdenCodigo= exists.toLong("idOrdenCodigo");
+          else {
+            this.attrs.put("texto", "EL CÓDIGO YA FUE UTILIZADO [ ".concat((String)this.attrs.get("codigo")).concat(" ]"));
+            continuar= Boolean.FALSE;
+          } // if  
         } // if  
+        else {
+          this.attrs.put("texto", "EL CÓDIGO NO EXISTE [ ".concat((String)this.attrs.get("codigo")).concat(" ]"));
+          continuar= Boolean.FALSE;          
+        } // else  
+      } // if
+      if(continuar) {
+        TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
+        bitacora    = new TcManticOrdenesBitacoraDto((Long)this.attrs.get("estatus"), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
+        transaccion = new Transaccion(orden, bitacora, idOrdenCodigo);
+        if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
+          JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+          // SI CAMBIA EL ESTATUS A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA A LOS PROVEEDORES
+          if(Objects.equals(orden.getIdOrdenEstatus(), 3L)) {
+            this.doLoadMails();
+            UIBackingUtilities.update("dialogoCorreos");
+            UIBackingUtilities.execute("PF('dlgCorreos').show();");
+          } // if  
+    			this.attrs.put("texto", "");
+    			this.attrs.put("codigo", "");
+	    		this.attrs.put("justificacion", "");
+          UIBackingUtilities.execute("PF('dlgEstatus').hide();");
+        } // if  
+        else
+          JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
       } // if  
-			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally{
-			this.attrs.put("justificacion", "");
+		finally {
+			Methods.clean(params);
 		} // finally
 	}	// doActualizaEstatus
 	
@@ -664,6 +692,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch	
   }
 
+  public void doChangeEstatus() {
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+      if(!Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && !Objects.equals((Long)this.attrs.get("estatus"), 1L))
+        this.attrs.put("texto", "");
+      this.attrs.put("activa", Objects.equals((Long)this.attrs.get("estatus"), 3L));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

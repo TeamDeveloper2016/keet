@@ -85,9 +85,9 @@
                 <f:selectItems value="#{keetComprasRequisicionesFiltro.attrs.ejercicios}"/>                
               </p:selectOneMenu>							
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetComprasRequisicionesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetComprasRequisicionesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetComprasRequisicionesFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetComprasRequisicionesFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
 							<p:outputLabel for="razonSocial" value="Proveedor:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetComprasRequisicionesFiltro.attrs.proveedor}" completeMethod="#{keetComprasRequisicionesFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">

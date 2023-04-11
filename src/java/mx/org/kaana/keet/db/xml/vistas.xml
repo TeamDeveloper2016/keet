@@ -110,6 +110,7 @@ select
  tc_keet_contratos.id_contrato,
  tc_keet_contratos.nombre as contrato,
  tc_keet_contratos.clave,
+ ifnull(tt_keet_ordenes_materiales.id_orden_compra, -1) as id_orden_compra,
  sum(tt_keet_contratos_lotes.factor) as factor,
  tt_keet_contratos_lotes.id_articulo,
  tt_keet_contratos_lotes.codigo,
@@ -141,15 +142,17 @@ inner join (
    tc_keet_contratos_materiales on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos_materiales.id_contrato and tc_keet_contratos_lotes.id_prototipo= tc_keet_contratos_materiales.id_prototipo
  where
    tc_keet_contratos_lotes.id_contrato= {idContrato}
+   and tc_keet_contratos_materiales.id_articulo in ({articulos})     
  group by
    tc_keet_contratos_lotes.id_prototipo,
    tc_keet_contratos_materiales.id_articulo
-) as tt_keet_contratos_lotes on  tc_keet_contratos.id_contrato= tt_keet_contratos_lotes.id_contrato
+) as tt_keet_contratos_lotes on tc_keet_contratos.id_contrato= tt_keet_contratos_lotes.id_contrato
 inner join
  tc_keet_prototipos on tt_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 left join (
  select
    tc_keet_contratos_lotes.id_contrato,
+   tc_keet_ordenes_materiales.id_orden_compra,     
    tc_keet_ordenes_materiales.id_articulo,
    sum(tc_keet_ordenes_materiales.cantidad) as cantidad
  from
@@ -158,11 +161,13 @@ left join (
    tc_keet_contratos_lotes on tc_keet_ordenes_materiales.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
  where   
    tc_keet_contratos_lotes.id_contrato= {idContrato}
+   and tc_keet_ordenes_materiales.id_articulo in ({articulos})
  group by
    tc_keet_ordenes_materiales.id_articulo
 ) as tt_keet_ordenes_materiales on tt_keet_contratos_lotes.id_contrato= tt_keet_ordenes_materiales.id_contrato and tt_keet_contratos_lotes.id_articulo= tt_keet_ordenes_materiales.id_articulo
 where
  tc_keet_contratos.id_contrato= {idContrato}
+ and tt_keet_contratos_lotes.id_articulo in ({articulos})
  and {condicion}
 group by
  tt_keet_contratos_lotes.id_articulo
@@ -175,6 +180,7 @@ select
  tc_keet_contratos.id_contrato,
  tc_keet_contratos.nombre as contrato,
  tc_keet_contratos.clave,
+ ifnull(tt_keet_ordenes_materiales.id_orden_compra, -1) as id_orden_compra,
  tt_keet_contratos_lotes.id_prototipo,
  tc_keet_prototipos.nombre as prototipo,        
  tt_keet_contratos_lotes.id_contrato_lote,
@@ -213,6 +219,7 @@ inner join (
    tc_keet_contratos_materiales on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos_materiales.id_contrato and tc_keet_contratos_lotes.id_prototipo= tc_keet_contratos_materiales.id_prototipo
  where
    tc_keet_contratos_lotes.id_contrato= {idContrato}
+   and tc_keet_contratos_materiales.id_articulo in ({articulos})             
  group by
    tc_keet_contratos_lotes.id_contrato_lote,
    tc_keet_contratos_materiales.id_articulo
@@ -222,7 +229,8 @@ inner join
 left join (
  select
    tc_keet_contratos_lotes.id_contrato,
-   tc_keet_contratos_lotes.id_contrato_lote,
+   tc_keet_ordenes_materiales.id_orden_compra,
+   tc_keet_ordenes_materiales.id_contrato_lote,
    tc_keet_ordenes_materiales.id_articulo,
    sum(tc_keet_ordenes_materiales.cantidad) as cantidad
  from
@@ -231,19 +239,21 @@ left join (
    tc_keet_contratos_lotes on tc_keet_ordenes_materiales.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
  where   
    tc_keet_contratos_lotes.id_contrato= {idContrato}
+   and tc_keet_ordenes_materiales.id_articulo in ({articulos})     
  group by
    tc_keet_contratos_lotes.id_contrato_lote,
    tc_keet_ordenes_materiales.id_articulo
 ) as tt_keet_ordenes_materiales on tt_keet_contratos_lotes.id_contrato= tt_keet_ordenes_materiales.id_contrato and tt_keet_contratos_lotes.id_contrato_lote= tt_keet_ordenes_materiales.id_contrato_lote and tt_keet_contratos_lotes.id_articulo= tt_keet_ordenes_materiales.id_articulo
 where
  tc_keet_contratos.id_contrato= {idContrato}
+ and tt_keet_contratos_lotes.id_articulo in ({articulos})        
  and {condicion}
 group by
  tt_keet_contratos_lotes.id_contrato_lote,        
  tt_keet_contratos_lotes.id_articulo
 order by 
- concat('M', tt_keet_contratos_lotes.manzana, 'L', tt_keet_contratos_lotes.lote),        
- tt_keet_contratos_lotes.nombre
+ tt_keet_contratos_lotes.nombre,
+ concat('M', tt_keet_contratos_lotes.manzana, 'L', tt_keet_contratos_lotes.lote)        
       </select> 
       <select id="contratos">
 select 

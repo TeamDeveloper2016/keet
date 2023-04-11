@@ -44,7 +44,7 @@
                 <p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-60, janal-wid-10 janal-column-center">
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="inicio" value="Fecha:"/>
-                    <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncentivo.repercusion.inicio}" pattern="dd/MM/yyyy" locale="es">
+                    <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt inicio" styleClass="janal-wid-100" value="#{manticIncidentesIncentivo.repercusion.inicio}" pattern="dd/MM/yyyy" locale="mx">
                       <p:ajax event="dateSelect" process="@this" listener="#{manticIncidentesIncentivo.doChangeInicio()}"/>
                     </p:calendar>  
                   </p:panelGrid>  

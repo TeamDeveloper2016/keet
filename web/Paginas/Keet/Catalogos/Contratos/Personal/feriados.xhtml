@@ -154,7 +154,7 @@
 							</div>
 						</div>	
           </p:panel>        
-					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalFeriados.eventModel}" widgetVar="myschedule" styleClass="janal-column-center">
+					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalFeriados.eventModel}" widgetVar="myschedule" styleClass="janal-column-center" locale="mx" timeFormat="LT">
 						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalFeriados.onDateSelect}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent(); janal.refresh();"/>
 						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalFeriados.onEventSelect}" update="panelIncidencia idSelectionEvent costo" oncomplete="findSelectEventShow(); janal.refresh();"/>
 						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalFeriados.onEventMove}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent(); janal.refresh();"/>

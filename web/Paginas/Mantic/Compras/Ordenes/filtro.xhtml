@@ -22,19 +22,10 @@
       };
 			
 			fieldsDialog= {
-				'justificacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+				'codigo'         : {validaciones: 'requerido', mascara: 'alfanumerico', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},
+				'justificacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo|todos', formatos: 'cambiar-mayusculas'}
 			};
 			
-			function validaJustificacion() {
-				var ok= janal.partial('dialogo');
-				if(ok){
-					PF('dlgEstatus').hide();
-					janal.restore();
-					janal.refresh();
-				} // if
-				return ok;
-			} // validaJustificacion
-      
       //<![CDATA[      
 			function start() {
         janal.bloquear();
@@ -246,20 +237,26 @@
     </p:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+    <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh(); $('#error').addClass('janal-display-none');" onHide="janal.restore(); janal.refresh(); janal.desbloquear();">
 			<h:form id="formDialogoEstatus" prependId="false">
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+        <div class="janal-column-center janal-wid-100-txt">
+          <p:outputLabel id="error" value="#{manticComprasOrdenesFiltro.attrs.texto}" styleClass="codigo janal-color-orange Fs16 FontBold #{empty(manticComprasOrdenesFiltro.attrs.texto)? 'janal-display-none': ''}"/>
+        </div>  
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="codigo" value="Código de autorización:" styleClass="codigo #{manticComprasOrdenesFiltro.attrs.activa? '': 'janal-display-none'}"/>
+  				<p:inputText id="codigo" placeholder="CODIGO Ej. YW2OLQ1H" value="#{manticComprasOrdenesFiltro.attrs.codigo}" styleClass="codigo janal-wid-100-txt janal-column-center janal-color-blue #{manticComprasOrdenesFiltro.attrs.activa? '': 'janal-display-none'}"/>
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{manticComprasOrdenesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+          <p:selectOneMenu id="estatusDlg" value="#{manticComprasOrdenesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt" converter="javax.faces.Long">
+            <p:ajax event="change" process="@this" update="@(.codigo)" listener="#{manticComprasOrdenesFiltro.doChangeEstatus()}"/>
 						<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
-				<p:inputTextarea id="justificacion" value="#{manticComprasOrdenesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+        <p:inputTextarea id="justificacion" placeholder="ESCRIBA SU JUSTIFICACIÓN" value="#{manticComprasOrdenesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticComprasOrdenesFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
+          <p:commandButton value="Aceptar" icon="fa fa-check" process="@form" update="tabla error" actionListener="#{manticComprasOrdenesFiltro.doActualizarEstatus}" onstart="return janal.partial('#{manticComprasOrdenesFiltro.attrs.activa? 'dialogo': 'todos'}')" styleClass="codigo"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('dlgEstatus').hide();"/>
 				</div>
 			</h:form>
 		</p:dialog>
