@@ -10,21 +10,19 @@ import java.util.Objects;
  *@author Team Developer 2016 <team.developer2016@gmail.com>
  */
 
-public class OrdenLoteFamilia {
+public class OrdenLote {
 
   private Long idOrdenContratoLote;
-  private Long idFamilia;
   private Long idContratoLote;
   private Long idOrdenCompra;
   private Boolean existe;
 
-  public OrdenLoteFamilia() {
-    this(-1L, -1L, -1L, -1L);
+  public OrdenLote() {
+    this(-1L, -1L, -1L);
   }
 
-  public OrdenLoteFamilia(Long idOrdenContratoLote, Long idFamilia, Long idContratoLote, Long idOrdenCompra) {
+  public OrdenLote(Long idOrdenContratoLote, Long idContratoLote, Long idOrdenCompra) {
     this.idOrdenContratoLote = idOrdenContratoLote;
-    this.idFamilia = idFamilia;
     this.idContratoLote = idContratoLote;
     this.idOrdenCompra = idOrdenCompra;
     this.existe= Boolean.FALSE;
@@ -36,14 +34,6 @@ public class OrdenLoteFamilia {
 
   public void setIdOrdenContratoLote(Long idOrdenContratoLote) {
     this.idOrdenContratoLote = idOrdenContratoLote;
-  }
-
-  public Long getIdFamilia() {
-    return idFamilia;
-  }
-
-  public void setIdFamilia(Long idFamilia) {
-    this.idFamilia = idFamilia;
   }
 
   public Long getIdContratoLote() {
@@ -73,7 +63,6 @@ public class OrdenLoteFamilia {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + Objects.hashCode(this.idFamilia);
     hash = 67 * hash + Objects.hashCode(this.idContratoLote);
     hash = 67 * hash + Objects.hashCode(this.idOrdenCompra);
     return hash;
@@ -81,25 +70,17 @@ public class OrdenLoteFamilia {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if (this == obj) 
       return true;
-    }
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
-    final OrdenLoteFamilia other = (OrdenLoteFamilia) obj;
-    if (!Objects.equals(this.idFamilia, other.idFamilia)) {
+    final OrdenLote other = (OrdenLote) obj;
+    if (!Objects.equals(this.idContratoLote, other.idContratoLote)) 
       return false;
-    }
-    if (!Objects.equals(this.idContratoLote, other.idContratoLote)) {
+    if (!Objects.equals(this.idOrdenCompra, other.idOrdenCompra)) 
       return false;
-    }
-    if (!Objects.equals(this.idOrdenCompra, other.idOrdenCompra)) {
-      return false;
-    }
     return true;
   }
 

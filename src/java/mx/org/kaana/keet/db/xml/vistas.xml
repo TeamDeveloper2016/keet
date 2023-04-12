@@ -12686,7 +12686,9 @@ order by
         inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos.id_contrato
         inner join
-          tc_keet_familias on tc_keet_ordenes_contratos_lotes.id_familia = tc_keet_familias.id_familia
+          tc_keet_ordenes_familias on tc_mantic_ordenes_compras.id_orden_compra= tc_keet_ordenes_familias.id_orden_compra
+        inner join
+          tc_keet_familias on tc_keet_ordenes_familias.id_familia = tc_keet_familias.id_familia
         inner join
           tc_janal_usuarios on tc_keet_ordenes_contratos_lotes.id_usuario= tc_janal_usuarios.id_usuario
         inner join
@@ -12705,9 +12707,11 @@ order by
           tc_keet_contratos_lotes on tc_keet_ordenes_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote
         inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_ordenes_familias on tc_keet_ordenes_contratos_lotes.id_orden_compra= tc_keet_ordenes_familias.id_orden_compra
         where      
           tc_keet_contratos.id_contrato = {idContrato}
-          and tc_keet_ordenes_contratos_lotes.id_familia= {idFamilia}
+          and tc_keet_ordenes_familias.id_familia= {idFamilia}
           and tc_keet_ordenes_contratos_lotes.id_contrato_lote= {idContratoLote}
       </select>
 			<select id="row">

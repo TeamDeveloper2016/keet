@@ -7,6 +7,35 @@
   </model>
 
   <dml>
+    <unit id="TcKeetOrdenesFamiliasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ordenes_familias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ordenes_familias
+        where      
+          id_familia = {idFamilia} and id_orden_compra = {idOrdenCompra}
+      </select>
+      <select id="familias">
+        select      
+          tc_keet_ordenes_familias.id_orden_familia as id_key,
+          tc_keet_ordenes_familias.*
+        from      
+          tc_keet_ordenes_familias
+        where      
+          id_orden_compra = {idOrdenCompra}
+        group by
+          id_familia
+      </select>
+    </unit>    
     <unit id="TcKeetOrdenesCodigosDto">
       <select id="row">
         select      
@@ -64,6 +93,7 @@
           tc_keet_ordenes_materiales
         where
           id_contrato_lote is {cuales} null
+          and id_orden_compra = {idOrdenCompra} 
       </delete>  
     </unit>    
     <unit id="TcKeetTiposOrdenesDto">
@@ -1643,7 +1673,7 @@
         from      
           tc_keet_ordenes_contratos_lotes
         where      
-          id_familia = {idFamilia} and id_orden_compra = {idOrdenCompra} and id_contrato_lote = {idContratoLote}
+          id_orden_compra = {idOrdenCompra} and id_contrato_lote = {idContratoLote}
       </select>
       <select id="lotes">
         select      
@@ -1655,17 +1685,6 @@
           id_orden_compra = {idOrdenCompra}
         group by
           id_contrato_lote
-      </select>
-      <select id="familias">
-        select      
-          tc_keet_ordenes_contratos_lotes.id_orden_contrato_lote as id_key,
-          tc_keet_ordenes_contratos_lotes.*
-        from      
-          tc_keet_ordenes_contratos_lotes
-        where      
-          id_orden_compra = {idOrdenCompra}
-        group by
-          id_familia
       </select>
       <delete id="rows">
         delete from

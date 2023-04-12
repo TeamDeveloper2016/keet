@@ -23,46 +23,46 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_ordenes_contratos_lotes")
-public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_ordenes_familias")
+public class TcKeetOrdenesFamiliasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_orden_contrato_lote")
-  private Long idOrdenContratoLote;
+  @Column (name="id_familia")
+  private Long idFamilia;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_orden_familia")
+  private Long idOrdenFamilia;
   @Column (name="id_orden_compra")
   private Long idOrdenCompra;
-  @Column (name="id_contrato_lote")
-  private Long idContratoLote;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetOrdenesContratosLotesDto() {
+  public TcKeetOrdenesFamiliasDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetOrdenesContratosLotesDto(Long key) {
-    this(new Long(-1L), null, null, null);
+  public TcKeetOrdenesFamiliasDto(Long key) {
+    this(null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcKeetOrdenesContratosLotesDto(Long idOrdenContratoLote, Long idUsuario, Long idOrdenCompra, Long idContratoLote) {
-    setIdOrdenContratoLote(idOrdenContratoLote);
+  public TcKeetOrdenesFamiliasDto(Long idFamilia, Long idUsuario, Long idOrdenFamilia, Long idOrdenCompra) {
+    setIdFamilia(idFamilia);
     setIdUsuario(idUsuario);
+    setIdOrdenFamilia(idOrdenFamilia);
     setIdOrdenCompra(idOrdenCompra);
-    setIdContratoLote(idContratoLote);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdOrdenContratoLote(Long idOrdenContratoLote) {
-    this.idOrdenContratoLote = idOrdenContratoLote;
+  public void setIdFamilia(Long idFamilia) {
+    this.idFamilia = idFamilia;
   }
 
-  public Long getIdOrdenContratoLote() {
-    return idOrdenContratoLote;
+  public Long getIdFamilia() {
+    return idFamilia;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -73,20 +73,20 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
+  public void setIdOrdenFamilia(Long idOrdenFamilia) {
+    this.idOrdenFamilia = idOrdenFamilia;
+  }
+
+  public Long getIdOrdenFamilia() {
+    return idOrdenFamilia;
+  }
+
   public void setIdOrdenCompra(Long idOrdenCompra) {
     this.idOrdenCompra = idOrdenCompra;
   }
 
   public Long getIdOrdenCompra() {
     return idOrdenCompra;
-  }
-
-  public void setIdContratoLote(Long idContratoLote) {
-    this.idContratoLote = idContratoLote;
-  }
-
-  public Long getIdContratoLote() {
-    return idContratoLote;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -100,25 +100,25 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdOrdenContratoLote();
+  	return getIdOrdenFamilia();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idOrdenContratoLote = key;
+  	this.idOrdenFamilia = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdOrdenContratoLote());
+		regresar.append(getIdFamilia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdOrdenCompra());
+		regresar.append(getIdOrdenFamilia());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdContratoLote());
+		regresar.append(getIdOrdenCompra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -128,10 +128,10 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idOrdenContratoLote", getIdOrdenContratoLote());
+		regresar.put("idFamilia", getIdFamilia());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idOrdenFamilia", getIdOrdenFamilia());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
-		regresar.put("idContratoLote", getIdContratoLote());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -139,7 +139,7 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdOrdenContratoLote(), getIdUsuario(), getIdOrdenCompra(), getIdContratoLote(), getRegistro()
+    getIdFamilia(), getIdUsuario(), getIdOrdenFamilia(), getIdOrdenCompra(), getRegistro()
     };
     return regresar;
   }
@@ -153,8 +153,8 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idOrdenContratoLote~");
-    regresar.append(getIdOrdenContratoLote());
+    regresar.append("idOrdenFamilia~");
+    regresar.append(getIdOrdenFamilia());
     regresar.append("|");
     return regresar.toString();
   }
@@ -162,18 +162,18 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdOrdenContratoLote());
+    regresar.append(getIdOrdenFamilia());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetOrdenesContratosLotesDto.class;
+    return TcKeetOrdenesFamiliasDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdOrdenContratoLote()!= null && getIdOrdenContratoLote()!=-1L;
+  	return getIdOrdenFamilia()!= null && getIdOrdenFamilia()!=-1L;
   }
 
   @Override
@@ -184,8 +184,8 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetOrdenesContratosLotesDto other = (TcKeetOrdenesContratosLotesDto) obj;
-    if (getIdOrdenContratoLote() != other.idOrdenContratoLote && (getIdOrdenContratoLote() == null || !getIdOrdenContratoLote().equals(other.idOrdenContratoLote))) {
+    final TcKeetOrdenesFamiliasDto other = (TcKeetOrdenesFamiliasDto) obj;
+    if (getIdOrdenFamilia() != other.idOrdenFamilia && (getIdOrdenFamilia() == null || !getIdOrdenFamilia().equals(other.idOrdenFamilia))) {
       return false;
     }
     return true;
@@ -194,7 +194,7 @@ public class TcKeetOrdenesContratosLotesDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdOrdenContratoLote() != null ? getIdOrdenContratoLote().hashCode() : 0);
+    hash = 67 * hash + (getIdOrdenFamilia() != null ? getIdOrdenFamilia().hashCode() : 0);
     return hash;
   }
 

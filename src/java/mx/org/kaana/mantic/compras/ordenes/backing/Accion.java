@@ -385,7 +385,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(!familias.isEmpty())
         if(!this.accion.equals(EAccion.AGREGAR)) {
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "familias", params);
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesFamiliasDto", "familias", params);
           if(!items.isEmpty()) {
             list     = new Object[items.size()];
             int count= 0;
@@ -891,18 +891,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			orden.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			orden.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       // VERIFICAR SI LA ORDEN DE COMPRA ES ORDINARIA VERIFICAR LOS UMBRALES POR CONTRATO Y POR LOTE
-      if(Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L)) {
-        sb.append(orden.getOrdenCompra().toCheckGeneral());
-        if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
-          if(sb.length()> 0)
-            sb.append(",");
-          sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
-        } // if  
-        todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
-        if(!Cadena.isVacio(todos))
-          sb.append(sb.length()== 0? "": ",").append(todos);
-      } // if
-      else 
+//      if(Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L)) {
+//        sb.append(orden.getOrdenCompra().toCheckGeneral());
+//        if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
+//          if(sb.length()> 0)
+//            sb.append(",");
+//          sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
+//        } // if  
+//        todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
+//        if(!Cadena.isVacio(todos))
+//          sb.append(sb.length()== 0? "": ",").append(todos);
+//      } // if
+//      else 
         sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckPartidas(orden.getArticulos()));
       // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
       if(sb.length()> 0) {

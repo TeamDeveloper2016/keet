@@ -18,6 +18,7 @@ import mx.org.kaana.keet.compras.beans.Individual;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesCodigosDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetOrdenesFamiliasDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesMaterialesDto;
 import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.libs.Constantes;
@@ -32,7 +33,8 @@ import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
-import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLoteFamilia;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenFamilia;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLote;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
@@ -150,11 +152,11 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 						this.toFillArticulos(sesion);
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+						DaoFactory.getInstance().insert(sesion, bitacoraOrden);
 					} // else	
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
-				  regresar= this.registrarFamiliasLotes(sesion);
+          regresar= this.registrarLotes(sesion);
 					break;
 				case AGREGAR:
 					Siguiente consecutivo= this.toSiguiente(sesion);
@@ -165,7 +167,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.toFillArticulos(sesion);
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L)
-							regresar= this.registrarFamiliasLotes(sesion);
+							regresar= this.registrarLotes(sesion);
 					} // if
 					break;
 				case MODIFICAR:
@@ -174,9 +176,9 @@ public class Transaccion extends Inventarios implements Serializable {
 					bitacoraOrden= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
 					if(!bitacoraOrden.getImporte().equals(this.orden.getTotal())) {
   					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-  					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+  					DaoFactory.getInstance().insert(sesion, bitacoraOrden);
 					} // if
-					regresar= this.registrarFamiliasLotes(sesion);
+					regresar= this.registrarLotes(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsNotas(sesion);
@@ -314,30 +316,31 @@ public class Transaccion extends Inventarios implements Serializable {
     Map<String, Object> params            = new HashMap<>();
 		List<TcKeetOrdenesMaterialesDto> todos= null;
     try {      
-      if(this.ordenProcess!= null && this.ordenProcess.getOrdenCompra()!= null && this.ordenProcess.getOrdenCompra().getGeneral()!= null) {
+      if(this.ordenProcess!= null && this.ordenProcess.getOrdenCompra()!= null) {
         params.put("cuales", "not");
+        params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
         DaoFactory.getInstance().deleteAll(sesion, TcKeetOrdenesMaterialesDto.class, params);
         sesion.flush();
-        params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
         todos= (List<TcKeetOrdenesMaterialesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetOrdenesMaterialesDto.class, "TcKeetOrdenesMaterialesDto", "detalle", params);      
         for (TcKeetOrdenesMaterialesDto item: todos) {
           int index= this.ordenProcess.getOrdenCompra().getGeneral().indexOf(new General(item.getIdOrdenCompra(), item.getIdArticulo()));
           if(index< 0)
             DaoFactory.getInstance().delete(sesion, item);
         } // for  
-        for (General item: this.ordenProcess.getOrdenCompra().getGeneral()) {
-          item.setIdContratoLote(null);
-          item.setCantidad(item.getTotal());
-          item.setIdUsuario(JsfBase.getIdUsuario());
-          if(item.isValid()) {
-            item.setRegistro(LocalDateTime.now());
-            DaoFactory.getInstance().update(sesion, item);
-          } // if  
-          else {
-            item.setIdOrdenCompra(orden.getIdOrdenCompra());
-            DaoFactory.getInstance().insert(sesion, item);
-          } // else  
-        } // for
+        if(this.ordenProcess.getOrdenCompra().getGeneral()!= null)
+          for (General item: this.ordenProcess.getOrdenCompra().getGeneral()) {
+            item.setIdContratoLote(null);
+            item.setCantidad(item.getTotal());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            if(item.isValid()) {
+              item.setRegistro(LocalDateTime.now());
+              DaoFactory.getInstance().update(sesion, item);
+            } // if  
+            else {
+              item.setIdOrdenCompra(orden.getIdOrdenCompra());
+              DaoFactory.getInstance().insert(sesion, item);
+            } // else  
+          } // for
       } // if  
     } // try
     catch (Exception e) {
@@ -352,7 +355,7 @@ public class Transaccion extends Inventarios implements Serializable {
     Map<String, Object> params            = new HashMap<>();
 		List<TcKeetOrdenesMaterialesDto> todos= null;
     try {      
-      if(this.ordenProcess!= null && this.ordenProcess.getOrdenCompra()!= null && this.ordenProcess.getOrdenCompra().getIndividual()!= null) {
+      if(this.ordenProcess!= null && this.ordenProcess.getOrdenCompra()!= null) {
         params.put("cuales", "");
         params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
         DaoFactory.getInstance().deleteAll(sesion, TcKeetOrdenesMaterialesDto.class, params);
@@ -363,18 +366,19 @@ public class Transaccion extends Inventarios implements Serializable {
           if(index< 0)
             DaoFactory.getInstance().delete(sesion, item);
         } // for  
-        for (Individual item: this.ordenProcess.getOrdenCompra().getIndividual()) {
-          item.setCantidad(item.getTotal());
-          item.setIdUsuario(JsfBase.getIdUsuario());
-          if(item.isValid()) {
-            item.setRegistro(LocalDateTime.now());
-            DaoFactory.getInstance().update(sesion, item);
-          } // if  
-          else {
-            item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-            DaoFactory.getInstance().insert(sesion, item);
-          } // else  
-        } // for
+        if(this.ordenProcess.getOrdenCompra().getIndividual()!= null) 
+          for (Individual item: this.ordenProcess.getOrdenCompra().getIndividual()) {
+            item.setCantidad(item.getTotal());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            if(item.isValid()) {
+              item.setRegistro(LocalDateTime.now());
+              DaoFactory.getInstance().update(sesion, item);
+            } // if  
+            else {
+              item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+              DaoFactory.getInstance().insert(sesion, item);
+            } // else  
+          } // for
       } // if  
     } // try
     catch (Exception e) {
@@ -481,37 +485,66 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private boolean registrarFamiliasLotes(Session sesion) throws Exception {
-		boolean regresar                           = true;
+	private boolean registrarLotes(Session sesion) throws Exception {
+		Boolean regresar                           = Boolean.TRUE;
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
-      List<OrdenLoteFamilia> items= (List<OrdenLoteFamilia>)DaoFactory.getInstance().toEntitySet(sesion, OrdenLoteFamilia.class, "TcKeetOrdenesContratosLotesDto", "lotes", this.orden.toMap());
-      if(this.lotes!= null && this.familias!= null) {
+      List<OrdenLote> items= (List<OrdenLote>)DaoFactory.getInstance().toEntitySet(sesion, OrdenLote.class, "TcKeetOrdenesContratosLotesDto", "lotes", this.orden.toMap());
+      if(this.lotes!= null) {
         for(Object lote: this.lotes) {
-          for(Object familia: this.familias) {
-            contratoLote= new TcKeetOrdenesContratosLotesDto();
-            contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
-            contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
-            contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-            contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-            OrdenLoteFamilia existe= new OrdenLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
-            int index= items.indexOf(existe);
-            if(index< 0)
-              DaoFactory.getInstance().insert(sesion, contratoLote);
-            else
-              items.get(index).setExiste(Boolean.TRUE);
-          } // for
+          contratoLote= new TcKeetOrdenesContratosLotesDto();
+          contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
+          contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+          contratoLote.setIdUsuario(JsfBase.getIdUsuario());
+          OrdenLote existe= new OrdenLote(-1L, ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+          int index= items.indexOf(existe);
+          if(index< 0)
+            DaoFactory.getInstance().insert(sesion, contratoLote);
+          else
+            items.get(index).setExiste(Boolean.TRUE);
         } // for
-        for (OrdenLoteFamilia item: items) {
+        for (OrdenLote item: items) {
           if(!item.getExiste())
             DaoFactory.getInstance().delete(sesion, TcKeetOrdenesContratosLotesDto.class, item.getIdOrdenContratoLote());
         } // for
       } // if  
-		} // try
+      regresar= this.registrarFamilias(sesion);
+		} // try 
 		catch (Exception e) {			
 			throw e;
 		} // catch	
 		return regresar;
-	} // registrarFamiliasLotes
+	} // registrarLotes
+  
+	private boolean registrarFamilias(Session sesion) throws Exception {
+		Boolean regresar                        = Boolean.FALSE;
+		TcKeetOrdenesFamiliasDto contratoFamilia= null;
+		try {
+      List<OrdenFamilia> items= (List<OrdenFamilia>)DaoFactory.getInstance().toEntitySet(sesion, OrdenFamilia.class, "TcKeetOrdenesFamiliasDto", "familias", this.orden.toMap());
+      if(this.familias!= null) {
+        for(Object familia: this.familias) {
+          contratoFamilia= new TcKeetOrdenesFamiliasDto();
+          contratoFamilia.setIdFamilia(((UISelectEntity)familia).getKey());
+          contratoFamilia.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+          contratoFamilia.setIdUsuario(JsfBase.getIdUsuario());
+          OrdenFamilia existe= new OrdenFamilia(-1L, ((UISelectEntity)familia).getKey(), this.orden.getIdOrdenCompra());
+          int index= items.indexOf(existe);
+          if(index< 0)
+            DaoFactory.getInstance().insert(sesion, contratoFamilia);
+          else
+            items.get(index).setExiste(Boolean.TRUE);
+        } // for
+        for (OrdenFamilia item: items) {
+          if(!item.getExiste())
+            DaoFactory.getInstance().delete(sesion, TcKeetOrdenesFamiliasDto.class, item.getIdOrdenFamilia());
+        } // for
+      } // if  
+      regresar= Boolean.TRUE;      
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // registrarFamilias
   
 } 
