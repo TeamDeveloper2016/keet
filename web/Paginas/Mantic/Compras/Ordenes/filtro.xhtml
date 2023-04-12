@@ -240,7 +240,7 @@
     <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh(); $('#error').addClass('janal-display-none');" onHide="janal.restore(); janal.refresh(); janal.desbloquear();">
 			<h:form id="formDialogoEstatus" prependId="false">
         <div class="janal-column-center janal-wid-100-txt">
-          <p:outputLabel id="error" value="#{manticComprasOrdenesFiltro.attrs.texto}" styleClass="codigo janal-color-orange Fs16 FontBold #{empty(manticComprasOrdenesFiltro.attrs.texto)? 'janal-display-none': ''}"/>
+          <p:outputLabel id="error" value="#{manticComprasOrdenesFiltro.attrs.texto}" styleClass="codigo janal-color-orange Fs14 FontBold #{empty(manticComprasOrdenesFiltro.attrs.texto)? 'janal-display-none': ''}"/>
         </div>  
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="codigo" value="Código de autorización:" styleClass="codigo #{manticComprasOrdenesFiltro.attrs.activa? '': 'janal-display-none'}"/>

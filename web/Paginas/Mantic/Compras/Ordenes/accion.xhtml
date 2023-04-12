@@ -354,7 +354,7 @@
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticComprasOrdendesAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" rendered="false">
 													<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
-        								<p:commandButton process="@this" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
+        								<p:commandButton process="@this contenedorGrupos:idTipoOrden" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
 												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(jsArticulos.cursor.index)"/>
                         <p:commandButton process="@form" icon="fa fa-save" title="Guardar orden de compra" actionListener="#{manticComprasOrdendesAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" update="@(.recalculo)"/>
 											</p:panelGrid>	
@@ -661,7 +661,7 @@
                   <p:inputText placeholder="FILTRAR POR CÓDIGO O NOMBRE Ej. ACEITE QUEMADO" value="#{manticComprasOrdendesAccion.attrs.textIndividual}" styleClass="janal-wid-100-txt janal-column-center FontBold">
                     <p:ajax event="keyup" process="@this" update="individual" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   </p:inputText>
-  								<p:commandButton process="@this" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
+  								<p:commandButton process="@this contenedorGrupos:idTipoOrden" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
                 </p:panelGrid>  
                 <p:dataTable id="individual" var="row" value="#{manticComprasOrdendesAccion.adminOrden.orden.individual}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="paginated cifras" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{manticComprasOrdendesAccion.toColorIndividual(row)}">
                   <f:facet name="header">
@@ -715,7 +715,7 @@
                   </p:column>		
                   <p:column class="MarAuto Responsive janal-wid-8 janal-column-right">
                     <f:facet name="header">
-                      <h:outputText value="Presupuestado"/>
+                      <h:outputText value="Presupuestados"/>
                     </f:facet>
                     <h:outputText value="#{row['cantidad']}"/>
                   </p:column>		
@@ -757,7 +757,7 @@
                   <p:inputText placeholder="FILTRAR POR CÓDIGO O NOMBRE Ej. ACEITE QUEMADO" value="#{manticComprasOrdendesAccion.attrs.textGlobal}" styleClass="janal-wid-100-txt janal-column-center FontBold">
                      <p:ajax event="keyup" process="@this" update="global" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   </p:inputText>
-                  <p:commandButton process="@this" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
+                  <p:commandButton process="@this contenedorGrupos:idTipoOrden" icon="fa fa-sort-numeric-asc" title="Verificar articulo" actionListener="#{manticComprasOrdendesAccion.doCheckArticulos()}"/>
                 </p:panelGrid>  
                 
                 <p:dataTable id="global" var="row" value="#{manticComprasOrdendesAccion.adminOrden.orden.general}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="paginated cifras" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{manticComprasOrdendesAccion.toColorGeneral(row)}">
@@ -800,7 +800,7 @@
                   </p:column>		
                   <p:column class="MarAuto Responsive janal-wid-8 janal-column-right">
                     <f:facet name="header">
-                      <h:outputText value="Presupuestado"/>
+                      <h:outputText value="Presupuestados"/>
                     </f:facet>
                     <h:outputText value="#{row['cantidad']}"/>
                   </p:column>		

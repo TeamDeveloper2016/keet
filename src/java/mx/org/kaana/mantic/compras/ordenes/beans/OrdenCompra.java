@@ -423,6 +423,40 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 1): "";
   }
   
+  public String toCheckPartidas(List<Articulo> articulos) {
+    StringBuilder regresar    = new StringBuilder();
+    Double sum                = null; 
+    Boolean find              = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      for (Articulo articulo: articulos) {
+        sum = 0D;
+        find= Boolean.FALSE;
+        for (Individual item: this.individual) {
+          if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo())) {
+            sum+= item.getTotal();
+            find= Boolean.TRUE;
+          } // if  
+        } // for
+        if(!Objects.equals(articulo.getIdArticulo(), -1L) && Numero.toRedondearSat(sum)!= articulo.getCantidad() && find) {
+          params.put("tipo", "Partida");
+          params.put("codigo", articulo.getPropio());
+          params.put("nombre", articulo.getNombre());
+          params.put("cantidad", articulo.getCantidad());
+          params.put("diferencia", Numero.redondearSat(sum));
+          regresar.append("{").append(Cadena.replaceParams(ERROR_ARTICULO_DIFIERE, params)).append("},");
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.length()> 0? regresar.substring(0, regresar.length()- 1): "";
+  }
+  
   public String toCheckTodos(List<Articulo> articulos) {
     StringBuilder regresar    = new StringBuilder();
     Map<String, Object> params= new HashMap<>();

@@ -75,13 +75,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
-//      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+//      this.accion   = EAccion.MODIFICAR;
+//      this.attrs.put("idOrdenCompra", 7042L);
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("procesado", Boolean.FALSE);
-      this.accion   = EAccion.MODIFICAR;
-      this.attrs.put("idOrdenCompra", 7042L);
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.DIRECTA: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-//      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -845,20 +845,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			orden.setArticulos(this.getAdminOrden().getArticulos());
 			orden.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       // VERIFICAR SI LA ORDEN DE COMPRA ES ORDINARIA VERIFICAR LOS UMBRALES POR CONTRATO Y POR LOTE
-      if(Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L)) {
-        sb.append(orden.getOrdenCompra().toCheckGeneral());
-        if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
-          if(sb.length()> 0)
-            sb.append(",");
-          sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
-        } // if  
-        todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
-        if(!Cadena.isVacio(todos))
-          sb.append(sb.length()== 0? "": ",").append(todos);
-      } // if
+      sb.append(orden.getOrdenCompra().toCheckGeneral());
+      if(orden.getLotes()!= null && !orden.getLotes().isEmpty()) {
+        if(sb.length()> 0)
+          sb.append(",");
+        sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckIndividual(orden.getArticulos()));
+      } // if  
+      todos= ((OrdenCompra)this.getAdminOrden().getOrden()).toCheckTodos(orden.getArticulos());
+      if(!Cadena.isVacio(todos))
+        sb.append(sb.length()== 0? "": ",").append(todos);
       // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
       if(sb.length()> 0) {
-        sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+        sb.insert(0, "janal.show([").append("]);");
         UIBackingUtilities.execute(sb.toString()); 
         JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
       } // if
@@ -904,9 +902,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         if(!Cadena.isVacio(todos))
           sb.append(sb.length()== 0? "": ",").append(todos);
       } // if
+      else 
+        sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckPartidas(orden.getArticulos()));
       // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
       if(sb.length()> 0) {
-        sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+        // sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+        sb.insert(0, "janal.show([").append("]);");
         UIBackingUtilities.execute(sb.toString()); 
         JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
       } // if
