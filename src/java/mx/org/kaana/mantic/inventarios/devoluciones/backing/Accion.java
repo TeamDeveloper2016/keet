@@ -142,7 +142,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   			JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la devolución de la nota de entrada.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la devolución de la nota de entrada", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

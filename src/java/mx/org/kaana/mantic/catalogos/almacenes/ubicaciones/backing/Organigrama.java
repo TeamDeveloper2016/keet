@@ -147,7 +147,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
       } // if
       else{
         UIBackingUtilities.execute("janal.desbloquear();");        
-        JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion", ETipoMensaje.ERROR);
       } // else
     } // try 
     catch (Exception e) {
@@ -173,7 +173,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
       } // if
       else{
         UIBackingUtilities.execute("janal.desbloquear();");        
-        JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion", ETipoMensaje.ERROR);
       } // else
     } // try 
     catch (Exception e) {

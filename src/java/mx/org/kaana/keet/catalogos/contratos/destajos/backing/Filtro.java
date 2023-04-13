@@ -760,7 +760,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
             LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
           } // finally	
           if(contratista.length()<= 0)
-            JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+            JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
         } // if  
       } // if
     } // try

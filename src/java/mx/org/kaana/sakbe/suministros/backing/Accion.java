@@ -220,7 +220,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
    			regresar= this.doCancelar();
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el ticket de compra.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el ticket de compra", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

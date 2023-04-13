@@ -159,14 +159,14 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			if(this.selecteds.length>= 1) {				
 				transaccion= new Seguimiento(toLoadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EControlesEstatus.TERMINADO.getKey() : EControlesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
-					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
 				} // if
 				else
-					JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Captura de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Captura de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -222,7 +222,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				} // if
 				else
 					regresar = "accion".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se" + (accion.equals(EAccion.TRANSFORMACION) ? "modificó" : "agregó") + "registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se" + (accion.equals(EAccion.TRANSFORMACION) ? "modificó" : "agregó") + "registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else {
         JsfBase.addMessage("Ocurrió un error al " + (accion.equals(EAccion.TRANSFORMACION) ? "modificar" : "agregar") + " el cliente", ETipoMensaje.ERROR);

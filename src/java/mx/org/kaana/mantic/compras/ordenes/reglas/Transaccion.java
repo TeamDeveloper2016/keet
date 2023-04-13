@@ -237,8 +237,13 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
-		} // catch		
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
+	  } // catch		
 	  finally {
       Methods.clean(params);
     } // finally

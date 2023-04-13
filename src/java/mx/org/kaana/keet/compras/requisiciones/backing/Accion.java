@@ -219,7 +219,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 				JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cotización de compra.", ETipoMensaje.ERROR);      						
+				JsfBase.addMessage("Ocurrió un error al registrar la cotización de compra", ETipoMensaje.ERROR);      						
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -182,7 +182,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doAceptar	
   
   public void doCompleto() {
-		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente el catalogo !.", ETipoMensaje.INFORMACION);		
+		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente el catalogo !", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
 	public String doMovimientos() {

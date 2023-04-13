@@ -138,7 +138,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       transaccion = new Transaccion(new TrKeetArticuloProveedorClienteDto(((Entity)this.attrs.get("seleccionado")).getKey()));
       transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+      JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente", ETipoMensaje.INFORMACION);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

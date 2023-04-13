@@ -225,10 +225,10 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), getAdminOrden().getTotales());
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se agregaron las refaccion de forma correcta", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("Ocurrió un error al agregar las refacciones.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Ocurrió un error al agregar las refacciones", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

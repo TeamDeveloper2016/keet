@@ -117,7 +117,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(this.registroServicio);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el servicio de taller de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el servicio de taller de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else {
         JsfBase.addMessage("Ocurrió un error al registrar el registro de taller", ETipoMensaje.ERROR);
@@ -191,7 +191,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.attrs.put("resultados", clientes.size());      
 			} // if
 			else{
-				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres.", ETipoMensaje.ALERTA);
+				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres", ETipoMensaje.ALERTA);
 			} // else
     } // try
     catch (Exception e) {

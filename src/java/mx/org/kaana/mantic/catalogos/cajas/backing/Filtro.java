@@ -141,12 +141,12 @@ public class Filtro extends IBaseFilter implements Serializable {
         dto=(TcManticCajasDto) DaoFactory.getInstance().findFirst(TcManticCajasDto.class,"unica",this.attrs);
         transaccion= new Transaccion(dto ,seleccionado.getKey());
         if(transaccion.ejecutar(EAccion.ELIMINAR))
-          JsfBase.addMessage("Eliminar Caja", "La caja se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Eliminar Caja", "La caja se ha eliminado correctamente", ETipoMensaje.INFORMACION);
         else
-          JsfBase.addMessage("Eliminar Caja", "Ocurrió un error al eliminar la caja.", ETipoMensaje.ERROR);		
+          JsfBase.addMessage("Eliminar Caja", "Ocurrió un error al eliminar la caja", ETipoMensaje.ERROR);		
       }
       else
-        JsfBase.addMessage("Eliminar Caja", "No puede existir menos de 1 caja por sucursal.", ETipoMensaje.ERROR);	
+        JsfBase.addMessage("Eliminar Caja", "No puede existir menos de 1 caja por sucursal", ETipoMensaje.ERROR);	
       this.attrs.put("isDeleted", isDeleted());
 		} // try
 		catch (Exception e) {

@@ -99,7 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el punto de control de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el punto de control.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el punto de control", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

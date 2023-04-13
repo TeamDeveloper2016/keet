@@ -95,7 +95,7 @@
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">								
 								<p:menuButton styleClass="lg-pantalla" value="Opciones">
-									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar un indicencia" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+                  <p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar un indicencia" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>
 									<p:menuitem icon="fa fa-copy" value="Incidencias" title="Incidencias" action="#{manticIncidentesFiltro.doIncidencias()}" onstart="return janal.bloquear()"/>						
 									<p:menuitem icon="fa fa-dollar" value="Incentivos" title="Incentivos" action="#{manticIncidentesFiltro.doIncentivos()}" onstart="return janal.bloquear()"/>						
 									<p:separator/>										
@@ -104,7 +104,7 @@
                   <p:separator/>
                   <p:menuitem icon="fa fa-edit" value="Aplicar incidencias" actionListener="#{manticIncidentesFiltro.doAplicar()}" process="@this" onstart="if(confirmar()) { return janal.bloquear(); }" oncomplete="janal.desbloquear()"/>
 								</p:menuButton>
-								<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>															
+								<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-copy" title="Incidencias" action="#{manticIncidentesFiltro.doIncidencias()}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>

@@ -154,9 +154,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new FacturaFicticia(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -478,13 +478,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 				transaccion= new Transaccion(copia);
 				if(transaccion.ejecutar(EAccion.COPIAR)) {
 					UIBackingUtilities.execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
-					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente", ETipoMensaje.ERROR);
 				} // if	
 				else
-					JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura.", ETipoMensaje.ERROR);								
+					JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura", ETipoMensaje.ERROR);								
 			} // if	
 			else
-				JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura, por favor intentelo de nuevo.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura, por favor intentelo de nuevo", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -723,9 +723,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			transaccion= new Transaccion(seleccionado.getKey());
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Automatico", "Se actualizó el estatus de forma correcta.", ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("Automatico", "Se actualizó el estatus de forma correcta", ETipoMensaje.INFORMACION);			
 			else
-				JsfBase.addMessage("Automatico", "Ocurrió un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Automatico", "Ocurrió un error al realizar el cambio de estatus", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

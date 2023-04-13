@@ -121,9 +121,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			persona.setIdPersona(seleccionado.getKey());
 			transaccion= new Transaccion(persona);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona seleccionada.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona seleccionada", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -118,9 +118,9 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
       } // finally	
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(sb.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
@@ -177,9 +177,9 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(sb.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);

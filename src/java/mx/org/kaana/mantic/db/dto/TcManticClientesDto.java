@@ -64,17 +64,25 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private String idFacturama;
   @Column (name="id_activo")
   private Long idActivo;
+  @Column (name="id_regimen_fiscal")
+  private Long idRegimenFiscal;
+  @Column (name="paterno")
+  private String paterno;
+  @Column (name="materno")
+  private String materno;
+  @Column (name="id_tipo_cliente")
+  private Long idTipoCliente;
 
   public TcManticClientesDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null, null, 1L);
+    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null, null, 1L, -1L, 1L, null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, String grupo, Long idActivo) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, String grupo, Long idActivo, Long idRegimenFiscal, Long idTipoCliente, String paterno, String materno) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -92,6 +100,10 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		this.idFacturama= idFacturama;
 		this.grupo= grupo;
 		this.idActivo= idActivo;
+    this.idRegimenFiscal= idRegimenFiscal;
+    this.idTipoCliente= idTipoCliente;    
+    this.paterno= paterno;
+    this.materno= materno;
   }
 	
   public void setClave(String clave) {
@@ -230,6 +242,38 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		this.idActivo=idActivo;
 	}
 
+  public Long getIdRegimenFiscal() {
+    return idRegimenFiscal;
+  }
+
+  public void setIdRegimenFiscal(Long idRegimenFiscal) {
+    this.idRegimenFiscal = idRegimenFiscal;
+  }
+
+  public String getPaterno() {
+    return paterno;
+  }
+
+  public void setPaterno(String paterno) {
+    this.paterno = paterno;
+  }
+
+  public String getMaterno() {
+    return materno;
+  }
+
+  public void setMaterno(String materno) {
+    this.materno = materno;
+  }
+
+  public Long getIdTipoCliente() {
+    return idTipoCliente;
+  }
+
+  public void setIdTipoCliente(Long idTipoCliente) {
+    this.idTipoCliente = idTipoCliente;
+  }
+  
   @Transient
   @Override
   public Long getKey() {
@@ -278,6 +322,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(getGrupo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdActivo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRegimenFiscal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPaterno());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMaterno());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoCliente());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -302,13 +354,17 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("idFacturama", getIdFacturama());
 		regresar.put("grupo", getGrupo());
 		regresar.put("idActivo", getIdActivo());
+		regresar.put("idRegimenFiscal", getIdRegimenFiscal());
+		regresar.put("paterno", getPaterno());
+		regresar.put("materno", getMaterno());
+		regresar.put("idTipoCliente", getIdTipoCliente());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getGrupo(), getIdActivo()
+      getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getGrupo(), getIdActivo(), getIdRegimenFiscal(), getPaterno(), getMaterno(), getIdTipoCliente()
     };
     return regresar;
   }

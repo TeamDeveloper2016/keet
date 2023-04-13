@@ -189,7 +189,7 @@ public class Abono extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -163,9 +163,9 @@ public class Accion extends Pedido implements Serializable {
 			Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion= new Transaccion(articulo.getKey(), (Long)this.attrs.get("idPedido"), Double.valueOf(this.attrs.get("cantidad").toString()));
 			if (transaccion.ejecutar(EAccion.REGISTRAR)) 			
-				JsfBase.addMessage("Se agregó el articulo de forma correcta.", ETipoMensaje.INFORMACION);   			
+				JsfBase.addMessage("Se agregó el articulo de forma correcta", ETipoMensaje.INFORMACION);   			
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el articulo en el pedido.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el articulo en el pedido", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -139,7 +139,7 @@ public class Filtro implements Serializable {
 				JsfBase.addMessage("La posición de menú se movió exitosamente");
 			} // if
 			else {
-				JsfBase.addMessage("Error", "La posición de menú no se pudo modificar.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Error", "La posición de menú no se pudo modificar", ETipoMensaje.ERROR);
 			} // else
 			consulta=new Consulta();
 			dtos=consulta.toFather(this.seleccionado.getClave());

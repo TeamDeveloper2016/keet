@@ -130,7 +130,7 @@ public class Excel implements Serializable {
   
   public void doCompleto() {
     if(!this.reporteGenerado) 
-      JsfBase.addMessage("Reporte", "Ocurrio un error en la generación del reporte.", ETipoMensaje.ERROR);
+      JsfBase.addMessage("Reporte", "Ocurrio un error en la generación del reporte", ETipoMensaje.ERROR);
 	}
   
   public String doCancelar() {

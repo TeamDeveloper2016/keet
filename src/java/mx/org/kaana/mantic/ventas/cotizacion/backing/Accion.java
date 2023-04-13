@@ -154,12 +154,12 @@ public class Accion extends IBaseVenta implements Serializable {
 					//JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cotización."), ETipoMensaje.INFORMACION);					
 				} // if	
 				else
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      												
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      												
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());										
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -372,11 +372,11 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');janal.desbloquear();");
-					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
+					JsfBase.addMessage("Se guardo la cuenta de venta", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if						
     } // try
     catch (Exception e) {

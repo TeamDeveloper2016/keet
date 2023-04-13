@@ -152,10 +152,10 @@ public class Entrega extends IBaseFilter implements Serializable {
 					regresar= "evidencia".concat(Constantes.REDIRECIONAR);						
 				} // if
 				else
-					JsfBase.addMessage("Entrega de material", "Ocurrió un error al procesar la entrega de material.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Entrega de material", "Ocurrió un error al procesar la entrega de material", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Entrega de material", "No se ha seleccionado ningun material para realizar la entrega.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Entrega de material", "No se ha seleccionado ningun material para realizar la entrega", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

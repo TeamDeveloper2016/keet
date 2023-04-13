@@ -180,7 +180,7 @@ public class Pagar extends IBaseFilter implements Serializable {
     try {									
 			transaccion = new Transaccion(((UISelectEntity)this.attrs.get("semana")).getKey(), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
-				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta", ETipoMensaje.INFORMACION);
         List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
         int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
         if(index>= 0) {
@@ -190,7 +190,7 @@ public class Pagar extends IBaseFilter implements Serializable {
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
-				JsfBase.addMessage("Cierre de caja chica", "Ocurrió un error al realizar el cierre de caja chica.", ETipoMensaje.ERROR);						
+				JsfBase.addMessage("Cierre de caja chica", "Ocurrió un error al realizar el cierre de caja chica", ETipoMensaje.ERROR);						
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

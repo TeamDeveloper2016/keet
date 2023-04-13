@@ -1,12 +1,10 @@
 package mx.org.kaana.keet.compras.codigos.reglas;
 
-import java.util.Calendar;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesCodigosDto;
-import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -47,6 +45,7 @@ public class Transaccion extends IBaseTnx {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
+			Error.mensaje(e);
       if(e!= null)
         if(e.getCause()!= null)
           this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());

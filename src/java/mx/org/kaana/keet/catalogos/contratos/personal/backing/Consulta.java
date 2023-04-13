@@ -338,7 +338,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			if(transaccion.ejecutar(Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? EAccion.DEPURAR: EAccion.COMPLEMENTAR))
 				JsfBase.addMessage("Desarrollo", "Se "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "eliminó": "asignó")+ " el empleado a(de) "+ desarrollo+ ".<br/>"+ seleccionado.toString("nombreCompleto"), ETipoMensaje.INFORMACION);			
 			else
-				JsfBase.addMessage("Desarrollo", "Ocurrió un error al "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "asingar": "eliminar")+ " el empleado.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Desarrollo", "Ocurrió un error al "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "asingar": "eliminar")+ " el empleado", ETipoMensaje.ERROR);
       this.doLoad();
 		} // try
 		catch (Exception e) {

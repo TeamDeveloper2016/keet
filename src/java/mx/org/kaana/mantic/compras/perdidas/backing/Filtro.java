@@ -101,9 +101,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, seleccionado.getKey())> 0L)
-				JsfBase.addMessage("Eliminar", "El articulo se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El articulo se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el articulo de la lista de precios.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el articulo de la lista de precios", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

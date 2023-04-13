@@ -153,11 +153,11 @@ public class Extra extends IBaseAttribute implements Serializable {
     try {						
 			transaccion= new Seguimiento(toLoadConceptoExtra());
 			if(transaccion.ejecutar(EAccion.AGREGAR)){
-				JsfBase.addMessage("Agregar concepto extra", "Se realizó la captura del concepto extra de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Agregar concepto extra", "Se realizó la captura del concepto extra de forma correcta", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 			} // if
 			else
-				JsfBase.addMessage("Agregar concepto extra", "Ocurrió un error al realizar la captura del concepto extra.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Agregar concepto extra", "Ocurrió un error al realizar la captura del concepto extra", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

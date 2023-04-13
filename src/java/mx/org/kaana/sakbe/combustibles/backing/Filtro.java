@@ -291,10 +291,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   	  bitacora= new TcSakbeCombustiblesBitacoraDto((String) this.attrs.get("justificacion"), -1L, JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
       } // if  
 			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

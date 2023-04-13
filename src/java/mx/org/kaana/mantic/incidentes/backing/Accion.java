@@ -201,14 +201,14 @@ public class Accion extends Comun implements Serializable {
 				this.incidente.setIdEmpresaPersona(seleccionado.getKey());
 				transaccion= new Transaccion(this.incidente);				
 				if(transaccion.ejecutar(eaccion)){
-					JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Se ejecutó la operación de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Se ejecutó la operación de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= "filtro".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
-					JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Ocurrió un error al ejecutar la operación.", ETipoMensaje.ERROR);
+					JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Ocurrió un error al ejecutar la operación", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Es necesario seleccionar a un empleado.", ETipoMensaje.ERROR);
+				JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Es necesario seleccionar a un empleado", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -999,9 +999,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // finally	
 			if(!this.automatico)
         if(correos.length()> 0)
-          JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
         else
-          JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+          JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			throw e;

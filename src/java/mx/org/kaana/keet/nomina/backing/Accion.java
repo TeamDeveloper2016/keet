@@ -113,9 +113,9 @@ public class Accion extends IBaseFilter implements Serializable {
   			transaccion= new Transaccion(nomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar());
       } // else  
 			if(transaccion.ejecutar(EAccion.AGREGAR))
-				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Ocurrió un error en el proceso de nómina.", ETipoMensaje.ALERTA);	
+				JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -124,7 +124,7 @@ public class Accion extends IBaseFilter implements Serializable {
 	} // doAceptar	
   
   public void doCompleto() {
-		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina.", ETipoMensaje.INFORMACION);		
+		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
 	private void toLoadCatalogos() {

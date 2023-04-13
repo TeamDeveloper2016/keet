@@ -86,9 +86,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticTrabajosDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar trabajo", "El trabajo se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar trabajo", "El trabajo se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar trabajo", "Ocurrió un error al eliminar el trabajo.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar trabajo", "Ocurrió un error al eliminar el trabajo", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

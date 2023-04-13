@@ -99,9 +99,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticBancosDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El banco se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El banco se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el bancos.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el bancos", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

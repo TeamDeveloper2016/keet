@@ -128,7 +128,7 @@ public class Asociar extends Comun implements Serializable {
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado", ETipoMensaje.ERROR);
 		} // catch
 	} // doFileUpload	
 	
@@ -187,14 +187,14 @@ public class Asociar extends Comun implements Serializable {
 				liberarImage();
 				transaccion= new Transaccion(this.selecteds, this.importado);
 				if(transaccion.ejecutar(EAccion.ASIGNAR)){
-					JsfBase.addMessage("Asignar imagen a articulos.", "Se realizó la asignacion de la imagen de forma correcta.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Asignar imagen a articulos.", "Se realizó la asignacion de la imagen de forma correcta", ETipoMensaje.ERROR);
 					doLoad();
 				} // if
 				else
-					JsfBase.addMessage("Asignar imagen a articulos.", "Ocurrió un error al realizar la asignación de la imagen.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Asignar imagen a articulos.", "Ocurrió un error al realizar la asignación de la imagen", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Asignar imagen a articulos.", "Es necesario seleccionar al menos un articulo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Asignar imagen a articulos.", "Es necesario seleccionar al menos un articulo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

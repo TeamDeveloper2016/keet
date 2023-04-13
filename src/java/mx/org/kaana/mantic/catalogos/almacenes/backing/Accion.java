@@ -130,7 +130,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				transaccion = new Transaccion(this.registroAlmacen);
 				if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					regresar = "filtro".concat(Constantes.REDIRECIONAR);
-					JsfBase.addMessage("Se registro el almacen de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Se registro el almacen de forma correcta", ETipoMensaje.INFORMACION);
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar el almacen", ETipoMensaje.ERROR);      

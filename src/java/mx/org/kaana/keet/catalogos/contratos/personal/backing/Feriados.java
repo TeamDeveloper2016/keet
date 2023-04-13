@@ -188,10 +188,10 @@ public class Feriados extends IBaseAttribute implements Serializable {
 					this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
 				} // if
 				else
-					JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha.", ETipoMensaje.INFORMACION);
+					JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addAlert("Agregar incidencia", "Solo se pueden realizar registros sobre la semana en curso.", ETipoMensaje.INFORMACION);
+				JsfBase.addAlert("Agregar incidencia", "Solo se pueden realizar registros sobre la semana en curso", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -391,10 +391,10 @@ public class Feriados extends IBaseAttribute implements Serializable {
 					this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));				
 				} // if
 				else
-					JsfBase.addAlert("Actualizar día festivo", "La captura de días festivos solo se pueden asignar a un día festivo marcado.", ETipoMensaje.ERROR);
+					JsfBase.addAlert("Actualizar día festivo", "La captura de días festivos solo se pueden asignar a un día festivo marcado", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addAlert("Actualizar día festivo", "El costo debe ser mayor a 0 ó no es posible seleccionar otro tipo cuando es día festivo.", ETipoMensaje.ERROR);
+				JsfBase.addAlert("Actualizar día festivo", "El costo debe ser mayor a 0 ó no es posible seleccionar otro tipo cuando es día festivo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -496,14 +496,14 @@ public class Feriados extends IBaseAttribute implements Serializable {
 				if(transaccion.ejecutar(EAccion.REGISTRAR)){
 					JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
 					JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));			
-					JsfBase.addMessage("Registro de incidencias", "las incidencias fueron registradas de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Registro de incidencias", "las incidencias fueron registradas de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= "empleados".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
-					JsfBase.addMessage("Registro de incidencias", "Ocurrio un error al registrar las incidencias.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registro de incidencias", "Ocurrio un error al registrar las incidencias", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registro de incidencias", "El empleado no cuenta con ninguna incidencia registrada.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registro de incidencias", "El empleado no cuenta con ninguna incidencia registrada", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

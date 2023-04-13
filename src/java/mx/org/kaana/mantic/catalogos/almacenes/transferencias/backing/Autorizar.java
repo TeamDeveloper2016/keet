@@ -169,7 +169,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al autorizar la confronta de articulos.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al autorizar la confronta de articulos", ETipoMensaje.ALERTA);      			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

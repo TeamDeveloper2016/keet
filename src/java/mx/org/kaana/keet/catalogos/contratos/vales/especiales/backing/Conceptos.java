@@ -209,7 +209,7 @@ public class Conceptos extends Accion implements Serializable {
 				accion= (EAccion) this.attrs.get("accion");
 				transaccion= accion.equals(EAccion.AGREGAR) ? new Transaccion(loadVale()) : new Transaccion(loadVale(), Long.valueOf(this.attrs.get("idVale").toString()));
 				if(transaccion.ejecutar(accion)){
-					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta", ETipoMensaje.INFORMACION);
 					if(accion.equals(EAccion.AGREGAR)){
 						JsfBase.setFlashAttribute("idVale", transaccion.getIdVale());
 						JsfBase.setFlashAttribute("qr", transaccion.getQr());				
@@ -222,10 +222,10 @@ public class Conceptos extends Accion implements Serializable {
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
-					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material.", ETipoMensaje.ERROR);			
+					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material", ETipoMensaje.ERROR);			
 			}
 			else
-				JsfBase.addMessage("Captura de materiales", "No se han capturado materiales.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Captura de materiales", "No se han capturado materiales", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

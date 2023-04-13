@@ -270,12 +270,12 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
     			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 el documento ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
         else
 				  if(this.accion.equals(EAccion.MODIFICAR))
-				    JsfBase.addMessage("Se modificó el documento con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
+				    JsfBase.addMessage("Se modificó el documento con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "]", ETipoMensaje.INFORMACION);
      		JsfBase.setFlashAttribute("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
 				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el documento.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el documento", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -429,11 +429,11 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
+					JsfBase.addMessage("Se guardo la cuenta de venta", ETipoMensaje.INFORMACION);	
 					this.init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((FacturaFicticia)this.getAdminOrden().getOrden()).isValid()) {
 				transaccion= new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden());
@@ -1011,7 +1011,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
   			JsfBase.setFlashAttribute("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la factura", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

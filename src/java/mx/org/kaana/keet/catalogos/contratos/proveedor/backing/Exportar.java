@@ -343,9 +343,9 @@ public class Exportar extends IBaseFilter implements Serializable {
 			incidentes.add(dto);
 			transaccion= new Transaccion(null, incidentes);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia.", ETipoMensaje.ERROR);							
+				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia", ETipoMensaje.ERROR);							
 			else
-				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -567,7 +567,7 @@ public class RegistroArticulo implements Serializable {
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado", ETipoMensaje.ERROR);
 		} // catch
 	} // doFileUpload
 	

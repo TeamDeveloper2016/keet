@@ -107,12 +107,12 @@ public class Detalle extends Pedido implements Serializable {
 		try {			
 			transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
 			if(transaccion.ejecutar(EAccion.ELIMINAR)){
-				JsfBase.addMessage("Eliminar articulo", "Se eliminó el articulo de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar articulo", "Se eliminó el articulo de forma correcta", ETipoMensaje.INFORMACION);
 				init();
 				UIBackingUtilities.execute("updateCountVal(".concat(this.attrs.get("pedidoCount").toString()).concat(");"));
 			} // if
 			else
-				JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el articulo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el articulo", ETipoMensaje.ERROR);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -127,11 +127,11 @@ public class Detalle extends Pedido implements Serializable {
 			if(!Objects.equals(row.getOriginal(), row.getCantidad())) {
 			  transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
 			  if(transaccion.ejecutar(EAccion.MODIFICAR)){
-					JsfBase.addMessage("Modificar cantidad de articulo", "Se modificó la cantidad del articulo de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Modificar cantidad de articulo", "Se modificó la cantidad del articulo de forma correcta", ETipoMensaje.INFORMACION);
 					init();
 				} // if
 				else
-					JsfBase.addMessage("Modificar cantidad de articulo", "Ocurrió un error al modificar la cantidad del articulo.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Modificar cantidad de articulo", "Ocurrió un error al modificar la cantidad del articulo", ETipoMensaje.ERROR);
 			} // if	
 		} // try
 	  catch (Exception e) {
@@ -170,9 +170,9 @@ public class Detalle extends Pedido implements Serializable {
 			pedido= (Entity) this.attrs.get("pedido");
 			transaccion= new Transaccion(new TcManticPedidosDto(pedido.getKey()));
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Cerrar pedidio", "El pedido se cerró de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cerrar pedidio", "El pedido se cerró de forma correcta", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Cerrar pedidio", "Ocurrió un error al cerrar el pedido.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cerrar pedidio", "Ocurrió un error al cerrar el pedido", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

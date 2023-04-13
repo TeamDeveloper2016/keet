@@ -102,21 +102,21 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		Dml.getInstance().reload();
 		LOG.info("Se recargo el archivo de configuracion XML de forma exitosa");
 		this.xml= Boolean.TRUE;
-		JsfBase.addMessage("Se recargarón los archivos XML con éxito.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Se recargarón los archivos XML con éxito", ETipoMensaje.INFORMACION);
 	}	
 	
   public void doProperties() {
 		Configuracion.getInstance().reload();
 		LOG.info("Se recargo el archivo de configuracion PROPIEDADES de forma exitosa");
 		this.properties= Boolean.TRUE;
-		JsfBase.addMessage("Se recargó el archivo de PROPIEDADES con éxito.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Se recargó el archivo de PROPIEDADES con éxito", ETipoMensaje.INFORMACION);
 	}	
 	
   public void doConfiguration() {
 		TcConfiguraciones.getInstance().reload();
 		LOG.info("Se recargo el archivo de CONFIGURACIONES de forma exitosa");
 		this.configuration= Boolean.TRUE;
-		JsfBase.addMessage("Se recargó el archivo de CONFIGURACIONES con éxito.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Se recargó el archivo de CONFIGURACIONES con éxito", ETipoMensaje.INFORMACION);
 	}	
 	
 //  public void doNotificar() {
@@ -125,7 +125,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 //	  	notificar.enviar();
 //	  	LOG.info("Se envio el correo de forma exitosa");
 //		  this.correo= Boolean.TRUE;
-//		  JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+//		  JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 //		} // try
 //		catch(Exception e) {
 //			Error.mensaje(e);
@@ -189,7 +189,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			} // for
 		  this.correo= Boolean.TRUE;
 	  	LOG.info("Se envio el correo de forma exitosa");
-		  JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		  JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);

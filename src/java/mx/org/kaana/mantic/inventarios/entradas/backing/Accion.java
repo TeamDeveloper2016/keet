@@ -272,7 +272,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
               JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
             } // if
             else 
-              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
           } // if  
           else 
             JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
@@ -716,7 +716,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			} // if
 		} // if
 		else 
-			JsfBase.addMessage("Se tiene que seleccionar un proveedor primero.", ETipoMensaje.ALERTA);      			
+			JsfBase.addMessage("Se tiene que seleccionar un proveedor primero", ETipoMensaje.ALERTA);      			
 	} // doFileUpload	
 	
 	private void toPrepareDisponibles(boolean checkItems) {

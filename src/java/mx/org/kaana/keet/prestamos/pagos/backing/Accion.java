@@ -82,11 +82,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				this.attrs.put("numeroPrestamos", transaccion.getPagos());
 				this.attrs.put("cambio", transaccion.getCambio());
-				JsfBase.addMessage("Se registró el pago de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se registró el pago de forma correcta", ETipoMensaje.INFORMACION);
 				//JsfBase.
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

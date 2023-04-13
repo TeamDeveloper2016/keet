@@ -244,9 +244,9 @@ public class Filtro extends Comun implements Serializable {
       registro.setIdArticulo(seleccionado.getKey());
       transaccion = new Transaccion(registro, 0D, true);
       if (transaccion.ejecutar(EAccion.ELIMINAR)) 
-        JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente", ETipoMensaje.ERROR);
       else
-        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -544,9 +544,9 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, false);
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Habilitar articulo", "Se habilito de forma correcta el articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Habilitar articulo", "Se habilito de forma correcta el articulo", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Habilitar articulo", "Ocurrió un error al habilitar el articulo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Habilitar articulo", "Ocurrió un error al habilitar el articulo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -562,9 +562,9 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, true);			
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Deshabilitar articulo", "Se deshabilito de forma correcta el articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Deshabilitar articulo", "Se deshabilito de forma correcta el articulo", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Deshabilitar articulo", "Ocurrió un error al deshabilitar el articulo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Deshabilitar articulo", "Ocurrió un error al deshabilitar el articulo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

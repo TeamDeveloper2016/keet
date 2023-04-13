@@ -146,9 +146,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, seleccionado.getKey()), seleccionado.toDouble("importe"), null, null);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La nota de crédito se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La nota de crédito se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de crédito.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de crédito", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

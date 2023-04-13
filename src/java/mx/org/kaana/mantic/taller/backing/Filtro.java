@@ -150,9 +150,9 @@ public class Filtro extends Comun implements Serializable {
 			registro.setIdServicio(seleccionado.getKey());
 			transaccion= new Transaccion(registro);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar servicio", "El servicio de taller se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar servicio", "El servicio de taller se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar servicio", "Ocurrió un error al eliminar el servicio de taller.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar servicio", "Ocurrió un error al eliminar el servicio de taller", ETipoMensaje.ERROR);								
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -286,7 +286,7 @@ public class Filtro extends Comun implements Serializable {
         regresar= "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);        
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);        
     } // try
     catch (Exception e) {
       Error.mensaje(e);

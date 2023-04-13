@@ -96,7 +96,7 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
     try {
       transaccion = new Transaccion(new TcManticListasPreciosDto(((Entity)attrs.get("seleccionado")).getKey()));
       transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar lista de precios proveedor", "La lista de precios de el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+      JsfBase.addMessage("Eliminar lista de precios proveedor", "La lista de precios de el proveedor se ha eliminado correctamente", ETipoMensaje.INFORMACION);
     }
     catch (Exception e) {
       Error.mensaje(e);

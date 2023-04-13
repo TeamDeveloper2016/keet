@@ -100,7 +100,7 @@ public class Apertura extends IBaseAttribute implements Serializable {
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al realizar el registro de fonde de caja.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al realizar el registro de fonde de caja", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

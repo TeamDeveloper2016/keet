@@ -114,7 +114,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el abono de caja.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el abono de caja", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

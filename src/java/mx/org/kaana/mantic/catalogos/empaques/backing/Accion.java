@@ -114,7 +114,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			transaccion= new Transaccion(empaqueUnidad);
       if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al realizar el registro", ETipoMensaje.ERROR);      

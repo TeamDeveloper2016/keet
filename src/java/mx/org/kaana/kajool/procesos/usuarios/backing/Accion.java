@@ -106,7 +106,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar(this.accion)) {
 				JsfBase.setFlashAttribute("idPersonaProcess", persona.getIdPersona());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR)? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR)? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito", ETipoMensaje.INFORMACION);
       } // if
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");

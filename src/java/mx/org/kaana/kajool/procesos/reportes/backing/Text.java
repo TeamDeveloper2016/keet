@@ -150,7 +150,7 @@ public class Text implements Serializable{
 	}
   
   public void doCompleto() {
-		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente la exportación.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente la exportación", ETipoMensaje.INFORMACION);
 	}
   
   public String doCancelar() {

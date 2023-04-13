@@ -117,10 +117,10 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			if(transaccion.ejecutar(EAccion.REPROCESAR)){				
 				JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
 				regresar= "lotes".concat(Constantes.REDIRECIONAR);			
-				JsfBase.addMessage("Asignación de residentes de obra a lotes", "La asignación se realizó de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asignación de residentes de obra a lotes", "La asignación se realizó de forma correcta", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("Asignación de residentes de obra a lotes", "Ocurrió un error al realizar la asignación.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Asignación de residentes de obra a lotes", "Ocurrió un error al realizar la asignación", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -303,7 +303,7 @@ public class Abono extends IBasePagos implements Serializable {
 				} // if
 			} // if			
 			else
-				JsfBase.addMessage("Importar archivo", "Es necesario seleccionar un archivo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Importar archivo", "Es necesario seleccionar un archivo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

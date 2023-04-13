@@ -181,7 +181,7 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	}
 
 	public void doCompleto() {
-		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente el reporte.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente el reporte", ETipoMensaje.INFORMACION);
 	} // doCompleto
 
 	@Override

@@ -195,7 +195,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
   			this.attrs.put("total", this.articulos.size());
 			} // if	
 			else 
-				JsfBase.addMessage("Ocurrió un error al replicar las imagen.", ETipoMensaje.ALERTA);
+				JsfBase.addMessage("Ocurrió un error al replicar las imagen", ETipoMensaje.ALERTA);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

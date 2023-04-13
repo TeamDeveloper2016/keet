@@ -146,12 +146,12 @@ public class Resumen extends IBaseFilter implements Serializable {
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("gasto")).getKey(), true);
 			if(transaccion.ejecutar(EAccion.MODIFICAR)) {
-				JsfBase.addMessage("Aceptar gasto", "El gasto fue aceptado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Aceptar gasto", "El gasto fue aceptado correctamente", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 				JsfBase.setFlashAttribute("idGasto", null);			
 			} // if
 			else
-				JsfBase.addMessage("Aceptar gasto", "Ocurrió un error al aceptar el gasto.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Aceptar gasto", "Ocurrió un error al aceptar el gasto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -166,12 +166,12 @@ public class Resumen extends IBaseFilter implements Serializable {
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("gasto")).getKey(), false);
 			if(transaccion.ejecutar(EAccion.MODIFICAR)){			
-				JsfBase.addMessage("Rechazar gasto", "El gasto fue rechazado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Rechazar gasto", "El gasto fue rechazado correctamente", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 				JsfBase.setFlashAttribute("idGasto", null);			
 			} // if
 			else
-				JsfBase.addMessage("Rechazar gasto", "Ocurrió un error al rechazar el gasto.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Rechazar gasto", "Ocurrió un error al rechazar el gasto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

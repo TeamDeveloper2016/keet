@@ -298,12 +298,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), articulo.toString("descuento"), articulo.toString("extra"), this.adminKardex.getTiposVentas(), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
 				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
 			}	// if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -613,11 +613,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
   public String	doCancelar() {
 		if(this.attrs.get("custom")!= null) {
-		  JsfBase.addMessage("Se cargaron de nueva cuenta los datos del articulo.", ETipoMensaje.INFORMACION);
+		  JsfBase.addMessage("Se cargaron de nueva cuenta los datos del articulo", ETipoMensaje.INFORMACION);
 		  this.doFindArticulo();
 	  } // if	
 		else
-		  JsfBase.addMessage("No se ha seleccionado ningun articulo.", ETipoMensaje.ALERTA);
+		  JsfBase.addMessage("No se ha seleccionado ningun articulo", ETipoMensaje.ALERTA);
     return null;
 	}
 
@@ -921,14 +921,14 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("idRedondear")? 1L: 2L, -1L, -1L);
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificó el atributo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó el atributo de redondeo del articulo", ETipoMensaje.INFORMACION);
 				for (TiposVentas item: this.adminKardex.getTiposVentas()) {
 					item.setRounded((Boolean)this.attrs.get("idRedondear"));
 				} // for
 				this.doUpdateCosto((Double)this.attrs.get("precio"), true);
 			}	// if
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -942,9 +942,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) 
-				JsfBase.addMessage("Se modificó el código del SAT ["+ (String)this.attrs.get("sat")+ "] del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó el código del SAT ["+ (String)this.attrs.get("sat")+ "] del articulo", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio del código del SAT.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio del código del SAT", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -958,12 +958,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"));
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "] al articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "] al articulo", ETipoMensaje.INFORMACION);
 				this.toLoadCodigos();
 				this.attrs.put("auxiliar", "");
 			} // if	
 			else 
-				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -977,11 +977,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion(depurar.getKey(), "");
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se eliminó el código auxiliar ["+ depurar.toString("codigo")+ "] del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se eliminó el código auxiliar ["+ depurar.toString("codigo")+ "] del articulo", ETipoMensaje.INFORMACION);
 				this.toLoadCodigos();
 			} // if	
 			else 
-				JsfBase.addMessage("Ocurrió un error al eliminar el código auxiliar del articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al eliminar el código auxiliar del articulo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1042,11 +1042,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			almacen.put("max", new Value("max", this.attrs.get("max")));
 			transaccion = new Transaccion(almacen);
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-				JsfBase.addMessage("Se modificaron los umbrales del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificaron los umbrales del articulo", ETipoMensaje.INFORMACION);
   			this.toLoadAlmacenes();
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar los umbrales del articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar los umbrales del articulo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1066,9 +1066,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, (Boolean)this.attrs.get("idVigente")? 1L: 2L, -1L);
 			if (transaccion.ejecutar(eaccion))
-				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1082,9 +1082,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, -1L, (Boolean)this.attrs.get("idDescontinuado")? 1L: 2L);
 			if (transaccion.ejecutar(eaccion))
-				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

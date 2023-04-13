@@ -107,7 +107,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
   			JsfBase.setFlashAttribute("idCierreAnterior", this.attrs.get("idCierreAnterior"));
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al realizar el registro de fonde de caja.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al realizar el registro de fonde de caja", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

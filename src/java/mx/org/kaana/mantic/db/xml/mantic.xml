@@ -7,6 +7,77 @@
   </model>
 
   <dml>
+    <unit id="TcManticRegimenesFiscalesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_regimenes_fiscales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_regimenes_fiscales
+        where      
+          id_tipo_regimen_persona = {idTipoRegimenPersona} and codigo = '{codigo}'
+      </select>
+      <select id="tipo">
+        select      
+          tc_mantic_regimenes_fiscales.id_regimen_fiscal as id_key,
+          tc_mantic_tipos_regimenes_personas.nombre as persona,
+          tc_mantic_regimenes_fiscales.codigo,
+          tc_mantic_regimenes_fiscales.nombre,
+          tc_mantic_regimenes_fiscales.nombre as completo
+        from      
+          tc_mantic_regimenes_fiscales
+        inner join
+          tc_mantic_tipos_regimenes_personas on tc_mantic_regimenes_fiscales.id_tipo_regimen_persona= tc_mantic_tipos_regimenes_personas.id_tipo_regimen_persona
+        where      
+          tc_mantic_regimenes_fiscales.id_tipo_regimen_persona in ({idTipoRegimenPersona})
+        order by
+          tc_mantic_regimenes_fiscales.codigo
+      </select>
+    </unit>    
+    <unit id="TcManticTiposRegimenesPersonasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_regimenes_personas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_regimenes_personas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticTiposClientesDto">
+      <select id="row">
+select      
+  tc_mantic_tipos_clientes.id_tipo_cliente as id_key,
+  tc_mantic_tipos_clientes.*
+from      
+  tc_mantic_tipos_clientes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_clientes
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcManticEmpresasBitacoraDto">
       <select id="row">
         select      

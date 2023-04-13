@@ -377,7 +377,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -448,7 +448,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -484,7 +484,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -646,7 +646,7 @@ public class Deuda extends IBaseImportar implements Serializable {
         } // if
       } // if
       else 
-        JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			
+        JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero", ETipoMensaje.ALERTA);      			
     } // try
     catch(Exception e ) {
       throw e;
@@ -798,7 +798,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

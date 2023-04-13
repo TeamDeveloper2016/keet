@@ -186,7 +186,7 @@ public class Estructura extends IBaseFilter implements Serializable {
       } // if
       else{
         UIBackingUtilities.execute("janal.desbloquear();");        
-        JsfBase.addMessage("Detalle", "Es necesario seleccionar un documento, para mostrar la informacion.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Detalle", "Es necesario seleccionar un documento, para mostrar la informacion", ETipoMensaje.ERROR);
       } // else
     } // try // try
     catch (Exception e) {

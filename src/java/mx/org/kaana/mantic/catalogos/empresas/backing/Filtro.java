@@ -110,9 +110,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			registro.setIdEmpresa(seleccionado.getKey());
 			transaccion= new Transaccion(registro);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar empresa", "La empresa se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar empresa", "La empresa se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar empresa", "Ocurrió un error al eliminar la empresa.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar empresa", "Ocurrió un error al eliminar la empresa", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

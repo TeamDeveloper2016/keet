@@ -153,9 +153,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			dto.setIdDiaFestivo(((Entity)this.attrs.get("seleccionado")).getKey());
 			transaccion= new Transaccion(dto);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar día festivo.", "Se eliminó de forma correcta el día festivo.", ETipoMensaje.INFORMACION);							
+				JsfBase.addMessage("Eliminar día festivo.", "Se eliminó de forma correcta el día festivo", ETipoMensaje.INFORMACION);							
 			else
-				JsfBase.addMessage("Eliminar día festivo.", "Ocurrio un error al eliminar el día festivo.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Eliminar día festivo.", "Ocurrio un error al eliminar el día festivo", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -168,9 +168,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			transaccion= new Transaccion(new TcKeetDiasFestivosDto());
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Aperturar ejercicio.", "Se aperturo el ejercicio de forma correcta.", ETipoMensaje.INFORMACION);							
+				JsfBase.addMessage("Aperturar ejercicio.", "Se aperturo el ejercicio de forma correcta", ETipoMensaje.INFORMACION);							
 			else
-				JsfBase.addMessage("Aperturar ejercicio.", "Ocurrio un error al aperturar el ejercicio.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Aperturar ejercicio.", "Ocurrio un error al aperturar el ejercicio", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

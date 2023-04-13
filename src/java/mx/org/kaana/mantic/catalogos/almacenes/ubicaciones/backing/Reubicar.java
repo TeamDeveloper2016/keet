@@ -126,11 +126,11 @@ public class Reubicar extends Comun implements Serializable {
 			accion= articulo.get("idAlmacenArticulo").getData()!= null ? EAccion.MODIFICAR : EAccion.ASIGNAR;
 			transaccion= new Transaccion(articulo);
 			if(transaccion.ejecutar(accion)){
-				JsfBase.addMessage("Asignación de ubicación", "Se asigno la ubicación de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asignación de ubicación", "Se asigno la ubicación de forma correcta", ETipoMensaje.INFORMACION);
 				doLoad();
 			} // if
 			else
-				JsfBase.addMessage("Asignación de ubicación", "Ocurrio un error al asignar la ubicación.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Asignación de ubicación", "Ocurrio un error al asignar la ubicación", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

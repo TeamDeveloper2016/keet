@@ -213,16 +213,16 @@ public class Accion extends Catalogos implements Serializable {
 			if(gasto!= null && !this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(gasto, this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta.", ETipoMensaje.INFORMACION);										
+					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta", ETipoMensaje.INFORMACION);										
 					regresar= this.doCancelar();
 					if(Cadena.isVacio(this.attrs.get("retorno")))
 						regresar= "accion".concat(Constantes.REDIRECIONAR);											
 				} // if
 				else
-					JsfBase.addMessage("Caja chica", "Ocurrió un error al realizar la captura del gasto.", ETipoMensaje.ERROR);			
+					JsfBase.addMessage("Caja chica", "Ocurrió un error al realizar la captura del gasto", ETipoMensaje.ERROR);			
 			} // if
 			else
-				JsfBase.addMessage("Caja chica", "No se han capturado el gasto.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Caja chica", "No se han capturado el gasto", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -238,7 +238,7 @@ public class Accion extends Catalogos implements Serializable {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta.", ETipoMensaje.INFORMACION);					
+					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
 					JsfBase.setFlashAttribute("retorno", "accion");										
 					JsfBase.setFlashAttribute("retornoInicial", this.attrs.get("retornoInicial"));										
@@ -246,10 +246,10 @@ public class Accion extends Catalogos implements Serializable {
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
-					JsfBase.addMessage("Caja chica", "Ocurrió un error al registrar el gasto.", ETipoMensaje.ERROR);			
+					JsfBase.addMessage("Caja chica", "Ocurrió un error al registrar el gasto", ETipoMensaje.ERROR);			
 			} // if
 			else
-				JsfBase.addMessage("Caja chica", "No se han capturado el gasto.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Caja chica", "No se han capturado el gasto", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

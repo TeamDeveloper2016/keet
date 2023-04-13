@@ -172,7 +172,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada manual.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada manual", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

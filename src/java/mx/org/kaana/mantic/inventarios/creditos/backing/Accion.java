@@ -150,7 +150,7 @@ public class Accion extends IBaseImportar implements Serializable {
   			JsfBase.setFlashAttribute("idCreditoNota", ((NotaCredito)this.orden).getIdCreditoNota());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de crédito.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la nota de crédito", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

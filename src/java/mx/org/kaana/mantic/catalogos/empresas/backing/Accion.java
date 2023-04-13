@@ -125,7 +125,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("idEmpresaProcess", this.registroEmpresa.getEmpresa().getIdEmpresa());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro la empresa de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro la empresa de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al registrar la empresa", ETipoMensaje.ERROR);      

@@ -248,12 +248,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.init();
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
-				  JsfBase.addMessage("Se modificó la cotización con consecutivo ["+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
+				  JsfBase.addMessage("Se modificó la cotización con consecutivo ["+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "]", ETipoMensaje.INFORMACION);
 				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
   			JsfBase.setFlashAttribute("idFicticia", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cotización.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cotización", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -408,11 +408,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
+					JsfBase.addMessage("Se guardo la cuenta de venta", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((CotizacionFicticia)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((CotizacionFicticia)this.getAdminOrden().getOrden()));
@@ -907,7 +907,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   			JsfBase.setFlashAttribute("idFicticia", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getIdFicticia());							
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cotización.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cotización", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

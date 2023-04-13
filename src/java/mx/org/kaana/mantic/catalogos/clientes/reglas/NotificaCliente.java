@@ -161,9 +161,9 @@ public class NotificaCliente implements Serializable {
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(this.correos.length()> 0)
-		    addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
-		    addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		    addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);

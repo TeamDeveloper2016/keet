@@ -99,7 +99,7 @@ public class Lector extends IBaseFilter implements Serializable {
 				regresar= "entrega".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
-				JsfBase.addMessage("No se ha detectado ningun vale.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("No se ha detectado ningun vale", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -116,7 +116,7 @@ public class Lector extends IBaseFilter implements Serializable {
 				regresar= "resumen".concat(Constantes.REDIRECIONAR);										
 			} // if
 			else
-				JsfBase.addMessage("No se ha detectado ningun vale.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("No se ha detectado ningun vale", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

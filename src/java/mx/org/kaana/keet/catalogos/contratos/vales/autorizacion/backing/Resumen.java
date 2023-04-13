@@ -181,11 +181,11 @@ public class Resumen extends IBaseFilter implements Serializable {
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), true, this.attrs.get("justificacion").toString(), Long.valueOf(this.attrs.get("cargo").toString()));
 			if(transaccion.ejecutar(EAccion.PROCESAR)){			
-				JsfBase.addMessage("Aceptar vale", "El vale fue aceptado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Aceptar vale", "El vale fue aceptado correctamente", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 			} // if
 			else
-				JsfBase.addMessage("Aceptar vale", "Ocurrió un error al aceptar el vale.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Aceptar vale", "Ocurrió un error al aceptar el vale", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -200,11 +200,11 @@ public class Resumen extends IBaseFilter implements Serializable {
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), false, this.attrs.get("justificacion").toString(), Long.valueOf(this.attrs.get("cargo").toString()));
 			if(transaccion.ejecutar(EAccion.PROCESAR)){			
-				JsfBase.addMessage("Rechazar vale", "El vale fue rechazado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Rechazar vale", "El vale fue rechazado correctamente", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 			} // if
 			else
-				JsfBase.addMessage("Rechazar vale", "Ocurrió un error al rechazar el vale.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Rechazar vale", "Ocurrió un error al rechazar el vale", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

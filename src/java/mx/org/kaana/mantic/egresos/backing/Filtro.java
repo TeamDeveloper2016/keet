@@ -169,9 +169,9 @@ public class Filtro extends Comun implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			transaccion= new Transaccion(seleccionado.getKey(), this.attrs.get("nota").toString());
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Registrar nota", "Se registro de forma correcta la nota.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Registrar nota", "Se registro de forma correcta la nota", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Registrar nota", "Ocurrió un error al registrar la nota.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar nota", "Ocurrió un error al registrar la nota", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

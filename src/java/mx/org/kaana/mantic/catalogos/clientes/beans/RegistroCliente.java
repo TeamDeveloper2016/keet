@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -12,6 +13,7 @@ import mx.org.kaana.keet.db.dto.TcKeetClientesPortalesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -49,6 +51,9 @@ public class RegistroCliente implements Serializable{
 	private ClienteVivienda clienteViviendaSeleccion;
 	private List<ClienteInfraestructura> clientesInfraestructuras;
 	private ClienteInfraestructura clienteInfraestructuraSeleccion;	
+  private int index;
+  private UISelectEntity ikRegimenFiscal;
+  
 		
 	public RegistroCliente() {
 		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante(), new TcKeetClientesPortalesDto(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteVivienda>(), new ClienteVivienda(), new ArrayList<ClienteInfraestructura>(), new ClienteInfraestructura()) ;
@@ -63,7 +68,8 @@ public class RegistroCliente implements Serializable{
 		this.domicilioPivote          = new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
 		this.personaTipoContacto      = new ClienteContactoRepresentante();				
-		init();		
+    this.index                    = -1;
+		this.init();		
 	}
 	
 	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto, TcKeetClientesPortalesDto portal, List<ClienteBanca> clientesServicio, List<ClienteBanca> clientesTransferencia, List<ClienteVivienda> clientesViviendas, ClienteVivienda clienteViviendaSeleccion, List<ClienteInfraestructura> clientesInfraestructuras, ClienteInfraestructura clienteInfraestructuraSeleccion) {
@@ -89,6 +95,11 @@ public class RegistroCliente implements Serializable{
 		this.clientesInfraestructuras = clientesInfraestructuras;
 		this.clienteViviendaSeleccion = clienteViviendaSeleccion;
 		this.clienteInfraestructuraSeleccion= clienteInfraestructuraSeleccion;
+    this.index                    = -1;
+    if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
+      this.ikRegimenFiscal= new UISelectEntity(this.cliente.getIdRegimenFiscal());
+    else
+      this.ikRegimenFiscal= new UISelectEntity(-1L);
 	}
 	
 	public Long getIdCliente() {
@@ -107,6 +118,16 @@ public class RegistroCliente implements Serializable{
 		this.cliente = cliente;
 	}
 
+	public void setIkRegimenFiscal(UISelectEntity ikRegimenFiscal) {
+		this.ikRegimenFiscal=ikRegimenFiscal;
+		if(this.ikRegimenFiscal!= null && this.cliente!= null)
+		  this.cliente.setIdRegimenFiscal(this.ikRegimenFiscal.getKey());
+	}
+
+	public UISelectEntity getIkRegimenFiscal() {
+		return ikRegimenFiscal;
+	}  
+  
 	public List<ClienteDomicilio> getClientesDomicilio() {
 		return clientesDomicilio;
 	}
@@ -301,7 +322,15 @@ public class RegistroCliente implements Serializable{
 		this.clienteInfraestructuraSeleccion = clienteInfraestructuraSeleccion;
 	}	
 	
-	private void init(){
+  public int getIndex() {
+    return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
+  
+	private void init() {
 		MotorBusqueda motorBusqueda= null;
 		try {
 			motorBusqueda= new MotorBusqueda(this.idCliente);
@@ -309,7 +338,11 @@ public class RegistroCliente implements Serializable{
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
 			this.portal= motorBusqueda.toPortal();
 			this.activo= this.cliente.getIdActivo().equals(1L);
-			initCollections(motorBusqueda);
+      if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
+        this.setIkRegimenFiscal(new UISelectEntity(this.cliente.getIdRegimenFiscal()));
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
+			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -343,7 +376,7 @@ public class RegistroCliente implements Serializable{
 		ClienteDomicilio clienteDomicilio= null;
 		try {								
 			clienteDomicilio= new ClienteDomicilio(this.contadores.getTotalClientesDomicilios()+ this.countIndice, ESql.INSERT, true);	
-			setValuesClienteDomicilio(clienteDomicilio, false);			
+      this.toUpdateClientePivote(clienteDomicilio, false);			
 			this.clientesDomicilio.add(clienteDomicilio);			
 		} // try
 		catch (Exception e) {
@@ -402,12 +435,12 @@ public class RegistroCliente implements Serializable{
 		} // catch		
 	} // doConsultarClienteDomicilio
 	
-	public void doActualizarClienteDomicilio(){
+	public void doActualizarClienteDomicilio() { 
 		ClienteDomicilio pivote= null;
 		try {			
 			pivote= this.clientesDomicilio.get(this.clientesDomicilio.indexOf(this.clienteDomicilioSelecion));			
 			pivote.setModificar(false);
-			setValuesClienteDomicilio(pivote, true);						
+        this.toUpdateClientePivote(pivote, true);						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -415,17 +448,18 @@ public class RegistroCliente implements Serializable{
 		} // catch				
 	} // doActualizarClienteDomicilio
 	
-	private void setValuesClienteDomicilio(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception{
+	public void toUpdateClientePivote(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception {
+    Long idDomicilio= this.getDomicilioPivote()== null? -1L: this.getDomicilioPivote().getIdDomicilio();
 		try {
-			if(this.domicilio.getPrincipal()){
+			if(this.domicilio.getPrincipal()) {
 				for(ClienteDomicilio record: this.clientesDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);
 			if(this.domicilio.getDomicilio()!= null){
-				clienteDomicilio.setDomicilio(this.domicilio.getDomicilio());
-				clienteDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
-			} // if
+    		clienteDomicilio.setIdDomicilio(idDomicilio);
+	  		clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
+			} // if	
+			clienteDomicilio.setDomicilio(new Entity(idDomicilio));
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
@@ -440,13 +474,14 @@ public class RegistroCliente implements Serializable{
 			clienteDomicilio.setEntreCalle(this.domicilio.getEntreCalle());
 			clienteDomicilio.setyCalle(this.domicilio.getYcalle());
 			clienteDomicilio.setColonia(this.domicilio.getAsentamiento());
+			clienteDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
 			clienteDomicilio.setNuevoCp(this.domicilio.getCodigoPostal()!= null && !Cadena.isVacio(this.domicilio.getCodigoPostal()));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // setValuesClienteDomicilio
-	
+	} // toUpdateClientePivote
+	  
 	public void doAgregarClienteRepresentante(){
 		ClienteRepresentante clienteRepresentante= null;
 		try {					
@@ -576,6 +611,7 @@ public class RegistroCliente implements Serializable{
 			clienteContactoRepresentante.setMaterno(this.personaTipoContactoPivote.getMaterno());
 			clienteContactoRepresentante.setContactos(this.personaTipoContactoPivote.getContactos());
 			this.personasTiposContacto.add(clienteContactoRepresentante);			
+      this.index= this.personasTiposContacto.size()- 1;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -584,12 +620,16 @@ public class RegistroCliente implements Serializable{
 		finally {			
 			this.countIndice++;
 		} // finally
-	} // doAgregarClienteDomicilio
+	} 
 	
 	public void doConsultarRepresentante(){
 		ClienteContactoRepresentante pivote= null;
 		try {			
-			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+      for (ClienteContactoRepresentante item: this.personasTiposContacto) {
+        item.setModificar(false);
+      } // for
+      this.index= this.personasTiposContacto.indexOf(this.personaTipoContacto);
+			pivote= this.personasTiposContacto.get(this.index);
 			pivote.setModificar(true);
 			this.personaTipoContactoPivote= new ClienteContactoRepresentante();
 			this.personaTipoContactoPivote.setNombres(pivote.getNombres());
@@ -619,10 +659,19 @@ public class RegistroCliente implements Serializable{
 		} // catch		
 	} // doEliminarRepresentante
 	
-	public void doActualizaRepresentante(){
+	public void doActualizaRepresentante() {
+    this.doActualizaRepresentante(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+  }
+  
+	public void doUpdateRepresentante() {
+    if(this.index> 0)
+      this.doActualizaRepresentante(this.index);
+  }
+  
+	public void doActualizaRepresentante(Integer index) {
 		ClienteContactoRepresentante pivote= null;
 		try {			
-			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+			pivote= this.personasTiposContacto.get(index);
 			pivote.setModificar(false);
 			pivote.setNombres(this.personaTipoContactoPivote.getNombres());
 			pivote.setPaterno(this.personaTipoContactoPivote.getPaterno());
@@ -665,9 +714,9 @@ public class RegistroCliente implements Serializable{
 		finally {			
 			this.countIndice++;
 		} // finally
-	} // doAgregarProveedorTipoContacto
+	} 
 	
-	public void doEliminarProveedorServicio(){
+	public void doEliminarProveedorServicio() {
 		try {			
 			if(this.clientesServicio.remove(this.clienteServicioSeleccion)){
 				if(!this.clienteServicioSeleccion.getNuevo())

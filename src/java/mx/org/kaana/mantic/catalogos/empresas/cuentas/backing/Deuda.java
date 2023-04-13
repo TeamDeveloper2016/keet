@@ -391,7 +391,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a cero o la cuenta ya se encuentra finalizada.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a cero o la cuenta ya se encuentra finalizada", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -478,7 +478,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -508,7 +508,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. ó no se selecciono ninguna cuenta.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. ó no se selecciono ninguna cuenta", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

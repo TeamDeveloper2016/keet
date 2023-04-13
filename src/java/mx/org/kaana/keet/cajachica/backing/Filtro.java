@@ -423,9 +423,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionadoGasto");
 			transaccion= new Transaccion(seleccionado.getKey(), true);
 			if(transaccion.ejecutar(EAccion.REGISTRAR))
-				JsfBase.addMessage("Revisar gasto", "Se reviso el gasto de forma correcta.", ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("Revisar gasto", "Se reviso el gasto de forma correcta", ETipoMensaje.INFORMACION);			
 			else
-				JsfBase.addMessage("Revisar gasto", "Ocurrió un error al revisar el gasto.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Revisar gasto", "Ocurrió un error al revisar el gasto", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

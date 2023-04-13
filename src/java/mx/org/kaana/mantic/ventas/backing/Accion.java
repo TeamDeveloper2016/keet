@@ -206,7 +206,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (!transaccion.ejecutar(eaccion)) {
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 					bandera= false;
 				} // if
 			} // if
@@ -419,11 +419,11 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
+					JsfBase.addMessage("Se guardo la cuenta de venta", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));

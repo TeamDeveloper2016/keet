@@ -238,10 +238,10 @@ public class Evidencia extends IBaseImportar implements Serializable {
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);						
 				} // if
 				else
-					JsfBase.addMessage("Captura de evidencia", "Ocurrió un error al realizar el registro de la evidencia.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Captura de evidencia", "Ocurrió un error al realizar el registro de la evidencia", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Captura de evidencia", "No se ha importado ningun archivo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Captura de evidencia", "No se ha importado ningun archivo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -282,7 +282,7 @@ public class Evidencia extends IBaseImportar implements Serializable {
 				regresar= "entrega".concat(Constantes.REDIRECIONAR);			
 			} // if
 			else
-				JsfBase.addMessage("Entrega de material", "Ocurrió un error al cancelar la entrega de material.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Entrega de material", "Ocurrió un error al cancelar la entrega de material", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

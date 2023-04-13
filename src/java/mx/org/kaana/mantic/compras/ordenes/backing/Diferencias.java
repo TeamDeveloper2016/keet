@@ -134,7 +134,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
     TcManticOrdenesComprasDto cloneOrdenCompra= null;
 		try {
 			TcManticOrdenesBitacoraDto bitacora= new TcManticOrdenesBitacoraDto(7L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-			transaccion = new Transaccion(this.orden, bitacora);
+			transaccion = new Transaccion(this.orden, bitacora, -1L);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
         cloneOrdenCompra= transaccion.getCloneOrdenCompra();
         String mensaje  = "";
@@ -142,10 +142,10 @@ public class Diferencias extends IFilterImportar implements Serializable {
           this.attrs.put("idOrdenCompra", cloneOrdenCompra.getIdOrdenCompra());
           mensaje= "+ String.fromCharCode(10)+ String.fromCharCode(10)+ 'COMO LA ORDEN DE COMPRA [".concat(this.orden.getConsecutivo()).concat("] NO FUE SURTIDA '+ String.fromCharCode(10)+'DE FORMA COMPLETA SE GENERÓ UNA NUEVA ORDEN DE '+ String.fromCharCode(10)+ 'COMPRA CON LAS DIFERENCIAS, LA CUAL ES [").concat(cloneOrdenCompra.getConsecutivo()).concat("]'");
         } // if  
-    		UIBackingUtilities.execute("alert('Se aplicarón las diferencias en la orden de compra.'".concat(mensaje).concat(");$('#regresar').click();"));
+    		UIBackingUtilities.execute("alert('Se aplicarón las diferencias en la orden de compra'".concat(mensaje).concat(");$('#regresar').click();"));
       } // if  
 			else {
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 			} // else	
 		} // try
 		catch (Exception e) {

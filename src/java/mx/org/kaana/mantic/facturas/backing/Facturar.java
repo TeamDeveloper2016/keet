@@ -245,7 +245,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la factura", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -400,11 +400,11 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
+					JsfBase.addMessage("Se guardo la cuenta de venta", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((FacturaFicticia)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()));
@@ -929,7 +929,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());							
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la factura", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -990,9 +990,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(sb.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);

@@ -145,7 +145,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la confronta de articulos.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la confronta de articulos", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

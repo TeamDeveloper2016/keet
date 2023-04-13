@@ -154,7 +154,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("idProveedorProcess", this.registroProveedor.getProveedor().getIdProveedor());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el proveedor de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el proveedor de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al registrar el proveedor", ETipoMensaje.ERROR);      

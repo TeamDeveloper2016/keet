@@ -110,11 +110,11 @@ public class Abonar extends IBaseAttribute implements Serializable {
     try {												
 			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), (Long) this.attrs.get("idDesarrollo"));
 			if(transaccion.ejecutar(EAccion.ASIGNAR)){
-				JsfBase.addMessage("Abonar a caja chica", "Se realizó el abono de forma correcta.", ETipoMensaje.INFORMACION);									
+				JsfBase.addMessage("Abonar a caja chica", "Se realizó el abono de forma correcta", ETipoMensaje.INFORMACION);									
 				regresar= doCancelar();
 			} // if
 			else
-				JsfBase.addMessage("Abonar a caja chica", "Ocurrió un error al realizar el abono.", ETipoMensaje.ERROR);						
+				JsfBase.addMessage("Abonar a caja chica", "Ocurrió un error al realizar el abono", ETipoMensaje.ERROR);						
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

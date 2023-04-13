@@ -590,11 +590,11 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 		try {
 			transaccion= new Transaccion((Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", row.toMap()));
 			if(transaccion.ejecutar(EAccion.DEPURAR)) {
-				JsfBase.addMessage("Cancelar", "La factura de los extras se ha cancelado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cancelar", "La factura de los extras se ha cancelado correctamente", ETipoMensaje.ERROR);
         this.toLoadFacturas();
       } // if  
 			else
-				JsfBase.addMessage("Cancelar", "Ocurrió un error al cancelar la factura de los extras.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Cancelar", "Ocurrió un error al cancelar la factura de los extras", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -607,11 +607,11 @@ public class Extras extends IBaseImportar implements IBaseStorage, Serializable 
 		try {
 			transaccion= new Transaccion((Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", row.toMap()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR)) {
-				JsfBase.addMessage("Eliminar", "La factura de los extras se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La factura de los extras se ha eliminado correctamente", ETipoMensaje.ERROR);
         this.toLoadFacturas();
       } // if  
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura de los extras.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura de los extras", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

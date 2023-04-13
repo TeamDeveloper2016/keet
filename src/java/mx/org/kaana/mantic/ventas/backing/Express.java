@@ -154,7 +154,7 @@ public class Express extends IBaseVenta implements Serializable {
 				// JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);  			
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el ticket.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el ticket", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

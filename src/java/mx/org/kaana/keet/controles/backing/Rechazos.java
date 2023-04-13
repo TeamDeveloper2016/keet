@@ -126,14 +126,14 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			if(this.selecteds.length>=1){			
 				transaccion= new Seguimiento(toLoadRevision(), EControlesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)){
-					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();
 				} // if
 				else
-					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Rechazo de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Rechazo de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

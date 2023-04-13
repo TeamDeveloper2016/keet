@@ -308,10 +308,10 @@ public class Registro extends IBaseAttribute implements Serializable {
 			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), this.model.getTarget());
 			if(transaccion.ejecutar(EAccion.PROCESAR)){
 				regresar= doCancelar();
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se registraron de forma correcta los empleados.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se registraron de forma correcta los empleados", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al registrar los empleados.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al registrar los empleados", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -48,7 +48,7 @@ public class GeneracionConsulta {
       valido     = true;
     } // try
     catch(Exception e) {
-      JsfUtilities.addMessage("Sentencia sql no válida. Verifique por favor.", ETipoMensaje.ERROR);
+      JsfUtilities.addMessage("Sentencia sql no válida. Verifique por favor", ETipoMensaje.ERROR);
       valido = false;
       throw e;
     } // catch

@@ -276,7 +276,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 			UISelectEntity seleccion= clientes.get(clientes.indexOf(cliente));			
 			if(seleccion.toString("razonSocial")==null || seleccion.toString("razonSocial").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
-				JsfBase.addMessage("No se puede generar una factura para VENTA AL PUBLICO EN GENERAL, por favor cambie el cliente.", ETipoMensaje.ALERTA);   
+				JsfBase.addMessage("No se puede generar una factura para VENTA AL PUBLICO EN GENERAL, por favor cambie el cliente", ETipoMensaje.ALERTA);   
 			else {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), (String)this.attrs.get("observaciones"));
 				if (transaccion.ejecutar(EAccion.MODIFICAR)) {								
@@ -284,10 +284,10 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : "/Paginas/Mantic/Facturas/filtro".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 					JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());				
-					JsfBase.addMessage("Se generó la factura de forma correcta.", ETipoMensaje.INFORMACION);      			
+					JsfBase.addMessage("Se generó la factura de forma correcta", ETipoMensaje.INFORMACION);      			
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);   
+					JsfBase.addMessage("Ocurrió un error al registrar la factura", ETipoMensaje.ERROR);   
 		  } // if
     } // try
     catch (Exception e) {
@@ -336,9 +336,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(correos.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
@@ -1072,7 +1072,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				UIBackingUtilities.execute("PF('dlgCorreos').show();");
 			} // if
 			else{
-				JsfBase.addMessage("Generar factura", "Es necesario asignar un cliente regitrado.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Generar factura", "Es necesario asignar un cliente regitrado", ETipoMensaje.ERROR);
 				UIBackingUtilities.execute("janal.desbloquear();");
 			} // else
 		} // try

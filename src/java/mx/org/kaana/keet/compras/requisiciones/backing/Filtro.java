@@ -421,9 +421,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()));
 			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la requisicion de compra.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la requisicion de compra", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -558,10 +558,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 				if(sb.length()> 0){
 					transaccion= new Transaccion(new RegistroRequisicion(new Requisicion(seleccionado.getKey())), "");
 					if(transaccion.ejecutar(EAccion.DESACTIVAR))
-						JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+						JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 				} // if
 				else
-					JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+					JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
 			} // if
 		} // try // try
 		catch(Exception e) {

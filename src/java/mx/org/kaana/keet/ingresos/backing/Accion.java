@@ -489,7 +489,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		  	    this.doLoadFiles("TcManticFacturasArchivosDto", this.ingreso.getIdFactura(), "idFactura", false, 1D);
         } // if
         else
-    			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			
+    			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero", ETipoMensaje.ALERTA);      			
         break;
     } // switch    
 	}
@@ -533,7 +533,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         } // if
       } // if
       else 
-        JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			
+        JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero", ETipoMensaje.ALERTA);      			
     } // try
     catch(Exception e ) {
       throw e;

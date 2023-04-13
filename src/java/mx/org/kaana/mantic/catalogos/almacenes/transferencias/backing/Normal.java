@@ -115,7 +115,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   			JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

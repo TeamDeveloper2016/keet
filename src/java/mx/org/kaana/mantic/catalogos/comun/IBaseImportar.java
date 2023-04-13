@@ -176,7 +176,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no cumple con el formato solicitado [CLAVE | AUXILIAR | DESCRIPCION | COSTO S/IVA | PRECIO NETO].", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", "El archivo no cumple con el formato solicitado [CLAVE | AUXILIAR | DESCRIPCION | COSTO S/IVA | PRECIO NETO]", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch
@@ -210,7 +210,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El logotipo no cumple con el formato especificado["+ event.getFile().getFileName()+ "].", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", "El logotipo no cumple con el formato especificado["+ event.getFile().getFileName()+ "]", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch

@@ -312,7 +312,7 @@ public class Reporte extends BaseReportes implements Serializable {
 	
 	@Override
 	public void doCompleto() {
-		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente el reporte.", ETipoMensaje.INFORMACION);		
+		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente el reporte", ETipoMensaje.INFORMACION);		
 		UIBackingUtilities.execute("hideBarra();");
 	} // doCompleto
 	

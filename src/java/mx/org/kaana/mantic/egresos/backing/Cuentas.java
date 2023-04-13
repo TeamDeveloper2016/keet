@@ -44,9 +44,9 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 		try {
 			transaccion= new Transaccion((Long) this.attrs.get("idCuenta"), (ECuentasEgresos) this.attrs.get("eCuentaEgreso"), ((Entity) this.attrs.get("seleccionado")).getKey());
 			if(transaccion.ejecutar(EAccion.ASIGNAR))
-				JsfBase.addMessage("Asociar egreso", "El egreso se asocio de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asociar egreso", "El egreso se asocio de forma correcta", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Asociar egreso", "Ocurrio un error al asociar el egreso.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asociar egreso", "Ocurrio un error al asociar el egreso", ETipoMensaje.INFORMACION);
 			setFlashValues();
 			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 		} // try

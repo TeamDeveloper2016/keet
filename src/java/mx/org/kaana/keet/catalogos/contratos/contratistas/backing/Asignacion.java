@@ -132,10 +132,10 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			transaccion= new Transaccion(Long.valueOf(figura.getKey().toString().substring(4)), (String[])this.attrs.get("idsLotes"), figura.toLong("tipo"));
 			if(transaccion.ejecutar(EAccion.REPROCESAR)){				
 				regresar= this.doCancelar();			
-				JsfBase.addMessage("Asignación de contratista a lotes", "La asignación se realizo de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asignación de contratista a lotes", "La asignación se realizo de forma correcta", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("Asignación de contratista a lotes", "Ocurrió un error al realizar la asignación.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Asignación de contratista a lotes", "Ocurrió un error al realizar la asignación", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

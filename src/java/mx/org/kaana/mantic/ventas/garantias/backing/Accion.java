@@ -380,13 +380,13 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // if
 				else
 					UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
-				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se finalizo la garantia", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 				init();
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la garantia.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Ocurrió un error al registrar la garantia", ETipoMensaje.ERROR);			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -716,7 +716,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("tabIndex", 0);
 					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 					if(getAdminOrden().getArticulos().isEmpty())
-						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
+						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado", ETipoMensaje.INFORMACION);
 					if(ticketAbiertoPivote.get("idFactura").getData()!= null){
 						motor= new MotorBusqueda(ticketAbiertoPivote.toLong("idFactura"));
 						factura= motor.toFactura();
@@ -797,7 +797,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("tabIndex", 0);
 					this.attrs.put("creditoCliente", seleccion.toLong("idCredito").equals(1L));
 					if(getAdminOrden().getArticulos().isEmpty())
-						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
+						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado", ETipoMensaje.INFORMACION);
 					if(seleccion.get("idFactura").getData()!= null){
 						motor= new MotorBusqueda(seleccion.toLong("idFactura"));
 						factura= motor.toFactura();

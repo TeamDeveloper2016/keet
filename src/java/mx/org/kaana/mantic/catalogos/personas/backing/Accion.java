@@ -358,7 +358,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modifico").concat(" la persona de forma correcta.").concat(transaccion.getCuenta()!=null ? "\nCuenta de acceso [" + transaccion.getCuenta() + "]" : ""), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la persona.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la persona", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

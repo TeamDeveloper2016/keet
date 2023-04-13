@@ -162,7 +162,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(dto);			
       if (transaccion.ejecutar(eaccion)) {
         regresar = doCancelar();
-        JsfBase.addMessage("Se realizó el registro de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se realizó el registro de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al realizar el registro", ETipoMensaje.ERROR);      

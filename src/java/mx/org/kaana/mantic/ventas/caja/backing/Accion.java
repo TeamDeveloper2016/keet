@@ -409,14 +409,14 @@ public class Accion extends IBaseVenta implements Serializable {
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
-					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Se finalizo el pago del ticket de venta", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
 					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 					this.attrs.put("clienteSeleccion", null);
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta", ETipoMensaje.ERROR);
 			} // if
 			else
 				JsfBase.addMessage(this.attrs.get("mensajeErrorCredito").toString(), ETipoMensaje.ERROR);      			
@@ -469,7 +469,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(facturacion.getCorreos().length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);			
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);			
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
@@ -625,14 +625,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
 				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
 				UIBackingUtilities.execute("jsTicket.clicTicket();");
-				JsfBase.addMessage("Se finalizo la cotización del ticket.", ETipoMensaje.INFORMACION);								
+				JsfBase.addMessage("Se finalizo la cotización del ticket", ETipoMensaje.INFORMACION);								
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 				this.attrs.put("clienteSeleccion", null);
 				init();
 			} // if
 			else
-				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			     			
+				JsfBase.addMessage("Ocurrió un error al generar la cotización", ETipoMensaje.ERROR);			     			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1141,7 +1141,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.pagar= true;
 				} // if
 				else
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);
 			} // else if
 			else
 				JsfBase.addMessage("Cobrar venta", "No se ha seleccionado ningun ticket de venta", ETipoMensaje.INFORMACION);

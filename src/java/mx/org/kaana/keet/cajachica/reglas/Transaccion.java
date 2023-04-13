@@ -855,7 +855,7 @@ public class Transaccion extends IBaseTnx {
         LOG.info("Enviando mensaje por whatsapp al celular: "+ residente);
         notificar.doSendGasto(sesion);
         if(residente.length()<= 0)
-          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
       } // if  
 		} // try
 		catch(Exception e) {
@@ -881,7 +881,7 @@ public class Transaccion extends IBaseTnx {
           notificar.doSendCajaChica(sesion);
         } // for
         if(administradores.isEmpty())
-          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta", ETipoMensaje.ALERTA);
       } // if  
 		} // try // try
 		catch(Exception e) {

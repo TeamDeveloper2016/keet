@@ -121,10 +121,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 					JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra", ETipoMensaje.ERROR);      			
 			} // if
 			else
-				JsfBase.addMessage("Se agregaron proveedores duplicados, favor de verificarlo.", ETipoMensaje.ERROR);      						
+				JsfBase.addMessage("Se agregaron proveedores duplicados, favor de verificarlo", ETipoMensaje.ERROR);      						
     } // try
     catch (Exception e) {
       Error.mensaje(e);

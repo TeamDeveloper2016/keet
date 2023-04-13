@@ -114,9 +114,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()), new ArrayList<>());
 			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la requisicion de compra.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la requisicion de compra", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

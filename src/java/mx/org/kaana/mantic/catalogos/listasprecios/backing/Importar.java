@@ -189,7 +189,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	}	
   
   public void doCompleto() {
-		JsfBase.addMessage("Detalle del mensaje", "Se agregaron correctamente los artículos.", ETipoMensaje.INFORMACION);		
+		JsfBase.addMessage("Detalle del mensaje", "Se agregaron correctamente los artículos", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
 	public void doChangeTipo() {

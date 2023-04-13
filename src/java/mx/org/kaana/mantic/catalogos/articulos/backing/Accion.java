@@ -116,7 +116,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar(eaccion)) {
         JsfBase.setFlashAttribute("idArticuloProcess", this.registroArticulo.getArticulo().getIdArticulo());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registró el articulo de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registró el articulo de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);      

@@ -101,9 +101,9 @@ public class Progreso extends IBaseAttribute implements Serializable {
 			Long idNomina= (Long)this.attrs.get("idNomina");
  			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
 			if(transaccion.ejecutar(this.accion))
-				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Ocurrió un error en el proceso de nómina.", ETipoMensaje.ALERTA);	
+				JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
     } // try
     catch (Exception e) {
       Error.mensaje(e);

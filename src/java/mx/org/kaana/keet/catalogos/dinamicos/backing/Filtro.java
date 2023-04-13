@@ -132,9 +132,9 @@ public class Filtro extends Comun implements Serializable {
 			dto= (IBaseDto) constructor.newInstance(seleccionado.getKey());
       transaccion = new Transaccion(dto);
       if (transaccion.ejecutar(EAccion.ELIMINAR)) 
-        JsfBase.addMessage("Eliminar registro", "El registro se ha eliminado correctamente.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar registro", "El registro se ha eliminado correctamente", ETipoMensaje.ERROR);
       else 
-        JsfBase.addMessage("Eliminar registro", "Ocurrió un error al eliminar el registro.", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Eliminar registro", "Ocurrió un error al eliminar el registro", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);

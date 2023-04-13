@@ -85,13 +85,13 @@ public class Filtro extends Comun implements Serializable {
       if (motor.isChild()) {
         transaccion = new Transaccion(new TcManticCategoriasDto(categoria.getKey()));
         if (transaccion.ejecutar(EAccion.ELIMINAR)) {
-          JsfBase.addMessage("Eliminar categoría", "La categoría se ha eliminado correctamente.", ETipoMensaje.ERROR);
+          JsfBase.addMessage("Eliminar categoría", "La categoría se ha eliminado correctamente", ETipoMensaje.ERROR);
         } else {
-          JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la categoría.", ETipoMensaje.ERROR);
+          JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la categoría", ETipoMensaje.ERROR);
         }
       } // if
       else {
-        JsfBase.addMessage("Eliminar categoría", "No es posible eliminar la categoría, contiene dependencias.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar categoría", "No es posible eliminar la categoría, contiene dependencias", ETipoMensaje.ERROR);
       }
     } // try
     catch (Exception e) {

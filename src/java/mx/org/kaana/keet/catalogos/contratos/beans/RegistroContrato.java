@@ -214,10 +214,10 @@ public class RegistroContrato implements Serializable {
 			if(this.contratoPersonas.remove(this.contratoPersona)) {
 				if(!this.contratoPersona.getNuevo())
 					this.addDeleteList(this.contratoPersona);
-				JsfBase.addMessage("Se eliminó correctamente el empleado.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se eliminó correctamente el empleado", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue posible eliminar el empleado.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el empleado", ETipoMensaje.INFORMACION);
 		} // try // try
 		catch (Exception e) {
 			Error.mensaje(e);

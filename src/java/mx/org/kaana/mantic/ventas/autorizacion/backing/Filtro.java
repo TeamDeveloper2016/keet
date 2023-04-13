@@ -108,7 +108,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.attrs.put("resultados", clientes.size());      
 			} // if
 			else 
-				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres.", ETipoMensaje.ALERTA);
+				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres", ETipoMensaje.ALERTA);
     } // try
     catch (Exception e) {
       throw e;

@@ -133,7 +133,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       transaccion = new Transaccion(new TcManticProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
       transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar proveedor", "El proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+      JsfBase.addMessage("Eliminar proveedor", "El proveedor se ha eliminado correctamente", ETipoMensaje.INFORMACION);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

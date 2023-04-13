@@ -521,7 +521,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public void doCancelar() {
 		this.importe= 0D;
 	  this.acumulado.clear();	
-		//JsfBase.addMessage("Se limpió la lista de ticket(s) seleccionados.", ETipoMensaje.INFORMACION);
+		//JsfBase.addMessage("Se limpió la lista de ticket(s) seleccionados", ETipoMensaje.INFORMACION);
 	}	
 	
 	public String doAceptar() {

@@ -105,7 +105,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
       transaccion = new Transaccion(clienteVenta);
       if (transaccion.ejecutar(EAccion.ASIGNAR)) {
         regresar = "accion".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else {
         JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);

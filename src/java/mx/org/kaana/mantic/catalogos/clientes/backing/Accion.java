@@ -105,17 +105,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadBancos
 	
 	private void loadCollections() {
-		loadEmpresas();
-		loadDivisiones();
-		loadBancos();
-		loadRepresentantes();
-		loadTiposContactos();
-		loadTiposDomicilios();	
-		loadTiposVentas();
-		loadDomicilios();
-		loadEntidades();		
-		loadMunicipios();		
-		loadLocalidades();		
+		this.loadEmpresas();
+		this.loadDivisiones();
+		this.loadBancos();
+		this.toLoadRegimenesFiscales();
+    this.toLoadTiposClientes();
+		this.loadRepresentantes();
+		this.loadTiposContactos();
+		this.loadTiposDomicilios();	
+		this.loadTiposVentas();
+		this.loadDomicilios();
+		this.loadEntidades();		
+		this.loadMunicipios();		
+		this.loadLocalidades();		
 	} // loadCollections
 	
 	private void loadDivisiones() {
@@ -181,17 +183,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion = null;
     String regresar = null;
     try {
+      if(this.registroCliente.getClienteDomicilioSelecion()!= null)
+        this.registroCliente.toUpdateClientePivote(this.registroCliente.getClienteDomicilioSelecion(), Boolean.TRUE);
+      if(this.registroCliente.getCliente().getIdRegimenFiscal()== null || this.registroCliente.getCliente().getIdRegimenFiscal()< 1L)
+        this.registroCliente.getCliente().setIdRegimenFiscal(null);
       transaccion = new Transaccion(this.registroCliente);
 			this.registroCliente.getCliente().setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
 				JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());				
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
-      else {
+      else 
         JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);
-      }
+      if(this.registroCliente.getCliente().getIdRegimenFiscal()== null)
+        this.registroCliente.getCliente().setIdRegimenFiscal(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -716,7 +723,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doEliminarArticuloCodigo	
+  } 
 	
 	public void doActualizaDomicilio() {
 		try {
@@ -790,8 +797,43 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doEliminarRepresentante
+	} 
 	
+	private void toLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.attrs.put("regimenesFiscales", (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // loadRegimenesFiscales
+  
+	private void toLoadTiposClientes() {
+		List<UISelectItem> tiposClientes= null;
+    Map<String, Object> params      = new HashMap<>();
+		try {
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposClientes= UISelect.build("TcManticTiposClientesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposClientes", tiposClientes);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	}
+  
 	private void loadTiposVentas() {
 		List<UISelectItem> tiposVentas= null;
 		try {

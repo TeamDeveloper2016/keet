@@ -74,10 +74,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(trabajo);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el trabajo de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el trabajo de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar el trabajo.", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Ocurrió un error al registrar el trabajo", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);

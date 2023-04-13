@@ -1,10 +1,10 @@
 package mx.org.kaana.mantic.catalogos.clientes.reglas;
 
-import com.google.common.base.Objects;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -127,13 +127,13 @@ public class Transaccion extends Facturama {
 		if (eliminarRegistros(sesion)) {
 			this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());			
 			idCliente = DaoFactory.getInstance().insert(sesion, this.registroCliente.getCliente());
-			if (registraClientesInfraestructuras(sesion, idCliente)) {
-				if (registraClientesViviendas(sesion, idCliente)) {
-					if (registraClientesDomicilios(sesion, idCliente)) {
-						if (registraClientesRepresentantes(sesion, idCliente)) {
-							if(registraClientesTipoContacto(sesion, idCliente)){
-								if(registraClientesServicios(sesion, idCliente)){
-									if(registraClientesTransferencia(sesion, idCliente)){
+			if (this.registraClientesInfraestructuras(sesion, idCliente)) {
+				if (this.registraClientesViviendas(sesion, idCliente)) {
+					if (this.registraDomicilios(sesion, idCliente)) {
+						if (this.registraClientesRepresentantes(sesion, idCliente)) {
+							if(this.registraClientesTipoContacto(sesion, idCliente)){
+								if(this.registraClientesServicios(sesion, idCliente)){
+									if(this.registraClientesTransferencia(sesion, idCliente)){
 										if(!Cadena.isVacio(this.registroCliente.getPortal().getPagina())){
 											this.registroCliente.getPortal().setIdCliente(idCliente);								
 											this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
@@ -200,13 +200,13 @@ public class Transaccion extends Facturama {
     boolean regresar    = false;
     boolean resultPortal= true;
     Long idCliente = this.registroCliente.getIdCliente();
-		if (registraClientesInfraestructuras(sesion, idCliente)) {
-			if (registraClientesViviendas(sesion, idCliente)) {
-				if (registraClientesDomicilios(sesion, idCliente)) {
-					if (registraClientesRepresentantes(sesion, idCliente)) {
-						if(registraClientesTipoContacto(sesion, idCliente)){
-							if(registraClientesServicios(sesion, idCliente)){
-								if(registraClientesTransferencia(sesion, idCliente)){
+		if (this.registraClientesInfraestructuras(sesion, idCliente)) {
+			if (this.registraClientesViviendas(sesion, idCliente)) {
+				if (this.registraDomicilios(sesion, idCliente)) {
+					if (this.registraClientesRepresentantes(sesion, idCliente)) {
+						if(this.registraClientesTipoContacto(sesion, idCliente)) {
+							if(this.registraClientesServicios(sesion, idCliente)) {
+								if(this.registraClientesTransferencia(sesion, idCliente)) {
 									this.registroCliente.getPortal().setIdCliente(idCliente);
 									this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());	
 									if(this.registroCliente.getPortal().isValid() && !Cadena.isVacio(this.registroCliente.getPortal().getPagina()))
@@ -216,7 +216,7 @@ public class Transaccion extends Facturama {
 									if(resultPortal){
 										regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
 										sesion.flush();
-										actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
+										this.actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
 									} // if									
 								} // if
 							} // if
@@ -253,6 +253,42 @@ public class Transaccion extends Facturama {
     return regresar;
   } // eliminarCliente
 
+  private Boolean registraDomicilios(Session sesion, Long idCliente) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    if(!Objects.equals(this.registroCliente.getClientesDomicilio(), null) && this.registroCliente.getClientesDomicilio().size()> 0)
+      regresar= this.registraClientesDomicilios(sesion, idCliente);
+    else {
+      TcManticDomiciliosDto pivote   = (TcManticDomiciliosDto)DaoFactory.getInstance().findById(sesion, TcManticDomiciliosDto.class, 1L);
+      TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
+        pivote.getAsentamiento(), // String asentamiento, 
+        pivote.getIdLocalidad(), // Long idLocalidad, 
+        pivote.getCodigoPostal(), // String codigoPostal, 
+        pivote.getLatitud(), // String latitud, 
+        pivote.getEntreCalle(), // String entreCalle, 
+        pivote.getCalle(), // String calle, 
+        -1L, // Long idDomicilio, 
+        pivote.getNumeroInterior(), // String numeroInterior,  
+        pivote.getYcalle(), // String ycalle, 
+        pivote.getLongitud(), // String longitud, 
+        pivote.getNumeroExterior(), // String numeroExterior, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        ""
+      );
+      DaoFactory.getInstance().insert(sesion, domicilio);
+      TrManticClienteDomicilioDto relacion= new TrManticClienteDomicilioDto(
+        idCliente, // Long idCliente, 
+        -1L, // Long idClienteDomicilio, 
+        domicilio.getIdUsuario(), // Long idUsuario, 
+        1L, // Long idTipoDomicilio, 
+        domicilio.getIdDomicilio(), // Long idDomicilio, 
+        1L, // Long idPrincipal, 
+        "" // String observaciones      
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, relacion)> 0L;
+    } // if
+    return regresar;
+  }
+  
   private boolean registraClientesDomicilios(Session sesion, Long idCliente) throws Exception {
     TrManticClienteDomicilioDto dto = null;
     ESql sqlAccion    = null;
@@ -485,7 +521,7 @@ public class Transaccion extends Facturama {
 							dto.setIdClienteTipoContacto(-1L);
 							validate = this.registrar(sesion, dto);
               // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
-              if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+              if(Objects.equals(dto.getIdPreferido(), 1L) && (Objects.equals(dto.getIdTipoContacto(), 6L) || Objects.equals(dto.getIdTipoContacto(), 7L) || Objects.equals(dto.getIdTipoContacto(), 8L))) {
                 Cafu cafu= new Cafu(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
                 cafu.doSendMessage(sesion);
               } // if
@@ -546,7 +582,7 @@ public class Transaccion extends Facturama {
 		else
 			regresar= insertDomicilio(sesion, clienteDomicilio);									
 		return regresar;
-	} // registrarDomicilio	
+	} 	
 	
 	private Long insertDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{
 		TcManticDomiciliosDto domicilio= null;

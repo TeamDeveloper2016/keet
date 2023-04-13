@@ -121,11 +121,11 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			residente= residentes.get(residentes.indexOf(seleccionado));
 			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idAfectaNomina").toString()), (Long)this.attrs.get("idDesarrollo"), residente.toLong("idEmpresaPersona"));
 			if(transaccion.ejecutar(EAccion.ACTIVAR)){
-				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
+				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
-				JsfBase.addMessage("Cierre de caja chica", "Ocurrió un error al realizar el cierre de caja chica.", ETipoMensaje.ERROR);						
+				JsfBase.addMessage("Cierre de caja chica", "Ocurrió un error al realizar el cierre de caja chica", ETipoMensaje.ERROR);						
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
