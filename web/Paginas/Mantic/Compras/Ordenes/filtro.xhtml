@@ -159,7 +159,7 @@
             </p:column>	
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="No. orden compra"/>
+                <h:outputText value="No orden"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}" title="Cliente: #{row.cliente}"/>
             </p:column>		
@@ -169,7 +169,7 @@
               </f:facet>
               <h:outputText value="#{row['proveedor']}" title="Cliente: #{row.cliente}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
@@ -188,7 +188,7 @@
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>

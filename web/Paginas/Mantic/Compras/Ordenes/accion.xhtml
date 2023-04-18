@@ -22,6 +22,7 @@
 				'contenedorGrupos\\:idProveedor'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idBanco'          : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idTipoOrden'      : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idAlmacenista'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idEmpresaTipoContacto': {validaciones: 'requerido', mascara: 'libre'},
@@ -211,6 +212,7 @@
 								</p:selectCheckboxMenu>
                 <p:outputLabel for="idTipoOrden" value="Tipo orden:"/>
                 <p:selectOneMenu id="idTipoOrden" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikTipoOrden}" var="tipo" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt todos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                  <p:ajax event="change" process="@this" oncomplete="reloadTipo()"/>
                   <f:selectItems value="#{manticComprasOrdendesAccion.attrs.tiposOrdenes}" var="tipos" itemValue="#{tipos}" itemLabel="#{tipos.nombre}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{tipo.nombre}"/>
@@ -220,6 +222,7 @@
 							<p:remoteCommand name="loadArtsLotes" onstart="return janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear(); activeScroll()"/>
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato idAlmacenista" oncomplete="janal.desbloquear(); activeScroll()"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="desarrollo" oncomplete="janal.desbloquear(); activeScroll()"/>
+              <p:remoteCommand name="reloadTipo" onstart="return janal.bloquear();" process="@this" update="idTipoOrden" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 						<p:tab title="Proveedor">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">

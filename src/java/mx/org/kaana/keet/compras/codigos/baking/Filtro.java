@@ -194,5 +194,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Compras/Codigos/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/filtro".concat(Constantes.REDIRECIONAR);
 	}	// doOrdenCompra
+ 
+  public void doUpdateCodigo() {
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+    this.attrs.put("ultimo", seleccionado.toString("codigo"));
+  }
   
 }

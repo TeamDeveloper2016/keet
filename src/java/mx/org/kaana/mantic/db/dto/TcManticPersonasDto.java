@@ -56,7 +56,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   private LocalDate fechaNacimiento;  
   @Column(name = "ID_ESTADO_CIVIL")
   private Long idEstadoCivil;
-	@Column (name="apodo")
+	@Column (name="APODO")
   private String apodo;
 
 
@@ -324,7 +324,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar = new StringBuilder();
     regresar.append("|");
-    regresar.append("idEmpleado~");
+    regresar.append("idPersona~");
     regresar.append(getIdPersona());
     regresar.append("|");
     return regresar.toString();
@@ -368,4 +368,5 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPersona() != null ? getIdPersona().hashCode() : 0);
     return hash;
   }
+  
 }
