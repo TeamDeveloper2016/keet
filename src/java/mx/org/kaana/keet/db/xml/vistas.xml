@@ -7792,14 +7792,14 @@ order by
 			</select>		
 		  <select id="getDias">
 				select
-					id_prototipo_dia id_key,
-					nombre 
-				 from
-					 tc_keet_prototipos_habiles
-				 inner join 
-           tc_keet_nombres_dias on tc_keet_nombres_dias.id_nombre_dia= tc_keet_prototipos_habiles.id_nombre_dia
+					tc_keet_prototipos_habiles.id_prototipo_habil id_key,
+					tc_keet_nombres_dias.nombre 
+				from
+				  tc_keet_prototipos_habiles
+				inner join 
+          tc_keet_nombres_dias on tc_keet_nombres_dias.id_nombre_dia= tc_keet_prototipos_habiles.id_nombre_dia
 				where
-				  id_prototipo= {idPrototipo}
+				  tc_keet_prototipos_habiles.id_prototipo= {idPrototipo}
 			</select>		
 			<select id="findContrato">
 				select 

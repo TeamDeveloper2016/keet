@@ -55,7 +55,7 @@ public abstract class IBaseTnx {
 			this.sesion= SessionFactoryFacade.getInstance().getSession(this.idFuenteDato);
 			this.transaction= sesion.beginTransaction();
 			this.sesion.clear();
-			regresar= ejecutar(sesion, accion);
+			regresar= ejecutar(this.sesion, accion);
 			this.transaction.commit();
 		} // try
 		catch (Exception e) {

@@ -183,7 +183,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<pe:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateDialogArticulos}" process="@this" update="buscados localizado"onstart="return $('#codigo').val().trim().length> 1" oncomplete="$('#codigo').focus();">
+		<pe:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateDialogArticulos}" process="@this" update="buscados localizado" onstart="return $('#codigo').val().trim().length> 1" oncomplete="$('#codigo').focus();">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		

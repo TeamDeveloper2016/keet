@@ -131,8 +131,8 @@ public class Proyecto extends TcKeetProyectosDto {
 	public boolean validaPrototipos(List<UISelectEntity> uISelectEntitys) throws Exception{
 		boolean regresar= true;
 		try {
-		  for(Lote item: this.lotes){
-				if(!uISelectEntitys.contains(new UISelectEntity(new Entity(item.getIdPrototipo())))){
+		  for(Lote item: this.lotes) {
+				if(!uISelectEntitys.contains(new UISelectEntity(item.getIdPrototipo()))){
 					this.loteSeleccion= item;
 					this.doRemoveLote();
 					regresar= false;
@@ -148,16 +148,15 @@ public class Proyecto extends TcKeetProyectosDto {
 	public void doCalculateFecha(Lote lote) {
 		TcKeetPrototiposDto tcKeetPrototiposDto= null;
 		List<DiaHabil> diasHabiles             = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params              = new HashMap<>();
 	  try {
-			params= new HashMap<>();
 			params.put("idPrototipo",  lote.getIdPrototipo());
-			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()>0L){
+			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()> 0L) {
 			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
 				lote.setDiasConstruccion(tcKeetPrototiposDto.getDiasConstruccion());
 				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
 				  lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
-				else{
+        else {
 					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
 					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
@@ -204,13 +203,13 @@ public class Proyecto extends TcKeetProyectosDto {
     return TcKeetProyectosDto.class;
   }
 		
-	private LocalDate addWorkingDays(LocalDate date, int cuantos, List<DiaHabil> diasHabiles) throws Exception{
+	private LocalDate addWorkingDays(LocalDate date, int cuantos, List<DiaHabil> diasHabiles) throws Exception {
 		LocalDate regresar= null;
 		String dia        = null;
-		for(int i=0; cuantos>0; i++){
+		for(int i=0; cuantos>0; i++) {
 			regresar= date.plusDays(Long.valueOf(i));
 			dia=Fecha.getNombreDia(regresar.getDayOfWeek().getValue()==7? 1:regresar.getDayOfWeek().getValue()+1).toUpperCase();
-			if(diasHabiles.contains(new DiaHabil(dia)))
+			if(diasHabiles.isEmpty() || diasHabiles.contains(new DiaHabil(dia)))
 				cuantos--;
 		} // for
 		return regresar;
