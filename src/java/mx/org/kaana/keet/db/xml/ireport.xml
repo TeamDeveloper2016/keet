@@ -116,10 +116,11 @@
 				inner join 
           tc_mantic_tipos_medios_pagos on tc_keet_gastos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				where
-					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+					tc_keet_cajas_chicas_cierres.id_nomina_periodo{operador}= {idNominaPeriodo}
           and tc_keet_gastos.id_gasto_estatus in ({idGastoEstatus})
         order by
           tc_mantic_personas.id_persona,
+          tc_keet_cajas_chicas_cierres.id_nomina_periodo,
           tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
           tc_keet_desarrollos.id_desarrollo
       </select>

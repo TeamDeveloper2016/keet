@@ -1134,7 +1134,7 @@
       <select id="row">
         select      
          tc_keet_tipos_gastos.id_tipo_gasto as id_key,
-          tc_keet_tipos_gastos.*
+         tc_keet_tipos_gastos.*
         from      
           tc_keet_tipos_gastos
         where 

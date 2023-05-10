@@ -265,7 +265,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
-			String search= new String((String)this.attrs.get("codigo")); 
+			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -356,9 +356,9 @@ public class Filtro extends Comun implements Serializable {
 	} // doFindArticulo
 	
 	public void doPublicarFacturama(){
-		Facturama transaccion= null;
-		CFDIGestor gestor             = null;
-		ArticuloFactura articulo      = null;
+		Facturama transaccion   = null;
+		CFDIGestor gestor       = null;
+		ArticuloFactura articulo= null;
 		try {
 			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
 			articulo= gestor.toArticuloFactura();			
@@ -412,10 +412,9 @@ public class Filtro extends Comun implements Serializable {
 	} 
 	
 	public void doAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -470,11 +469,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -521,9 +518,8 @@ public class Filtro extends Comun implements Serializable {
 
 	public String doExportarXls() {
 		String regresar          = null;		
-		Map<String, Object>params= null;
+		Map<String, Object>params= this.toPrepare();
 		try {									   
-			params= this.toPrepare();
 			params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS, "CODIGO,CODIGO AUXILIAR,NOMBRE,FAMILIA,COSTO S/IVA,UNIDAD MEDIDA,IVA,STOCK MINIMO,STOCK MAXIMO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
@@ -539,7 +535,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doExportarFdDbf  
 	
-	public void doHabilitar(){
+	public void doHabilitar() {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, false);
@@ -553,7 +549,6 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);			
 		} // catch
 		finally {
-			
 		} // finally
 	}
 	
@@ -571,7 +566,7 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);			
 		} // catch
 		finally {
-			
 		} // finally
 	}
+  
 }

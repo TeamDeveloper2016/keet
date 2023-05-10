@@ -41,23 +41,31 @@
                   <p:ajax event="change" process="@this ejercicio" update="semana tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoadSemanas}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); reloadSemanas();"/>
                   <f:selectItems value="#{keetCajaChicaPagar.attrs.ejercicios}"/>                
                 </p:selectOneMenu>
-								<p:outputLabel value="Semana:"/>
-                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes aceptar aceptarIcon @(.notificar)" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio} #{empty element.orden or element.orden eq '-1'? '': '-'} #{empty element.orden or element.orden eq '-1'? '': element.orden}"/>
-                  <p:column headerText="Ejercicio" styleClass="janal-column-center">
-                    <h:outputText value="#{item.ejercicio}"/>
-                  </p:column>   
-                  <p:column headerText="Semana" styleClass="janal-column-center">
-                    <h:outputText value="#{item.orden}"/>
-                  </p:column>   
-                  <p:column headerText="Inicio" styleClass="janal-column-center">
-                    <h:outputText value="#{item.inicio}"/>
-                  </p:column>   
-                  <p:column headerText="Termino" styleClass="janal-column-center">
-                    <h:outputText value="#{item.termino}"/>
-                  </p:column>   
-                </p:selectOneMenu>
+  							<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95, janal-wid-95 janal-column-center">
+    							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                    <p:outputLabel value="Semana:"/>
+                    <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes aceptar aceptarIcon @(.notificar)" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                      <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio} #{empty element.orden or element.orden eq '-1'? '': '-'} #{empty element.orden or element.orden eq '-1'? '': element.orden}"/>
+                      <p:column headerText="Ejercicio" styleClass="janal-column-center">
+                        <h:outputText value="#{item.ejercicio}"/>
+                      </p:column>   
+                      <p:column headerText="Semana" styleClass="janal-column-center">
+                        <h:outputText value="#{item.orden}"/>
+                      </p:column>   
+                      <p:column headerText="Inicio" styleClass="janal-column-center">
+                        <h:outputText value="#{item.inicio}"/>
+                      </p:column>   
+                      <p:column headerText="Termino" styleClass="janal-column-center">
+                        <h:outputText value="#{item.termino}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>										
+    							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                    <p:outputLabel for="idAplicar" value="Acumulado:"/>
+    								<p:selectBooleanCheckbox id="idAplicar" value="#{keetCajaChicaPagar.attrs.idAplicar}" styleClass="janal-wid-100-txt" />                    
+                  </p:panelGrid>										
+  							</p:panelGrid>										
 							</p:panelGrid>										
               <p:remoteCommand name="reloadSemanas" process="@this" update="semana"/>
 						</p:tab>			
@@ -70,12 +78,12 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>								
                 <p:separator style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" actionListener="#{keetCajaChicaPagar.doReporte()}" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
-                <p:menuitem icon="fa fa-whatsapp" value="Whatsapp" actionListener="#{keetCajaChicaPagar.doWhatsup()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" actionListener="#{keetCajaChicaPagar.doReporte()}" process="@this tabla criterios:idAplicar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
+                <p:menuitem icon="fa fa-whatsapp" value="Whatsapp" actionListener="#{keetCajaChicaPagar.doWhatsup()}" process="@this tabla criterios:idAplicar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>							
-							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
-							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsapp" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
+							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla criterios:idAplicar" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
+							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsapp" onstart="return janal.bloquear();" process="@this tabla criterios:idAplicar" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
             </f:facet>
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">

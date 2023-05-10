@@ -24,6 +24,7 @@ import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EEstatusCajasChicas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -80,6 +81,7 @@ public class Pagar extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idAfectaNomina", 2L);
+      this.attrs.put("idAplicar", Boolean.FALSE);
 			this.toLoadEjercicios();
     } // try // try
     catch (Exception e) {
@@ -151,10 +153,9 @@ public class Pagar extends IBaseFilter implements Serializable {
 	public void doLoadSemanas() {		
 		List<UISelectEntity> semanas= null;
 		Map<String, Object>params   = new HashMap<>();
-		List<Columna> columns       = null;
+		List<Columna> columns       = new ArrayList<>();
 		try {						
       params.put("ejercicio", this.attrs.get("ejercicio"));
-			columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       semanas= (List<UISelectEntity>) UIEntity.seleccione("VistaCierresCajasChicasDto", "semanas", params, columns, "ejercicio");
@@ -276,6 +277,7 @@ public class Pagar extends IBaseFilter implements Serializable {
 		try {		  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.CAJA_CHICA;
+      params.put("operador", (Boolean)this.attrs.get("idAplicar")? ">": "");
       params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());
       params.put("idGastoEstatus", "2, 4");
       this.reporte= JsfBase.toReporte();
@@ -294,7 +296,7 @@ public class Pagar extends IBaseFilter implements Serializable {
         int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
         if(index>= 0)
 			    semana= semanas.get(index);
-        parametros.put("REPORTE_PERIODO", semana.toString("inicio")+ " al "+ semana.toString("termino"));
+        parametros.put("REPORTE_PERIODO", semana.toString("inicio")+ " al "+ ((Boolean)this.attrs.get("idAplicar")? Fecha.getHoy(): semana.toString("termino")));
       } // else  
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(this.doVerificarReporte())
