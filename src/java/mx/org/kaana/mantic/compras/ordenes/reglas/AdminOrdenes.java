@@ -46,6 +46,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkAlmacenista(new UISelectEntity(new Entity(this.orden.getIdAlmacenista())));
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(new Entity(this.orden.getIdEmpresaTipoContacto())));
       this.orden.setIkTipoOrden(new UISelectEntity(new Entity(this.orden.getIdTipoOrden())));
+      this.orden.setItEmpresa(this.orden.getIdEmpresa());
       this.orden.toLoadTemporal();
 		}	// if
 		else {
@@ -65,6 +66,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkAlmacenista(new UISelectEntity(-1L));
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(-1L));
       this.orden.setIkTipoOrden(new UISelectEntity(1L));
+      this.orden.setItEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
 		this.toStartCalculate();
 	}

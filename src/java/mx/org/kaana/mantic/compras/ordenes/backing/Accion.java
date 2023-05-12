@@ -938,7 +938,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
  
   public void doEraseArticulos() {

@@ -123,13 +123,13 @@ public class Transaccion extends Inventarios implements Serializable {
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                        = false;
-		TcManticOrdenesBitacoraDto bitacoraOrden= null;
-		Map<String, Object> params              = new HashMap<>();
+		boolean regresar          = Boolean.FALSE;
+    Siguiente consecutivo     = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra");
 			if(this.orden!= null) {
         if(this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
 				  this.orden.setIdCliente(null);
@@ -145,38 +145,44 @@ public class Transaccion extends Inventarios implements Serializable {
 	  				this.toFillArticulos(sesion);
 					} // if
 					else {
-						Siguiente consecutivo= this.toSiguiente(sesion);
+						consecutivo= this.toSiguiente(sesion);
 						this.orden.setConsecutivo(consecutivo.getConsecutivo());
 						this.orden.setOrden(consecutivo.getOrden());
 						this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 						this.toFillArticulos(sesion);
-						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-						DaoFactory.getInstance().insert(sesion, bitacoraOrden);
+						this.bitacora= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+						DaoFactory.getInstance().insert(sesion, this.bitacora);
 					} // else	
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
           regresar= this.registrarLotes(sesion);
 					break;
 				case AGREGAR:
-					Siguiente consecutivo= this.toSiguiente(sesion);
+					consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {
 						this.toFillArticulos(sesion);
-						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-						if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L)
+						this.bitacora= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+						if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L)
 							regresar= this.registrarLotes(sesion);
 					} // if
 					break;
 				case MODIFICAR:
+          if(!Objects.equals(this.ordenProcess, null) || this.ordenProcess.getOrdenCompra().isChangeEmpresa()) {
+						consecutivo= this.toSiguiente(sesion);
+						this.orden.setConsecutivo(consecutivo.getConsecutivo());
+						this.orden.setOrden(consecutivo.getOrden());
+						this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+          } // if
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toFillArticulos(sesion);
-					bitacoraOrden= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
-					if(!bitacoraOrden.getImporte().equals(this.orden.getTotal())) {
-  					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-  					DaoFactory.getInstance().insert(sesion, bitacoraOrden);
+					this.bitacora= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
+					if(!this.bitacora.getImporte().equals(this.orden.getTotal())) {
+  					this.bitacora= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+  					DaoFactory.getInstance().insert(sesion, this.bitacora);
 					} // if
 					regresar= this.registrarLotes(sesion);
 					break;				
@@ -186,8 +192,8 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.orden.setIdOrdenEstatus(2L);
 						// regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
 						regresar= regresar && DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						bitacoraOrden= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+						this.bitacora= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+						regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L;
             DaoFactory.getInstance().deleteAll(sesion, TcKeetOrdenesContratosLotesDto.class, this.orden.toMap());
 					} // if	
 					else

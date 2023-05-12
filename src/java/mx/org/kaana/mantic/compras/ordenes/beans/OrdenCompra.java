@@ -52,6 +52,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   private List<General> general;
   private List<Individual> individual;
   private List<Individual> temporal;
+  private Long itEmpresa;
 
 	public OrdenCompra() {
 		this(-1L);
@@ -66,6 +67,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     this.general   = new ArrayList<>();
     this.individual= new ArrayList<>();
     this.temporal  = new ArrayList<>();
+    this.itEmpresa = idEmpresa;
 	}
 
 	public UISelectEntity getIkEmpresa() {
@@ -197,7 +199,15 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		if(this.ikTipoOrden!= null)
 		  this.setIdTipoOrden(this.ikTipoOrden.getKey());
   }
-	
+
+  public Long getItEmpresa() {
+    return itEmpresa;
+  }
+
+  public void setItEmpresa(Long itEmpresa) {
+    this.itEmpresa = itEmpresa;
+  }
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticOrdenesComprasDto.class;
@@ -534,5 +544,9 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 //      } // for
     } // for
   }  
+  
+  public Boolean isChangeEmpresa() {
+    return !Objects.equals(this.itEmpresa, this.getIdEmpresa()) && !Objects.equals(this.itEmpresa, -1L) && !Objects.equals(this.getIdEmpresa(), -1L);
+  }
   
 }
