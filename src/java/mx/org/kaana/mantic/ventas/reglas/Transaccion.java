@@ -143,12 +143,11 @@ public class Transaccion extends Facturama {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
-		Map<String, Object> params= null;
+		Map<String, Object> params=  new HashMap<>();
 		Long idEstatusVenta       = null;
 		Siguiente consecutivo     = null;
 		try {
 			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
-			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idVenta", this.orden.getIdVenta());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
@@ -234,8 +233,12 @@ public class Transaccion extends Facturama {
         throw new Exception("");
 		} // try
 		catch (Exception e) {		
-			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		if(this.orden!= null)
 			LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());

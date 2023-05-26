@@ -171,7 +171,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // if
 					break;
 				case MODIFICAR:
-          if(!Objects.equals(this.ordenProcess, null) || this.ordenProcess.getOrdenCompra().isChangeEmpresa()) {
+          if(!Objects.equals(this.ordenProcess, null) && this.ordenProcess.getOrdenCompra().isChangeEmpresa()) {
 						consecutivo= this.toSiguiente(sesion);
 						this.orden.setConsecutivo(consecutivo.getConsecutivo());
 						this.orden.setOrden(consecutivo.getOrden());

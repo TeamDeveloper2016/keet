@@ -45,7 +45,6 @@ public class Transaccion extends IBaseTnx {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
-			Error.mensaje(e);
       if(e!= null)
         if(e.getCause()!= null)
           this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());

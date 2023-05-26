@@ -26,6 +26,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idEmpresaPersona;
 	private String[] lotes;
 	private Long tipo;
+	private String messageError;
 	
 	public Transaccion(Long idContratoLote, List<SelectionItem> empleados) {		
 		this.idContratoLote= idContratoLote;		
@@ -46,6 +47,7 @@ public class Transaccion extends IBaseTnx {
 		Long idUsuario           = -1L;
   	params                   = new HashMap<>();
 		try {
+      this.messageError= "";
 			switch(accion) {
 				case ELIMINAR:
 					for(String item: this.lotes) {
@@ -87,7 +89,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally{
 			Methods.clean(params);

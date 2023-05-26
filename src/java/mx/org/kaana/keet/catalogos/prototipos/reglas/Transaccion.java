@@ -34,6 +34,7 @@ public class Transaccion extends IBaseTnx {
   private List<Partida> partidas;
 	private IBaseDto dtoDelete;
 	private Long idContratoLote;
+  private String messageError;
 
 	public Transaccion(IBaseDto dtoDelete) {
 		this.dtoDelete = dtoDelete;
@@ -53,6 +54,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= true;
 		Long idUsuario  = -1L;
 		try {
+      this.messageError= "";
 			idUsuario= JsfBase.getIdUsuario();
 			switch(accion){
 				case AGREGAR:
@@ -107,7 +109,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch						
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

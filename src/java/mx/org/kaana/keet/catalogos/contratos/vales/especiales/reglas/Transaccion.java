@@ -19,6 +19,7 @@ import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -34,6 +35,7 @@ public class Transaccion extends IBaseTnx {
 	private Vale vale;
 	private String qr;
 	private Long idVale;
+	private String messageError;
 
 	public Transaccion(Vale vale) {
 		this(vale, -1L);
@@ -59,9 +61,9 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar         = true;
-		Map<String, Object>params= null;		
 		try {
-			switch(accion){
+      this.messageError= "";
+			switch(accion) {
 				case AGREGAR:												
 					regresar= procesarVale(sesion);					
 					break;		
@@ -74,11 +76,13 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
 		return regresar;
 	}	// ejecutar	
 	

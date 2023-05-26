@@ -19,7 +19,6 @@ import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -93,11 +92,10 @@ public class Operacion extends IBaseTnx implements Serializable {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                      = false;
 		TcManticVentasBitacoraDto bitacoraNota= null;
-		Map<String, Object> params            = null;
+		Map<String, Object> params            = new HashMap<>();
 		Siguiente consecutivo                 = null;
 		Siguiente cuenta                      = null;
 		try {
-			params= new HashMap<>();
       if(this.orden!= null && Objects.equals(-1L, this.orden.getIdContrato()))
         this.orden.setIdContrato(null);
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura");
@@ -180,8 +178,12 @@ public class Operacion extends IBaseTnx implements Serializable {
         throw new Exception("");
 		} // try
 		catch (Exception e) {
-      Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

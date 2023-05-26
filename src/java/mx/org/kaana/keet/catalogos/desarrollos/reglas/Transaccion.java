@@ -11,19 +11,19 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 	
 	private RegistroDesarrollo registroDesarrollo;
+	private String messageError;
 
 	public Transaccion(RegistroDesarrollo dto) {
 		this.registroDesarrollo = dto;
 	}
 	
-	
-
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar   = false;
 		Siguiente siguiente= null;
 		try {
-			switch(accion){
+      this.messageError= "";
+			switch(accion) {
 				case AGREGAR:			
 					this.registroDesarrollo.getDesarrollo().setIdUsuario(JsfBase.getIdUsuario());
 					this.registroDesarrollo.getDomicilio().setIdUsuario(JsfBase.getIdUsuario());
@@ -44,7 +44,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

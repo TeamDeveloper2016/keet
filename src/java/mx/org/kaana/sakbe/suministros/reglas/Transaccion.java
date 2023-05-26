@@ -124,8 +124,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
         throw new Exception("");
 		} // try
 		catch (Exception e) {		
-			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		if(this.suministro!= null)
 			LOG.info("Se generó de forma correcta el folio: "+ this.suministro.getConsecutivo());

@@ -7,7 +7,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.puntoscontrol.beans.PuntoControl;
 import mx.org.kaana.keet.catalogos.puntoscontrol.beans.RegistroPunto;
 import mx.org.kaana.keet.db.dto.TcKeetPuntosPaquetesDto;
@@ -18,6 +17,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 	
 	private RegistroPunto registroPunto;
+	private String messageError= "";
 
 	public Transaccion(RegistroPunto registroPunto) {
 		this.registroPunto = registroPunto;
@@ -49,7 +49,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch			
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

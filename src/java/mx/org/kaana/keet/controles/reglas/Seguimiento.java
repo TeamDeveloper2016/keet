@@ -37,6 +37,7 @@ public class Seguimiento extends IBaseTnx {
 	private List<IBaseDestajoArchivo>documentos;	
 	private ConceptoExtra conceptoExtra;
 	private Long idEstatus;
+	private String messageError= "";
 
 	public Seguimiento(Revision revision, Long idEstatus) {
 		this.revision = revision;		
@@ -87,7 +88,12 @@ public class Seguimiento extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally{
 			Methods.clean(params);

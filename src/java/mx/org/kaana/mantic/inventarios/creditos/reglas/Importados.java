@@ -4,7 +4,6 @@ import java.io.Serializable;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import org.apache.log4j.Logger;
@@ -22,6 +21,8 @@ public class Importados extends Transaccion implements Serializable {
   private static final Logger LOG = Logger.getLogger(Importados.class);
 	private static final long serialVersionUID=-6063204157451117549L;
  
+	private String messageError= "";
+  
 	public Importados(TcManticCreditosNotasDto orden, Importado xml, Importado pdf) {
 		super(orden, 0D, xml, pdf);
 	} // Transaccion
@@ -39,8 +40,12 @@ public class Importados extends Transaccion implements Serializable {
 		} // try
 		catch (Exception e) {
 			regresar= false;
-      Error.mensaje(e);			
-			throw new Exception(this.getMessageError().concat("\n\n")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		LOG.info("Se importaron de forma correcta los archivos !");
 		return regresar;

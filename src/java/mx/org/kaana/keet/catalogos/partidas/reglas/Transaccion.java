@@ -10,6 +10,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 	
 	private TcKeetPartidasDto partidasDto;
+	private String messageError= "";
 
 	public Transaccion(TcKeetPartidasDto partidasDto) {
 		this.partidasDto = partidasDto;
@@ -17,10 +18,9 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar   = false;
+		boolean regresar= false;
 		try {
-
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:	
 					this.partidasDto.setIdUsuario(JsfBase.getIdUsuario());
 					this.partidasDto.setOrden(1L);
@@ -37,7 +37,12 @@ public class Transaccion extends IBaseTnx {
 			regresar= true;
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

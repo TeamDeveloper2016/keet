@@ -23,7 +23,7 @@ public class Transaccion extends IBaseTnx {
 	private List<SelectionItem> empleados;		
 	private Long idEmpresaPersona;
 	private String[] lotes;
-	private Long tipo;
+  private String messageError;
 	
 	public Transaccion(Long idContratoLote, List<SelectionItem> empleados) {		
 		this.idContratoLote= idContratoLote;		
@@ -33,7 +33,6 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Long idEmpresaPersona, String[] lotes, Long tipo) {
 		this.idEmpresaPersona= idEmpresaPersona;
 		this.lotes           = lotes;
-		this.tipo            = tipo;
 	}	
   
 	@Override
@@ -43,7 +42,8 @@ public class Transaccion extends IBaseTnx {
 		IBaseDto dto             = null;
 		Long idUsuario           = -1L;
 		try {
-			switch(accion){
+      this.messageError= "";
+			switch(accion) {
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					for(SelectionItem item: this.empleados) {
@@ -71,7 +71,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally {
 			Methods.clean(params);

@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetDiasFestivosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -19,6 +20,7 @@ public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	private TcKeetDiasFestivosDto dto;
+	private String messageError;
 
 	public Transaccion(TcKeetDiasFestivosDto dto) {
 		this.dto = dto;
@@ -31,7 +33,8 @@ public class Transaccion extends IBaseTnx {
 		List<TcKeetDiasFestivosDto>oficiales= null;
 		TcKeetDiasFestivosDto anioFestivo   = null;
 		try {
-			switch(accion){
+      this.messageError= "";
+			switch(accion) {
 				case AGREGAR:										
 					regresar= DaoFactory.getInstance().insert(sesion, this.dto)>= 1L;
 					break;								
@@ -63,7 +66,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally{
 			Methods.clean(params);

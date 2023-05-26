@@ -1,6 +1,5 @@
 package mx.org.kaana.keet.catalogos.contratos.vales.autorizacion.reglas;
 
-import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -8,8 +7,8 @@ import mx.org.kaana.keet.db.dto.TcKeetValesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -21,6 +20,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idCargo;
 	private boolean ok;
 	private String justificacion;
+	private String messageError;
 
 	public Transaccion(Long idVale, boolean ok, String justificacion, Long idCargo) {
 		this.idVale       = idVale;
@@ -31,21 +31,23 @@ public class Transaccion extends IBaseTnx {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar         = true;
-		Map<String, Object>params= null;		
+		boolean regresar= true;
 		try {
-			switch(accion){
+      this.messageError= "";
+			switch(accion) {
 				case PROCESAR:												
 					regresar= procesarVale(sesion);					
 					break;						
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
 		return regresar;
 	}	// ejecutar	
 	

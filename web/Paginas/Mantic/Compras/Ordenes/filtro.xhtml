@@ -141,6 +141,9 @@
 							</p:commandButton>
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">
+              <f:facet name="header">
+                <h:outputText value="..."/>
+              </f:facet>
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de entrada(s)" action="#{manticComprasOrdenesFiltro.doNotaEntrada}" rendered="#{fn:contains('|4|5|6|7|', filtro['idOrdenEstatus'].toInteger)}">
 								<f:setPropertyActionListener value="#{row['idKey']}" target="#{manticComprasOrdenesFiltro.attrs.ordenCompra}" />
 							</p:commandButton>
@@ -216,8 +219,8 @@
             <p:menuitem id="reporteDiferencias" icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLE_DIF')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|5|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
             <p:menuitem id="reporteCompleto" icon="fa fa-file-pdf-o" value="Reporte completo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLES_COMP2')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|5|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>						
 						<p:separator rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
-						<p:menuitem icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
-						<p:menuitem icon="fa fa-whatsapp" value="Whatsapp" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadPhones}" oncomplete="PF('dlgCelular').show();" update="dialogoCelular" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
+						<p:menuitem icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{fn:contains('|3|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
+						<p:menuitem icon="fa fa-whatsapp" value="Whatsapp" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadPhones}" oncomplete="PF('dlgCelular').show();" update="dialogoCelular" rendered="#{fn:contains('|3|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>

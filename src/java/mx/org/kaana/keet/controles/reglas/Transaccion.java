@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
@@ -16,6 +15,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 	
 	private RegistroControl registroControl;
+	private String messageError= "";
 
 	public Transaccion(RegistroControl dto) {
 		this.registroControl = dto;
@@ -24,14 +24,10 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
-		Map<String, Object> params= null;
-		String clave              = null;
 		List<TcKeetControlesDto> toArriba= null;
 		List<TcKeetControlesDto> toAbajo= null;
-		Value value               = null;
 		Controles controles       = null;
 		try {
-			params=new HashMap<>();
 			controles= new Controles();
 			switch(accion){
 				case AGREGAR:			
@@ -89,10 +85,14 @@ public class Transaccion extends IBaseTnx {
 			regresar= true;
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch	
 		finally {
-			Methods.clean(params);
 			Methods.clean(toArriba);
 			Methods.clean(toAbajo);
 		} // finally

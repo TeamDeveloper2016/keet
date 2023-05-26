@@ -57,7 +57,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
   
-	private void loadResidentes(){
+	private void loadResidentes() {
 		List<UISelectEntity> residentes= null;
 		List<Columna> campos           = null;
 		Map<String, Object> params     = null;
@@ -80,15 +80,13 @@ public class Cierre extends IBaseAttribute implements Serializable {
   public void doLoad() {			
 		Entity desarrollo        = null;		
 		Entity cajaChica         = null;		
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
     try {    			
-			campos= new ArrayList<>();
-			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
-			params= new HashMap<>();
+			columns.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
@@ -97,7 +95,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			params.put("idCajaChicaCierre", this.attrs.get("idCajaChicaCierre").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findCajaChicaCierre", params);
 			this.attrs.put("importe", cajaChica.toDouble("acumulado"));
-			UIBackingUtilities.toFormatEntity(cajaChica, campos);			
+			UIBackingUtilities.toFormatEntity(cajaChica, columns);			
 			this.attrs.put("cajaChica", cajaChica);
     } // try
     catch (Exception e) {
@@ -120,7 +118,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			residentes= (List<UISelectEntity>) this.attrs.get("residentes");
 			residente= residentes.get(residentes.indexOf(seleccionado));
 			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idAfectaNomina").toString()), (Long)this.attrs.get("idDesarrollo"), residente.toLong("idEmpresaPersona"));
-			if(transaccion.ejecutar(EAccion.ACTIVAR)){
+			if(transaccion.ejecutar(EAccion.ACTIVAR)) {
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
@@ -145,4 +143,5 @@ public class Cierre extends IBaseAttribute implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }

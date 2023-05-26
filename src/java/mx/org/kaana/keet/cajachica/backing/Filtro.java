@@ -395,7 +395,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		return "resumen".concat(Constantes.REDIRECIONAR);
-	} // doRechazarGasto
+	} 
 	
 	public String doImportar() {
 		Entity seleccionado= null;
@@ -410,7 +410,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		return "importar".concat(Constantes.REDIRECIONAR);
-	} // doRechazarGasto
+	} 
 	
 	public String toColor(Entity row) {
 		return EEstatusCajasChicas.fromId(row.toLong("idCajaChicaCierreEstatus")).getSemaforo();
@@ -436,13 +436,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doReporte(Entity row) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
 		try {		  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.CAJA_CHICA;
-      params = new HashMap<>();
+      params.put("operador", "");
       params.put("idNominaPeriodo", Cadena.isVacio(row)? -1L: row.toLong("idNominaPeriodo"));
+      params.put("idGastoEstatus", "2, 4");
       this.reporte= JsfBase.toReporte();
       parametros  = comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());

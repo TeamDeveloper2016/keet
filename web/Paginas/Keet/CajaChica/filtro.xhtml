@@ -178,7 +178,7 @@
 							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModel== null? 0: keetCajaChicaFiltro.lazyModel.rowCount}] registros"/>
 						</f:facet>
           </p:dataTable>    
-					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu">
 						<p:menuitem icon="fa fa-lock" process="@this tabla" ajax="false" action="#{keetCajaChicaFiltro.doCierre}" value="Cierre de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '1' or keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '2'}"/>					
 						<p:menuitem icon="fa fa-dollar" process="@this tabla" ajax="false" action="#{keetCajaChicaFiltro.doAbono}" value="Abono a caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '1' or keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '2'}"/>					
           </p:contextMenu>

@@ -40,6 +40,7 @@ public class Transaccion extends IBaseTnx {
 	private IBaseDto dtoDelete;
 	private EArchivosProyectos tipoArchivo;
 	private TcKeetProyectosBitacoraDto bitacora;
+	private String messageError= "";
 	
 	public Transaccion(RegistroProyecto proyecto) {
 		this(proyecto, EArchivosProyectos.DOCUMENTOS);
@@ -64,7 +65,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar   = false;
 		Siguiente siguiente= null;
 		try {
-			switch(accion){
+			switch(accion) { 
 				case AGREGAR:					
 					siguiente= this.toSiguiente(sesion);
 					this.proyecto.getProyecto().setConsecutivo(siguiente.getConsecutivo());
@@ -127,7 +128,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar

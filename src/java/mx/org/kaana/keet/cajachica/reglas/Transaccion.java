@@ -61,6 +61,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idGasto;
 	private Gasto gasto;
 	private boolean ok;
+	private String messageError;
 	
 	private Long idCajaChicaCierre;
 	private Double cantidad;
@@ -121,6 +122,7 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= Boolean.TRUE;
 		try {
+      this.messageError= "";
 			switch(accion) {
 				case AGREGAR:												
 					regresar= this.procesarGasto(sesion);					
@@ -152,7 +154,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar	
@@ -612,9 +619,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguienteIncidente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticIncidentesDto", "siguiente", params, "siguiente");
@@ -773,6 +779,7 @@ public class Transaccion extends IBaseTnx {
       parametros.put("REPORTE_FIGURA", "CORTE GENERAL");
       parametros.put("REPORTE_DEPARTAMENTO", JsfBase.getAutentifica().getPersona().getNombreCompleto());
       parametros.put("REPORTE_PERIODO", figura.toString("inicio")+ " al "+ figura.toString("termino"));
+      params.put("operador", "");
       params.put("idNominaPeriodo", idNominaPeriodo);
       params.put("idGastoEstatus", "2, 4");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros));		

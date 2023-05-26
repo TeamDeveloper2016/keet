@@ -95,9 +95,10 @@ public class Transaccion extends Facturama {
 		Long idFactura             = null;
 		Long idEstatus             = null;
 		try {									
+      this.messageError= "";
 			switch(accion) {																						
 				case MODIFICAR:
-					this.messageError= "Ocurrio un error al generar la factura.";
+					this.messageError= "Ocurrio un error al generar la factura";
 					if(this.idEstatusFactura.equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) && this.checkTotal(sesion)){
 						idEstatus= EEstatusFacturas.TIMBRADA.getIdEstatusFactura();
 						if(this.orden.getIdFactura()!= null && !this.orden.getIdFactura().equals(-1L)){
@@ -150,8 +151,12 @@ public class Transaccion extends Facturama {
         throw new Exception("");
 		} // try
 		catch (Exception e) {		
-			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally {
 			Methods.clean(params);

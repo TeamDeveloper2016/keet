@@ -1,8 +1,6 @@
 package mx.org.kaana.keet.estaciones.reglas;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -19,6 +17,7 @@ public class Transaccion extends IBaseTnx {
 	
 	private RegistroEstacion estacion;
   private UISelectEntity partida;
+	private String messageError= "";
 
 	public Transaccion(RegistroEstacion dto) {
 		this.estacion = dto;
@@ -32,12 +31,10 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                  = false;
-		Map<String, Object> params        = null;
 		List<TcKeetEstacionesDto> toArriba= null;
 		List<TcKeetEstacionesDto> toAbajo = null;
 		Estaciones estaciones             = null;
 		try {
-			params    = new HashMap<>();
 			estaciones= new Estaciones(sesion);
 			switch(accion) {
 				case AGREGAR:			
@@ -109,10 +106,14 @@ public class Transaccion extends IBaseTnx {
       // throw new RuntimeException("Hola!");
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch	
 		finally {
-			Methods.clean(params);
 			Methods.clean(toArriba);
 			Methods.clean(toAbajo);
 		} // finally

@@ -23,6 +23,8 @@ public class Importados extends Transaccion implements Serializable {
   private static final Logger LOG = Logger.getLogger(Importados.class);
 	private static final long serialVersionUID=-6063204157451117549L;
  
+	private String messageError= "";
+  
 	public Importados(TcManticNotasEntradasDto orden, Importado xml, Importado pdf) {
 		super(orden, Collections.EMPTY_LIST, true, xml, pdf);
 	} // Transaccion
@@ -40,8 +42,12 @@ public class Importados extends Transaccion implements Serializable {
 		} // try
 		catch (Exception e) {
 			regresar= false;
-      Error.mensaje(e);			
-			throw new Exception(this.getMessageError().concat("\n\n")+ (e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		LOG.info("Se importaron de forma correcta los archivos !");
 		return regresar;

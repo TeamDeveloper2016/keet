@@ -53,6 +53,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idEstatus;
 	private Long idTipoArchivo;
 	private Long idContratoArchivo;
+	private String messageError;
 
 	public Transaccion(Revision revision, Long idEstatus) {
 		this.revision = revision;		
@@ -79,6 +80,7 @@ public class Transaccion extends IBaseTnx {
 		Long idUsuario           = -1L;
 		IBaseDto dto             = null;
 		try {
+      this.messageError= "";
 			switch(accion) {
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
@@ -127,7 +129,12 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception(e!= null? e.getCause().toString(): "");
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally{
 			Methods.clean(params);

@@ -4475,8 +4475,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-         convert(manzana, unsigned integer),
-         convert(lote, unsigned integer)
+         orden
       </select>
 			<select id="byContratoContratistas">
         select      
