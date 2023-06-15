@@ -367,5 +367,15 @@ public class Incentivo extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   }
+ 
+  public void doBackSemana(Long week) {
+    try {
+      this.dias.week(week.intValue());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch
+  }
   
 }

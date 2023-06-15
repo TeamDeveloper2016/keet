@@ -81,17 +81,28 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" update="tablaTiposVenta tablaPreciosSugeridos tablaDescuentosEspeciales tablaEspecificaciones tablaDescuentos tablaArticulosProveedores" oncomplete="janal.refresh();"/>
             <p:tab title="General">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">								
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" />                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
-								<p:outputLabel for="precio" value="Costo:"/>
-								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}">                    
-									<p:ajax event="blur" process="@this" update="menudeo medio mayoreo @(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePrecio()}"/>
-								</p:inputNumber>
-								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="menudeo" value="Menudeo:" style="display:none"/>
+                <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-33, janal-fix-34, janal-fix-33">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="precio" value="Costo:"/>
+                    <p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}">                    
+                      <p:ajax event="blur" process="@this" update="menudeo medio mayoreo @(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePrecio()}"/>
+                    </p:inputNumber>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="iva" value="IVA:"/>
+                    <p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="sat" value="Código SAT:"/>
+                    <p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
+                  </p:panelGrid>  
+                </p:panelGrid>  
+                <p:outputLabel for="menudeo" value="Menudeo:" style="display:none"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right" style="display:none">
 									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}">
   									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
@@ -112,21 +123,14 @@
 									</p:inputNumber>
 									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
-								<p:spacer width="1px" rendered="false"/><p:separator rendered="false"/>
-								<p:outputLabel for="sat" value="Código SAT:"/>
-								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
-								<p:outputLabel for="iva" value="IVA:"/>
-								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
 								<p:outputLabel for="redondear" value="Redondear:" style="display:none"/>
 								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI" style="display:none">
  									<p:ajax event="change" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
 								</p:inputSwitch>
-								<p:spacer width="1px" rendered="false"/><p:separator rendered="false"/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:" style="display:none"/>
 								<p:inputNumber id="pesoEstimado" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}" style="display:none"/>                    																	
 								<p:outputLabel for="desperdicio" value="Desperdicio:" style="display:none"/>
 								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}" style="display:none"/>                    																	
-								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idFamilia" value="Familia:"/>
 								<p:selectOneMenu id="idFamilia" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idFamilia}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" panelStyle="height:200px">
 									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
@@ -140,7 +144,6 @@
 								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
-								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
 								<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVigente}" styleClass="janal-wid-100-txt">									
 									<f:selectItem itemLabel="SI" itemValue="1"/>
@@ -299,7 +302,7 @@
 							</p:panelGrid>								
 						</p:tab>
 						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1' and false}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="categoria" value="Categoría:"/>
 								<p:selectOneMenu id="categoria" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.categorias}"/>
@@ -388,7 +391,7 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Empaque" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="empaque" value="Empaque:"/>
 								<p:selectOneMenu id="empaque" value="#{manticCatalogosArticulosAccion.registroArticulo.idEmpaque}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" listener="#{manticCatalogosArticulosAccion.doLoadUnidadesMedidas}" process="@this" update="unidadMedida" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -400,14 +403,20 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
-								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="ancho" value="Ancho:"/>
-								<p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
-								<p:outputLabel for="largo" value="Largo:"/>
-								<p:inputNumber id="largo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
-								<p:outputLabel for="alto" value="Alto:"/>
-								<p:inputNumber id="alto" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
-								<p:spacer width="1px"/><p:separator/>
+                <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-33, janal-fix-34, janal-fix-33">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="ancho" value="Ancho:"/>
+                    <p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="largo" value="Largo:"/>
+                    <p:inputNumber id="largo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="alto" value="Alto:"/>
+                    <p:inputNumber id="alto" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
+                  </p:panelGrid>  
+                </p:panelGrid>  
 								<p:outputLabel for="stock" value="Existencias:"/>
 								<p:inputNumber id="stock" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.stock}"/>                    
 								<p:outputLabel for="minimo" value="Stock mínimo:"/>
@@ -420,7 +429,6 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
 							</p:panelGrid>
-							<p:separator/>
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
 								<p:outputLabel for="meta" value="Meta tag:" styleClass="janal-wid-100-txt"/>
 								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}"/>                    

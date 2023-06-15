@@ -22,10 +22,23 @@ public class Semana extends ArrayList<Dia> implements Serializable {
 
   public Semana(LocalDate fecha) {
     this.fecha= fecha;
+    this.init();
+  }
+  
+  private void init() {
+    this.clear();
     for (int x= 0; x< dias; x++) {
       this.add(new Dia(this.fecha));
       this.fecha= this.fecha.plusDays(1L);
     } // for
+    this.fecha= this.fecha.plusDays(-1L* dias);
+  }
+  
+  public void week(int count) {
+    if(count!= 0) {
+      this.fecha= this.fecha.plusDays(count* dias);
+      this.init();
+    } // if  
   }
 
 }

@@ -356,9 +356,8 @@ public class Incidencia extends IBaseAttribute implements Serializable {
   }  
  
   private void toLoadSemana() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idTipoNomina", 1L);      
       Entity entity = (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
       if(entity!= null && !entity.isEmpty())
@@ -373,6 +372,16 @@ public class Incidencia extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+ 
+  public void doBackSemana(Long week) {
+    try {      
+      this.dias.week(week.intValue());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

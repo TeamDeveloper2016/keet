@@ -6189,7 +6189,8 @@
 					tc_keet_desarrollos.nombres as nombre_desarrollo,
 					tc_keet_desarrollos.clave as clave_desarrollo,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
-          tc_keet_tipos_ordenes.nombre as tipo
+          tc_keet_tipos_ordenes.nombre as tipo,
+          ifnull(count(tc_mantic_ordenes_detalles.id_orden_detalle), 0) as partidas
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
@@ -6212,10 +6213,14 @@
 					tc_keet_tipos_ordenes on tc_mantic_ordenes_compras.id_tipo_orden= tc_keet_tipos_ordenes.id_tipo_orden
 				left join 
 					tc_mantic_clientes on tc_mantic_ordenes_compras.id_cliente=tc_mantic_clientes.id_cliente
+				left join 
+					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
 				where
 					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
 					and {condicion}
-				{sortOrder}
+				group by
+				  tc_mantic_ordenes_compras.id_orden_compra	
+        {sortOrder}
 			</select>
 			<select id="solicitado">
         select      

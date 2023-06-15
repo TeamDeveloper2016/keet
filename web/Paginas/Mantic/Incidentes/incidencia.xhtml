@@ -100,7 +100,11 @@
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="comentarios" value="Observaciones:"/>						
-                    <p:inputTextarea id="comentarios" rows="1" value="#{manticIncidentesIncidencia.repercusion.observaciones}" styleClass="janal-wid-100-txt semana"/>
+                    <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-94, janal-fix-3 janal-column-center, janal-fix-3 janal-column-right">
+                      <p:inputTextarea id="comentarios" rows="1" value="#{manticIncidentesIncidencia.repercusion.observaciones}" styleClass="janal-wid-100-txt semana"/>
+                      <p:commandButton styleClass="janal-text-white" icon="fa fa-fast-backward" onstart="return janal.bloquear()" process="@this" actionListener="#{manticIncidentesIncidencia.doBackSemana(-1)}" oncomplete="janal.desbloquear(); janal.refresh()" update="panelSemana" title="Regresar una semana"/>
+                      <p:commandButton styleClass="janal-text-white" icon="fa fa-fast-forward" onstart="return janal.bloquear()" process="@this" actionListener="#{manticIncidentesIncidencia.doBackSemana(1)}" oncomplete="janal.desbloquear(); janal.refresh()" update="panelSemana" title="Avanzar una semana"/>
+                    </p:panelGrid>
                   </p:panelGrid>
                 </p:panelGrid>  
                 <table class="ui-datatable ui-widget ui-datatable-reflow janal-wid-100">

@@ -447,7 +447,7 @@ private static final long serialVersionUID = 8793667741599428879L;
 
   public String toColor(Entity row) {
     Long idRevisado= row.toLong("idRevisado");
-		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": Objects.equals(idRevisado, 1L)? "": "janal-tr-yellow";
+		return Objects.equals(row.toLong("idNotaTipo"), 3L)? "janal-tr-purple": Objects.equals(idRevisado, 1L)? "": "janal-tr-yellow";
 	} 
 	
 	public String doCostos(Entity row) {
