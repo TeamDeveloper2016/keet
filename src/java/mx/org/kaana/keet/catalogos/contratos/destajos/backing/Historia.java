@@ -3,7 +3,6 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map; 
@@ -168,7 +167,6 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     List<Entity> lotes       = null;
     String anterior          = "";
@@ -210,7 +208,6 @@ public class Historia extends IBaseReporteDestajos implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally				
   } // doLoad	
 	

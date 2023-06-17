@@ -221,9 +221,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.contrato.doActualizarContratoDomicilio();
 			transaccion= new Transaccion(this.contrato);
 			if (transaccion.ejecutar(this.accion)) {
-				JsfBase.setFlashAttribute("idContratoProcess", this.contrato.getContrato().getIdContrato());
-				regresar =  "filtro".concat(Constantes.REDIRECIONAR);//this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el contrato de forma correcta."), ETipoMensaje.INFORMACION);
+				regresar =  this.doCancelar();
+				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": "modificó").concat(" el contrato de forma correcta !"), ETipoMensaje.INFORMACION);
+        transaccion.ejecutar(EAccion.DESTRANSFORMACION);
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el contrato", ETipoMensaje.ERROR);      			

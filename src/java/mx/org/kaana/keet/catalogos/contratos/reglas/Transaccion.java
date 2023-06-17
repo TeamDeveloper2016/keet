@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -170,6 +171,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case COMPLETO:
           regresar= DaoFactory.getInstance().update(sesion, this.lote)> 0L;          
+					break;
+				case DESTRANSFORMACION:
+          regresar= this.toCheckOdenLotes(sesion, this.contrato.getContrato().getIdContrato());
 					break;
 			} // switch
 		} // try
@@ -473,4 +477,70 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }
 
+  private Boolean toCheckOdenLotes(Session sesion, Long idContrato) throws Exception {
+    Boolean regresar                   = Boolean.FALSE;
+    List<TcKeetContratosLotesDto> lotes= null;
+    Map<String, Object> params         = new HashMap<>();
+    try {
+      params.put("idContrato", idContrato);
+      lotes= (List<TcKeetContratosLotesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetContratosLotesDto.class, "TcKeetContratosLotesDto", "byContrato", params);
+      if(!Objects.equals(lotes, null) && !lotes.isEmpty()) {
+        int clean= 0;
+        int size = lotes.size();
+        for(TcKeetContratosLotesDto item: lotes) {
+          if(Objects.equals(item.getIdEstacion(), null)) 
+            clean++;
+        } // if  
+        // NO SE HA CARGADO NINGUNA ESTACIÓN POR LO TANTO SE PUEDE RENUMERAR SI ES QUE EXISTE UN ERROR
+        if(Objects.equals(clean, size)) {
+          boolean error= false;
+          int next     = 1;
+          Long count   = -1L;
+          for(TcKeetContratosLotesDto item: lotes) {
+            if(error) 
+              item.setOrden(new Long(next));
+            else
+              if(!Objects.equals(count, -1L)) {
+                if(Objects.equals(count, item.getOrden())) {
+                  item.setOrden(new Long(next));
+                  error= true;
+                } // if  
+                else
+                  count= item.getOrden();              
+              } // if
+              else
+                count= item.getOrden();
+            next++;
+          } // for
+        } // if
+        else {
+          // SI SE CARGO ALGUNA ESTACION ENTONCES MOVER EL ORDEN SIEMPRE Y CUANDO ESTE VACIO LA ESTACIÓN 
+          Long count= -1L;
+          for(TcKeetContratosLotesDto item: lotes) {
+            if(!Objects.equals(count, -1L)) {
+              if(Objects.equals(count, item.getOrden()) && Objects.equals(item.getIdEstacion(), null)) {
+                item.setOrden(new Long(size));
+                size++;
+              } // if
+              else
+                count= item.getOrden();              
+            } // if
+            else
+              count= item.getOrden();
+          } // for
+        } // if  
+        for(TcKeetContratosLotesDto item: lotes) 
+          DaoFactory.getInstance().update(item);
+        regresar= Boolean.TRUE;
+      } // if  
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

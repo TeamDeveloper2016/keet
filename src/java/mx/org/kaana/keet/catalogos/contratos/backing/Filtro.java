@@ -398,6 +398,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
     return "/Paginas/Keet/Catalogos/Materiales/filtro".concat(Constantes.REDIRECIONAR);
   }
-        
+ 
+  public void doHola() {
+ 		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		try {
+			seleccionado     = (Entity)this.attrs.get("seleccionado");
+			Contrato contrato= (Contrato)DaoFactory.getInstance().toEntity(Contrato.class, "TcKeetContratosDto", "byId", seleccionado.toMap());
+ 			transaccion      = new Transaccion(new RegistroContrato(contrato), new TcKeetContratosBitacoraDto());
+			transaccion.ejecutar(EAccion.DESTRANSFORMACION);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } 
         
 }
