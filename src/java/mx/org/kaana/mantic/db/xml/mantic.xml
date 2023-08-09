@@ -6444,6 +6444,8 @@ where
 				where 
 				  tc_mantic_tipos_incidentes.grupo!= 5
 					and {condicion}
+        order by
+          nombre
 			</select>
 			<select id="byGrupo">
 				select 
@@ -6457,6 +6459,8 @@ where
 				where 
 				  grupo= {grupo}
 					and {condicion}
+        order by
+          nombre
 			</select>
 			<select id="incidentes">
 				select 

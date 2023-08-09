@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,12 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -30,7 +27,6 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
@@ -121,9 +117,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
   
 	private void loadTiposIncidentes() {
 		List<UISelectItem> tiposIncidentes= null;
-		Map<String, Object>params         = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("grupo", 1L);
 			tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "byGrupo", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
@@ -203,26 +198,30 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		boolean editable                 = true;
 		try {			
 			this.count++;
-			newIncidente= this.loadNewIncidente(selectEvent);
-			editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.FALTA.getKey());			
-			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)) {
-				String icon= this.toShowIcon(newIncidente);
-				defaultEvent= DefaultScheduleEvent.builder()
-								.id(newIncidente.getIdIncidente().toString())
-								.allDay(true)
-								.data(newIncidente)
-								.description(icon)
-								.title(icon)
-								.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
-								.endDate(newIncidente.getVigenciaFin().atStartOfDay())
-								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(newIncidente.getIdIncidente().toString())))
-								.editable(editable)
-								.build();	
-				this.eventModel.addEvent(defaultEvent);
-				this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
+      if(selectEvent.getObject().toLocalDate().isAfter(LocalDate.now()))
+        JsfBase.addAlert("Agregar incidencia", "La fecha para registrar la incidencia tiene que ser menor a la actual !", ETipoMensaje.INFORMACION);
+      else {
+        newIncidente= this.loadNewIncidente(selectEvent);
+        editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.FALTA.getKey());			
+        if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)) {
+          String icon= this.toShowIcon(newIncidente);
+          defaultEvent= DefaultScheduleEvent.builder()
+                  .id(newIncidente.getIdIncidente().toString())
+                  .allDay(true)
+                  .data(newIncidente)
+                  .description(icon)
+                  .title(icon)
+                  .startDate(newIncidente.getVigenciaInicio().atStartOfDay())
+                  .endDate(newIncidente.getVigenciaFin().atStartOfDay())
+                  .styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(newIncidente.getIdIncidente().toString())))
+                  .editable(editable)
+                  .build();	
+          this.eventModel.addEvent(defaultEvent);
+          this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
+        } // if
+        else
+          JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha", ETipoMensaje.INFORMACION);
 			} // if
-			else
-				JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -359,10 +358,9 @@ public class Incidencias extends IBaseAttribute implements Serializable {
   } // onEventSelect
 	
 	public void doLoadEstatus(String asociados) {		
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;		
 		try {			
-			params= new HashMap<>();			
 			params.put("estatusAsociados", asociados);
 			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);			

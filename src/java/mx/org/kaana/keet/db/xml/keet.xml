@@ -210,6 +210,16 @@
         where      
           id_nomina = {idNomina}
       </select>
+      <select id="contrato">
+        select      
+          tc_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
+          total as costo
+        from      
+          tc_nominas_contratos_costos
+        where      
+          id_nomina = {idNomina}
+          and id_contrato= {idContrato}
+      </select>
     </unit>    
     <unit id="TcKeetEstacionesBitacoraDto">
       <select id="row">

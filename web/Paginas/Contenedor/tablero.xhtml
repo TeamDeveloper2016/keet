@@ -385,12 +385,12 @@
               </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
-                <h:form id="sucursales">                  			                  
+                <h:form id="sucursales" prependId="false">                  			                  
                   <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolTablero.articulos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolTablero.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                     <f:facet name="header">
                       <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                        <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
-                        <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </f:facet>
                     <p:column styleClass="janal-column-left ColWid10 Responsive">
@@ -410,7 +410,7 @@
                     </f:facet>
                   </p:dataTable>
                   <h:commandLink id="dataPdfCapturista">                    
-                    <pe:exporter type="pdf"  skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                    <pe:exporter type="pdf"  skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
                   </h:commandLink>
                   <h:commandLink id="dataXlsCapturista">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                

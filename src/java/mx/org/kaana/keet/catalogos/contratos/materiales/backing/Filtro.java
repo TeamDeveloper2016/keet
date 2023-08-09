@@ -313,23 +313,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public List<UISelectEntity> doCompleteVale(String vale){
 		List<UISelectEntity> regresar= null;		
-		Map<String, Object> params   = null;
-		List<Columna> campos         = null;		
+		Map<String, Object> params   = new HashMap<>();
+		List<Columna> columns        = new ArrayList<>();		
 		try {			
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("descripcionLote", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("descripcionLote", EFormatoDinamicos.MAYUSCULAS));
 			params.put("consecutivo", vale);
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.id_vale_estatus not in (" + EEstatusVales.PENDIENTE.getKey() + ")");				
-			regresar= UIEntity.build("VistaEntregaMaterialesDto", "valesConsecutivo", params, campos, 30L);						
+			regresar= UIEntity.build("VistaEntregaMaterialesDto", "valesConsecutivo", params, columns, 30L);		
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;

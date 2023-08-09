@@ -174,7 +174,7 @@ public class Xls extends XlsBase {
 	@Override
   public boolean generarRegistros(boolean titulo) throws Exception {
     boolean termino	= true; 			
-		int top					= new Long(Constantes.SQL_TODOS_REGISTROS).intValue();
+		int top					= new Long(Constantes.SQL_TOPE_REGISTROS).intValue();
     try {			
 			PageRecords pages= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), 0, top);
 			if ((pages!= null) && (!pages.getList().isEmpty())) {				

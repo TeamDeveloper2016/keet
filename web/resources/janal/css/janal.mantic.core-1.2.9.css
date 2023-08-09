@@ -988,7 +988,7 @@ div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .card p { margin: 0 0 1em 0; padding: 0; }
 .nopad { padding: 0; }
 .nopad .ui-panel-content { padding: 0; }    
-.dashboard .overview-inner-box { height: 333px; padding: 0px !important; border: transparent; }  
+.dashboard .overview-inner-box { height: 355px; padding: 0px !important; border: transparent; }  
 .dashboard .overview-inner-chart { height: 373px; padding: 0px !important; border: transparent; }  
 .keet-chart-panel { width:100%; height: 290px; display:block; padding-top: 20px; }
 .keet-chart-panel-box { width:100%; height: 340px; display:block; padding-top: 20px; }

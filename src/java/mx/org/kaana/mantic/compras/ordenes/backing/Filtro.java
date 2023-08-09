@@ -708,7 +708,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public String toColor(Entity row) {
     if(Objects.equals(row.toLong("partidas"), 0L))
-      UIBackingUtilities.execute("janal.warn('".concat(row.toString("consecutivo")).concat("', 'La orden de compra [").concat(row.toString("consecutivo")).concat(")] Eesta incorrecta !');"));
+      UIBackingUtilities.execute("janal.warn('".concat(row.toString("consecutivo")).concat("', 'La orden de compra [").concat(row.toString("consecutivo")).concat(")] Esta incorrecta !');"));
 		return Objects.equals(row.toLong("partidas"), 0L)? "janal-tr-diferencias": "";
 	} // toColor
 

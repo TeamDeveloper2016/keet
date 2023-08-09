@@ -23,6 +23,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.nomina.reglas.Comparativo;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Estimados;
+import mx.org.kaana.keet.nomina.reglas.ManoObra;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -460,5 +461,59 @@ public class Resumen extends Respaldos implements Serializable {
 		} // catch		
     return regresar;		
 	} // getEstimados
-  
+
+  public StreamedContent getDesarrollo() {
+		StreamedContent regresar= null;		
+    ManoObra manoObra       = null;
+    Entity ultima           = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
+      params.put("idTipoNomina", 1);      
+      params.put("ejercicio", Fecha.getAnioActual());      
+      ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ejercicio", params);
+      if(ultima!= null && !ultima.isEmpty()) {
+        manoObra   = new ManoObra(ultima.toLong("idNomina"), ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
+        String name= manoObra.execute();
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+        regresar          = new DefaultStreamedContent(stream, contentType, name);				
+      } // if  
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getDesarrollo
+
+  public StreamedContent getContrato() {
+		StreamedContent regresar= null;		
+    ManoObra manoObra       = null;
+    Entity ultima           = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
+      params.put("idTipoNomina", 1);      
+      params.put("ejercicio", Fecha.getAnioActual());      
+      ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ejercicio", params);
+      if(ultima!= null && !ultima.isEmpty()) {
+        manoObra   = new ManoObra(ultima.toLong("idNomina"), ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), ((UISelectEntity)this.attrs.get("idContrato")).getKey());
+        String name= manoObra.execute();
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+        regresar          = new DefaultStreamedContent(stream, contentType, name);				
+      } // if  
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getContrato
+
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,6 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticComprasOrdendesAccion")
@@ -879,7 +879,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     String todos            = null; 
     StringBuilder sb        = new StringBuilder();
     try {			
-			 // this.getAdminOrden().toCheckTotales();
+			// this.getAdminOrden().toCheckTotales();
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());

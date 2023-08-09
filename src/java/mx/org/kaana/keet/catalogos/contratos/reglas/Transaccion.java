@@ -493,17 +493,16 @@ public class Transaccion extends IBaseTnx {
         } // if  
         // NO SE HA CARGADO NINGUNA ESTACIÓN POR LO TANTO SE PUEDE RENUMERAR SI ES QUE EXISTE UN ERROR
         if(Objects.equals(clean, size)) {
-          boolean error= false;
-          int next     = 1;
-          Long count   = -1L;
+          int next  = 1;
+          Long count= -1L;
           for(TcKeetContratosLotesDto item: lotes) {
-            if(error) 
+            if(regresar) 
               item.setOrden(new Long(next));
             else
               if(!Objects.equals(count, -1L)) {
                 if(Objects.equals(count, item.getOrden())) {
                   item.setOrden(new Long(next));
-                  error= true;
+                  regresar= Boolean.TRUE;
                 } // if  
                 else
                   count= item.getOrden();              
@@ -519,6 +518,7 @@ public class Transaccion extends IBaseTnx {
           for(TcKeetContratosLotesDto item: lotes) {
             if(!Objects.equals(count, -1L)) {
               if(Objects.equals(count, item.getOrden()) && Objects.equals(item.getIdEstacion(), null)) {
+                regresar= Boolean.TRUE;
                 item.setOrden(new Long(size));
                 size++;
               } // if
@@ -529,9 +529,11 @@ public class Transaccion extends IBaseTnx {
               count= item.getOrden();
           } // for
         } // if  
-        for(TcKeetContratosLotesDto item: lotes) 
-          DaoFactory.getInstance().update(item);
-        regresar= Boolean.TRUE;
+        if(regresar)
+          for(TcKeetContratosLotesDto item: lotes) 
+            DaoFactory.getInstance().update(item);
+        else
+          regresar= Boolean.TRUE;
       } // if  
     } // try
     catch (Exception e) {

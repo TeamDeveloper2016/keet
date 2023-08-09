@@ -119,7 +119,7 @@ public class Costos extends IBaseFilter implements Serializable {
 	} // toPrepare
 
 	public void doLoadDesarrollos() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     UISelectEntity idNomina  = null;
     try {
@@ -151,7 +151,6 @@ public class Costos extends IBaseFilter implements Serializable {
           params.put("puestosPorObra", CAFU_PERSONAL_OBRA);      
           break;
       } // switch
-      columns= new ArrayList<>();
       columns.add(new Columna("porDia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porObra", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));

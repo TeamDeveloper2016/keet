@@ -168,7 +168,10 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		DefaultScheduleEvent defaultEvent= null;
 		boolean editable                 = true;
 		try {			
-			if(validateSemana(selectEvent.getObject().toLocalDate())){
+			// if(validateSemana(selectEvent.getObject().toLocalDate())){
+      if(selectEvent.getObject().toLocalDate().isAfter(LocalDate.now()))
+        JsfBase.addAlert("Agregar incentivo", "La fecha para registrar el incentivo tiene que ser menor a la actual !", ETipoMensaje.INFORMACION);
+      else {
 				this.count++;
 				newIncidente= loadNewIncidente(selectEvent);			
 				editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.DIA_FESTIVO.getKey());
@@ -188,10 +191,10 @@ public class Feriados extends IBaseAttribute implements Serializable {
 					this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
 				} // if
 				else
-					JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha", ETipoMensaje.INFORMACION);
+					JsfBase.addAlert("Agregar incentivo", "Ya se encuentra registrada una incidencia en esa fecha", ETipoMensaje.INFORMACION);
 			} // if
-			else
-				JsfBase.addAlert("Agregar incidencia", "Solo se pueden realizar registros sobre la semana en curso", ETipoMensaje.INFORMACION);
+//			else
+//				JsfBase.addAlert("Agregar incentivo", "Solo se pueden realizar registros sobre la semana en curso", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

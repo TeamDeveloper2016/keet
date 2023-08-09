@@ -49,11 +49,10 @@ public class Balance implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
     Map<String, Object> params = new HashMap<>();
     Map<String, Object> actores= new HashMap<>();
-    List<Columna> columns      = null;
+    List<Columna> columns      = new ArrayList<>();
     String nomina              = null;
     String periodo             = null;
     try {      
-			columns= new ArrayList<>();
 			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_NOMBRE_DIA));
 			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_NOMBRE_DIA));
       params.put("idTipoNomina", 1L);

@@ -60,12 +60,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-		List<Columna>campos= null;
+		List<Columna>columns= new ArrayList<>();
     try {
-      campos= new ArrayList<>();
-			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.lazyModel= new FormatCustomLazy("TcJanalInsumosDto", this.attrs, campos);
+      this.lazyModel= new FormatCustomLazy("TcJanalInsumosDto", this.attrs, columns);
 			UIBackingUtilities.resetDataTable();
     } // try
     catch(Exception e) {
@@ -73,7 +72,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
     } // catch
 		finally {
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
   } // doLoad
 

@@ -205,13 +205,11 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= this.toPrepare();	
     try {
-  	  params = this.toPrepare();	
       params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
 			params.put("idCliente", this.idCliente);
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    

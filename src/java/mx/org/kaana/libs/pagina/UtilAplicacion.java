@@ -51,7 +51,7 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
-  private static final String CSS   = "janal.mantic.core-1.2.8.css";
+  private static final String CSS   = "janal.mantic.core-1.2.9.css";
   private static final String CORE  = "jquery.janal.core-3.9.9.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.1.1.js";
   private static final String VALES = "jquery.janal.vales.core-0.0.5.js";
@@ -164,8 +164,8 @@ public class UtilAplicacion {
   }
 
   public void doPostProcessXls(Object document) {
-    HSSFWorkbook wb = (HSSFWorkbook) document;
-    HSSFSheet sheet = wb.getSheetAt(0);
+    HSSFWorkbook wb= (HSSFWorkbook) document;
+    HSSFSheet sheet= wb.getSheetAt(0);
     HSSFRow header = sheet.getRow(0);
     HSSFCellStyle cellStyle = wb.createCellStyle();
     cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREEN.getIndex());
