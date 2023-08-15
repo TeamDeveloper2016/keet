@@ -74,7 +74,11 @@ public class Reporte extends BaseReportes implements Serializable {
 	} // init
 
 	public void toAsignarReporte(IReporte ireporte) {
-    this.toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, "");
+    this.toAsignarReporte(ireporte, ireporte.getFormato());
+  }
+  
+	public void toAsignarReporte(IReporte ireporte, EFormatos formato) {
+    this.toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, "", formato);
   } // toAsignarReporte
   
 	public void toAsignarReporte(IReporte ireporte, String nombre) {
@@ -82,19 +86,23 @@ public class Reporte extends BaseReportes implements Serializable {
 	} // toAsignarReporte
 	
 	public void toAsignarReporte(IReporte ireporte, String prefijo, String nombre) {
+    this.toAsignarReporte(ireporte, prefijo, nombre, ireporte.getFormato());
+  }
+  
+	public void toAsignarReporte(IReporte ireporte, String prefijo, String nombre, EFormatos formato) {
 		this.ireporte = ireporte;
 		this.idTitulos= ireporte.getTitulo();		
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
-    this.idFormato= ireporte.getFormato();
+    this.idFormato= formato;
     this.fileName = Cadena.isVacio(nombre)? Archivo.toFormatNameFile(this.prefijo, ireporte.getNombre()): nombre;
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
 
 	public void toAsignarReportes(IJuntar ijuntar) {
     try {
-      this.ijuntar = ijuntar;
-      this.total= 1L;
+      this.ijuntar  = ijuntar;
+      this.total    = 1L;
       this.idTitulos= 0L;		
       this.prefijo  = Constantes.ARCHIVO_PATRON_NOMBRE;
       this.fileName = Archivo.toFormatNameFile(this.prefijo, ijuntar.getNombre());
@@ -111,7 +119,7 @@ public class Reporte extends BaseReportes implements Serializable {
 		StreamedContent regresar= null;
 		try {
       if(this.ijuntar!= null) 
-        regresar= getDescargarVarios();
+        regresar= this.getDescargarVarios();
       else 
         regresar= super.getDescargar();
 		}// try
@@ -223,6 +231,7 @@ public class Reporte extends BaseReportes implements Serializable {
 				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());
 				this.attrs.put("reportePrevisualizar", JsfBase.getContext().concat("/").concat(this.getNombre()).concat("?pfdrid_c=true"));
 				this.attrs.put("reporteFileName", this.fileName);
+				UIBackingUtilities.update("formatos");
 				UIBackingUtilities.update("dlgPrevisualizar");
 				UIBackingUtilities.execute("PF('dialogoPrevisualizar').show();");
 			} // if
@@ -286,7 +295,7 @@ public class Reporte extends BaseReportes implements Serializable {
     JuntarPdfs juntar     = null;
     List<Entity> facturas = null;
     try {
-      listaPDFs= new ArrayList<String>();
+      listaPDFs= new ArrayList<>();
       if(this.nombre.equals("")){
         this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
         this.nombre= Cadena.reemplazarCaracter(this.nombre, '/' , File.separatorChar);      

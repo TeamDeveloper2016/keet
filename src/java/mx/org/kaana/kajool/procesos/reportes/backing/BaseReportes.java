@@ -19,11 +19,9 @@ import mx.org.kaana.libs.reportes.scriptlets.Reporte;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoFormato;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.seguridad.jarfile.SearchFileJar;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IBaseDatasource;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporte;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporteDataSource;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.xml.Dml;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -203,14 +201,13 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 			zip= new Zip();
 			if(this.ireporte.getComprimir()) {
 				zipName= this.nombre.substring(0, this.nombre.lastIndexOf(".")+ 1).concat(EFormatos.ZIP.name().toLowerCase());
-				zip.setDebug(true);
-				zip.setEliminar(true);
-				zip.compactar(JsfBase.getRealPath().concat(zipName), JsfBase.getRealPath().concat(this.idFormato.toPath()), getArchivo());
-				this.nombre= zipName;
+				zip.setDebug(Boolean.TRUE);
+				zip.setEliminar(Boolean.TRUE);
+				zip.compactar(JsfBase.getRealPath().concat(zipName), JsfBase.getRealPath().concat(this.idFormato.toPath()), this.getArchivo());
 				contentType= EFormatos.ZIP.getContent();
-				InputStream inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-				// regresar   = new DefaultStreamedContent(inputStream, contentType, getArchivo());	
-				regresar= DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> inputStream).build();
+				InputStream inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(zipName);  
+        this.nombre= zipName;
+				regresar= DefaultStreamedContent.builder().contentType(contentType).name(this.getArchivo()).stream(()-> inputStream).build();
 			} // if	
 		} // try
 		catch(Exception e) {

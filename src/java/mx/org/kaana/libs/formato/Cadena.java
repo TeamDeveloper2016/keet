@@ -13,8 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.Prioridad;
-import org.apache.poi.common.usermodel.fonts.FontHeader;
-
 
 public final class Cadena {
 

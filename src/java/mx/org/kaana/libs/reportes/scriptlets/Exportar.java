@@ -291,17 +291,14 @@ public class Exportar implements Serializable {
   } // rtf 
   
   private void xls() throws Exception {
-    Long start             = 0L;
+    Long start             = System.currentTimeMillis();
     File sourceFile        = null;
     JasperPrint jasperPrint= null;
-    JRXlsExporter exporter = null;
-		List<JasperPrint>  listPrint = null;
+    JRXlsExporter exporter = new JRXlsExporter();
+		List<JasperPrint>  listPrint = new ArrayList<>();
     try {
-      start= System.currentTimeMillis();
       sourceFile   = new File(this.fileName.concat(".jrprint"));
 		  jasperPrint  = (JasperPrint)JRLoader.loadObject(sourceFile);
-		  exporter     = new JRXlsExporter();			
-			listPrint    = new ArrayList<>();
 			listPrint.add(jasperPrint);
 			exporter.setExporterInput(SimpleExporterInput.getInstance(listPrint));			
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(this.fileName.concat(".xls")));			
@@ -320,14 +317,14 @@ public class Exportar implements Serializable {
     Long start                = 0L;
     File sourceFile           = null;
     JasperPrint jasperPrint   = null;
-    JRXlsExporter exporter= null;
+    JRXlsExporter exporter    = null;
 		List<JasperPrint> listPrint= null;
     try {
       start= System.currentTimeMillis();
-      sourceFile = new File(this.fileName.concat(".jrprint"));
+      sourceFile  = new File(this.fileName.concat(".jrprint"));
 		  jasperPrint = (JasperPrint)JRLoader.loadObject(sourceFile);
-		  exporter = new JRXlsExporter();
-			listPrint    = new ArrayList<>();
+		  exporter    = new JRXlsExporter();
+			listPrint   = new ArrayList<>();
 			listPrint.add(jasperPrint);
 			exporter.setExporterInput(SimpleExporterInput.getInstance(listPrint));			
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(this.fileName.concat(".jxl")));			
@@ -447,17 +444,14 @@ public class Exportar implements Serializable {
   } // docx
   
   private void xlsx() throws Exception {
-    Long start             = 0L;
-    File sourceFile        = null;
+    Long start             = System.currentTimeMillis();
+    File sourceFile        = new File(this.fileName.concat(".jrprint"));
     JasperPrint jasperPrint= null;
     JRXlsxExporter exporter= null;
-		List<JasperPrint>  listPrint = null;
+		List<JasperPrint>  listPrint = new ArrayList<>();
     try {
-      start= System.currentTimeMillis();
-      sourceFile = new File(this.fileName.concat(".jrprint"));
-		  jasperPrint = (JasperPrint)JRLoader.loadObject(sourceFile);
-      exporter = new JRXlsxExporter();
-			listPrint    = new ArrayList<>();
+		  jasperPrint= (JasperPrint)JRLoader.loadObject(sourceFile);
+      exporter   = new JRXlsxExporter();
 			listPrint.add(jasperPrint);
 			exporter.setExporterInput(SimpleExporterInput.getInstance(listPrint));
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(this.fileName.concat(".xlsx")));

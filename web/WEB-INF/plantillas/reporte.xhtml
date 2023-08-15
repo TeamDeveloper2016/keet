@@ -112,7 +112,7 @@
                 <p:focus class="janal-padding-cero" context="principal"/>	
 								<p:remoteCommand name="actualizarComponentes" update="titulos formatos registros"/>
 								<div class="tabla-filtro">
-									<p:fieldset legend="Reporte" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%; display: none" styleClass="sin-lineas">
+                  <p:fieldset legend="Reporte" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%;" styleClass="sin-lineas DispNone">
 										<h:panelGrid columns="2" id="encabezadoReporte" >
 											<label for="titulos" id="l_titulos">Titulos:</label>
 											<p:selectOneMenu id="titulos" value="#{kajoolTemplateReporte.idTitulos}" widgetVar="titulo">
@@ -134,7 +134,7 @@
 												</p:column> 					
 											</p:selectOneMenu>
 											<label>Vista previa:</label>
-											<p:selectBooleanCheckbox id="previsualizar"  value="#{kajoolTemplateReporte.previsualizar}" widgetVar="previsualizar" >
+											<p:selectBooleanCheckbox id="previsualizar" value="#{kajoolTemplateReporte.previsualizar}" widgetVar="previsualizar" >
 												<p:ajax event="change"  process="@this" />
 											</p:selectBooleanCheckbox>
 											<label id="l_registros" for="registros">Registros:</label>
@@ -160,8 +160,8 @@
 								<p:panel styleClass="tabla-filtro" id='descargar' widgetVar="descargaArchivo">
 									<h:panelGrid columns="2" id="archivo" styleClass="janal-column-center"  >
 										<label for="generado">Archivo generado:</label>				
-										<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" onclick="$('#descargar').hide();$('#barra').hide();">
-											<p:fileDownload value="#{kajoolTemplateReporte.descargar}" /> 
+                    <p:commandLink id="generado" title="Click para descargar el archivo" process="@none" ajax="false" onclick="$('#descargar').hide();$('#barra').hide();">
+											<p:fileDownload value="#{kajoolTemplateReporte.descargar}"/> 
 											<div class="alinear-centro">
 												<h:panelGrid columns="1">
 													<p:graphicImage id="icono" library="janal" name="#{kajoolTemplateReporte.idFormato.image}" styleClass="alinear-centro"/>

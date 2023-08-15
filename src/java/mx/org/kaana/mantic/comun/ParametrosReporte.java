@@ -14,11 +14,17 @@ public class ParametrosReporte implements Serializable, IReporte {
 	private EReportes reporte;
 	private Map<String, Object> params;
 	private Map<String, Object> parametros;
+	private EFormatos formato;
 
 	public ParametrosReporte(EReportes reporte, Map<String, Object> params, Map<String, Object> parametros) {
+    this(reporte, params, parametros, reporte.getFormato());
+  }
+  
+	public ParametrosReporte(EReportes reporte, Map<String, Object> params, Map<String, Object> parametros, EFormatos formato) {
 		this.reporte   = reporte;
 		this.params    = params;
 		this.parametros= parametros;
+    this.formato   = formato;
 	}
 	
 	public IReportAttribute getEnum() {
@@ -57,7 +63,7 @@ public class ParametrosReporte implements Serializable, IReporte {
 
 	@Override
 	public EFormatos getFormato() {
-		return this.reporte.getFormato();
+		return this.formato;
 	}
 
 	@Override

@@ -261,24 +261,38 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toPrepare
 
 	private void toLoadCatalogos() {
-		Map<String, Object>params= null;
-    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
     try {
-      columns= new ArrayList<>();
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.toLoadEmpresas();
-			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("ejercicios", UIEntity.seleccione("VistaNominaDto", "ejercicios", params, "ejercicio"));
       this.attrs.put("ejercicio", new UISelectEntity(-1L));
-      this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
-      this.attrs.put("semana", new UISelectEntity(-1L));
       this.attrs.put("tipos", UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"));
       this.attrs.put("idTipoNomina", new UISelectEntity(-1L));
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "todos", params, "nombre"));
       this.attrs.put("estatus", new UISelectEntity(-1L));
+      this.doLoadSemanas();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);	
+		} // catch				
+    finally {
+			Methods.clean(params);
+		}	// finally
+	} // toLoadCatalogos
+
+	public void doLoadSemanas() {
+		Map<String, Object>params= new HashMap<>();
+    List<Columna> columns    = new ArrayList<>();
+    try {
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("ejercicio", this.attrs.get("ejercicio"));
+      this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
+      this.attrs.put("semana", new UISelectEntity(-1L));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -288,15 +302,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 			Methods.clean(columns);
 		}	// finally
-	} // toLoadCatalogos
+	} 
 
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;		
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();			
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcKeetNominasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -340,9 +353,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public String doExportar() {
 		String regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tipo, nomina, clave");
 			params.put("idNomina", entity.toLong("idNomina"));
@@ -361,18 +373,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}	
 	
-	public void doReporte(String nombre) throws Exception {    
+	public void doReporte(String nombre, String salida) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
     Parametros comunes           = null;
+    EFormatos formato            = EFormatos.valueOf(salida);
 		try {		  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.LISTADO_NOMINA)) {
         params = this.toPrepare();
         params.put("sortOrder", "order by tc_keet_nominas.id_nomina desc");
-      }
+      } // if
       else 
         params = this.toPrepare();
       this.reporte= JsfBase.toReporte();
@@ -381,7 +394,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros, formato));		
       if(this.doVerificarReporte())
         this.reporte.doAceptar();			
     } // try

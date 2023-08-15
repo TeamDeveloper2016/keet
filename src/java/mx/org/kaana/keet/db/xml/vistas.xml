@@ -5790,6 +5790,7 @@ order by
 				where
 					tc_keet_nominas.id_empresa in ({sucursales})
 				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
+          and (tc_keet_nominas_periodos.ejercicio= {ejercicio} or {ejercicio}= -1)
 				order by
 				  tc_keet_nominas_periodos.orden asc				
 			</select>

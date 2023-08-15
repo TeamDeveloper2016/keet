@@ -136,6 +136,10 @@ public final class Catalogos {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(attrs.containsKey("ejercicio"))
+			  params.put("ejercicio", attrs.get("ejercicio"));
+      else
+			  params.put("ejercicio", "-1");
       attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
       attrs.put("semana", new UISelectEntity(-1L));
 		} // try
