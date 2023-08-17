@@ -2,8 +2,6 @@ package mx.org.kaana.keet.nomina.reglas;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -126,10 +125,10 @@ public class Personas extends Empleados implements Serializable {
         this.toAddView(2, 25);
         this.toAddView(3, 25);
         this.toAddView(4, 70);
-        this.toAddView(5, 15);
-        this.toAddView(6, 15);
-        this.toAddView(7, 15);
-        this.toAddView(8, 15);
+        this.toAddView(12, 15);
+        this.toAddView(13, 15);
+        this.toAddView(14, 15);
+        this.toAddView(15, 15);
       } // if  
     } // try
     catch (Exception e) {
@@ -152,21 +151,23 @@ public class Personas extends Empleados implements Serializable {
     this.addCell(this.posicionColumna+ 2, this.posicionFila, "CATEGORIA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 3, this.posicionFila, "DEPARTAMENTO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 4, this.posicionFila, "NOMBRE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 5, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 6, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 7, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 8, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 9, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 10, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 11, this.posicionFila, "MAR", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 12, this.posicionFila, "MIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 13, this.posicionFila, "JUE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 14, this.posicionFila, "VIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 5, this.posicionFila, "DOM", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 6, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 7, this.posicionFila, "MAR", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 8, this.posicionFila, "MIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 9, this.posicionFila, "JUE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 10, this.posicionFila, "VIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 11, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 12, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 13, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 14, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 15, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
   }
   
   @Override
   public void toEmpleado(Entity item, Double cajaChica) throws Exception {
     Map<String, Object> params= new HashMap<>();
+    StringBuilder faltas      = new StringBuilder(Constantes.SEPARADOR);
     try {      
       this.posicionFila++;
       this.addCell(this.posicionColumna, this.posicionFila, item.toString("desarrollo"));
@@ -174,14 +175,26 @@ public class Personas extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("puesto"));
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.number);
-      this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.number);
-      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(cajaChica), this.number); 
-      this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
+      this.addNumber(this.posicionColumna+ 12, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
+      this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
+      this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(cajaChica), this.value); 
+      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
       this.subTotales.put("neto", this.subTotales.get("neto")+ item.toDouble("neto")+ cajaChica);
+      //  RECUPERAR LAS FALTAS DEL PERSONAL Y COLOCAR UNA X INICIANDO DE SABADO A VIERNES SIN CONSIDERAR LOS DOMINGOS
+      params.put("idEmpresaPersona", item.toString("idEmpresaPersona"));      
+      params.put("idNomina", this.idNomina);      
+      List<Entity> dias= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticIncidentesDto", "dias", params);
+      if(dias!= null && !dias.isEmpty()) 
+        for (Entity dia: dias) 
+          faltas.append(dia.toLong("dia"));
+      for (int x= 1; x < 8; x++) 
+        if(faltas.toString().contains(String.valueOf(x)))
+          this.addCell(this.posicionColumna+ x+ 4, this.posicionFila, "", Alignment.CENTRE);
+        else 
+          this.addCell(this.posicionColumna+ x+ 4, this.posicionFila, "X", Alignment.CENTRE);
     } // try
     catch (Exception e) {
       throw e;
@@ -194,20 +207,17 @@ public class Personas extends Empleados implements Serializable {
   @Override
   protected void toAddSubtotalesEmpleado(String desarrollo) throws Exception {
     this.posicionFila++;
-    for (int x = 0; x < 5; x++) 
+    for (int x = 0; x < 12; x++) 
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
-    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
-    this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
-    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
-    this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
+    this.addNumber(this.posicionColumna+ 12, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
+    this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
+    this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
+    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("neto"));
-    for (int x = 9; x < 15; x++) 
-      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
   }
   
   @Override
   public void toProveedor(Entity item) throws Exception {
-    Map<String, Object> params= new HashMap<>();
     try {      
       this.posicionFila++;
       this.addCell(this.posicionColumna, this.posicionFila, item.toString("desarrollo"));
@@ -215,30 +225,25 @@ public class Personas extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 2, this.posicionFila, "SUB CONTRATISTA");
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
+      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
       this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
 
   @Override
   protected void toAddSubtotalesProveedor(String desarrollo) throws Exception {
     this.posicionFila++;
-    for (int x= 0; x < 8; x++) 
+    for (int x= 0; x < 15; x++) 
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
-    this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
+    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("total"));
-    for (int x= 9; x < 15; x++) 
-      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
   }
   
   public static void main(String ... args) throws Exception {
-    Personas corte= new Personas(83L);
+    Personas corte= new Personas(139L);
     LOG.info(corte.local());
   }
   

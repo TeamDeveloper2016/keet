@@ -45,6 +45,7 @@ public class Empleados extends XlsBase implements Serializable {
   protected Map<String, Double> totales;
   protected String path;
   protected WritableCellFormat number;
+  protected WritableCellFormat value;
   protected WritableCellFormat total;
           
   public Empleados(Long idNomina) throws Exception {
@@ -53,6 +54,7 @@ public class Empleados extends XlsBase implements Serializable {
     this.totales   = new HashMap<>();
     this.path      = "";
     this.number    = this.toNumber(Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.value     = this.toNumber(Alignment.RIGHT, Colour.UNKNOWN, Colour.BLACK, Boolean.FALSE);
     this.total     = this.toNumber(Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.TRUE);
     this.init();
   }
@@ -296,7 +298,6 @@ public class Empleados extends XlsBase implements Serializable {
   }
   
   public void toEmpleado(Entity item, Double cajaChica) throws Exception {
-    Map<String, Object> params= new HashMap<>();
     try {      
       this.posicionFila++;
       this.addCell(this.posicionColumna, this.posicionFila, item.toString("puesto"));
@@ -315,13 +316,9 @@ public class Empleados extends XlsBase implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public void toProveedor(Entity item) throws Exception {
-    Map<String, Object> params= new HashMap<>();
     try {      
       this.posicionFila++;
       this.addCell(this.posicionColumna, this.posicionFila, "SUB CONTRATISTA");
@@ -334,9 +331,6 @@ public class Empleados extends XlsBase implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   @Override

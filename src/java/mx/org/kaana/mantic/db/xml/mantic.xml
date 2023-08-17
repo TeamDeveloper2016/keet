@@ -6356,6 +6356,18 @@ where
         order by
           id_tipo_incidente
       </select>  
+      <select id="dias">  
+select
+  tc_mantic_incidentes.id_empresa_persona as id_key,
+  tc_mantic_incidentes.id_nomina,
+  dayofweek(tc_mantic_incidentes.inicio) as dia
+from
+  tc_mantic_incidentes
+where
+  tc_mantic_incidentes.id_empresa_persona= {idEmpresaPersona}
+  and tc_mantic_incidentes.id_nomina= {idNomina} 
+  and tc_mantic_incidentes.id_tipo_incidente= 1
+      </select>  
 			<delete id="rows">
 				delete tc_mantic_incidentes from tc_mantic_incidentes where id_incidente= {idIncidente}
 			</delete>

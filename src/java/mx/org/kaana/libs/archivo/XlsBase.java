@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.archivo;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
@@ -447,7 +448,8 @@ public abstract class XlsBase implements Serializable {
     if(line)
       regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
     regresar.setAlignment(alignment);
-    regresar.setBackground(background);
+    if(!Objects.equal(background, Colour.UNKNOWN) && !Objects.equal(background, Colour.DEFAULT_BACKGROUND))
+      regresar.setBackground(background);
     return regresar;
   }  
   
@@ -458,7 +460,8 @@ public abstract class XlsBase implements Serializable {
     if(line)
       regresar.setBorder(jxl.format.Border.TOP, jxl.format.BorderLineStyle.THIN);
     regresar.setAlignment(alignment);
-    regresar.setBackground(background);
+    if(!Objects.equal(background, Colour.UNKNOWN) && !Objects.equal(background, Colour.DEFAULT_BACKGROUND))
+      regresar.setBackground(background);
     return regresar;
   }  
   
