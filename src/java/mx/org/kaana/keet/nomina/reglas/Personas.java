@@ -1,0 +1,245 @@
+package mx.org.kaana.keet.nomina.reglas;
+
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.Colour;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 26/01/2022
+ *@time 08:42:00 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public class Personas extends Empleados implements Serializable {
+  
+  private static final Log LOG = LogFactory.getLog(Personas.class);
+  private static final long serialVersionUID = -3364616967422678893L;
+
+  public Personas(Long idNomina) throws Exception {
+    super(idNomina);
+  }
+  
+  @Override
+  protected String process() throws Exception {
+    String regresar           = "";
+    String desarrollo         = "";
+    Map<Long, Object> caja    = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idNomina", this.idNomina);      
+      params.put("idTipoNomina", 1L);      
+      this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
+      regresar= Archivo.toFormatNameFile("IMOX", "NOMINA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      this.posicionFila   = 0;
+      this.posicionColumna= 0;
+      this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
+      this.hoja = this.libro.createSheet("IMOX", 0);
+      this.addCell(this.posicionColumna, this.posicionFila++, "NOMINA DEL PERSONAL DE LA SEMANA ".
+              concat(this.nomina.toString("semana").
+              concat(" DEL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("inicio")).toUpperCase()).
+              concat(" AL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("termino")).toUpperCase())));
+      List<Entity> residentes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "residentes", params);
+      if(residentes!= null && !residentes.isEmpty()) {
+        for (Entity residente: residentes) {
+          caja.put(residente.toLong("idEmpresaPersona"), residente.toDouble("gasto"));
+        } // for
+      } // if
+      List<Entity> personas= null;
+      if(Objects.equals(this.nomina.toLong("idNominaEstatus"), -1L) || Objects.equals(this.nomina.toLong("idNominaEstatus"), ENominaEstatus.TERMINADA))
+        personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarEmpleados", params);
+      else
+        personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarCalculada", params);
+      if(personas!= null && !personas.isEmpty()) {
+        this.toAddTitulosEmpleado();
+        for (Entity item: personas) {
+          if(!Objects.equals(desarrollo, item.toString("desarrollo"))) {
+            if(!Objects.equals(desarrollo, "")) 
+              this.toAddSubtotalesEmpleado(desarrollo);
+            LOG.info("------------------------DESARROLLO ["+ item.toString("desarrollo")+"]-------------------------------");
+            desarrollo= item.toString("desarrollo");
+            this.init();
+          } // if  
+          // SI ES RESIDENTE RECUPERAR EL IMPORTE DE CAJA CHICA DE LA SEMANA 
+          Double deposito= 0D;
+          if((Objects.equals(item.toLong("idPuesto"), 8L) || Objects.equals(item.toLong("idPuesto"), 20L)) && caja.containsKey(item.toLong("idEmpresaPersona")))
+            deposito= (Double)caja.get(item.toLong("idEmpresaPersona"));
+          if(item.toDouble("neto")!= null && item.toDouble("neto")> 0)
+            this.toEmpleado(item, deposito);
+          // break;
+        } // for
+        if(!Objects.equals(desarrollo, "")) 
+          this.toAddSubtotalesEmpleado(desarrollo);
+      } // if
+      else {
+        this.posicionFila++;
+        this.addCellColor(this.posicionColumna, this.posicionFila, "LA NOMINA NO TIENE EMPLEADOS", jxl.format.Colour.BLUE);
+        this.toAddView(0, 80);
+      } // else
+      
+      desarrollo= "";
+      this.totales.clear();
+      List<Entity> proveedores= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarProveedores", params);
+      if(proveedores!= null && !proveedores.isEmpty()) {
+        for (Entity item: proveedores) {
+          if(!Objects.equals(desarrollo, item.toString("desarrollo"))) {
+            if(!Objects.equals(desarrollo, "")) 
+              this.toAddSubtotalesProveedor(desarrollo);
+            LOG.info("------------------------DESARROLLO ["+ item.toString("desarrollo")+"]-------------------------------");
+            desarrollo= item.toString("desarrollo");
+            this.init();
+          } // if  
+          this.toProveedor(item);
+          // break;
+        } // for
+        if(!Objects.equals(desarrollo, "")) 
+          this.toAddSubtotalesProveedor(desarrollo);
+        this.posicionFila++;
+      } // if
+      else {
+        this.posicionFila++;
+        this.addCellColor(this.posicionColumna, this.posicionFila, "LA NOMINA NO TIENE EMPLEADOS", jxl.format.Colour.BLUE);
+        this.toAddView(0, 80);
+      } // else      
+      if((personas!= null && !personas.isEmpty()) || (proveedores!= null && !proveedores.isEmpty())) {
+        this.toAddView(0, 20);
+        this.toAddView(1, 12);
+        this.toAddView(2, 25);
+        this.toAddView(3, 25);
+        this.toAddView(4, 70);
+        this.toAddView(5, 15);
+        this.toAddView(6, 15);
+        this.toAddView(7, 15);
+        this.toAddView(8, 15);
+      } // if  
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(caja);
+      Methods.clean(params);
+  	  this.libro.write();
+      this.libro.close();
+    } // finally
+    return regresar;
+  }  
+  
+  @Override
+  protected void toAddTitulosEmpleado() throws Exception {
+    this.posicionFila++;
+    this.addCell(this.posicionColumna, this.posicionFila, "DESARRLLO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 1, this.posicionFila, "CLAVE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 2, this.posicionFila, "CATEGORIA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 3, this.posicionFila, "DEPARTAMENTO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 4, this.posicionFila, "NOMBRE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 5, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 6, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 7, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 8, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 9, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 10, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 11, this.posicionFila, "MAR", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 12, this.posicionFila, "MIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 13, this.posicionFila, "JUE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 14, this.posicionFila, "VIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+  }
+  
+  @Override
+  public void toEmpleado(Entity item, Double cajaChica) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      this.posicionFila++;
+      this.addCell(this.posicionColumna, this.posicionFila, item.toString("desarrollo"));
+      this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("clave"));
+      this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("puesto"));
+      this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("nombre"));
+      this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.number);
+      this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.number);
+      this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(cajaChica), this.number); 
+      this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
+      this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
+      this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
+      this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
+      this.subTotales.put("neto", this.subTotales.get("neto")+ item.toDouble("neto")+ cajaChica);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
+  @Override
+  protected void toAddSubtotalesEmpleado(String desarrollo) throws Exception {
+    this.posicionFila++;
+    for (int x = 0; x < 5; x++) 
+      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
+    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
+    this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
+    this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
+    this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
+    this.totales.put(desarrollo, this.subTotales.get("neto"));
+    for (int x = 9; x < 15; x++) 
+      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
+  }
+  
+  @Override
+  public void toProveedor(Entity item) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      this.posicionFila++;
+      this.addCell(this.posicionColumna, this.posicionFila, item.toString("desarrollo"));
+      this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("clave"));
+      this.addCell(this.posicionColumna+ 2, this.posicionFila, "SUB CONTRATISTA");
+      this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("nombre"));
+      this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
+      this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
+  @Override
+  protected void toAddSubtotalesProveedor(String desarrollo) throws Exception {
+    this.posicionFila++;
+    for (int x= 0; x < 8; x++) 
+      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
+    this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
+    this.totales.put(desarrollo, this.subTotales.get("total"));
+    for (int x= 9; x < 15; x++) 
+      this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
+  }
+  
+  public static void main(String ... args) throws Exception {
+    Personas corte= new Personas(83L);
+    LOG.info(corte.local());
+  }
+  
+}

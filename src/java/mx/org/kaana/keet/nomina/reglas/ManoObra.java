@@ -178,7 +178,7 @@ public class ManoObra extends XlsBase implements Serializable {
         } // if
         else {
           this.posicionFila++;
-          this.addCellColor(this.posicionColumna, this.posicionFila, "EL DESARROLLO NO CONTRATO NO TIENE CONTRATOS", jxl.format.Colour.BLUE);
+          this.addCellColor(this.posicionColumna, this.posicionFila, "EL DESARROLLO NO TIENE CONTRATOS", jxl.format.Colour.BLUE);
           this.toAddView(0, 80);
         } // else
       } // if

@@ -255,6 +255,10 @@
 						<p:menuitem value="Comparativo" icon="fa fa-sellsy" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
 	  					<p:fileDownload value="#{keetNominasFiltro.resumen}" />
   					</p:menuitem>
+            <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem icon="fa fa-file-excel-o" value="Nómina personal" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+              <p:fileDownload value="#{keetNominasFiltro.personas}" />
+            </p:menuitem>  
           </p:contextMenu>
         </div>
       </div>

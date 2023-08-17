@@ -39,13 +39,13 @@ public class Empleados extends XlsBase implements Serializable {
   private static final long serialVersionUID = -3364636967422678893L;
   
   
-  private Long idNomina;
-  private Entity nomina;
-  private Map<String, Double> subTotales;
-  private Map<String, Double> totales;
-  private String path;
-  private WritableCellFormat number;
-  private WritableCellFormat total;
+  protected Long idNomina;
+  protected Entity nomina;
+  protected Map<String, Double> subTotales;
+  protected Map<String, Double> totales;
+  protected String path;
+  protected WritableCellFormat number;
+  protected WritableCellFormat total;
           
   public Empleados(Long idNomina) throws Exception {
     this.idNomina  = idNomina;
@@ -61,7 +61,7 @@ public class Empleados extends XlsBase implements Serializable {
     return idNomina;
   }
 
-  private void init() { 
+  protected void init() { 
     this.subTotales.clear();
     this.subTotales.put("percepciones", 0D);
     this.subTotales.put("deducciones", 0D);
@@ -95,7 +95,7 @@ public class Empleados extends XlsBase implements Serializable {
     return this.process();
   }
   
-  private String process() throws Exception {
+  protected String process() throws Exception {
     String regresar           = "";
     String desarrollo         = "";
     Map<Long, Object> caja    = new HashMap<>();
@@ -238,7 +238,7 @@ public class Empleados extends XlsBase implements Serializable {
     return regresar;
   }  
   
-  private void addTotal() throws Exception {
+  protected void addTotal() throws Exception {
     this.addCell(this.posicionColumna, this.posicionFila, null, Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+1, this.posicionFila, null, Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+2, this.posicionFila, null, Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
@@ -248,7 +248,7 @@ public class Empleados extends XlsBase implements Serializable {
     this.addCell(this.posicionColumna+6, this.posicionFila, "TOTAL:", Alignment.RIGHT, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
   }
   
-  private void toAddTitulo(String titulo) throws Exception {
+  protected void toAddTitulo(String titulo) throws Exception {
     this.posicionFila++;
     this.addCell(this.posicionColumna, this.posicionFila, titulo, Alignment.LEFT, Colour.LIGHT_ORANGE, Colour.BLACK, Boolean.FALSE);
     for(int x= 1; x< 8; x++) {

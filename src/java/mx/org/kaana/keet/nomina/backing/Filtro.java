@@ -33,6 +33,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.nomina.reglas.Comparativo;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Empleados;
+import mx.org.kaana.keet.nomina.reglas.Personas;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -85,23 +86,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.fecha = fecha;
 	}
 
-  public StreamedContent getListado() {
-		StreamedContent regresar= null;		
-    Empleados empleados     = null;
-		try {
-	  	empleados  = new Empleados(((Entity)this.attrs.get("seleccionado")).getKey());
-      String name= empleados.execute();
-      String contentType= EFormatos.XLS.getContent();
-      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
-      regresar          = new DefaultStreamedContent(stream, contentType, name);				
-		} // try 
-		catch (Exception e) {
-			Error.mensaje(e);
-      JsfBase.addMessageError(e);
-		} // catch		
-    return regresar;		
-	} 
-  
   @PostConstruct
   @Override
   protected void init() {
@@ -119,7 +103,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
+  
   @Override
   public void doLoad() {
     List<Columna> columns    = null;
@@ -776,5 +760,39 @@ public class Filtro extends IBaseFilter implements Serializable {
     return "costos".concat(Constantes.REDIRECIONAR);
   }
   
+  public StreamedContent getListado() {
+		StreamedContent regresar= null;		
+    Empleados empleados     = null;
+		try {
+	  	empleados  = new Empleados(((Entity)this.attrs.get("seleccionado")).getKey());
+      String name= empleados.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
+
+  public StreamedContent getPersonas() {
+		StreamedContent regresar= null;		
+    Personas personas       = null;
+		try {
+	  	personas   = new Personas(((Entity)this.attrs.get("seleccionado")).getKey());
+      String name= personas.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
+
 }
 	
