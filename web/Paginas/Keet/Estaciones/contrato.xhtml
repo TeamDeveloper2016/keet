@@ -145,7 +145,7 @@
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
-              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
+              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold" title="#{row.idKey}"/>
 						</p:column>														
 						<p:column styleClass="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
@@ -182,14 +182,14 @@
                 <h:outputText value="Opción"/>
               </f:facet>
               <p:commandButton icon="fa fa-calendar-alt" process="@this" action="#{keetEstacionesContrato.doCheckDates(row)}" title="Ajustar fechas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idEstacionEstatus lt '3' and row.nivel eq '4'}"/>
-              <p:commandButton icon="fa fa-dollar" process="@this" action="#{keetEstacionesContrato.doCheckCostos(row)}" title="Ajustar costos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.nivel eq '6'}" disabled="#{row.idEstacionEstatus eq '3' or row.idEstacionEstatus eq '4'}"/>
-              <p:commandButton icon="fa fa-trash-alt" process="@this" action="#{keetEstacionesContrato.doCheckConcepto(row)}" title="Eliminar concepto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.nivel eq '6'}" disabled="#{row.idEstacionEstatus eq '3' or row.idEstacionEstatus eq '4'}"/>
+              <p:commandButton icon="fa fa-dollar" process="@this" action="#{keetEstacionesContrato.doCheckCostos(row)}" title="Ajustar costos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.nivel eq '6' and not(row.idEstacionEstatus eq '5')}" disabled="#{row.idEstacionEstatus eq '3' or row.idEstacionEstatus eq '4'}"/>
+              <p:commandButton icon="fa fa-trash-alt" process="@this" action="#{keetEstacionesContrato.doCheckConcepto(row)}" title="Eliminar concepto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.nivel eq '6' and not(row.idEstacionEstatus eq '5')}" disabled="#{row.idEstacionEstatus eq '3' or row.idEstacionEstatus eq '4'}"/>
 						</p:column>
             <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-col-31" exportable="false">
 							<f:facet name="header">
                 <h:outputText value="Estatus" styleClass="xs-pantalla"/>
 							</f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': 'CANCELADO'))}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': row.idEstacionEstatus eq '4'? 'circulo-gris': 'circulo-cafe'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': row.idEstacionEstatus eq '4'? 'CANCELADO': 'ANULADO'))}"/>
 						</p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetEstacionesContrato.children== null? 0: keetEstacionesContrato.children.size()}] registros"/>

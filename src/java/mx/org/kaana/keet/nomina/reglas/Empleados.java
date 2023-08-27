@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Fecha;
@@ -106,11 +107,11 @@ public class Empleados extends XlsBase implements Serializable {
       params.put("idNomina", this.idNomina);      
       params.put("idTipoNomina", 1L);      
       this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
-      regresar= Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       this.posicionFila   = 0;
       this.posicionColumna= 0;
       this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-      this.hoja = this.libro.createSheet("IMOX", 0);
+      this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
       this.addCell(this.posicionColumna, this.posicionFila++, "LISTA DE RAYA DE LA SEMANA ".
               concat(this.nomina.toString("semana").
               concat(" DEL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("inicio")).toUpperCase()).

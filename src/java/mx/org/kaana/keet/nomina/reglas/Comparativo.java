@@ -21,6 +21,7 @@ import static mx.org.kaana.keet.nomina.reglas.Egresos.CAFU_PERSONAL;
 import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_DIA;
 import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_OBRA;
 import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Global;
@@ -150,11 +151,11 @@ public class Comparativo extends XlsBase implements Serializable {
       params.put("idEmpresa", this.idEmpresa);
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosMaterialesDto", "contratos", params);
       if(items!= null && !items.isEmpty()) {
-        regresar= Archivo.toFormatNameFile("IMOX", "RESUMEN-SEMANA-".concat(nomina.toString("semana")).concat("_").concat(items.get(0).toString("empresa")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+        regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "RESUMEN-SEMANA-".concat(nomina.toString("semana")).concat("_").concat(items.get(0).toString("empresa")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
         this.posicionFila   = 0;
         this.posicionColumna= 1;
         this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-        this.hoja = this.libro.createSheet("IMOX", 0);
+        this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
         this.addCell(this.posicionColumna, this.posicionFila, "SEMANA:");
         this.addCellNegritas(this.posicionColumna+ 1, this.posicionFila++, nomina.toString("semana"), Alignment.LEFT);
         this.addCell(this.posicionColumna, this.posicionFila, "PERIODO:");

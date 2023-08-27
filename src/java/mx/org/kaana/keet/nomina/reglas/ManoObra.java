@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.nomina.beans.Corte;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Fecha;
@@ -125,14 +126,16 @@ public class ManoObra extends XlsBase implements Serializable {
         columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
         UIBackingUtilities.toFormatEntitySet(semanas, columns);
         List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "listado", params);
-        regresar= Archivo.toFormatNameFile("IMOX", "MANO_DE_OBRA".concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+        regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "MANO_DE_OBRA".concat(".").concat(EFormatos.XLS.name().toLowerCase()));
         this.posicionFila   = 0;
         this.posicionColumna= 0;
         this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-        this.hoja = this.libro.createSheet("IMOX", 0);
-        this.addCell(this.posicionColumna, this.posicionFila++, "MANO DE OBRA");
-        this.addCell(this.posicionColumna++, this.posicionFila, "Fecha corte:");
-        this.addCell(this.posicionColumna, this.posicionFila, Fecha.getHoy());
+        this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
+        this.addCell(this.posicionColumna, this.posicionFila, "Mano de obra:");
+        Entity desarrollo= (Entity)DaoFactory.getInstance().toEntity("TcKeetDesarrollosDto", "byId", params);
+        this.addCell(this.posicionColumna+ 1, this.posicionFila++, desarrollo.toString("nombres"));
+        this.addCell(this.posicionColumna, this.posicionFila, "Fecha corte:");
+        this.addCell(this.posicionColumna+ 1, this.posicionFila, Fecha.getHoy());
         this.posicionColumna= 4;
         int temporal= this.posicionFila;
         for (Entity iterator: semanas) {
@@ -177,9 +180,15 @@ public class ManoObra extends XlsBase implements Serializable {
           this.toAddView(0, 25);
         } // if
         else {
-          this.posicionFila++;
-          this.addCellColor(this.posicionColumna, this.posicionFila, "EL DESARROLLO NO TIENE CONTRATOS", jxl.format.Colour.BLUE);
-          this.toAddView(0, 80);
+          this.addCellColor(0, this.posicionFila+ 3, "EL DESARROLLO NO TIENE CONTRATOS", jxl.format.Colour.BLUE);
+          this.toAddView(0, 50);
+          count= 1;
+          this.addCellColor(count++, this.posicionFila+ 3, null, jxl.format.Colour.BLUE);
+          this.addCellColor(count++, this.posicionFila+ 3, null, jxl.format.Colour.BLUE);
+          this.addCellColor(count++, this.posicionFila+ 3, null, jxl.format.Colour.BLUE);
+          for (Entity iterator: semanas) {
+            this.addCellColor(count++, this.posicionFila+ 3, null, jxl.format.Colour.BLUE);
+          } // for
         } // else
       } // if
     } // try
@@ -189,8 +198,10 @@ public class ManoObra extends XlsBase implements Serializable {
     finally {
       Methods.clean(params);
       Methods.clean(columns);
-  	  this.libro.write();
-      this.libro.close();
+      if(this.libro!= null) {
+  	    this.libro.write();
+        this.libro.close();
+      } // if  
     } // finally
     return regresar;
   }  
@@ -234,7 +245,6 @@ public class ManoObra extends XlsBase implements Serializable {
       String value= String.format("SI(%s=0, 0, (%s*100)/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
       this.addFormula(this.posicionColumna+ count, this.posicionFila-1, value, this.porcentaje);
       this.addDouble(this.posicionColumna+ count, this.posicionFila, corte.getDestajo(), this.negritas);
-      // this.addCell(this.posicionColumna+ count, this.posicionFila, corte.getDestajo()+ ":"+ this.nomina.toString("semana"));
       this.posicionFila++;
       index= this.totales.indexOf(corte);
       if(index>= 0)
@@ -344,7 +354,9 @@ public class ManoObra extends XlsBase implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    ManoObra corte= new ManoObra(116L, 12L);
+    // ManoObra corte= new ManoObra(116L, 12L);
+    // ManoObra corte= new ManoObra(38L, 1L);
+    ManoObra corte= new ManoObra(116L, 1L);
     LOG.info(corte.local());
   }
   

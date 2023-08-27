@@ -180,7 +180,7 @@ public class Xls extends XlsBase {
 			if ((pages!= null) && (!pages.getList().isEmpty())) {				
         this.monitoreo.comenzar(DaoFactory.getInstance().toSize(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams()));
 				this.libro= Workbook.createWorkbook(new File(this.nombreArchivo));
-				this.hoja = libro.createSheet("IMOX", 0);
+				this.hoja = libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
 				this.registros= pages.getList();
 				if (!isAlgunos())
 					this.campos= getNombresColumnas();		
@@ -214,7 +214,7 @@ public class Xls extends XlsBase {
 			if (this.registros!= null && !this.registros.isEmpty()) {				
         this.monitoreo.comenzar(new Long(this.registros.size()));
 				libro= Workbook.createWorkbook(new File(this.nombreArchivo));
-				hoja = libro.createSheet("IMOX", 0);
+				hoja = libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
 				if (!isAlgunos())
 					this.campos= this.getNombresColumnas();		
 				if (titulo)

@@ -48,11 +48,11 @@ public class Personas extends Empleados implements Serializable {
       params.put("idNomina", this.idNomina);      
       params.put("idTipoNomina", 1L);      
       this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
-      regresar= Archivo.toFormatNameFile("IMOX", "NOMINA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "NOMINA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       this.posicionFila   = 0;
       this.posicionColumna= 0;
       this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-      this.hoja = this.libro.createSheet("IMOX", 0);
+      this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
       this.addCell(this.posicionColumna, this.posicionFila++, "NOMINA DEL PERSONAL DE LA SEMANA ".
               concat(this.nomina.toString("semana").
               concat(" DEL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("inicio")).toUpperCase()).

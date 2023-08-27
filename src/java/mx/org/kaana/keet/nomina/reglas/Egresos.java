@@ -143,11 +143,11 @@ public class Egresos extends XlsBase implements Serializable {
       else
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
       List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "contratos", params);
-      regresar= Archivo.toFormatNameFile("IMOX", "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "SEMANA-".concat(this.nomina.toString("semana")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       this.posicionFila   = 0;
       this.posicionColumna= 0;
       this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
-      this.hoja = this.libro.createSheet("IMOX", 0);
+      this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
       this.addCell(this.posicionColumna, this.posicionFila, "CONTROL DE PAGO DE DESTAJOS Y SUBCONTRATOS");
       if(contratos!= null && !contratos.isEmpty()) {
         for (Entity item: contratos) {
