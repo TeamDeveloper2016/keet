@@ -22,6 +22,7 @@ import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
 import mx.org.kaana.keet.catalogos.contratos.beans.Fondo;
 import mx.org.kaana.keet.catalogos.contratos.beans.Garantia;
+import mx.org.kaana.keet.catalogos.contratos.beans.Etapa;
 import mx.org.kaana.keet.catalogos.contratos.beans.Generador;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Presupuesto;
@@ -48,7 +49,7 @@ public class Transaccion extends IBaseTnx {
 	private IBaseDto dtoDelete;
 	private EArchivosContratos tipoArchivo;
 	private TcKeetContratosBitacoraDto bitacora;
-  private List<Garantia> garantias;
+  private List<IDatoContrato> datos;
   private Fondo fondo;
   private TcKeetContratosLotesDto lote;
   private List<Evidencia> evidencia;
@@ -71,8 +72,8 @@ public class Transaccion extends IBaseTnx {
 		this.dtoDelete = dtoDelete;
 	}	
 	
-	public Transaccion(List<Garantia> garantias) {
-		this.garantias = garantias;
+	public Transaccion(List<IDatoContrato> datos) {
+		this.datos = datos;
 	}	
 	
 	public Transaccion(Fondo fondo) {
@@ -161,7 +162,10 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;
 				case GENERAR:
-          regresar= this.toGarantias(sesion);
+          regresar= this.toDatosContrato(sesion);
+					break;
+				case CALCULAR:
+          regresar= this.toDatosContrato(sesion);
 					break;
 				case MOVIMIENTOS:
           regresar= this.toFondoGarantia(sesion);
@@ -402,10 +406,10 @@ public class Transaccion extends IBaseTnx {
     } // catch	
   }
  
-  private Boolean toGarantias(Session sesion) throws Exception {
-    Boolean regresar= this.garantias.size()<= 0;
+  private Boolean toDatosContrato(Session sesion) throws Exception {
+    Boolean regresar= this.datos.size()<= 0;
     try {   
-      for (Garantia item: this.garantias) {
+      for (IDatoContrato item: this.datos) {
         switch(item.getSql()) {
           case SELECT:
             regresar= Boolean.TRUE;

@@ -317,6 +317,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     return "/Paginas/Keet/Catalogos/Contratos/extras".concat(Constantes.REDIRECIONAR);
   }
   
+  public String doAdicionales() {
+    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Contratos/adicionales".concat(Constantes.REDIRECIONAR);
+  }
+  
   public String doFondoGarantia() {
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
     JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));

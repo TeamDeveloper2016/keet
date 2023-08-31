@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.catalogos.contratos.reglas.IDatoContrato;
 import mx.org.kaana.keet.db.dto.TcKeetContratosGarantiasDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 
@@ -15,7 +16,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Garantia extends TcKeetContratosGarantiasDto implements Serializable {
+public class Garantia extends TcKeetContratosGarantiasDto implements IDatoContrato, Serializable {
   
   private static final long serialVersionUID = -7360439132690962055L;
   
@@ -31,10 +32,12 @@ public class Garantia extends TcKeetContratosGarantiasDto implements Serializabl
     this.sql= ESql.INSERT;
   }
  
+  @Override
   public ESql getSql() {
     return sql;
   }
 
+  @Override
   public void setSql(ESql sql) {
     this.sql = sql;
   }
@@ -52,7 +55,11 @@ public class Garantia extends TcKeetContratosGarantiasDto implements Serializabl
     super.setDescripcion(descripcion);
     this.igual= descripcion;
   }
-
+  
+  @Override
+  public String getDescripcion() {
+    return super.getDescripcion();
+  }
   
   @Override
   public int hashCode() {

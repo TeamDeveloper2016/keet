@@ -144,8 +144,8 @@
 						</p:tab>
 						<p:tab title="Domicilios">
 							<p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100">
-								<p:outputLabel for="domicilio" value="Domicilio:"/>
-								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-96, janal-wid-col-38">
+                <p:outputLabel for="domicilio" value="Domicilio:" rendered="false"/>
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-96, janal-wid-col-38" rendered="false">
 									<p:selectOneMenu id="domicilio" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 										<p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 										<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -164,7 +164,7 @@
 									</p:selectOneMenu>	
 									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 								</p:panelGrid>
-								<p:spacer height="5px"/><p:spacer height="5px"/>
+								<p:spacer height="5px" rendered="false"/><p:spacer height="5px" rendered="false"/>
 								<p:outputLabel for="entidad" value="Entidad:"/>
 								<p:selectOneMenu id="entidad" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();reloadMunicipio();reloadLocalidad();janal.alignCp();"/>

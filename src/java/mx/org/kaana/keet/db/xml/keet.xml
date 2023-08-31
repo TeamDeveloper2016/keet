@@ -7,6 +7,87 @@
   </model>
 
   <dml>
+    <unit id="TcKeetEtapasDto">
+      <select id="row">
+        select      
+          tc_keet_etapas.id_etapa as id_key,
+          tc_keet_etapas.*
+        from      
+          tc_keet_etapas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_etapas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetDesarrollosEtapasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_desarrollos_etapas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_desarrollos_etapas
+        where      
+          id_etapa = {idEtapa} and id_desarrollo = {idDesarrollo} and descripcion = '{descripcion}'
+      </select>
+      <select id="desarrollo">
+        select      
+          tc_keet_desarrollos_etapas.id_desarrollo_etapa as id_key,
+          tc_keet_desarrollos_etapas.descripcion as igual,
+          tc_keet_etapas.nombre as etapa,
+          tc_keet_desarrollos_etapas.*
+        from      
+          tc_keet_desarrollos_etapas
+        inner join
+          tc_keet_etapas on tc_keet_desarrollos_etapas.id_etapa= tc_keet_etapas.id_etapa
+        where      
+          tc_keet_desarrollos_etapas.id_desarrollo = {idDesarrollo}
+      </select>
+    </unit>    
+    <unit id="TcKeetContratosEtapasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_etapas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_etapas
+        where      
+          id_etapa = {idEtapa} and id_contrato = {idContrato} and descripcion = '{descripcion}'
+      </select>
+      <select id="contrato">
+        select      
+          tc_keet_contratos_etapas.id_contrato_etapa as id_key,
+          tc_keet_contratos_etapas.descripcion as igual,
+          tc_keet_etapas.nombre as etapa,
+          tc_keet_contratos_etapas.*
+        from      
+          tc_keet_contratos_etapas
+        inner join
+          tc_keet_etapas on tc_keet_contratos_etapas.id_etapa= tc_keet_etapas.id_etapa
+        where      
+          tc_keet_contratos_etapas.id_contrato = {idContrato}
+      </select>
+    </unit>    
     <unit id="TcKeetOrdenesFamiliasDto">
       <select id="row">
         select      

@@ -75,7 +75,7 @@
 									</f:facet>
 									<h:outputText value="#{row['importe']}"/>
 								</p:column>																				
-								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
                   <p:commandButton icon="fa fa-pencil" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosContratosGarantias.doEdit(row)}" title="Editar" rendered="#{row.sql.key eq 1 or row.sql.key eq 2 or row.sql.key eq 4}" oncomplete="janal.refresh();"/>
                   <p:commandButton icon="fa fa-recycle" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosContratosGarantias.doRecover(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
                   <p:commandButton icon="fa fa-trash" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosContratosGarantias.doDelete(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>

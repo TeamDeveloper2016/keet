@@ -49,11 +49,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= this.toPrepare();
     try {
-      params= this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
@@ -157,4 +155,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Desarrollos/filtro"); 
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+  
+  public String doAdicionales() {
+    JsfBase.setFlashAttribute("idDesrrollo", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
+    return "/Paginas/Keet/Catalogos/Desarrollos/adicionales".concat(Constantes.REDIRECIONAR);
+  }
+  
 }

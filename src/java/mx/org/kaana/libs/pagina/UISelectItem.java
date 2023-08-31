@@ -9,21 +9,24 @@ public class UISelectItem extends SelectItem implements Serializable  {
 
   public UISelectItem(Object key) {
     this(key, "");
+    this.setDescription("");
   }
 
   public UISelectItem(Object key, String label) {
     this(key, label, false);
+    this.setDescription(label);
   }
 
   public UISelectItem(Object key, String label, boolean disabled) {
     super();
-    setLabel(label);
-    setValue(key);
-    setDisabled(disabled);
+    this.setValue(key);
+    this.setLabel(label);
+    this.setDisabled(disabled);
+    this.setDescription(label);
   }
 
+  @Override
   public boolean equals(Object object) {
-    boolean regresar = false;
     if(object== null)
       return false;
     if(object.getClass()!= getClass())
@@ -35,6 +38,7 @@ public class UISelectItem extends SelectItem implements Serializable  {
     return true;
   }
 
+  @Override
   public int hashCode() {
     int hash= 8;
     hash= hash* 56* (getValue()!= null? getValue().hashCode(): 0);

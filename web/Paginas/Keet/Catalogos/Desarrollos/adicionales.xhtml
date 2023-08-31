@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Detalle de los extras asociadas al desarrollo" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+      //<![CDATA[
+			Janal.Control.fields = {
+				'contenedorGrupos\\:idEtapa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'extras'},
+				'contenedorGrupos\\:materiales' : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:destajos'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:subcontratados': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:porElDia'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:administrativos': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+				'contenedorGrupos\\:maquinaria' : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'extras'},
+        'contenedorGrupos\\:observaciones' : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'extras'},
+				'contenedorGrupos\\:importe'    : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'El importe tiene que ser mayor a cero', grupo: 'extras'},
+				'contenedorGrupos\\:etapas'     : {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se requiere al menos un extra', grupo: 'general'}
+			};
+
+			$(document).ready(function () {
+			});		
+      //]]>
+		</script>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos" widgetVar="pestanias">						
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                <p:outputLabel value="Contrato:"/>
+  							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-column-center janal-wid-80">
+                  <p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{keetCatalogosDesarrollosAdicionales.desarrollo.clave}" readonly="true"/>
+                  <p:inputText styleClass="janal-wid-100-txt janal-column-center janal-color-blue" value="#{keetCatalogosDesarrollosAdicionales.desarrollo.nombres}" readonly="true"/>
+                </p:panelGrid>  
+                <p:fieldset legend="Desglose por concepto:">                
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-97, janal-column-center janal-wid-3">
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                        <p:outputLabel for="idEtapa" value="Etapa:"/>
+                        <p:selectOneMenu id="idEtapa" value="#{keetCatalogosDesarrollosAdicionales.etapa.idEtapa}" converter="javax.faces.Long" styleClass="janal-wid-100-txt adicional" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                          <f:selectItems value="#{keetCatalogosDesarrollosAdicionales.attrs.etapas}"/>
+                        </p:selectOneMenu>
+                      </p:panelGrid>
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                        <p:outputLabel value="." styleClass="janal-color-white"/>
+                        <p:commandButton icon="fa fa-plus" process="@this @(.adicional)" update="contenedorGrupos @(.adicionales) @(.totales)" actionListener="#{keetCatalogosDesarrollosAdicionales.doInsert()}" title="Agregar" onstart="return janal.partial('extras');" oncomplete="janal.refresh();"/>
+                      </p:panelGrid>
+                    </p:panelGrid>
+                    <p:outputLabel for="descripcion" value="Nombre:"/>
+                    <p:inputText id="descripcion" styleClass="janal-wid-100-txt adicional" value="#{keetCatalogosDesarrollosAdicionales.etapa.descripcion}" />											
+                    <p:outputLabel for="materiales" value="Materiales:"/>
+                    <p:inputNumber id="materiales" value="#{keetCatalogosDesarrollosAdicionales.etapa.materiales}" inputStyleClass="janal-wid-100-txt adicional" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                      <p:ajax event="change" process="@this" update="@(.totales)"/>
+                    </p:inputNumber>  
+                    <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-33, janal-wid-34, janal-wid-33">
+                      <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                        <p:outputLabel for="destajos" value="Destajos:"/>
+                        <p:inputNumber id="destajos" value="#{keetCatalogosDesarrollosAdicionales.etapa.destajos}" inputStyleClass="janal-wid-100-txt adicional" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                          <p:ajax event="change" process="@this" update="@(.totales)"/>
+                        </p:inputNumber>  
+                      </p:panelGrid>  
+                      <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                        <p:outputLabel for="subcontratados" value="Subcontratos:"/>
+                        <p:inputNumber id="subcontratados" value="#{keetCatalogosDesarrollosAdicionales.etapa.subcontratados}" inputStyleClass="janal-wid-100-txt adicional" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                          <p:ajax event="change" process="@this" update="@(.totales)"/>
+                        </p:inputNumber>  
+                      </p:panelGrid>  
+                      <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                        <p:outputLabel for="porElDia" value="Por el día:"/>
+                        <p:inputNumber id="porElDia" value="#{keetCatalogosDesarrollosAdicionales.etapa.porElDia}" inputStyleClass="janal-wid-100-txt adicional" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                          <p:ajax event="change" process="@this" update="@(.totales)"/>
+                        </p:inputNumber>  
+                      </p:panelGrid>  
+                    </p:panelGrid>  
+                    <p:outputLabel for="maquinaria" value="Maquinaria:"/>
+                    <p:inputNumber id="maquinaria" value="#{keetCatalogosDesarrollosAdicionales.etapa.maquinaria}" inputStyleClass="janal-wid-100-txt adicional" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$  " symbolPosition="p">
+                      <p:ajax event="change" process="@this" update="@(.totales)"/>
+                    </p:inputNumber>  
+                    <p:outputLabel for="observaciones" value="Observaciones:"/>
+                    <p:inputTextarea id="observaciones" value="#{keetCatalogosDesarrollosAdicionales.etapa.observaciones}" styleClass="janal-wid-100-txt adicional" rows="2"/>
+                  </p:panelGrid>
+                  <p:inputText id="importe" styleClass="janal-display-none totales" value="#{keetCatalogosDesarrollosAdicionales.importe}"/>
+                  <p:inputText id="etapas" styleClass="janal-display-none totales" value="#{keetCatalogosDesarrollosAdicionales.size}"/>
+                </p:fieldset>
+              </p:panelGrid>
+              <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetCatalogosDesarrollosAdicionales.etapas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetCatalogosDesarrollosAdicionales.etapas.size() gt 15}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContratoEtapa}" style="#{keetCatalogosDesarrollosAdicionales.etapas ne null and keetCatalogosDesarrollosAdicionales.etapas.size() gt 0}" styleClass="totales">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel for="contenedorGrupos:etapas" value="Extras asociadas al desarrollo" styleClass="janal-text-white"/>
+                  </div>  
+                </f:facet>  
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}"/>
+								</p:column>					
+                <p:column styleClass="MarAuto Responsive importe">
+									<f:facet name="header">
+										<h:outputText value="Etapa"/>
+									</f:facet>
+									<h:outputText value="#{row['etapa']}"/>
+                  <i class="fa fa-fw fa-comments janal-color-blue janal-float-right" title="Observaciones: #{row['observaciones']}"></i>
+								</p:column>					
+								<p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Materiales"/>
+									</f:facet>
+									<h:outputText value="#{row['materiales']}"/>
+								</p:column>																				
+								<p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Destajos"/>
+									</f:facet>
+									<h:outputText value="#{row['destajos']}"/>
+								</p:column>																				
+								<p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Subcontratados"/>
+									</f:facet>
+									<h:outputText value="#{row['subcontratados']}"/>
+								</p:column>																				
+								<p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Por el día"/>
+									</f:facet>
+									<h:outputText value="#{row['porElDia']}"/>
+								</p:column>																				
+								<p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8" rendered="false">
+									<f:facet name="header">
+										<h:outputText value="Administrativos"/>
+									</f:facet>
+									<h:outputText value="#{row['adminisrativos']}"/>
+								</p:column>																				
+                <p:column styleClass="janal-column-right janal-color-blue MarAuto Responsive janal-wid-8" rendered="false">
+									<f:facet name="header">
+										<h:outputText value="Maquinaria"/>
+									</f:facet>
+									<h:outputText value="#{row['maquinaria']}"/>
+								</p:column>																		
+                <p:column styleClass="janal-column-right janal-color-blue janal-display-none MarAuto Responsive janal-wid-3">
+									<f:facet name="header">
+										<h:outputText value="Observaciones"/>
+									</f:facet>
+									<h:outputText value="#{row['observaciones']}"/>
+								</p:column>																		
+                <p:column styleClass="janal-column-center janal-color-blue MarAuto Responsive janal-wid-13">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{keetCatalogosDesarrollosAdicionales.toFecha(row['registro'])}"/>
+								</p:column>																				
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
+                  <p:commandButton icon="fa fa-pencil" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAdicionales.doEdit(row)}" title="Editar" rendered="#{row.sql.key eq 1 or row.sql.key eq 2 or row.sql.key eq 4}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAdicionales.doRecover(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this" update="contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAdicionales.doDelete(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh();"/>
+								</p:column>																				
+								<f:facet name="footer">
+                  <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;Total de extra(s): &lt;strong&gt;#{keetCatalogosDesarrollosAdicionales.attrs.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="totales" style="float:left;" escape="false"/>
+									<p:outputLabel value="Total [#{keetCatalogosDesarrollosAdicionales.etapas.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>                
+						</p:tab>		
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosDesarrollosAdicionales.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosDesarrollosAdicionales.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosDesarrollosAdicionales.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosDesarrollosAdicionales.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

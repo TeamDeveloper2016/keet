@@ -30,6 +30,7 @@ public class Contrato extends TcKeetContratosDto {
 	private ESql sqlAccion;
 	private Boolean nuevo;		
   private List<Retencion> retenciones;
+  private List<Etapa> etapas;
 
 	public Contrato() {
 		this(-1L);
@@ -145,6 +146,14 @@ public class Contrato extends TcKeetContratosDto {
 
   public void setRetenciones(List<Retencion> retenciones) {
     this.retenciones = retenciones;
+  }
+
+  public List<Etapa> getEtapas() {
+    return etapas;
+  }
+
+  public void setEtapas(List<Etapa> etapas) {
+    this.etapas = etapas;
   }
   
   public boolean addLote(Lote lote) throws Exception{

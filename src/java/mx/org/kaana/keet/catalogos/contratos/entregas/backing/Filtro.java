@@ -157,9 +157,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private String toDomicilio() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {
-			regresar= new StringBuilder();
 			regresar.append(this.registroDesarrollo.getDomicilio().getCalle()).append(" , ");
 			if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroExterior()))
 				regresar.append(this.registroDesarrollo.getDomicilio().getNumeroExterior()).append(" , ");
@@ -195,10 +194,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
   public void doLoadCasas() {
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		List<UISelectEntity> casas= null;
     try {   
-      params  = new HashMap<>();
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
       casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesDisponibles", params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
@@ -217,20 +215,19 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;		
+		Map<String, Object>params   = new HashMap<>();
+    List<Columna> columns       = new ArrayList<>();		
 		List<UISelectEntity> casas  = null;
     try {   
-      params  = new HashMap<>();
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("entrega", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("recibio", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("arranque", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("concluyo", EFormatoDinamicos.FECHA_CORTA));    
       this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "lotesDisponibles", params);		
       casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesDisponibles", params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
       this.attrs.put("lotes", casas);

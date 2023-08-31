@@ -13,6 +13,8 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre'},
+				'idContrato'     : {validaciones: 'libre', mascara: 'libre'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idProveedor'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -52,7 +54,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasOrdenesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticComprasOrdenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{manticComprasOrdenesFiltro.doLoadDesarrollos}" process="@this" update="desarrollo"/>
+                <p:ajax event="change" listener="#{manticComprasOrdenesFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato"/>
 								<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -61,8 +63,9 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-              <p:selectOneMenu id="desarrollo" value="#{manticComprasOrdenesFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{manticComprasOrdenesFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{manticComprasOrdenesFiltro.doLoadContratos}" update="idContrato" process="@this idContrato" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -71,6 +74,19 @@
                   <h:outputText value="#{item.nombres}"/>
                 </p:column>                   
               </p:selectOneMenu>
+              <p:outputLabel for="idContrato" value="Contrato:"/>
+              <p:selectOneMenu id="idContrato" value="#{manticComprasOrdenesFiltro.attrs.idContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                <p:column headerText="Clave">
+                  <p:outputLabel value="#{list.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <p:outputLabel value="#{list.nombre}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-right" headerText="No. viviendas">
+                  <p:outputLabel value="#{list.noViviendas}"/>
+                </p:column>   
+              </p:selectOneMenu>	
               <p:outputLabel for="consecutivo" value="No. orden:"/>
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
 							<p:outputLabel for="idCliente" value="Cliente:"/>
@@ -148,17 +164,23 @@
 								<f:setPropertyActionListener value="#{row['idKey']}" target="#{manticComprasOrdenesFiltro.attrs.ordenCompra}" />
 							</p:commandButton>
 						</p:column>
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['empresa']}" title="Cliente: #{row.cliente}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombreDesarrollo}">
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreDesarrollo}">
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
               <h:outputText value="#{row['nombreDesarrollo']}" title="Cliente: #{row.cliente}"/>
+            </p:column>	
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreContrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreContrato']}"/>
             </p:column>	
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
@@ -172,20 +194,20 @@
               </f:facet>
               <h:outputText value="#{row['proveedor']}" title="Cliente: #{row.cliente}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
               <i class="fa fa-fw fa-user janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>

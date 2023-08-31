@@ -6188,6 +6188,8 @@
 				  if(tc_mantic_clientes.razon_social is null, '', tc_mantic_clientes.razon_social) as cliente,
 					tc_keet_desarrollos.nombres as nombre_desarrollo,
 					tc_keet_desarrollos.clave as clave_desarrollo,
+          tc_keet_contratos.clave as clave_contrato,
+          tc_keet_contratos.nombre as nombre_contrato,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
           tc_keet_tipos_ordenes.nombre as tipo,
           ifnull(count(tc_mantic_ordenes_detalles.id_orden_detalle), 0) as partidas
@@ -6195,6 +6197,8 @@
 					tc_mantic_ordenes_compras
 				inner join 
 					tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join 
+					tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato = tc_keet_contratos.id_contrato
 				inner join 
 					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
 				inner join 

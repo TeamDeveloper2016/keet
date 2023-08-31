@@ -110,12 +110,14 @@
 						<p:menuitem id="consultar" action="#{keetCatalogosDesarrollosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="modificar" action="#{keetCatalogosDesarrollosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					            
+						<p:separator/>
+            <p:menuitem id="adicionales" icon="fa fa-server" value="Adicionales" action="#{keetCatalogosDesarrollosFiltro.doAdicionales()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 					</p:contextMenu>
         </div>
       </div>
     </div>		           				
   </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el desarrollo?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el desarrollo ?" />
   <ui:param name="accionConfirmacion" value="#{keetCatalogosDesarrollosFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	

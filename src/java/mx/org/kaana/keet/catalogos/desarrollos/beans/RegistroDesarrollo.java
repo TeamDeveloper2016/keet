@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.desarrollos.beans;
 
 import java.io.Serializable;
+import java.util.List;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.desarrollos.reglas.MotorBusqueda;
 
@@ -9,6 +10,7 @@ public class RegistroDesarrollo implements Serializable {
 	private static final long serialVersionUID= -6002648015306541890L;	
 	private Domicilio domicilio;
 	private Desarrollo desarrollo;
+  private List<Etapa> etapas;
 
 	public RegistroDesarrollo() {
 		this(-1L);
@@ -33,6 +35,14 @@ public class RegistroDesarrollo implements Serializable {
 	public void setDomicilio(Domicilio domicilio) {
 		this.domicilio = domicilio;
 	}
+
+  public List<Etapa> getEtapas() {
+    return etapas;
+  }
+
+  public void setEtapas(List<Etapa> etapas) {
+    this.etapas = etapas;
+  }
 	
 	private Desarrollo init(Long idDesarrollo) {
     Desarrollo regresar= null;

@@ -354,9 +354,9 @@ public class ManoObra extends XlsBase implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    // ManoObra corte= new ManoObra(116L, 12L);
+    ManoObra corte= new ManoObra(116L, 12L);
     // ManoObra corte= new ManoObra(38L, 1L);
-    ManoObra corte= new ManoObra(116L, 1L);
+    //ManoObra corte= new ManoObra(116L, 1L);
     LOG.info(corte.local());
   }
   

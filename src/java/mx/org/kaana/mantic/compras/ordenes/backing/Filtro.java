@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
@@ -275,8 +277,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(!Cadena.isVacio(this.attrs.get("desarrollo")) && ((UISelectEntity)this.attrs.get("desarrollo")).getKey()>= 1L)
-  		sb.append("(tc_mantic_ordenes_compras.id_desarrollo=").append(((UISelectEntity)this.attrs.get("desarrollo")).getKey()).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
+  		sb.append("(tc_mantic_ordenes_compras.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idContrato")) && ((UISelectEntity)this.attrs.get("idContrato")).getKey()>= 1L)
+  		sb.append("(tc_mantic_ordenes_compras.id_contrato=").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -316,18 +320,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doLoadDesarrollos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
-//		UISelectEntity empresa    = null;
     try {
-//			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
-//			if(empresa.getKey()>= 1L)
-//        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
-//			else
 		  params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
-			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+      this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -344,12 +344,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	private void doReporte(String nombre, boolean email) throws Exception {
 		Parametros comunes           = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
@@ -712,6 +711,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return Objects.equals(row.toLong("partidas"), 0L)? "janal-tr-diferencias": "";
 	} // toColor
 
+	public void doLoadContratos() {
+		List<UISelectEntity> contratos= null;
+		Map<String, Object>params     = new HashMap<>();
+		try {
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+			this.attrs.put("contratos", contratos);
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} 
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();
