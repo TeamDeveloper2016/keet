@@ -61,7 +61,7 @@ public class TcKeetDesarrollosEtapasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDesarrollosEtapasDto(Long key) {
-    this(null, 0D, null, null, null, 0D, 0D, 0D, new Long(-1L), 0D, 0D, null);
+    this(null, 0D, -1L, -1L, null, 0D, 0D, 0D, new Long(-1L), 0D, 0D, null);
     setKey(key);
   }
 

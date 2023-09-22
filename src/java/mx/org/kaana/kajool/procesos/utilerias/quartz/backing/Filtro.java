@@ -62,7 +62,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) { 																							
 						Trigger trigger = ((List<Trigger>) scheduler.getTriggersOfJob(jobKey)).get(0);						
 						server= scheduler.getJobDetail(jobKey).getJobDataMap().getString("server");
-						regresar.add(new Jobs(jobKey.getName(), jobKey.getGroup().toUpperCase(), trigger.getNextFireTime(), trigger.getPreviousFireTime(), jobKey, toSemaforo(scheduler.getTriggerState(trigger.getKey())), ((CronTrigger) trigger).getCronExpression(), ((CronTrigger) trigger).getExpressionSummary(), server));
+						regresar.add(new Jobs(jobKey.getName(), jobKey.getGroup().toUpperCase(), trigger.getNextFireTime(), trigger.getPreviousFireTime(), jobKey, this.toSemaforo(scheduler.getTriggerState(trigger.getKey())), ((CronTrigger) trigger).getCronExpression(), ((CronTrigger) trigger).getExpressionSummary(), server));
 					} // for
 				} // for			
 			} // if
@@ -78,7 +78,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Jobs>search= null;		
     try {			
 			if(Especial.getInstance().getScheduler()!= null) {				
-				search= doLoadInit();
+				search= this.doLoadInit();
 				this.attrs.put("size", search.size());
 				this.attrs.put("paginator", search.size()> Constantes.REGISTROS_POR_PAGINA);
 				this.attrs.put("listJobs", search);
@@ -98,9 +98,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JobKey jobKey      = null;		
 		try {			
 			seleccionado= (Jobs) this.attrs.get("seleccionado");			
-			accion= EAccionJob.valueOf(proceso);
-			scheduler= Especial.getInstance().getScheduler();
-			jobKey= seleccionado.getJobKey();			
+			accion      = EAccionJob.valueOf(proceso);
+			scheduler   = Especial.getInstance().getScheduler();
+			jobKey      = seleccionado.getJobKey();			
 			switch(accion) {
 				case ACTIVAR:
 					scheduler.resumeJob(jobKey);

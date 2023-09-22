@@ -70,6 +70,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 		Entity gasto             = null;		
 		Map<String, Object>params= new HashMap<>();		
 		try {
+			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);

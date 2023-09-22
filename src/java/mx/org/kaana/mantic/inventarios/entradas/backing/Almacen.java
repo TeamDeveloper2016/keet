@@ -100,15 +100,7 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
 	}
 
 	public Boolean getIsAplicar() {
-		Boolean regresar= true;
-		try {
-			regresar= JsfBase.isAdminEncuestaOrAdmin();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		return regresar;
+		return Boolean.FALSE;
 	}
 	
 	public String getAgregar() {
@@ -248,40 +240,28 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       
-      if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml()) && !this.getIsDirecta()) {
-          if(this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta()) {
-            transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
-            if (transaccion.ejecutar(this.accion)) {
-              if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-                if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
-                  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
-                  regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
-                } // if
-                else
-                  regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-                if(this.accion.equals(EAccion.AGREGAR))
-                  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-                else
-                  UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-              } // if	
-              else
-                this.getAdminOrden().toStartCalculate();
-              if(!this.accion.equals(EAccion.CONSULTAR)) 
-                JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
-              JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-            } // if
-            else 
-              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
-          } // if  
-          else 
-            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
-        } // if
-        else 
-          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+      transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
+      if (transaccion.ejecutar(this.accion)) {
+        if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
+          if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
+            JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+            regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
+          } // if
+          else
+            regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+          if(this.accion.equals(EAccion.AGREGAR))
+            UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+          else
+            UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+        } // if	
+        else
+          this.getAdminOrden().toStartCalculate();
+        if(!this.accion.equals(EAccion.CONSULTAR)) 
+          JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+        JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
       } // if
       else 
-        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
+        JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -371,18 +351,17 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
 	}
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns           = null;
-    Map<String, Object> params      = null;
+		List<Columna> columns           = new ArrayList<>();
+    Map<String, Object> params      = new HashMap<>();
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
     try {
-			params= new HashMap<>();			
 			if(this.accion.equals(EAccion.AGREGAR))
         params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
 			else
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("operador", "<=");
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
@@ -650,10 +629,10 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
           UIBackingUtilities.update("contenedorGrupos:sinIva");
           UIBackingUtilities.update("contenedorGrupos:paginator");
         } // if
-        else {
-          getAdminOrden().getArticulos().clear();
-          UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote.'},{summary: 'Proveedor:', detail: 'No tiene definido una familia.'}]);"); 
-        } // else			
+//        else {
+//          getAdminOrden().getArticulos().clear();
+//          UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote.'},{summary: 'Proveedor:', detail: 'No tiene definido una familia.'}]);"); 
+//        } // else			
         break;
       case "Importar":
      		if(this.attrs.get("faltantes")== null)

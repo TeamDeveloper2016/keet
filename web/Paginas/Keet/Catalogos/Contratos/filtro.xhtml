@@ -121,7 +121,7 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-              <p:commandButton action="#{keetCatalogosContratosFiltro.doMateriales()}" icon="fa fa-upload" value="Materiales" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-upload" title="Materiales" action="#{keetCatalogosContratosFiltro.doMateriales()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-hand-holding-usd" title="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
@@ -191,8 +191,8 @@
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
-            <p:menuitem id="garantias" icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-            <p:menuitem id="extras" icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:menuitem id="garantias" icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
+            <p:menuitem id="extras" icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
             <p:menuitem id="adicionales" icon="fa fa-server" value="Adicionales" action="#{keetCatalogosContratosFiltro.doAdicionales()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="fondo" icon="fa fa-medium" value="Fondo garantía" action="#{keetCatalogosContratosFiltro.doFondoGarantia()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>

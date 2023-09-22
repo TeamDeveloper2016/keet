@@ -87,6 +87,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			columns.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			columns.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
+			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);

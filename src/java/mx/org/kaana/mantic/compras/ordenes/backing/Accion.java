@@ -36,6 +36,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
@@ -194,7 +195,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     try {
 			//params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			params.put("idContratoEstatus", EContratosEstatus.FIRMADO.getKey());
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+    			params.put("operador", "=");
+          break;
+        case "gylvi": 
+    			params.put("operador", "<=");
+          break;
+        case "triana":
+    			params.put("operador", "<=");
+          break;
+        default:
+    			params.put("operador", "<=");
+          break;
+      } // swtich
+			params.put("idContratoEstatus", EContratosEstatus.ACTIVO.getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
@@ -241,8 +256,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<UISelectEntity> contratos= null;
 		Map<String, Object>params     = new HashMap<>();
 		try {
+      // A PARTIR DEL 1 DE OCTUBRE SE PODRA HACER VALIDACIONES DE QUE LOS CONTRATOS ESTEN COMPLETOS PARA DEJARLOS COMO ACTIVOS
 			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put(Constantes.SQL_CONDICION,  "tc_keet_contratos.id_contrato_estatus= "+ EContratosEstatus.ACTIVO.getKey());
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(!contratos.isEmpty()) 

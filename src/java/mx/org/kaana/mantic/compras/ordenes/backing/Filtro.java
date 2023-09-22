@@ -322,6 +322,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 		  params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("operador", "<=");
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));

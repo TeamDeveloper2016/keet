@@ -56,7 +56,7 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   }
 
   public Double getImporte() {
-    return this.etapa.getMateriales()+ this.etapa.getDestajos()+ this.etapa.getSubcontratados()+ this.etapa.getPorElDia()+ this.etapa.getAdministrativos()+ this.etapa.getMaquinaria();
+    return Objects.equals(this.etapa, null)? 0D: this.etapa.getMateriales()+ this.etapa.getDestajos()+ this.etapa.getSubcontratados()+ this.etapa.getPorElDia()+ this.etapa.getAdministrativos()+ this.etapa.getMaquinaria();
   }
 
   public void setImporte(Double importe) {
@@ -64,7 +64,7 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   }
 
   public Integer getSize() {
-    return this.etapas.size();
+    return Objects.equals(this.etapa, null)? 0: this.etapas.size();
   }
 
   public void setSize(Integer size) {
@@ -149,14 +149,14 @@ public class Adicionales extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } 
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idContratoProcess", this.attrs.get("idContrato"));
   	JsfBase.setFlashAttribute("idClienteProcess", this.attrs.get("idCliente"));
   	JsfBase.setFlashAttribute("ikContrato", this.attrs.get("idContrato"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doCancelar	
+  } 
 	
   private void toCalculate() {
     double sum= 0D;

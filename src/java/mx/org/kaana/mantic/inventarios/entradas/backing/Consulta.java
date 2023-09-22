@@ -49,5 +49,11 @@ public class Consulta extends Filtro implements Serializable {
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doAccion 
+
+  @Override
+	public String doOrdenCompra() {
+		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+		return "/Paginas/Mantic/Inventarios/Entradas/ordenes".concat(Constantes.REDIRECIONAR);
+	}
   
 }

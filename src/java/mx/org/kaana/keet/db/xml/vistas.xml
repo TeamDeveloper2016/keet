@@ -901,7 +901,7 @@ order by
         left join
           tc_keet_contratos_vecimientos on tc_keet_contratos.id_contrato= tc_keet_contratos_vecimientos.id_contrato
         where
-          date_format(tc_keet_contratos.vence, '%Y%m%d')&lt;= '{fecha}'  
+          date_format(tc_keet_contratos.vence, '%Y%m%d')&lt;= '{fecha}'
           and tc_keet_contratos_vecimientos.id_contrato_vencimiento is null
         order by
           tc_keet_contratos.registro desc
@@ -6864,6 +6864,53 @@ order by
 			</select>			
 		</unit>
     <unit id="VistaContratosDto">
+			<select id="control">
+				select 
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.nombre,
+          tc_keet_contratos.clave as numero,
+          tc_keet_contratos.costo,
+          sum(tc_keet_contratos_lotes.costo) as total,
+          tc_keet_contratos.materiales,
+          tc_keet_contratos.destajos,
+          tc_keet_contratos.subcontratados,
+          tc_keet_contratos.por_el_dia,
+          tc_keet_contratos.administrativos,
+          tc_keet_contratos.maquinaria,
+          tc_keet_contratos.indirecto,
+          tc_keet_contratos.utilidad,
+          tc_keet_contratos.no_viviendas as viviendas,
+          count(*) as lotes,
+          sum(if(tc_keet_contratos_lotes.costo&gt; 0, 1, 0)) as individual,
+          count(distinct(tc_keet_contratos_lotes.latitud)) as latitud,
+          count(distinct(tc_keet_contratos_lotes.longitud)) as longitud,
+          count(distinct(tc_keet_contratos_lotes.inicio)) as inicio,
+          count(distinct(tc_keet_contratos_lotes.termino)) as termino,
+          datediff(now(), ifnull(
+            (select
+              min(tc_mantic_ordenes_compras.registro) as registro
+            from
+              tc_mantic_ordenes_compras
+            where  
+              tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
+            group by
+              tc_mantic_ordenes_compras.id_contrato), now())) as dias,                   
+          tc_keet_contratos.id_contrato_estatus
+        from 
+          tc_keet_contratos
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+        where
+          tc_keet_contratos.id_contrato_estatus in ({estatus})
+          and tc_keet_contratos.no_viviendas&gt; 1
+          and date_format(tc_keet_contratos.registro, '%Y%m%d')&gt;= '{fecha}'
+          and {condicion}
+        group by
+          tc_keet_contratos.id_contrato
+        order by
+          tc_keet_contratos.id_contrato desc        
+      </select>  
 			<select id="lazy">
 				select 
           tc_keet_contratos.id_contrato id_key,
@@ -8207,7 +8254,7 @@ order by
         left join 
           tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				where
-          tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
+          tc_keet_contratos.id_contrato_estatus{operador} {idContratoEstatus}
           and {condicion}
         group by
           tc_keet_desarrollos.id_desarrollo
@@ -8240,7 +8287,7 @@ order by
         inner join 
           tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				where
-          tc_keet_contratos.id_contrato_estatus&lt; {idContratoEstatus}
+          tc_keet_contratos.id_contrato_estatus{operador} {idContratoEstatus}
 				  and	{condicion}      
         group by
           tc_keet_desarrollos.id_desarrollo
@@ -9581,6 +9628,7 @@ order by
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
           and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
           and tc_keet_contratos_lotes.entrega is null
+          and tc_keet_contratos.id_contrato_estatus in ({estatus})
 				  and {condicion}
         order by
           convert(tc_keet_contratos_lotes.manzana, unsigned integer),
@@ -9663,6 +9711,7 @@ order by
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
           and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
           and tc_keet_contratos_lotes.entrega is null
+          and tc_keet_contratos.id_contrato_estatus in ({estatus})
 				  and {condicion}
         order by
           convert(tc_keet_contratos_lotes.manzana, unsigned integer),
@@ -11675,9 +11724,10 @@ order by
 				inner join 
 					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
 				where 
-					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
-				and 
-					{condicion}
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+          and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idFigura}
+          and tc_keet_contratos.id_contrato_estatus in ({estatus})
+				  and {condicion}
 			</select>
 			<select id="lotesSubContratistas">
 				select 
@@ -11707,6 +11757,7 @@ order by
 				where 
 					tc_keet_proyectos.id_desarrollo= {idDesarrollo} 
           and tc_keet_contratos_lotes_proveedores.id_proveedor= {idFigura}
+          and tc_keet_contratos.id_contrato_estatus in ({estatus})
 				  and {condicion}
 			</select>						
 		</unit>

@@ -26,6 +26,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCatalogosContratosContratistasDepuracion")
@@ -82,6 +83,20 @@ public class Depuracion extends IBaseAttribute implements Serializable {
       } // if
       figura= (UISelectEntity)this.attrs.get("idContratista");
       idXml = figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("estatus", "5, 10");	
+          break;
+        case "gylvi": 
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+        case "triana":
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+        default:
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+      } // swtich
       params.put("idDesarrollo", ((Entity)this.attrs.get("documento")).toLong("idDesarrollo"));
       params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
       params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= "+ this.attrs.get("idContrato"));

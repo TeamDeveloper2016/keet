@@ -34,6 +34,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -196,8 +197,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params         = null;
-    List<Columna> columns             = null;		
+		Map<String, Object>params         = new HashMap<>();
+    List<Columna> columns             = new ArrayList<>();		
 		List<UISelectEntity> figuras      = null;
 		List<UISelectEntity> lotesCriterio= null;
 		UISelectEntity figura             = null;
@@ -206,14 +207,26 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {   
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			params= new HashMap<>();
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("estatus", "5");	
+          break;
+        case "gylvi": 
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+        case "triana":
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+        default:
+          params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+          break;
+      } // swtich
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
 			if(this.attrs.get("loteCriterio")!= null && ((UISelectEntity)this.attrs.get("loteCriterio")).getKey()>= 1L)
 				params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=" + ((UISelectEntity)this.attrs.get("loteCriterio")).getKey());			
 			else
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    

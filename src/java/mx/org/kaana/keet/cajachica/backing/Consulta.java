@@ -65,10 +65,10 @@ public class Consulta extends IBaseFilter implements Serializable {
   } // init
 
 	private void loadCatalogos() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity desarrollo        = null;				
 		try {
-			params= new HashMap<>();
+			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);

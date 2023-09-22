@@ -189,6 +189,7 @@ public class Accion extends IBaseFilter implements Serializable {
     Map<String, Object> params      = new HashMap<>();		
 		List<UISelectEntity> desarrollos= null;
     try {
+			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
   		params.put(Constantes.SQL_CONDICION, "tc_keet_proyectos.id_empresa=" + this.estimaciones.getEstimacion().getIkEmpresa().getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

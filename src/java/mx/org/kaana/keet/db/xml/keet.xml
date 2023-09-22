@@ -4432,7 +4432,10 @@
           as tt_keet_contratos_retenciones on tc_keet_tipos_retenciones.id_tipo_retencion= tt_keet_contratos_retenciones.id_tipo_retencion
         order by
           tc_keet_tipos_retenciones.id_tipo_retencion
-      </select>      
+      </select>    
+      <update id="rows">
+update tc_keet_contratos set id_contrato_estatus= {idContratoEstatus} where id_contrato= {idContrato}        
+      </update>  
     </unit>
 		<unit id="TcKeetContratosArchivosDto">
       <select id="row">

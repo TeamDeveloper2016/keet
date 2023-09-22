@@ -133,15 +133,14 @@ public class Accion extends Catalogos implements Serializable {
   public void doLoad() {			
 		Entity desarrollo        = null;		
 		Entity cajaChica         = null;		
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
     try {    			
-			campos= new ArrayList<>();
-			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
-			params= new HashMap<>();
+			columns.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			columns.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
+			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
@@ -149,7 +148,7 @@ public class Accion extends Catalogos implements Serializable {
 			params.clear();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findDesarrollo", params);
-			UIBackingUtilities.toFormatEntity(cajaChica, campos);
+			UIBackingUtilities.toFormatEntity(cajaChica, columns);
 			this.attrs.put("cajaChica", cajaChica);
     } // try
     catch (Exception e) {

@@ -345,7 +345,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public String getCantidadMayorMenor() {
 		double difieren  = this.getCantidad()- this.getSolicitados();
-		String color     = difieren< -5? "janal-color-orange": difieren> 5? "janal-color-blue": "janal-color-green";
+		String color     = difieren< 0? "janal-color-orange": difieren> 0? "janal-color-blue": "janal-color-green";
 		boolean display  = difieren!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(
 			Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, this.getSolicitados())

@@ -157,7 +157,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
   
   public String doAdicionales() {
-    JsfBase.setFlashAttribute("idDesrrollo", ((Entity) this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("idDesarrollo", ((Entity) this.attrs.get("seleccionado")).getKey());
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
     return "/Paginas/Keet/Catalogos/Desarrollos/adicionales".concat(Constantes.REDIRECIONAR);
   }

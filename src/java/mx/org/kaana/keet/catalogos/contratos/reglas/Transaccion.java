@@ -21,8 +21,6 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
 import mx.org.kaana.keet.catalogos.contratos.beans.Fondo;
-import mx.org.kaana.keet.catalogos.contratos.beans.Garantia;
-import mx.org.kaana.keet.catalogos.contratos.beans.Etapa;
 import mx.org.kaana.keet.catalogos.contratos.beans.Generador;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Presupuesto;
@@ -44,6 +42,8 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
+  private Long idContrato;
+  private Long idContratoEstatus;
 	private RegistroContrato contrato;	
   private String messageError;
 	private IBaseDto dtoDelete;
@@ -54,6 +54,11 @@ public class Transaccion extends IBaseTnx {
   private TcKeetContratosLotesDto lote;
   private List<Evidencia> evidencia;
 	
+	public Transaccion(Long idContrato, Long idContratoEstatus) {
+    this.idContrato= idContrato;
+    this.idContratoEstatus= idContratoEstatus;
+  }
+  
 	public Transaccion(RegistroContrato contrato) {
 		this(contrato, EArchivosContratos.DOCUMENTOS);
 	}
@@ -178,6 +183,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case DESTRANSFORMACION:
           regresar= this.toCheckOdenLotes(sesion, this.contrato.getContrato().getIdContrato());
+					break;
+				case ASIGNAR:
+          regresar= this.toActiveContrato(sesion);
 					break;
 			} // switch
 		} // try
@@ -540,6 +548,25 @@ public class Transaccion extends IBaseTnx {
           regresar= Boolean.TRUE;
       } // if  
     } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private boolean toActiveContrato(Session sesion) throws Exception {
+    boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idContrato", this.idContrato);
+      params.put("idContratoEstatus", this.idContratoEstatus);
+      DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDto.class, params);      
+      this.bitacora= new TcKeetContratosBitacoraDto("EL CONTRATO SE ACTUALIZADO DE FORMA AUTOMATICA", this.idContratoEstatus, 2L, -1L, this.idContrato);
+      regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0;
+   } // try
     catch (Exception e) {
 			throw e;
     } // catch	

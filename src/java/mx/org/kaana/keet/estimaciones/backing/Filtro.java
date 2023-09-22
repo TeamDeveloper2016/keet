@@ -213,7 +213,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
   
 	public void doLoadDesarrollos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 //		UISelectEntity empresa    = null;
     try {
@@ -222,8 +222,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 //        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
 //			else
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("operador", "<=");
 			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
-      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "nombres"));			

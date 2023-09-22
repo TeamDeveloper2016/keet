@@ -36,6 +36,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -359,7 +360,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
   
   public void doLoadCasas() {
-		Map<String, Object>params   = null;
+		Map<String, Object>params   = new HashMap<>();
 		List<UISelectEntity> figuras= null;
 		List<UISelectEntity> casas  = null;
 		UISelectEntity figura       = null;
@@ -370,7 +371,20 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
       int index= figuras.indexOf(figura);
       if(index>= 0) {
 			  figura= figuras.get(index);
-        params  = new HashMap<>();
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            params.put("estatus", "5");	
+            break;
+          case "gylvi": 
+            params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+            break;
+          case "triana":
+            params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+            break;
+          default:
+            params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
+            break;
+        } // swtich
         params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
         params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());

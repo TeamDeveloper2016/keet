@@ -25,6 +25,7 @@ import mx.org.kaana.keet.catalogos.contratos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetDesarrollosDto;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
@@ -55,7 +56,7 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   }
 
   public Double getImporte() {
-    return this.etapa.getMateriales()+ this.etapa.getDestajos()+ this.etapa.getSubcontratados()+ this.etapa.getPorElDia()+ this.etapa.getAdministrativos()+ this.etapa.getMaquinaria();
+    return Objects.equals(this.etapa, null)? 0D: this.etapa.getMateriales()+ this.etapa.getDestajos()+ this.etapa.getSubcontratados()+ this.etapa.getPorElDia()+ this.etapa.getAdministrativos()+ this.etapa.getMaquinaria();
   }
 
   public void setImporte(Double importe) {
@@ -63,7 +64,7 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   }
 
   public Integer getSize() {
-    return this.etapas.size();
+    return Objects.equals(this.etapa, null)? 0: this.etapas.size();
   }
 
   public void setSize(Integer size) {
@@ -75,10 +76,10 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Catalogos/Desarrollos/filtro": JsfBase.getFlashAttribute("retorno"));
-//      if(JsfBase.getFlashAttribute("idContrato")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idContrato"));
-      this.attrs.put("idDesarrollo", 15L);
+      if(JsfBase.getFlashAttribute("idDesarrollo")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
+//      this.attrs.put("idDesarrollo", 15L);
       this.desarrollo= (TcKeetDesarrollosDto)DaoFactory.getInstance().findById(TcKeetDesarrollosDto.class, (Long)this.attrs.get("idDesarrollo"));
       this.toLoadEtapas();
 			this.doLoad();
