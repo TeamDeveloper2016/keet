@@ -421,6 +421,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro");		
 			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {

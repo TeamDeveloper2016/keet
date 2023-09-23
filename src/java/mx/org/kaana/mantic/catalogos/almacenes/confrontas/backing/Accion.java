@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -47,13 +48,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private EAccion accion;
 
 	public String getAgregar() {
-		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+		return Objects.equals(this.accion, EAccion.AGREGAR)? "none": "";
 	}
 	
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
 		try {
-			regresar= ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 3L || ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 5L;
+			regresar= !Objects.equals(this.getAdminOrden(), null) && ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 3L || ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 5L;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -65,7 +66,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public Boolean getIsConfirmacion() {
 		Boolean regresar= true;
 		try {
-			regresar= ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 6L;
+			regresar= !Objects.equals(this.getAdminOrden(), null) && ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 6L;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -78,12 +79,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("accion")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//			if(JsfBase.getFlashAttribute("accion")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
-			this.attrs.put("retorno", "filtro");
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
       this.attrs.put("cantidad", 0D);
 			this.attrs.put("buscaPorCodigo", false);
@@ -142,7 +143,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ACTIVAR)? "agregó" : "modificó").concat(" la confronta de articulos."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
-  		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  		  regresar = this.doCancelar();
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la confronta de articulos", ETipoMensaje.ALERTA);      			
@@ -157,8 +158,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
   	JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
-    return (String)this.attrs.get("retorno");
-  } // doCancelar
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } 
 
 	private void toLoadCatalog() {
 		List<Columna> columns     = null;

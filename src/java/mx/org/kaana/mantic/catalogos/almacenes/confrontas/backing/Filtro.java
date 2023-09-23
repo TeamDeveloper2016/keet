@@ -203,7 +203,7 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
-  } // doAccion
+  }
   
   public void doReporte(String nombre) throws Exception {
     Parametros comunes = null;

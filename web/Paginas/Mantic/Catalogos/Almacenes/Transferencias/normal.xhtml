@@ -170,13 +170,13 @@
 									<div class="ui-grid-col-12">
 										<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
 											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas"  paginator="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.paginator}" rows="#{manticCatalogosAlmacenesTransferenciasNormal.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">											
-												<p:column class="MarAuto Responsive janal-wid-3">
+												<p:column class="MarAuto Responsive janal-fix-3">
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>													
-												<p:column class="MarAuto Responsive janal-wid-13">
+												<p:column class="MarAuto Responsive janal-fix-17">
 													<f:facet name="header">
 														<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 															<p:ajax event="change" process="@this" update="@this"/>
@@ -189,7 +189,7 @@
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
                             <div style="display: flex;">
-                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 #{kajoolUtilAplicacion.isMobile? '60%': '100%'} !important">
+                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 #{kajoolUtilAplicacion.isMobile? '60%': '70%'} !important">
                                 <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                                 <p:inputText id="locks" value="0" style="display:none"/>
                                 <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasNormal.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
@@ -211,7 +211,7 @@
                                   </f:facet>
                                 </p:autoComplete>												
                               </div>	
-                              <div style="width: 15px; margin-left: -5px; margin-top: 1px;">
+                              <div style="width: 45px; margin-left: -5px; margin-top: 1px;">
                                 <h:outputText value="#{row['stockExcede']}" escape="false" styleClass="filas"/>
                                 <h:outputText value="#{row['noTieneConteoOrigen']}" escape="false" styleClass="filas"/>
                                 <h:outputText value="#{row['noTieneConteoDestino']}" escape="false" styleClass="filas"/>
@@ -230,26 +230,26 @@
 													</f:facet>
 													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': ''}"/>
 												</p:column>		
-												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
+												<p:column class="cantidades janal-column-right MarAuto Responsive janal-fix-6">
 													<f:facet name="header">
 														<h:outputText value="Cantidad"/>
 													</f:facet>
 													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
 													<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas janal-name-La_fila_#{index+ 1}" style="display: none"/>
 												</p:column>		
-												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-10">
+												<p:column class="costos janal-column-right MarAuto Responsive janal-fix-8">
 													<f:facet name="header">
 														<h:outputText value="Stock origen"/>
 													</f:facet>
 													<p:outputLabel value="#{row['stock']}" styleClass="filas"/>
 												</p:column>	
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+												<p:column class="janal-column-right MarAuto Responsive janal-fix-8">
 													<f:facet name="header">
 														<h:outputText value="Stock destino"/>
 													</f:facet>
 													<p:outputLabel value="#{row['valor']}" styleClass="filas"/>
 												</p:column>	
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+												<p:column class="janal-column-right MarAuto Responsive janal-fix-8">
 													<f:facet name="header">
 														<h:outputText value="Máximo destino"/>
 													</f:facet>
@@ -278,13 +278,13 @@
 									</p:inputText>
 									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="lookFaltantes faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
-								<p:column class="MarAuto Responsive janal-wid-col-20">
+								<p:column class="MarAuto Responsive janal-fix-3">
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-10">
+								<p:column class="MarAuto Responsive janal-fix-8">
 									<f:facet name="header">
 										<h:outputText value="Código"/>
 									</f:facet>
@@ -296,31 +296,31 @@
 									</f:facet>
 									<h:outputText value="#{row['nombre']}" title="#{row['codigo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-fix-6">
 									<f:facet name="header">
 										<h:outputText value="Stock"/>
 									</f:facet>
 									<h:outputText value="#{row['stock']}"/>	
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column class="janal-column-right MarAuto Responsive janal-fix-6">
 									<f:facet name="header">
 										<h:outputText value="Minimo"/>
 									</f:facet>
 									<h:outputText value="#{row['minimo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column class="janal-column-right MarAuto Responsive janal-fix-6">
 									<f:facet name="header">
 										<h:outputText value="Máximo"/>
 									</f:facet>
 									<h:outputText value="#{row['maximo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column class="janal-column-right MarAuto Responsive janal-fix-6">
 									<f:facet name="header">
 										<h:outputText value="Solicitar"/>
 									</f:facet>
 									<h:outputText value="#{row['cantidad']}"/>	
 								</p:column>		
-								<p:column styleClass="janal-column-icon">
+								<p:column styleClass="janal-column-center janal-fix-5">
 									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticCatalogosAlmacenesTransferenciasNormal.doFaltanteArticulo}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltante}" />
 										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.idAlmacen}" />
@@ -332,7 +332,7 @@
 								</f:facet>
 							</p:dataTable>
 						</p:tab>
-						<p:tab title="Ventas perdidas">
+            <p:tab title="Ventas perdidas" rendered="false">
 							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticCatalogosAlmacenesTransferenciasNormal.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.lookForPerdidos}" styleClass="janal-wid-95" style="float: left;">

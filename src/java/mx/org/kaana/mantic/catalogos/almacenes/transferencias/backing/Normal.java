@@ -108,7 +108,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				if(this.accion.equals(EAccion.AGREGAR)) {
    			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la transferencia ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
- 				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+ 				  regresar = this.doCancelar();
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia de articulos."), ETipoMensaje.INFORMACION);
@@ -122,13 +122,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } 
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
-    return (String)this.attrs.get("retorno");
-  } // doCancelar
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } 
 
 	private void toLoadCatalog() {
 		List<Columna> columns     = null;
