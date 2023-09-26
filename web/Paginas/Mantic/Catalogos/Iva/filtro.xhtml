@@ -68,9 +68,9 @@
               <p:outputLabel value="Total [#{manticCatalogosIvaFiltro.lazyModel==null?0:manticCatalogosIvaFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosIvaFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem action="#{manticCatalogosIvaFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>
       </div>
@@ -80,7 +80,7 @@
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el registro del IVA ?" />
   <ui:param name="accionConfirmacion" value="#{manticCatalogosIvaFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">

@@ -48,7 +48,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } 
 
   public void doLoad() {
     EAccion eaccion    = null;
@@ -71,7 +71,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
+  } 
 
   public String doAceptar() {  
     Transaccion transaccion= null;
@@ -81,7 +81,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.iva, (Boolean)this.attrs.get("aplicar"));
 			if (transaccion.ejecutar(eaccion)) {
-				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+        this.attrs.put("idHistorialIva", this.iva.getIdHistorialIva());
+				regresar = this.doCancelar();
 				UIBackingUtilities.execute("janal.alert('Se aplico el IVA al catalogo de articulos');");
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del IVA de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
@@ -93,10 +94,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } 
 
   public String doCancelar() {   
-    return (String)this.attrs.get("retorno");
-  } // doAccion
+    JsfBase.setFlashAttribute("idHistorialIva", this.attrs.get("idHistorialIva"));   
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } 
 	
 }

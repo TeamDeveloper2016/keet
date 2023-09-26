@@ -1066,5 +1066,46 @@ public final class UISelect {
 	public static UISelectItem buildTodosItem() {
 		return new UISelectItem(-1L, "TODOS");
 	}	
+
+	public static List<UISelectItem> otra(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato, String value) {
+    List<UISelectItem> regresar= new ArrayList<>();
+    regresar.addAll(build(dtos, fields, token, formato, value));
+    regresar.add(new UISelectItem(Constantes.VALUE_OF_LIMIT, "OTRO (A)"));
+    return regresar;    
+  }
+  
+  public static List<UISelectItem> otra(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato) {
+    return otra(dtos, fields, token, formato, null);    
+  }
+  
+  public static List<UISelectItem> otra(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato, Long records) {
+    List<UISelectItem> regresar= null;
+    List<IBaseDto> dtos        = null;
+    try {
+      dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
+      regresar= otra(dtos, fields, token, formato);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch 
+    finally {
+      if (dtos != null)
+        dtos.clear();      
+      dtos = null;
+    } // finally  
+    return regresar;
+  }
+  
+  public static List<UISelectItem> otra(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato) {
+		return otra(proceso, id, params, fields, token, formato, Constantes.SQL_MAXIMO_REGISTROS);
+	}
 	
+  public static List<UISelectItem> otra(String proceso, String id, Map params, String fields, String token, IFormatosKajool formato) {
+    return otra(proceso, id, params, Cadena.toList(fields), token, formato);
+  }
+
+  public static List<UISelectItem> otra(String proceso, Map params, String fields, IFormatosKajool formato) {
+    return otra(proceso, Constantes.DML_SELECT, params, fields, " ", formato);
+  } 
+  
 }

@@ -7,6 +7,103 @@
   </model>
 
   <dml>
+    <unit id="TcKeetProcesosDto">
+      <select id="row">
+        select      
+          tc_keet_procesos.id_proceso as id_key,
+          tc_keet_procesos.*
+        from      
+          tc_keet_procesos
+        where 
+          {condicion} 
+        order by
+          nombre
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_procesos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetSubProcesosDto">
+      <select id="row">
+        select      
+          tc_keet_sub_procesos.id_sub_proceso as id_key,
+          tc_keet_procesos.nombre as proceso,
+          tc_keet_sub_procesos.*
+        from      
+          tc_keet_sub_procesos
+        inner join
+          tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso
+        where 
+          {condicion} 
+        order by
+          nombre
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_sub_procesos
+        where      
+          id_proceso = {idProceso} and nombre = '{nombre}'
+      </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_keet_sub_procesos
+        where      
+          id_sub_proceso = {idSubProceso}
+      </select>
+      <select id="size">
+        select      
+          count(*) as total
+        from      
+          tc_keet_sub_procesos
+        where      
+          id_proceso= {idProceso}
+      </select>
+    </unit>   
+    <unit id="TcKeetPaquetesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_paquetes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_paquetes
+        where      
+          id_proceso = {idProceso} and id_desarrollo = {idDesarrollo} and id_sub_proceso = {idSubProceso} and id_prototipo = {idPrototipo} and id_articulo = {idArticulo}
+      </select>
+    </unit>     
+    <unit id="TcKeetEntregasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_entregas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_entregas
+        where      
+          id_entrega = {idEntrega}
+      </select>
+    </unit>    
     <unit id="TcKeetEtapasDto">
       <select id="row">
         select      

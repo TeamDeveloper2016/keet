@@ -4,6 +4,23 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaProcesosDto">
+      <select id="lazy">
+select
+  tc_keet_sub_procesos.id_sub_proceso as id_key,
+  tc_keet_procesos.id_proceso,
+  tc_keet_procesos.nombre as proceso,
+  tc_keet_sub_procesos.nombre as sub_proceso,
+  tc_keet_sub_procesos.registro
+from      
+  tc_keet_procesos 
+inner join
+  tc_keet_sub_procesos on tc_keet_procesos.id_proceso= tc_keet_sub_procesos.id_proceso
+where
+  {condicion}        
+{sortOrder}        
+      </select>
+    </unit>  
 		<unit id="VistaContratosMaterialesDto">
       <select id="lazy">
 select

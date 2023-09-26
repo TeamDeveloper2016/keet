@@ -162,10 +162,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } 
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
