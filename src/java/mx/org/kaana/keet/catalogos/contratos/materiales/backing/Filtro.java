@@ -103,15 +103,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doLoadFiguras(){
 		List<UISelectEntity> figuras= null;
-		Map<String, Object>params   = null;
-		List<Columna> campos        = null;
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> columns       = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));			
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			figuras= UIEntity.seleccione("VistaEntregaMaterialesDto", "empleadosAsociados", params, campos, "puesto");
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			figuras= UIEntity.seleccione("VistaEntregaMaterialesDto", "empleadosAsociados", params, columns, "puesto");
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
 			this.attrs.put("destajos", false);			
@@ -122,7 +120,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doLoadFiguras
 	

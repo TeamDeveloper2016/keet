@@ -27,7 +27,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="proceso" value="Proceso:"/>
               <p:inputText id="proceso" value="#{keetProcesosFiltro.attrs.proceso}" styleClass="janal-wid-100-txt"/>              
-              <p:outputLabel for="subProceso" value="Sub proceso:"/>
+              <p:outputLabel for="subProceso" value="Paquete:"/>
               <p:inputText id="subProceso" value="#{keetProcesosFiltro.attrs.subProceso}" styleClass="janal-wid-100-txt"/>              
 							<p:separator/>
             </p:panelGrid>
@@ -65,7 +65,7 @@
             </p:column>		
 						<p:column class="MarAuto Responsive" sortBy="#{row.subProceso}">
 							<f:facet name="header">
-								<h:outputText value="Sub proceso"/>
+								<h:outputText value="Paquete"/>
 							</f:facet>
 							<h:outputText value="#{row['subProceso']}"/>
 						</p:column>														

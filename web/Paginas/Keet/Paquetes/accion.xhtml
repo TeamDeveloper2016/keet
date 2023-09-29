@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetPaquetesAccion.attrs.nombreAccion} al catálogo de paquetes" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idDesarrollo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idPrototipo'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idProceso'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idSubProceso' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|entero|mayor({\"cuanto\":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'texto', formatos: 'cambiar-mayusculas'},
+        'cantidad'                        : {multiple: '$', validaciones: 'requerido|flotante|mayor({\"cuanto\":0})', mascara: 'libre'}, 
+        'comentarios'                     : {multiple: '$', validaciones: 'libre', mascara: 'texto', formatos: 'cambiar-mayusculas'}
+			};						
+
+      function eliminar(nombre) {
+        return confirm("Precaución:\n¿Esta seguro que desea eliminar el ["+ nombre+ "] ?\n");
+      }
+
+			$(document).ready(function(){janal.readingMode('#{keetPaquetesAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+                <p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{keetPaquetesAccion.paquete.idDesarrollo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{keetPaquetesAccion.doLoadPrototipos}" process="@this" update="idPrototipo" oncomplete="reloadPrototipos(); janal.refresh()"/>
+                  <f:selectItems value="#{keetPaquetesAccion.attrs.desarrollos}"/>
+                </p:selectOneMenu>	
+                <p:outputLabel for="idPrototipo" value="Prototipo:"/>
+                <p:selectOneMenu id="idPrototipo" value="#{keetPaquetesAccion.paquete.idPrototipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetPaquetesAccion.attrs.prototipos}"/>
+                </p:selectOneMenu>	
+                <p:outputLabel for="idProceso" value="Proceso:"/>
+                <p:selectOneMenu id="idProceso" value="#{keetPaquetesAccion.paquete.idProceso}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{keetPaquetesAccion.doLoadSubprocesos}" process="@this" update="idSubProceso" oncomplete="reloadSubprocesos(); janal.refresh()"/>
+                  <f:selectItems value="#{keetPaquetesAccion.attrs.procesos}"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="idSubProceso" value="Paquete:"/>
+                <p:selectOneMenu id="idSubProceso" value="#{keetPaquetesAccion.paquete.idSubProceso}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetPaquetesAccion.attrs.subprocesos}"/>
+                </p:selectOneMenu>
+								<p:outputLabel for="observaciones" value="Observaciones:"/>
+      					<p:inputTextarea id="observaciones" value="#{keetPaquetesAccion.paquete.observaciones}" rows="1" styleClass="janal-wid-100-txt"/>
+              </p:panelGrid>
+              <p:remoteCommand name="reloadPrototipos" process="@this" update="idPrototipo"/>
+              <p:remoteCommand name="reloadSubprocesos" process="@this" update="idSubProceso"/>
+              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-97, janal-column-center janal-fix-3">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                  <p:outputLabel for="idArticulo" value="Articulo:"/>
+                  <p:autoComplete id="idArticulo" placeholder="Ej. VARILLA 1/2" var="codigo" itemLabel="#{codigo.propio} | #{codigo.nombre}" inputStyleClass="janal-wid-100-txt adicional" itemValue="#{codigo}" value="#{keetPaquetesAccion.attrs.seleccionado}" completeMethod="#{keetPaquetesAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt adicional">
+                    <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetPaquetesAccion.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <f:facet name="header" class="TexAlCenter">
+                          <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+                        </f:facet>
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{codigo.propio}"/>
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{codigo.nombre}"/>
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>	
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                  <p:outputLabel value="." styleClass="janal-color-white"/>
+                  <p:commandButton icon="fa fa-plus" process="@this @(.adicional)" update="tabla idArticulo" actionListener="#{keetPaquetesAccion.doInsert()}" title="Agregar" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear()"/>
+                </p:panelGrid>
+              </p:panelGrid>
+              <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetPaquetesAccion.paquete.materiales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetPaquetesAccion.paquete.materiales.size() gt 15}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" style="#{keetPaquetesAccion.paquete.materiales ne null and keetPaquetesAccion.paquete.materiales.size() gt 0}">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Kit de materiales" styleClass="janal-text-white"/>
+                  </div>  
+                </f:facet>  
+                <p:column styleClass="MarAuto Responsive janal-fix-3">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>					
+                <p:column class="MarAuto Responsive janal-fix-8">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>		
+                <p:column class="MarAuto Responsive articulos">
+                  <f:facet name="header">
+                    <h:outputText value="Nombres"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														            
+                <p:column class="MarAuto Responsive janal-fix-8 cantidad">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <h:outputText value=""/>
+                  <p:inputNumber id="cantidad" value="#{row['cantidad']}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="" symbolPosition="p">
+                    <p:ajax event="change" process="@this" listener="#{keetPaquetesAccion.doUpdate(row)}"/>
+                  </p:inputNumber>  
+                </p:column>		
+                <p:column class="MarAuto Responsive janal-fix-12 comentarios">
+                  <f:facet name="header">
+                    <h:outputText value="Comentarios"/>
+                  </f:facet>
+                  <p:inputText id="comentarios" value="#{row['observaciones']}" styleClass="janal-wid-100-txt janal-color-blue"> 
+                    <p:ajax event="change" process="@this" listener="#{keetPaquetesAccion.doUpdate(row)}"/>
+                  </p:inputText>
+                </p:column>		
+                <p:column class="MarAuto Responsive janal-column-center janal-fix-4">
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="tabla" actionListener="#{keetPaquetesAccion.doRecover(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh();"/>
+                  <p:commandButton icon="fa fa-trash" process="@this tabla" update="tabla" actionListener="#{keetPaquetesAccion.doDelete(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" onstart="return eliminar('#{row.nombre}')" oncomplete="janal.refresh()"/>
+                </p:column>		
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetPaquetesAccion.paquete.materiales.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>         
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPaquetesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetPaquetesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPaquetesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetPaquetesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

@@ -147,6 +147,10 @@
 								<p:menuitem icon="fa fa-file-excel-o" value="Compras" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 	  							<p:fileDownload value="#{manticComprasOrdenesFiltro.compras}" />
   							</p:menuitem>
+								<p:separator/>
+                <p:menuitem icon="fa fa-file-text" value="Acumulados" process="@this" onstart="if($('#idDesarrollo_input').val()=== '-1') {janal.show([{summary: 'Error:', detail: 'Se debe de seleccionar un desarrollo'}]); return false;} else {return janal.bloquear();}" oncomplete="janal.desbloquear()" ajax="false" onclick="if($('#idDesarrollo_input').val()=== '-1') {janal.show([{summary: 'Error:', detail: 'Se debe de seleccionar un desarrollo'}]); return false;} else {PrimeFaces.monitorDownload(start, stop);}">
+	  							<p:fileDownload value="#{manticComprasOrdenesFiltro.acumulado}" />
+  							</p:menuitem>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" action="#{manticComprasOrdenesFiltro.doAccion('AGREGAR')}" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -154,6 +158,9 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDENES_COMPRA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Compras"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 	  					  <p:fileDownload value="#{manticComprasOrdenesFiltro.compras}" />
+							</p:commandButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-text" title="Acumulado"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+	  					  <p:fileDownload value="#{manticComprasOrdenesFiltro.acumulado}" />
 							</p:commandButton>
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">

@@ -23,71 +23,52 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_paquetes")
-public class TcKeetPaquetesDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_paquetes_detalles")
+public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_proceso")
-  private Long idProceso;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_paquete")
+  @Column (name="id_paquete")
   private Long idPaquete;
-  @Column (name="id_desarrollo")
-  private Long idDesarrollo;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_sub_proceso")
-  private Long idSubProceso;
   @Column (name="observaciones")
   private String observaciones;
-  @Column (name="id_prototipo")
-  private Long idPrototipo;
+  @Column (name="cantidad")
+  private Double cantidad;
+  @Column (name="id_articulo")
+  private Long idArticulo;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_paquete_detalle")
+  private Long idPaqueteDetalle;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetPaquetesDto() {
+  public TcKeetPaquetesDetallesDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetPaquetesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null);
+  public TcKeetPaquetesDetallesDto(Long key) {
+    this(null, null, null, 1D, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcKeetPaquetesDto(Long idProceso, Long idPaquete, Long idDesarrollo, Long idUsuario, Long idSubProceso, String observaciones, Long idPrototipo) {
-    setIdProceso(idProceso);
+  public TcKeetPaquetesDetallesDto(Long idPaquete, Long idUsuario, String observaciones, Double cantidad, Long idArticulo, Long idPaqueteDetalle) {
     setIdPaquete(idPaquete);
-    setIdDesarrollo(idDesarrollo);
     setIdUsuario(idUsuario);
-    setIdSubProceso(idSubProceso);
     setObservaciones(observaciones);
-    setIdPrototipo(idPrototipo);
+    setCantidad(cantidad);
+    setIdArticulo(idArticulo);
+    setIdPaqueteDetalle(idPaqueteDetalle);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdProceso(Long idProceso) {
-    this.idProceso = idProceso;
-  }
-
-  public Long getIdProceso() {
-    return idProceso;
-  }
-
   public void setIdPaquete(Long idPaquete) {
     this.idPaquete = idPaquete;
   }
 
   public Long getIdPaquete() {
     return idPaquete;
-  }
-
-  public void setIdDesarrollo(Long idDesarrollo) {
-    this.idDesarrollo = idDesarrollo;
-  }
-
-  public Long getIdDesarrollo() {
-    return idDesarrollo;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -98,14 +79,6 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdSubProceso(Long idSubProceso) {
-    this.idSubProceso = idSubProceso;
-  }
-
-  public Long getIdSubProceso() {
-    return idSubProceso;
-  }
-
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -114,12 +87,28 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdPrototipo(Long idPrototipo) {
-    this.idPrototipo = idPrototipo;
+  public void setCantidad(Double cantidad) {
+    this.cantidad = cantidad;
   }
 
-  public Long getIdPrototipo() {
-    return idPrototipo;
+  public Double getCantidad() {
+    return cantidad;
+  }
+
+  public void setIdArticulo(Long idArticulo) {
+    this.idArticulo = idArticulo;
+  }
+
+  public Long getIdArticulo() {
+    return idArticulo;
+  }
+
+  public void setIdPaqueteDetalle(Long idPaqueteDetalle) {
+    this.idPaqueteDetalle = idPaqueteDetalle;
+  }
+
+  public Long getIdPaqueteDetalle() {
+    return idPaqueteDetalle;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -133,31 +122,29 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdPaquete();
+  	return getIdPaqueteDetalle();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idPaquete = key;
+  	this.idPaqueteDetalle = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdProceso());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPaquete());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdSubProceso());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipo());
+		regresar.append(getCantidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPaqueteDetalle());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -167,21 +154,20 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idProceso", getIdProceso());
 		regresar.put("idPaquete", getIdPaquete());
-		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idSubProceso", getIdSubProceso());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("cantidad", getCantidad());
+		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idPaqueteDetalle", getIdPaqueteDetalle());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[] {
-      getIdProceso(), getIdPaquete(), getIdDesarrollo(), getIdUsuario(), getIdSubProceso(), getObservaciones(), getIdPrototipo(), getRegistro()
+    Object[] regresar = new Object[]{
+    getIdPaquete(), getIdUsuario(), getObservaciones(), getCantidad(), getIdArticulo(), getIdPaqueteDetalle(), getRegistro()
     };
     return regresar;
   }
@@ -195,8 +181,8 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idPaquete~");
-    regresar.append(getIdPaquete());
+    regresar.append("idPaqueteDetalle~");
+    regresar.append(getIdPaqueteDetalle());
     regresar.append("|");
     return regresar.toString();
   }
@@ -204,18 +190,18 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdPaquete());
+    regresar.append(getIdPaqueteDetalle());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetPaquetesDto.class;
+    return TcKeetPaquetesDetallesDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdPaquete()!= null && getIdPaquete()!=-1L;
+  	return getIdPaqueteDetalle()!= null && getIdPaqueteDetalle()!=-1L;
   }
 
   @Override
@@ -226,8 +212,8 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetPaquetesDto other = (TcKeetPaquetesDto) obj;
-    if (getIdPaquete() != other.idPaquete && (getIdPaquete() == null || !getIdPaquete().equals(other.idPaquete))) {
+    final TcKeetPaquetesDetallesDto other = (TcKeetPaquetesDetallesDto) obj;
+    if (getIdPaqueteDetalle() != other.idPaqueteDetalle && (getIdPaqueteDetalle() == null || !getIdPaqueteDetalle().equals(other.idPaqueteDetalle))) {
       return false;
     }
     return true;
@@ -236,7 +222,7 @@ public class TcKeetPaquetesDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdPaquete() != null ? getIdPaquete().hashCode() : 0);
+    hash = 67 * hash + (getIdPaqueteDetalle() != null ? getIdPaqueteDetalle().hashCode() : 0);
     return hash;
   }
 

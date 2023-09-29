@@ -44,7 +44,6 @@ import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
@@ -68,7 +67,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID= 8793667741599428332L;
   private static final String COLUMN_DATA_FILE_COMPRAS= "EJERCICIO,EMPRESA,CONTRATO,PRESUPUESTO,MATERIALES,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
-  
+  private static final String COLUMN_DATA_FILE_DETAIL= "DESARROLLO,CLAVE,CONTRATO,PROVEEDOR,ARTICULO,CANTIDAD,IMPORTE";  
   
 	private Reporte reporte;
 	private List<Correo> correos;
@@ -146,14 +145,45 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= new HashMap<>();
 		String template         = "COMPRAS";
 		try {
-			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
-  		String fileName= JsfBase.getRealPath("").concat(salida);
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "comprasProveedores", template), COLUMN_DATA_FILE_COMPRAS);	
-			if(xls.procesar()) {
-		    String contentType= EFormatos.XLS.getContent();
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
-		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
-			} // if
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  public StreamedContent getAcumulado() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		Map<String, Object>params= new HashMap<>();
+		String template         = "ACUMULADO";
+		try {
+		  if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L) {
+        params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
+        params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());
+        String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+        String fileName= JsfBase.getRealPath("").concat(salida);
+        xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "acumulados", template), COLUMN_DATA_FILE_DETAIL);	
+        if(xls.procesar()) {
+          String contentType= EFormatos.XLS.getContent();
+          InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+          regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+        } // if
+      } // if
+      else
+        JsfBase.addMessage("Se debe de seleccionar un desarrollo!");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

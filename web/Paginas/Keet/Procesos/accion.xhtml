@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{keetProcesosAccion.attrs.nombreAccion} al catálogo de estaciones" />
+	<ui:param name="titulo" value="#{keetProcesosAccion.attrs.nombreAccion} al catálogo de procesos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -28,17 +28,20 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="proceso" value="Proceso:"/>
                 <p:selectOneMenu id="idProceso" value="#{keetProcesosAccion.proceso.idProceso}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{keetProcesosAccion.doLoadSubprocesos}" process="@this" update="idSubProceso proceso subProceso" oncomplete="janal.refresh()"/>
+                  <p:ajax event="change" listener="#{keetProcesosAccion.doLoadSubprocesos}" process="@this" update="idSubProceso proceso subProceso" oncomplete="reloadSubprocesos(); janal.refresh()"/>
                   <f:selectItems value="#{keetProcesosAccion.attrs.procesos}"/>
                 </p:selectOneMenu>
 								<p:inputText id="proceso" placeholder="Ej. CIMENTACIÓN" styleClass="janal-wid-100-txt #{keetProcesosAccion.proceso.idProceso eq 999999? '': ''}" value="#{keetProcesosAccion.proceso.proceso}" rendered="#{keetProcesosAccion.consulta}"/>
-								<p:outputLabel for="subProceso" value="Sub proceso:"/>
+								<p:outputLabel for="subProceso" value="Paquete:"/>
                 <p:selectOneMenu id="idSubProceso" value="#{keetProcesosAccion.proceso.idSubProceso}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" listener="#{keetProcesosAccion.doLoadItem}" update="subProceso" oncomplete="janal.refresh()"/>
                   <f:selectItems value="#{keetProcesosAccion.attrs.subprocesos}"/>
                 </p:selectOneMenu>
                 <p:inputText id="subProceso" placeholder="Ej. CEMENTO" styleClass="janal-wid-100-txt #{keetProcesosAccion.proceso.idSubProceso eq 999999? '': ''}" value="#{keetProcesosAccion.proceso.nombre}" rendered="#{keetProcesosAccion.consulta}"/>
+								<p:outputLabel for="observaciones" value="Observaciones:"/>
+      					<p:inputTextarea id="observaciones" value="#{keetProcesosAccion.proceso.descripcion}" rows="4" styleClass="janal-wid-100-txt"/>
               </p:panelGrid>
+              <p:remoteCommand name="reloadSubprocesos" process="@this" update="idSubProceso"/>
 						</p:tab>						            						            																																																
 					</p:tabView>
 				</div>

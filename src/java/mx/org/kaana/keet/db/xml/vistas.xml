@@ -21,6 +21,62 @@ where
 {sortOrder}        
       </select>
     </unit>  
+		<unit id="VistaPaquetesDto">
+      <select id="lazy">
+select
+  tc_keet_paquetes.id_paquete as id_key,
+  tc_keet_prototipos.id_prototipo,
+  tc_keet_prototipos.nombre as prototipo,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_procesos.id_proceso,  
+  tc_keet_procesos.nombre as proceso,
+  tc_keet_sub_procesos.id_sub_proceso,  
+  tc_keet_sub_procesos.nombre as sub_proceso,
+  count(tc_keet_paquetes_detalles.id_paquete_detalle) as total,
+  tc_keet_paquetes.registro
+from      
+  tc_keet_paquetes
+inner join
+  tc_keet_desarrollos on  tc_keet_paquetes.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_keet_prototipos on tc_keet_paquetes.id_prototipo= tc_keet_prototipos.id_prototipo  
+inner join
+  tc_keet_procesos on tc_keet_paquetes.id_proceso= tc_keet_procesos.id_proceso  
+left join  
+ tc_keet_paquetes_detalles on tc_keet_paquetes.id_paquete= tc_keet_paquetes_detalles.id_paquete
+inner join
+  tc_keet_sub_procesos on tc_keet_paquetes.id_sub_proceso= tc_keet_sub_procesos.id_sub_proceso
+where
+  {condicion}        
+group by 
+  tc_keet_paquetes.id_paquete
+{sortOrder}        
+      </select>
+      <select id="prototipos">
+select
+  tc_keet_prototipos.id_prototipo as id_key,
+  tc_keet_prototipos.id_prototipo,
+  tc_keet_prototipos.clave,
+  tc_keet_prototipos.nombre
+from
+  tc_keet_prototipos
+inner join
+ tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+inner join
+ tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+inner join 
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+where
+  tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+group by
+  tc_keet_prototipos.id_prototipo
+order by  
+  tc_keet_prototipos.nombre       
+      </select>
+    </unit>  
 		<unit id="VistaContratosMaterialesDto">
       <select id="lazy">
 select

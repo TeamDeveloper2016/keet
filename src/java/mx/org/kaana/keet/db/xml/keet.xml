@@ -71,7 +71,8 @@
     <unit id="TcKeetPaquetesDto">
       <select id="row">
         select      
-          *
+          tc_keet_paquetes.id_paquete as id_key,
+          tc_keet_paquetes.*
         from      
           tc_keet_paquetes
         where 
@@ -83,8 +84,48 @@
         from      
           tc_keet_paquetes
         where      
-          id_proceso = {idProceso} and id_desarrollo = {idDesarrollo} and id_sub_proceso = {idSubProceso} and id_prototipo = {idPrototipo} and id_articulo = {idArticulo}
+          id_proceso = {idProceso} and id_desarrollo = {idDesarrollo} and id_sub_proceso = {idSubProceso} and id_prototipo = {idPrototipo}
       </select>
+    </unit>    
+    <unit id="TcKeetPaquetesDetallesDto">
+      <select id="row">
+        select      
+          tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
+          tc_keet_paquetes_detalles.*
+        from      
+          tc_keet_paquetes_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_paquetes_detalles
+        where      
+          id_paquete = {idPaquete} and id_articulo = {idArticulo}
+      </select>
+      <select id="igual">
+        select      
+          tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
+          tc_mantic_articulos_codigos.codigo,
+          tc_mantic_articulos.nombre,
+          tc_keet_paquetes_detalles.*
+        from      
+          tc_keet_paquetes_detalles
+        inner join
+          tc_mantic_articulos on tc_keet_paquetes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+        where 
+          tc_keet_paquetes_detalles.id_paquete= {idPaquete}
+      </select>
+      <delete id="rows">
+        delete from 
+          tc_keet_paquetes_detalles
+        where
+          id_paquete= {idPaquete}
+      </delete>
     </unit>     
     <unit id="TcKeetEntregasDto">
       <select id="row">

@@ -152,8 +152,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         else
           this.proceso.setProceso("");
       } // if
-			params.put("idProceso", this.proceso.getIdProceso());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, "tc_keet_sub_procesos.id_proceso= "+ this.proceso.getIdProceso());
       List<UISelectItem> subProcesos= UISelect.otra("TcKeetSubProcesosDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("subprocesos", subProcesos);
       if(subProcesos!= null && !subProcesos.isEmpty()) {
