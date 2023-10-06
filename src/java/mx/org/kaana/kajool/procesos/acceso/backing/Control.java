@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.keet.test.Proceso;
+import mx.org.kaana.keet.test.personas.Desarrollo;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
@@ -138,6 +139,10 @@ public class Control extends IBaseAttribute implements Serializable {
       JsfBase.addMessage(UIMessage.toMessage("error_solicitud"));
     } // catch   
     return null;
+  }
+  
+  public void doAlgo() {
+    Desarrollo.main(new String[] {"hola"});
   }
   
 }

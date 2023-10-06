@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Listado de conceptos de extras" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre'},
+        'idDesarrollo': {validaciones: 'libre', mascara: 'libre'},
+        'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
+        'nombre'      : {validaciones: 'libre', mascara: 'libre'}
+      };
+    </script>		
+    <style type="text/css">
+      .janal-tr-yellow {
+        background-color: #FFFFB3 !important;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetNominaExtras.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetNominaExtras.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetNominaExtras.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato" oncomplete="reloadDesarrollos(); reloadContratos();"/>
+								<f:selectItems value="#{keetNominaExtras.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>
+							</p:selectOneMenu>
+              <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetNominaExtras.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetNominaExtras.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
+                <f:selectItems value="#{keetNominaExtras.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column> 
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column> 
+              </p:selectOneMenu>	
+							<p:outputLabel for="idContrato" value="Contrato:"/>
+							<p:selectOneMenu id="idContrato" value="#{keetNominaExtras.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetNominaExtras.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+              <p:outputLabel for="idNomina" value="Nómina:"/>
+              <p:selectOneMenu id="idNomina" value="#{keetNominaExtras.attrs.idNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt nominas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominaExtras.attrs.nominas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Periodo" styleClass="janal-column-center">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+                <p:column headerText="Ejercicio" styleClass="janal-column-center">
+                  <h:outputText value="#{item.ejercicio}"/>
+                </p:column>   
+                <p:column headerText="Semana" styleClass="janal-column-center">
+                  <h:outputText value="#{item.semana}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="nombre" value="(Sub)Contratista:"/>
+              <p:inputText id="nombre" value="#{keetNominaExtras.attrs.nombre}" styleClass="janal-wid-100-txt"/>
+              <p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetNominaExtras.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetNominaExtras.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+	          <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
+	          <p:remoteCommand name="reloadContratos" process="@this" update="idContrato"/>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolExtras" var="row" reflow="true" value="#{keetNominaExtras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominaExtras.attrs.extra}" selectionMode="single" paginator="#{keetNominaExtras.lazyModel.rowCount gt keetNominaExtras.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetNominaExtras.doRowColor(row)}">
+            <f:facet name="header">
+              <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('exportExtrasPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('exportExtrasXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('exportExtrasPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('exporExtrastXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </f:facet>												
+            <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
+              <f:facet name="header">
+                <h:outputText value="(Sub)Contratista"/>
+              </f:facet>
+              <h:outputText value="#{row['razonSocial']}"/>
+            </p:column>														
+            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <i class="fa fa-user janal-float-right janal-color-blue" title="Registró: [#{row['residente']}]"></i>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['contrato']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.prototipo}">
+              <f:facet name="header">
+                <h:outputText value="Prototipo"/>
+              </f:facet>
+              <h:outputText value="#{row['prototipo']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.lote}">
+              <f:facet name="header">
+                <h:outputText value="Lote"/>
+              </f:facet>
+              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>	
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Concepto"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}" styleClass="janal-color-black janal-font-bold"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>	
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>	
+            <f:facet name="footer">
+              <p:outputLabel value="La filas en color son concepto aun pendientes de pago" styleClass="janal-float-left"/>
+              <p:outputLabel value="Total [#{keetNominaExtras.lazyModel== null? 0: keetNominaExtras.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>	   
+          <h:commandLink id="exportExtrasPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="exportExtrasXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>			
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+	<ui:param name="lineaSeparacion" value="false"/>
+</ui:composition>

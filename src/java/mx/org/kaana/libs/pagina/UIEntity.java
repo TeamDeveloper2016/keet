@@ -206,35 +206,41 @@ public final class UIEntity {
 		IBaseDto primer = null;
     if (dtos!= null && dtos.size()> 0) {
 			primer  = dtos.get(0);
-				for(String field :((Entity)primer).toMap().keySet()) {
-					if (field.equals(name))
-					  todos.put(name, new Value(name, "TODOS"));
-					else 
-						todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "": -1L));
-				} // for
-			regresar.add(new UISelectEntity(todos));
-			regresar.addAll(build(dtos,formato));				
- 
+      for(String field: ((Entity)primer).toMap().keySet()) {
+        if (field.equals(name))
+          todos.put(name, new Value(name, "TODOS"));
+        else 
+          todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "": -1L));
+      } // for
+      regresar.add(new UISelectEntity(todos));
+      regresar.addAll(build(dtos,formato));				
     } // if
+    else {
+      todos.put(name, new Value(name, "TODOS"));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
     return regresar;        
   } 
   
   public static List<UISelectEntity> seleccione(List<? extends IBaseDto> dtos, List<Columna> formato, String name) {
 		List<UISelectEntity> regresar= new ArrayList<>();
-		Entity todos = new Entity();
-		IBaseDto primer = null;
-    if (dtos!= null && dtos.size()>0)  {
+		Entity todos   = new Entity();
+		IBaseDto primer= null;
+    if (dtos!= null && dtos.size()>0) {
 			primer  = dtos.get(0);
-				for(String field :((Entity)primer).toMap().keySet()) {
-					if (field.equals(name))
-					  todos.put(name, new Value(name, "SELECCIONE"));
-					else 
-						todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "":-1L));
-				} // for
+      for(String field :((Entity)primer).toMap().keySet()) {
+        if (field.equals(name))
+          todos.put(name, new Value(name, "SELECCIONE"));
+        else 
+          todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "":-1L));
+      } // for
 			regresar.add(new UISelectEntity(todos));
-			regresar.addAll(build(dtos,formato));				
- 
+			regresar.addAll(build(dtos, formato));				
     } // if
+    else {
+      todos.put(name, new Value(name, "SELECCIONE"));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
     return regresar;        
   } 
 
@@ -242,18 +248,21 @@ public final class UIEntity {
     List<UISelectEntity> regresar= new ArrayList<>();
 		Entity todos = new Entity();
 		IBaseDto primer = null;
-    if (dtos!= null && dtos.size()>0)  {
+    if (dtos!= null && dtos.size()> 0) {
 			primer  = dtos.get(0);
-				for(String field :((Entity)primer).toMap().keySet()) {
-					if (field.equals(label))
-					  todos.put(label, new Value(label, descripcion));
-					else 
-						todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "": -1L));
-				} // for
+      for(String field :((Entity)primer).toMap().keySet()) {
+        if (field.equals(label))
+          todos.put(label, new Value(label, descripcion));
+        else 
+          todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "": -1L));
+      } // for
 			regresar.add(new UISelectEntity(todos));
 			regresar.addAll(build(dtos,formato));				
- 
     } // if
+    else {
+      todos.put(label, new Value(label, descripcion));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
     return regresar;
   }
 	

@@ -20,10 +20,11 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 	private static final long serialVersionUID=-6128600239501961407L;
 
   public Entity() {
+    this(-1L);
   }
 
   public Entity(Long key) {
-    this.put("idKey", new Value("idKey", key));
+    this.put("idKey", new Value("idKey", key, "id_key"));
   }
 
   public Entity(Long key, String label) {
@@ -70,7 +71,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
       regresar = this.get("idKey").toLong();
     if (regresar == null)
       for (String key: keySet()) {
-        if (key.indexOf("idKey")>= 0) {
+        if (key.contains("idKey")) {
           if ( this.get(key).getData() instanceof String)
             regresar = Numero.getLong(this.get(key).toString());
           else

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -42,9 +43,14 @@ public class Accion extends IBaseFilter implements Serializable {
   private static final long serialVersionUID= 318633488565639323L;
   
 	protected FormatLazyModel lazyMovimientos;
+	protected FormatLazyModel lazyExtras;
 
   public FormatLazyModel getLazyMovimientos() {
     return lazyMovimientos;
+  }
+
+  public FormatLazyModel getLazyExtras() {
+    return lazyExtras;
   }
   
 	public Boolean getActivar() {
@@ -72,6 +78,9 @@ public class Accion extends IBaseFilter implements Serializable {
     else
 		  if(event.getTab().getTitle().equals("Movimientos")) 
 			  this.doMovimientos();
+      else
+		    if(event.getTab().getTitle().equals("Extras")) 
+			    this.doExtras();    
 	} // doTabChange		
 	
 	public String doCancelar() {   
@@ -147,10 +156,8 @@ public class Accion extends IBaseFilter implements Serializable {
 	}
 	
 	public void doLoadNominas() {
-		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
 		  params.put("idTipoNomina", this.attrs.get("idTipoNomina"));
 		  params.put("ejercicio", Fecha.getAnioActual()- 1);
 		  params.put("sucursales", this.attrs.get("sucursales"));
@@ -172,7 +179,6 @@ public class Accion extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
-      Methods.clean(columns);
       Methods.clean(params);
     } // finally
 	}
@@ -233,6 +239,7 @@ public class Accion extends IBaseFilter implements Serializable {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		regresar.put("nombre", nombre);
 		} // if
+    regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		return regresar;		
 	} // toPrepare
 
@@ -299,12 +306,11 @@ public class Accion extends IBaseFilter implements Serializable {
   } // doAccion
 
 	private void doMovimientos() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina, clave");
-      columns= new ArrayList<>();
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -324,4 +330,36 @@ public class Accion extends IBaseFilter implements Serializable {
     } // finally		
 	}
   
+	private void doExtras() {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= null;
+    try {
+      params= this.toPrepare();	
+      params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina is null or tc_keet_contratos_destajos_contratistas.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+      params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+			params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.id_desarrollo, tt_keet_temporal.clave, tt_keet_temporal.lote, tt_keet_temporal.codigo");
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyExtras= new FormatCustomLazy("VistaNominaDto", "extras", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+	}
+  
+  public String doRowColor(Entity row) {
+    Long idNomina= row.toLong("idNomina");
+		return Objects.equals(idNomina, null)? "janal-tr-yellow": "";
+	}
+
 }

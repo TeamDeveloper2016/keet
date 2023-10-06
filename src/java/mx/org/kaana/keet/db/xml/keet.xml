@@ -144,6 +144,32 @@
         where      
           id_entrega = {idEntrega}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_entregas
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+    </unit>    
+    <unit id="TcKeetEntregasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_entregas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_entregas_detalles
+        where      
+          id_entrega = {idEntrega} and id_articulo = {idArticulo}
+      </select>
     </unit>    
     <unit id="TcKeetEtapasDto">
       <select id="row">
@@ -4461,6 +4487,16 @@
           tc_keet_contratos_personal
         where      
           id_empresa_persona= {idEmpresaPersona}
+      </select>
+      <select id="igual">
+        select      
+          tc_keet_contratos_personal.id_contrato_persona as id_key,
+          tc_keet_contratos_personal.*
+        from      
+          tc_keet_contratos_personal
+        where      
+          id_empresa_persona= {idEmpresaPersona}
+          and id_desarrollo= {idDesarrollo}
       </select>
       <select id="desarrollo">
         select      

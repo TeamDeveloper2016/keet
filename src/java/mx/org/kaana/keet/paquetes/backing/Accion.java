@@ -132,9 +132,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<UISelectItem>desarrollos= null;
 		Map<String, Object>params    = new HashMap<>();
 		try {
-		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		desarrollos= UISelect.seleccione("TcKeetDesarrollosDto", "row", params, "nombres", EFormatoDinamicos.MAYUSCULAS);
+      if(JsfBase.isAdminEncuestaOrAdmin())
+		    params.put("idEmpresaPersona", -1);
+      else  
+		    params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());
+  		desarrollos= UISelect.seleccione("VistaPaquetesDto", "desarrollos", params, "nombres", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("desarrollos", desarrollos);
       if(desarrollos!= null && !desarrollos.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 

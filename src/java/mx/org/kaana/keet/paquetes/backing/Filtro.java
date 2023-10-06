@@ -133,9 +133,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   private void toLoadDesarrollos() {
 		Map<String, Object>params= new HashMap<>();
 		try {
-		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			List<UISelectEntity> desarrollos= UIEntity.build("TcKeetDesarrollosDto", "row", params);
+      if(JsfBase.isAdminEncuestaOrAdmin())
+		    params.put("idEmpresaPersona", -1);
+      else  
+		    params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());
+			List<UISelectEntity> desarrollos= UIEntity.build("VistaPaquetesDto", "desarrollos", params);
       this.attrs.put("desarrollos", desarrollos);
       this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
       this.doLoadPrototipos();

@@ -68,7 +68,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                  = true;
-		Map<String, Object>params         = null;
+		Map<String, Object>params         = new HashMap<>();
 		TcKeetContratosPersonalDto dto    = null;
 		TrManticEmpresaPersonalDto persona= null;
 		EAccion accionIncidente           = null;
@@ -78,7 +78,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
       this.messageError= "";
 			switch(accion) {
 				case COMPLEMENTAR:									
-					params= new HashMap<>();
 					for(SelectionItem item: this.empleados) {
             params.put("idEmpresaPersona", item.getKey());
 						dto= (TcKeetContratosPersonalDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosPersonalDto.class, "TcKeetContratosPersonalDto", "existe", params);

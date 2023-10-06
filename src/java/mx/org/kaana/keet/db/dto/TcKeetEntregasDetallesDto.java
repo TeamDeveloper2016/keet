@@ -23,77 +23,61 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_entregas")
-public class TcKeetEntregasDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_entregas_detalles")
+public class TcKeetEntregasDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="consecutivo")
-  private String consecutivo;
-  @Column (name="id_autoriza")
-  private Long idAutoriza;
   @Column (name="id_completo")
   private Long idCompleto;
-  @Column (name="id_paquete")
-  private Long idPaquete;
+  @Column (name="codigo")
+  private String codigo;
+  @Column (name="total")
+  private Double total;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_entrega")
+  @Column (name="id_entrega")
   private Long idEntrega;
-  @Column (name="id_contrato_lote")
-  private Long idContratoLote;
   @Column (name="observaciones")
   private String observaciones;
-  @Column (name="orden")
-  private Long orden;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_entrega_detalle")
+  private Long idEntregaDetalle;
+  @Column (name="cantidad")
+  private Double cantidad;
+  @Column (name="id_articulo")
+  private Long idArticulo;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="id_recibe")
   private Long idRecibe;
-  @Column (name="ejercicio")
-  private Long ejercicio;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetEntregasDto() {
+  public TcKeetEntregasDetallesDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetEntregasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null);
+  public TcKeetEntregasDetallesDto(Long key) {
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetEntregasDto(String consecutivo, Long idAutoriza, Long idCompleto, Long idPaquete, Long idUsuario, Long idEntrega, Long idContratoLote, String observaciones, Long orden, Long idRecibe, Long ejercicio) {
-    setConsecutivo(consecutivo);
-    setIdAutoriza(idAutoriza);
+  public TcKeetEntregasDetallesDto(Long idCompleto, String codigo, Double total, Long idUsuario, Long idEntrega, String observaciones, Long idEntregaDetalle, Double cantidad, Long idArticulo, String nombre, Long idRecibe) {
     setIdCompleto(idCompleto);
-    setIdPaquete(idPaquete);
+    setCodigo(codigo);
+    setTotal(total);
     setIdUsuario(idUsuario);
     setIdEntrega(idEntrega);
-    setIdContratoLote(idContratoLote);
     setObservaciones(observaciones);
-    setOrden(orden);
+    setIdEntregaDetalle(idEntregaDetalle);
+    setCantidad(cantidad);
+    setIdArticulo(idArticulo);
+    setNombre(nombre);
     setIdRecibe(idRecibe);
-    setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setConsecutivo(String consecutivo) {
-    this.consecutivo = consecutivo;
-  }
-
-  public String getConsecutivo() {
-    return consecutivo;
-  }
-
-  public void setIdAutoriza(Long idAutoriza) {
-    this.idAutoriza = idAutoriza;
-  }
-
-  public Long getIdAutoriza() {
-    return idAutoriza;
-  }
-
   public void setIdCompleto(Long idCompleto) {
     this.idCompleto = idCompleto;
   }
@@ -102,12 +86,20 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     return idCompleto;
   }
 
-  public void setIdPaquete(Long idPaquete) {
-    this.idPaquete = idPaquete;
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
   }
 
-  public Long getIdPaquete() {
-    return idPaquete;
+  public String getCodigo() {
+    return codigo;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Double getTotal() {
+    return total;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -126,14 +118,6 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     return idEntrega;
   }
 
-  public void setIdContratoLote(Long idContratoLote) {
-    this.idContratoLote = idContratoLote;
-  }
-
-  public Long getIdContratoLote() {
-    return idContratoLote;
-  }
-
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -142,12 +126,36 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
+  public void setIdEntregaDetalle(Long idEntregaDetalle) {
+    this.idEntregaDetalle = idEntregaDetalle;
   }
 
-  public Long getOrden() {
-    return orden;
+  public Long getIdEntregaDetalle() {
+    return idEntregaDetalle;
+  }
+
+  public void setCantidad(Double cantidad) {
+    this.cantidad = cantidad;
+  }
+
+  public Double getCantidad() {
+    return cantidad;
+  }
+
+  public void setIdArticulo(Long idArticulo) {
+    this.idArticulo = idArticulo;
+  }
+
+  public Long getIdArticulo() {
+    return idArticulo;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
   }
 
   public void setIdRecibe(Long idRecibe) {
@@ -156,14 +164,6 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
 
   public Long getIdRecibe() {
     return idRecibe;
-  }
-
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -177,39 +177,39 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdEntrega();
+  	return getIdEntregaDetalle();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idEntrega = key;
+  	this.idEntregaDetalle = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getConsecutivo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAutoriza());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCompleto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPaquete());
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEntrega());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdContratoLote());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
+		regresar.append(getIdEntregaDetalle());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRecibe());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -219,17 +219,17 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("consecutivo", getConsecutivo());
-		regresar.put("idAutoriza", getIdAutoriza());
 		regresar.put("idCompleto", getIdCompleto());
-		regresar.put("idPaquete", getIdPaquete());
+		regresar.put("codigo", getCodigo());
+		regresar.put("total", getTotal());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEntrega", getIdEntrega());
-		regresar.put("idContratoLote", getIdContratoLote());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("orden", getOrden());
+		regresar.put("idEntregaDetalle", getIdEntregaDetalle());
+		regresar.put("cantidad", getCantidad());
+		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("nombre", getNombre());
 		regresar.put("idRecibe", getIdRecibe());
-		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -237,7 +237,7 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdAutoriza(), getIdCompleto(), getIdPaquete(), getIdUsuario(), getIdEntrega(), getIdContratoLote(), getObservaciones(), getOrden(), getIdRecibe(), getEjercicio(), getRegistro()
+    getIdCompleto(), getCodigo(), getTotal(), getIdUsuario(), getIdEntrega(), getObservaciones(), getIdEntregaDetalle(), getCantidad(), getIdArticulo(), getNombre(), getIdRecibe(), getRegistro()
     };
     return regresar;
   }
@@ -251,8 +251,8 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idEntrega~");
-    regresar.append(getIdEntrega());
+    regresar.append("idEntregaDetalle~");
+    regresar.append(getIdEntregaDetalle());
     regresar.append("|");
     return regresar.toString();
   }
@@ -260,18 +260,18 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdEntrega());
+    regresar.append(getIdEntregaDetalle());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetEntregasDto.class;
+    return TcKeetEntregasDetallesDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdEntrega()!= null && getIdEntrega()!=-1L;
+  	return getIdEntregaDetalle()!= null && getIdEntregaDetalle()!=-1L;
   }
 
   @Override
@@ -282,8 +282,8 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetEntregasDto other = (TcKeetEntregasDto) obj;
-    if (getIdEntrega() != other.idEntrega && (getIdEntrega() == null || !getIdEntrega().equals(other.idEntrega))) {
+    final TcKeetEntregasDetallesDto other = (TcKeetEntregasDetallesDto) obj;
+    if (getIdEntregaDetalle() != other.idEntregaDetalle && (getIdEntregaDetalle() == null || !getIdEntregaDetalle().equals(other.idEntregaDetalle))) {
       return false;
     }
     return true;
@@ -292,7 +292,7 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdEntrega() != null ? getIdEntrega().hashCode() : 0);
+    hash = 67 * hash + (getIdEntregaDetalle() != null ? getIdEntregaDetalle().hashCode() : 0);
     return hash;
   }
 
