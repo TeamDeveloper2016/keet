@@ -215,7 +215,7 @@
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="Paquete: #{keetEntregasAccion.attrs.paquete.proceso} | #{keetEntregasAccion.attrs.paquete.paquete}" styleClass="janal-text-white"/>
+                    <p:outputLabel value="Paquete: #{keetEntregasAccion.attrs.paquete.proceso} | #{keetEntregasAccion.attrs.paquete.paquete}, Autorizó: #{keetEntregasAccion.attrs.paquete.autorizo}" styleClass="janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -301,7 +301,6 @@
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:param name="lineaSeparacion" value="false"/>	1
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="1">
       <p:outputLabel value="Folio: #{keetEntregasAccion.attrs.registro.consecutivo}"/>
