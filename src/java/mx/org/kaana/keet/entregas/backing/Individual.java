@@ -28,9 +28,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,6 +78,10 @@ public class Individual extends IBaseFilter implements Serializable {
       this.attrs.put("seleccionado", JsfBase.getFlashAttribute("seleccionado"));				
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));				
       this.attrs.put("idCasa", JsfBase.getFlashAttribute("idCasa"));				
+      this.attrs.put("idProceso", JsfBase.getFlashAttribute("idProceso"));				
+      this.attrs.put("idSubProceso", JsfBase.getFlashAttribute("idSubProceso"));				
+      this.attrs.put("idFirstProceso", Objects.equals(this.attrs.get("idProceso"), null));
+      this.attrs.put("idFirstSubProceso", Objects.equals(this.attrs.get("idSubProceso"), null));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("hoy", LocalDate.now());
       this.doLoadMateriales();
@@ -181,6 +183,8 @@ public class Individual extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));			
 			JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
 			JsfBase.setFlashAttribute("idCasa", this.attrs.get("idCasa"));			
+			JsfBase.setFlashAttribute("idProceso", this.attrs.get("idProceso"));			
+			JsfBase.setFlashAttribute("idSubProceso", this.attrs.get("idSubProceso"));			
   		regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

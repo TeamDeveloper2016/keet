@@ -23,6 +23,7 @@ where
       <select id="seguimiento">
 select 
 	tc_keet_contratos_lotes.id_contrato_lote as id_key,
+	tc_keet_contratos_lotes.id_contrato_lote,
   tc_keet_contratos_lotes.id_contrato,
   tc_keet_prototipos.id_prototipo,
 	ifnull(tt_keet_entregas.id_entrega, -1) as id_entrega,
@@ -53,12 +54,11 @@ inner join
   tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
 inner join 
   tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
-left join 
-  tc_keet_entregas on  tc_keet_contratos_lotes.id_contrato_lote= tc_keet_entregas.id_contrato_lote and tc_keet_entregas.id_paquete is not null
 left join
 (
   select  
     tc_keet_entregas.id_entrega,
+    tc_keet_entregas.id_contrato_lote,
     tc_keet_entregas.id_paquete,
     tc_keet_entregas.id_completo,
     tc_keet_entregas.fecha,
@@ -71,7 +71,7 @@ left join
   where  
     tc_keet_paquetes.id_proceso= {idProceso}
     and tc_keet_paquetes.id_sub_proceso= {idSubProceso}
-) as tt_keet_entregas on tc_keet_entregas.id_entrega= tt_keet_entregas.id_entrega
+) as tt_keet_entregas on tc_keet_contratos_lotes.id_contrato_lote= tt_keet_entregas.id_contrato_lote 
 left join
   tr_mantic_empresa_personal on tt_keet_entregas.id_autoriza= tr_mantic_empresa_personal.id_empresa_persona
 left join
@@ -180,7 +180,7 @@ left join
 left join
   tc_keet_procesos on tc_keet_paquetes.id_proceso= tc_keet_procesos.id_proceso
 left join
-  tc_keet_sub_procesos on tc_keet_procesos.id_proceso= tc_keet_sub_procesos.id_proceso
+  tc_keet_sub_procesos on tc_keet_paquetes.id_sub_proceso= tc_keet_sub_procesos.id_sub_proceso 
 inner join
   tr_mantic_empresa_personal on tc_keet_entregas.id_autoriza= tr_mantic_empresa_personal.id_empresa_persona
 inner join

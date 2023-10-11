@@ -60,8 +60,12 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));				
       this.attrs.put("idCasa", JsfBase.getFlashAttribute("idCasa"));				
+      this.attrs.put("idProceso", JsfBase.getFlashAttribute("idProceso"));				
+      this.attrs.put("idSubProceso", JsfBase.getFlashAttribute("idSubProceso"));				
       this.attrs.put("idFirstContrato", Objects.equals(this.attrs.get("idContrato"), null));
       this.attrs.put("idFirstCasa", Objects.equals(this.attrs.get("idCasa"), null));
+      this.attrs.put("idFirstProceso", Objects.equals(this.attrs.get("idProceso"), null));
+      this.attrs.put("idFirstSubProceso", Objects.equals(this.attrs.get("idSubProceso"), null));
       this.attrs.put("idFirstTime", Boolean.TRUE);
 			this.toLoadCatalogos();			
       this.attrs.put("idFirstTime", Boolean.FALSE);
@@ -97,7 +101,7 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
-      if((Boolean)this.attrs.get("idFirstContrato"))
+      if((Boolean)this.attrs.get("idFirstContrato") || Objects.equals(contratos.size(), 1))
 			  this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       else
         this.attrs.put("idFirstContrato", Boolean.TRUE);
@@ -120,7 +124,7 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());
       casas= UIEntity.seleccione("VistaContratosLotesDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("casas", casas);
-      if((Boolean)this.attrs.get("idFirstCasa"))
+      if((Boolean)this.attrs.get("idFirstCasa") || Objects.equals(casas.size(), 1))
         this.attrs.put("idCasa", UIBackingUtilities.toFirstKeySelectEntity(casas));
       else
         this.attrs.put("idFirstCasa", Boolean.TRUE);
@@ -202,7 +206,9 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
       JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
       JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));
       JsfBase.setFlashAttribute("idCasa", this.attrs.get("idCasa"));
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Entregas/filtro");
+      JsfBase.setFlashAttribute("idProceso", this.attrs.get("idProceso"));
+      JsfBase.setFlashAttribute("idSubProceso", this.attrs.get("idSubProceso"));
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Entregas/consulta");
       regresar= page.concat(Constantes.REDIRECIONAR);										
 		} // try
 		catch (Exception e) {
@@ -242,7 +248,10 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
       List<UISelectItem> procesos= UISelect.seleccione("VistaProcesosDto", "desarrollos", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("procesos", procesos);
       if(procesos!= null && !procesos.isEmpty()) 
-        this.attrs.put("idProceso", procesos.get(0).getValue());
+        if((Boolean)this.attrs.get("idFirstProceso") || Objects.equals(procesos.size(), 1))
+          this.attrs.put("idProceso", procesos.get(0).getValue());
+        else
+          this.attrs.put("idFirstProceso", Boolean.TRUE);
       else
         this.attrs.put("idProceso", -1L);
       this.doLoadSubprocesos();
@@ -263,7 +272,10 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
       List<UISelectItem> subProcesos= UISelect.seleccione("TcKeetSubProcesosDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("subprocesos", subProcesos);
       if(subProcesos!= null && !subProcesos.isEmpty()) 
-        this.attrs.put("idSubProceso", subProcesos.get(0).getValue());
+        if((Boolean)this.attrs.get("idFirstSubProceso") || Objects.equals(subProcesos.size(), 1))
+          this.attrs.put("idSubProceso", subProcesos.get(0).getValue());
+        else
+          this.attrs.put("idFirstSubProceso", Boolean.TRUE);
       else
         this.attrs.put("idSubProceso", -1L);
       if(!(Boolean)this.attrs.get("idFirstCasa"))

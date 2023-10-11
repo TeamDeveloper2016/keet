@@ -49,10 +49,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
-//			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-//			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			opcion      = EOpcionesResidente.PAQUETES;
-			idDesarrollo= 15L;
+			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+//			opcion      = EOpcionesResidente.PAQUETES;
+//			idDesarrollo= 15L;
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));				
@@ -91,7 +91,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
-      if((Boolean)this.attrs.get("idFirstContrato"))
+      if((Boolean)this.attrs.get("idFirstContrato") || Objects.equals(contratos.size(), 1))
 			  this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       else
         this.attrs.put("idFirstContrato", Boolean.TRUE);
@@ -114,7 +114,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());
       casas= UIEntity.seleccione("VistaContratosLotesDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("casas", casas);
-      if((Boolean)this.attrs.get("idFirstCasa"))
+      if((Boolean)this.attrs.get("idFirstCasa") || Objects.equals(casas.size(), 1))
         this.attrs.put("idCasa", UIBackingUtilities.toFirstKeySelectEntity(casas));
       else
         this.attrs.put("idFirstCasa", Boolean.TRUE);
