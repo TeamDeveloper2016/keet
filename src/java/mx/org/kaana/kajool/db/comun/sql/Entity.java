@@ -68,14 +68,14 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public Long getKey() {
     Long regresar = null;
     if(this.containsKey("idKey"))
-      regresar = this.get("idKey").toLong();
-    if (regresar == null)
+      regresar= this.get("idKey").toLong();
+    if (regresar== null)
       for (String key: keySet()) {
-        if (key.contains("idKey")) {
-          if ( this.get(key).getData() instanceof String)
-            regresar = Numero.getLong(this.get(key).toString());
+        if (key.indexOf("idKey")>= 0) {
+          if (this.get(key).getData() instanceof String)
+            regresar= Numero.getLong(this.get(key).toString());
           else
-            regresar = this.get(key).toLong();
+            regresar= this.get(key).toLong();
           break;
         } // if
       } // for
@@ -87,11 +87,11 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public String getKeyName() {
     String regresar = null;
     if(this.containsKey("idKey"))
-      regresar = "idKey";
-    if (regresar == null)
+      regresar= "idKey";
+    if (regresar== null)
       for (String key: keySet()) {
-        if (key.indexOf("idKey") >= 0) {
-          regresar = key;
+        if (key.indexOf("idKey")>= 0) {
+          regresar= key;
           break;
         } // if
       } // for
@@ -100,18 +100,27 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 	
   @Override
   public void setKey(Long key) {
+    if(this.containsKey("idKey"))
+      this.get("idKey").setData(key);
+    else 
+      for (String item: keySet()) {
+        if (item.indexOf("idKey")>= 0) {
+          this.get(item).setData(key);
+          break;
+        } // if
+      } // for
   }
 
   @Override
   public Map<String, Object> toMap() {
-    Map<String, Object> regresar = new HashMap<String, Object>();
-    for(Map.Entry<String, Value> entry : this.entrySet())
+    Map<String, Object> regresar = new HashMap<>();
+    for(Map.Entry<String, Value> entry: this.entrySet())
       regresar.put(entry.getKey(), entry.getValue());
     return regresar;
   }
 
   public Map<String, Object> toBdFieldMap() {
-    Map<String, Object> regresar = new HashMap<String, Object>();
+    Map<String, Object> regresar = new HashMap<>();
     for(Map.Entry<String, Value> entry : this.entrySet())
       regresar.put(entry.getValue().getField(), entry.getValue().getData());
     return regresar;

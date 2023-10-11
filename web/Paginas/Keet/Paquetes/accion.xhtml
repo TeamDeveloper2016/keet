@@ -22,7 +22,7 @@
 			};						
 
       function eliminar(nombre) {
-        return confirm("Precaución:\n¿Esta seguro que desea eliminar el ["+ nombre+ "] ?\n");
+        return confirm("Precaución: \n¿Esta seguro que desea eliminar el ["+ nombre+ "] ?\n");
       }
 
 			$(document).ready(function(){janal.readingMode('#{keetPaquetesAccion.attrs.nombreAccion}');});
@@ -109,7 +109,6 @@
                   <f:facet name="header">
                     <h:outputText value="Cantidad"/>
                   </f:facet>
-                  <h:outputText value=""/>
                   <p:inputNumber id="cantidad" value="#{row['cantidad']}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="" symbolPosition="p">
                     <p:ajax event="change" process="@this" listener="#{keetPaquetesAccion.doUpdate(row)}"/>
                   </p:inputNumber>  

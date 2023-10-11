@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Entrega de paquetes de materiales" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:fecha'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idAutoriza'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idRecibe'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idProceso'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idSubProceso' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|entero|mayor({\"cuanto\":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'texto', formatos: 'cambiar-mayusculas'},
+        'cantidad'                        : {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({\"cuanto\":0})', mascara: 'libre', grupo: 'general'}
+			};						
+      
+      function movePage(link) {
+        $('#janal-move-page').attr('href', link);
+        setTimeout("$('a.janal-move-element')[0].click();", 500);
+      }      
+    </script>  
+		<style type="text/css">
+      .janal-tr-yellow {
+        background-color: #FFFFB3 !important;
+      }
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.2vw !important;
+				font-weight: bold !important;
+			}
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    	
+    <a id="janal-move-page" class="janal-move-element janal-color-black" href="#tabla" style="display:none"></a>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="contenedorGrupos" activeIndex="1" multiple="true">
+						<p:tab title="Desarrollo">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                <p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="#{keetEntregasIndividual.attrs.seleccionado.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:outputLabel for="contratos" value="Contratos:"/>
+								<p:inputText id="contratos" value="#{keetEntregasIndividual.attrs.seleccionado.nombreContrato}" styleClass="janal-wid-100-txt" readonly="true"/>
+              </p:panelGrid>  
+            </p:tab>  
+						<p:tab id="informacion" title="#{keetEntregasIndividual.attrs.seleccionado.codigo} | #{keetEntregasIndividual.attrs.seleccionado.prototipo}">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                <p:outputLabel for="fecha" value="Fecha:" styleClass="#{keetEntregasIndividual.visible? '': 'janal-display-none'}"/>
+                <p:calendar id="fecha" value="#{keetEntregasIndividual.orden.entrega.fecha}" styleClass="janal-wid-100-txt #{keetEntregasIndividual.visible? '': 'janal-display-none'}" inputStyleClass="janal-wid-100-txt janal-column-center"	mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" maxdate="#{keetEntregasIndividual.attrs.hoy}"/>
+                <p:outputLabel for="idAutoriza" value="Solicita:" styleClass="#{keetEntregasIndividual.visible? '': 'janal-display-none'}"/>
+                <p:autoComplete id="idAutoriza" var="custom" placeholder="EMPLEADO QUE SOLICITA" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt #{keetEntregasIndividual.visible? '': 'janal-display-none'}" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEntregasIndividual.orden.ikSolicita}" completeMethod="#{keetEntregasIndividual.doCompleteAutorizan}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetEntregasIndividual.doAutorizan}" oncomplete="janal.desbloquear();"/>
+                </p:autoComplete>  
+                <p:outputLabel for="idRecibe" value="Recibe:"/>
+                <p:autoComplete id="idRecibe" var="custom" placeholder="EMPLEADO QUE RECIBE" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEntregasIndividual.orden.ikRecibe}" completeMethod="#{keetEntregasIndividual.doCompleteReciben}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetEntregasIndividual.doReciben}" oncomplete="janal.desbloquear();"/>
+                </p:autoComplete>  
+                <p:outputLabel for="observaciones" value="Observaciones:"/>
+      					<p:inputTextarea id="observaciones" value="#{keetEntregasIndividual.orden.entrega.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
+                <p:outputLabel for="idArticulo" value="Material:"/>
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-97, janal-wid-3 janal-column-center">
+                  <p:autoComplete id="idArticulo" var="custom" placeholder="NOMBRE DEL MATERIAL" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEntregasIndividual.attrs.idArticulo}" completeMethod="#{keetEntregasIndividual.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+                    <p:ajax event="itemSelect" process="@this" listener="#{keetEntregasIndividual.doArticulo}"/>
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <f:facet name="header" class="TexAlCenter">
+                          <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+                        </f:facet>
+                        <h:outputText value="Propio:" />
+                        <h:outputText value="#{custom.propio}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{custom.nombre}" />
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>	
+									<p:commandButton icon="fa fa-plus" title="Agregar" action="#{keetEntregasIndividual.doPlus}" process="@this" update="tabla idArticulo articulos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </p:panelGrid>
+							</p:panelGrid>
+              <p:separator /> 
+              <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetEntregasIndividual.orden.materiales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetEntregasIndividual.orden.materiales.size() gt 15}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" style="#{keetEntregasIndividual.orden.materiales ne null and keetEntregasIndividual.orden.materiales.size() gt 0}" rowStyleClass="#{keetEntregasIndividual.doRowColor(row)}">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Materiales a entregar" styleClass="janal-text-white"/>
+                  </div>  
+                </f:facet>  
+                <p:column styleClass="MarAuto Responsive janal-fix-3">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>					
+                <p:column class="MarAuto Responsive janal-fix-8">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>		
+                <p:column class="MarAuto Responsive articulos">
+                  <f:facet name="header">
+                    <h:outputText value="Nombres"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														            
+                <p:column class="MarAuto Responsive janal-fix-8 cantidad">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <p:inputNumber id="cantidad" value="#{row['cantidad']}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="" symbolPosition="p">
+                    <p:ajax event="change" process="@this" listener="#{keetEntregasIndividual.doUpdate(row)}"/>
+                  </p:inputNumber>  
+                </p:column>		
+                <p:column class="MarAuto Responsive janal-fix-15">
+                  <f:facet name="header">
+                    <h:outputText value="Observaciones"/>
+                  </f:facet>
+                  <p:inputText id="observaciones" value="#{row['observaciones']}" styleClass="janal-wid-100-txt">
+                    <p:ajax event="change" process="@this" listener="#{keetEntregasIndividual.doUpdate(row)}"/>
+                  </p:inputText>  
+                </p:column>		
+                <p:column class="janal-col-40 janal-column-center">							
+                  <f:facet name="header">
+                    <p:outputLabel value=".." styleClass="xs-pantalla"/>
+                  </f:facet>
+                  <p:commandButton icon="fa fa-recycle" process="@this" update="tabla" actionListener="#{keetEntregasIndividual.doRecover(row)}" title="Recuperar" rendered="#{row.sql.key eq 3}" oncomplete="janal.refresh()">
+                    <f:setPropertyActionListener value="#{paquete}" target="#{keetEntregasIndividual.attrs.registro}"/>
+                  </p:commandButton>  
+                  <p:commandButton icon="fa fa-trash" process="@this" update="tabla" actionListener="#{keetEntregasIndividual.doDelete(row)}" title="Eliminar" rendered="#{row.sql.key ne 3}" oncomplete="janal.refresh()">
+                    <f:setPropertyActionListener value="#{paquete}" target="#{keetEntregasIndividual.attrs.registro}"/>
+                  </p:commandButton>  
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetEntregasIndividual.orden.materiales.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>         
+              <p:inputText id="articulos" value="#{keetEntregasIndividual.attrs.articulos}" styleClass="janal-display-none articulos"/>
+						</p:tab>
+					</p:accordionPanel>						
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="paquete" value="#{keetEntregasIndividual.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEntregasIndividual.attrs.paquete}" selectionMode="single" paginator="#{keetEntregasIndividual.lazyModel.rowCount gt keetEntregasIndividual.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom"  rowStyleClass="#{keetEntregasIndividual.doRowHide(paquete)}">
+            <p:ajax event="rowToggle" process="@this tabla" update="detalle" listener="#{keetEntregasIndividual.doRowToggle}" />  
+						<p:ajax event="rowSelect" process="tabla" update="detalle" oncomplete="PF('kajoolTable').writeSelections();" skipChildren="false"/>
+            <f:facet name="header">
+              <div style="display: flex;">
+                <p:outputLabel value="Kit de material(es) entregado(s)" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>  
+            <p:column style="width:32px">
+							<f:facet name="header">
+                <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
+							</f:facet>
+              <p:rowToggler/>
+            </p:column>            
+						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-20" sortBy="#{paquete.consecutivo}">
+							<f:facet name="header">
+								<h:outputText value="Consecutivo"/>
+							</f:facet>
+							<h:outputText value="#{paquete['consecutivo']}"/>
+						</p:column>					
+						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-10" sortBy="#{paquete.codigo}">
+							<f:facet name="header">
+								<h:outputText value="Lote"/>
+							</f:facet>
+							<h:outputText value="#{paquete['codigo']}"/>
+						</p:column>					
+						<p:column styleClass="MarAuto Responsive janal-column-left janal-display-none" sortBy="#{paquete.autorizo}">
+							<f:facet name="header">
+								<h:outputText value="Autorizo"/>
+							</f:facet>
+							<h:outputText value="#{paquete['autorizo']}"/>
+						</p:column>					
+						<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{paquete.recibio}">
+							<f:facet name="header">
+								<h:outputText value="Recibió"/>
+							</f:facet>
+							<h:outputText value="#{paquete['recibio']}"/>
+						</p:column>					
+						<p:column styleClass="MarAuto Responsive janal-fix-10" sortBy="#{paquete.idCompleto}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{paquete['idCompleto'].toLong() eq 1? 'COMPLETO': 'PARCIAL'}"/>
+						</p:column>					
+						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-12" sortBy="#{paquete.registro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{paquete['registro']}"/>
+						</p:column>				
+						<p:column class="janal-col-80 janal-column-center">							
+              <f:facet name="header">
+                <p:outputLabel value=".." styleClass="xs-pantalla"/>
+              </f:facet>
+              <p:commandButton icon="fa fa-edit" title="Modificar" actionListener="#{keetEntregasIndividual.doRowEdit(paquete)}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear(); janal.refresh()" update="tabla contenedorGrupos:informacion" rendered="#{paquete.idCompleto.toLong() eq 2 or paquete.dias.toLong() lt 3}">
+                <f:setPropertyActionListener value="#{paquete}" target="#{keetEntregasIndividual.attrs.registro}"/>
+              </p:commandButton>  
+              <p:commandButton icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear()" process="@this" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{paquete.dias.toLong() lt 3}">
+                <f:setPropertyActionListener value="#{paquete}" target="#{keetEntregasIndividual.attrs.registro}"/>
+              </p:commandButton>  
+						</p:column>
+						<p:rowExpansion> 
+              <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{keetEntregasIndividual.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEntregasIndividual.attrs.detalle}" selectionMode="single" paginator="#{keetEntregasIndividual.lazyDetalle.rowCount gt keetEntregasIndividual.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty keetEntregasIndividual.lazyDetalle? 'none': ''}">
+                <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Autorizó: #{keetEntregasIndividual.attrs.paquete.autorizo}" styleClass="janal-text-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle');" oncomplete="janal.desbloquear();"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">   
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>												
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-fix-10" sortBy="#{row.codigo}">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>					
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
+                  <f:facet name="header">
+                    <h:outputText value="Articulo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>					
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-fix-10" sortBy="#{row.cantidad}">
+                  <f:facet name="header">
+                    <h:outputText value="Entregado"/>
+                  </f:facet>
+                  <h:outputText value="#{row['cantidad']}"/>
+                </p:column>					
+                <p:column styleClass="MarAuto Responsive janal-fix-10" sortBy="#{row.idCompleto}">
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
+    							<h:outputText value="#{row['idCompleto'].toLong() eq 1? 'COMPLETO': 'PARCIAL'}"/>
+                </p:column>					
+                <f:facet name="footer">
+                  <div style="display:flow-root;">
+                    <div style="float: right;">
+                      <p:outputLabel value="Total [#{keetEntregasIndividual.lazyDetalle== null? 0: keetEntregasIndividual.lazyDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
+                    </div>
+                  </div>
+                </f:facet>
+              </p:dataTable>     
+              <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle">            
+                <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" process="@this detalle"/>
+                <p:separator/>
+              </p:contextMenu>
+              <h:commandLink id="detallePdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="detalleXls">
+                <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>		              
+            </p:rowExpansion>  
+						<f:facet name="footer">
+              <p:outputLabel value="Total [#{keetEntregasIndividual.lazyModel== null? 0: keetEntregasIndividual.lazyModel.rowCount}] registros" styleClass="importado janal-color-orange"/>
+						</f:facet>
+					</p:dataTable>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetEntregasIndividual.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetEntregasIndividual.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEntregasIndividual.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEntregasIndividual.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la entrega de material ?" />
+  <ui:param name="accionConfirmacion" value="#{keetEntregasIndividual}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="lineaSeparacion" value="false"/>	1
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid layout="grid" columns="1">
+      <p:outputLabel value="Folio: #{keetEntregasIndividual.attrs.registro.consecutivo}"/>
+      <p:outputLabel value="Proceso: #{keetEntregasIndividual.attrs.registro.proceso}"/>
+      <p:outputLabel value="Paquete: #{keetEntregasIndividual.attrs.registro.paquete}"/>
+      <p:outputLabel value="Autorizó: #{keetEntregasIndividual.attrs.registro.autorizo}"/>
+      <p:outputLabel value="Recibió: #{keetEntregasIndividual.attrs.registro.recibio}"/>
+      <p:outputLabel value="Fecha: #{keetEntregasIndividual.attrs.registro.registro}"/>
+    </p:panelGrid>			
+  </ui:define>
+</ui:composition>

@@ -73,6 +73,6 @@ public class RechazosExtras extends Rechazos implements Serializable {
       Methods.clean(params);
     } // finally
 		return regresar;
-	} // toPuntos
+	} 
   
 }

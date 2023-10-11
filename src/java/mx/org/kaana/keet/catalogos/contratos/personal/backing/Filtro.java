@@ -55,10 +55,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 				encriptar= new Encriptar();
 				opcionResidente= EOpcionesResidente.valueOf(encriptar.desencriptar(JsfBase.getParametro("opcion")));				
 			} // if
-			else if(JsfBase.getFlashAttribute("opcion")!= null)
-				opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
-			else
-				opcionResidente= EOpcionesResidente.EMPLEADOS;		
+			else 
+        if(JsfBase.getFlashAttribute("opcion")!= null)
+				  opcionResidente= (EOpcionesResidente) JsfBase.getFlashAttribute("opcion");											
+			  else
+				  opcionResidente= EOpcionesResidente.EMPLEADOS;		
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
       this.attrs.put("idContratoEstatus", opcionResidente.getIdContratoEstatus());

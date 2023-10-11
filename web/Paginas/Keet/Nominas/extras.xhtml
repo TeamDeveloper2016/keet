@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Listado de conceptos de extras" />
+  <ui:param name="titulo" value="Conceptos extras pendientes de pago" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -16,6 +16,9 @@
         'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
         'nombre'      : {validaciones: 'libre', mascara: 'libre'}
       };
+			fieldsDialog= {
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
     </script>		
     <style type="text/css">
       .janal-tr-yellow {
@@ -100,6 +103,12 @@
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('exportExtrasPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('exporExtrastXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>												
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Registró"/>
+              </f:facet>
+              <h:outputText value="#{row['residente']}"/>
+            </p:column>														
             <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="(Sub)Contratista"/>
@@ -110,7 +119,6 @@
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
-              <i class="fa fa-user janal-float-right janal-color-blue" title="Registró: [#{row['residente']}]"></i>
               <h:outputText value="#{row['desarrollo']}"/>
             </p:column>														
             <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
@@ -155,6 +163,14 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>	
+						<p:column class="janal-wid-col-40 janal-column-center">							
+              <f:facet name="header">
+                <p:outputLabel value=".." styleClass="xs-pantalla"/>
+              </f:facet>
+							<p:commandButton icon="fa fa-arrows-alt" title="Rechazar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgRechazo').show();" update="dialogoRechazo" disabled="#{row.idEstacionEstatus eq '1'}">
+                <f:setPropertyActionListener value="#{row}" target="#{keetNominaExtras.attrs.extra}"/>
+              </p:commandButton>  
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="La filas en color son concepto aun pendientes de pago" styleClass="janal-float-left"/>
               <p:outputLabel value="Total [#{keetNominaExtras.lazyModel== null? 0: keetNominaExtras.lazyModel.rowCount}] registros"/>
@@ -171,4 +187,28 @@
     </div>		           				
   </ui:define>    
 	<ui:param name="lineaSeparacion" value="false"/>
+  <ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:define name="dialogos">		
+    <p:dialog id="dialogoRechazo" widgetVar="dlgRechazo" header="¿ Está seguro de rechazar el concepto ?" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoRechazo', fieldsDialog); janal.refresh();" onHide="janal.restore(); janal.refresh(); janal.desbloquear();">
+			<h:form id="formDialogoRechazo" prependId="false">
+        <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+          <p:outputLabel value="Registró: #{keetNominaExtras.attrs.extra.residente}"/>
+          <p:outputLabel value="(Sub)Contratista: #{keetNominaExtras.attrs.extra.razonSocial}"/>
+          <p:outputLabel value="Contrato: #{keetNominaExtras.attrs.extra.contrato}"/>
+          <p:outputLabel value="Prototipo: #{keetNominaExtras.attrs.extra.prototipo}"/>
+          <p:outputLabel value="Codigo: #{keetNominaExtras.attrs.extra.codigo}"/>
+          <p:outputLabel value="Concepto: #{keetNominaExtras.attrs.extra.nombre}"/>
+          <p:outputLabel value="Costo: #{keetNominaExtras.attrs.extra.costo}"/>
+          <p:outputLabel value="Fecha: #{keetNominaExtras.attrs.extra.registro}"/>
+				</p:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+        <p:inputTextarea id="justificacion" placeholder="ESCRIBA SU JUSTIFICACIÓN, ES OBLIGATORIA" value="#{keetNominaExtras.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+          <p:commandButton value="Aceptar" icon="fa fa-check" process="@form" update="tabla" actionListener="#{keetNominaExtras.doRechazo}" onstart="return janal.partial('dialogo')" oncomplete="PF('dlgRechazo').hide();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('dlgRechazo').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+  </ui:define>  
 </ui:composition>

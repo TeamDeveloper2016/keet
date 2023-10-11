@@ -56,7 +56,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
 			this.loadCatalogos();
 			this.doLoad();
-    } // try // try
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -84,7 +84,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally	
-	} // loadCatalogos	
+	} 
 	
   @Override
   public void doLoad() {
@@ -119,9 +119,8 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
   } // doLoad	
 	
 	protected Map<String, Object> toPrepare() {
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();
 			regresar.put("idDepartamento", this.attrs.get("idDepartamento"));
 			regresar.put("idPuntoGrupo", ((Entity)this.attrs.get("concepto")).toLong("idPuntoGrupo"));
 			regresar.put("idEstacion", ((Entity)this.attrs.get("concepto")).getKey());

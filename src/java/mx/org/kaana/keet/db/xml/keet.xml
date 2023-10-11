@@ -9,185 +9,238 @@
   <dml>
     <unit id="TcKeetProcesosDto">
       <select id="row">
-        select      
-          tc_keet_procesos.id_proceso as id_key,
-          tc_keet_procesos.*
-        from      
-          tc_keet_procesos
-        where 
-          {condicion} 
-        order by
-          nombre
+select      
+  tc_keet_procesos.id_proceso as id_key,
+  tc_keet_procesos.*
+from      
+  tc_keet_procesos
+where 
+  {condicion} 
+order by
+  nombre
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_procesos
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_keet_procesos
+where      
+  nombre = '{nombre}'
       </select>
     </unit>    
     <unit id="TcKeetSubProcesosDto">
       <select id="row">
-        select      
-          tc_keet_sub_procesos.id_sub_proceso as id_key,
-          tc_keet_procesos.nombre as proceso,
-          tc_keet_sub_procesos.*
-        from      
-          tc_keet_sub_procesos
-        inner join
-          tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso
-        where 
-          {condicion} 
-        order by
-          nombre
+select      
+  tc_keet_sub_procesos.id_sub_proceso as id_key,
+  tc_keet_procesos.nombre as proceso,
+  tc_keet_sub_procesos.*
+from      
+  tc_keet_sub_procesos
+inner join
+  tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso
+where 
+  {condicion} 
+order by
+  tc_keet_sub_procesos.nombre
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_sub_procesos
-        where      
-          id_proceso = {idProceso} and nombre = '{nombre}'
+select      
+  *
+from      
+  tc_keet_sub_procesos
+where      
+  id_proceso = {idProceso} and nombre = '{nombre}'
       </select>
       <select id="igual">
-        select      
-          *
-        from      
-          tc_keet_sub_procesos
-        where      
-          id_sub_proceso = {idSubProceso}
+select      
+  *
+from      
+  tc_keet_sub_procesos
+where      
+  id_sub_proceso = {idSubProceso}
       </select>
       <select id="size">
-        select      
-          count(*) as total
-        from      
-          tc_keet_sub_procesos
-        where      
-          id_proceso= {idProceso}
+select      
+  count(*) as total
+from      
+  tc_keet_sub_procesos
+where      
+  id_proceso= {idProceso}
       </select>
+      <select id="unicos">
+select      
+  tc_keet_sub_procesos.id_sub_proceso as id_key,
+  tc_keet_procesos.nombre as proceso,
+  tc_keet_sub_procesos.*
+from      
+  tc_keet_sub_procesos
+inner join
+  tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso
+where 
+  tc_keet_sub_procesos.id_sub_proceso not in (
+    select 
+      tc_keet_paquetes.id_sub_proceso
+    from
+      tc_keet_entregas
+    inner join
+      tc_keet_paquetes on tc_keet_entregas.id_paquete= tc_keet_paquetes.id_paquete
+    where
+      tc_keet_paquetes.id_proceso= {idProceso}
+  )
+order by
+  tc_keet_sub_procesos.nombre
+      </select>      
     </unit>   
     <unit id="TcKeetPaquetesDto">
       <select id="row">
-        select      
-          tc_keet_paquetes.id_paquete as id_key,
-          tc_keet_paquetes.*
-        from      
-          tc_keet_paquetes
-        where 
-          {condicion} 
+select      
+  tc_keet_paquetes.id_paquete as id_key,
+  tc_keet_paquetes.*
+from      
+  tc_keet_paquetes
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_paquetes
-        where      
-          id_proceso = {idProceso} and id_desarrollo = {idDesarrollo} and id_sub_proceso = {idSubProceso} and id_prototipo = {idPrototipo}
+select      
+  *
+from      
+  tc_keet_paquetes
+where      
+  id_proceso = {idProceso} and id_desarrollo = {idDesarrollo} and id_sub_proceso = {idSubProceso} and id_prototipo = {idPrototipo}
       </select>
     </unit>    
     <unit id="TcKeetPaquetesDetallesDto">
       <select id="row">
-        select      
-          tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
-          tc_keet_paquetes_detalles.*
-        from      
-          tc_keet_paquetes_detalles
-        where 
-          {condicion} 
+select      
+  tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
+  tc_keet_paquetes_detalles.*
+from      
+  tc_keet_paquetes_detalles
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_paquetes_detalles
-        where      
-          id_paquete = {idPaquete} and id_articulo = {idArticulo}
+select      
+  *
+from      
+  tc_keet_paquetes_detalles
+where      
+  id_paquete = {idPaquete} and id_articulo = {idArticulo}
       </select>
       <select id="igual">
-        select      
-          tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
-          tc_mantic_articulos_codigos.codigo,
-          tc_mantic_articulos.nombre,
-          tc_keet_paquetes_detalles.*
-        from      
-          tc_keet_paquetes_detalles
-        inner join
-          tc_mantic_articulos on tc_keet_paquetes_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
-        where 
-          tc_keet_paquetes_detalles.id_paquete= {idPaquete}
+select      
+  tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_keet_paquetes_detalles.*
+from      
+  tc_keet_paquetes_detalles
+inner join
+  tc_mantic_articulos on tc_keet_paquetes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where 
+  tc_keet_paquetes_detalles.id_paquete= {idPaquete}
       </select>
+      <select id="materiales">
+select      
+  tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
+  tc_keet_paquetes_detalles.*
+from      
+  tc_keet_paquetes
+inner join
+  tc_keet_paquetes_detalles on tc_keet_paquetes.id_paquete= tc_keet_paquetes_detalles.id_paquete
+where 
+  tc_keet_paquetes.id_desarrollo= {idDesarrollo}
+  and tc_keet_paquetes.id_prototipo= {idPrototipo}
+  and tc_keet_paquetes.id_proceso= {idProceso}
+  and tc_keet_paquetes.id_sub_proceso= {idSubProceso}
+order by
+  tc_keet_paquetes_detalles.id_paquete_detalle
+      </select>      
       <delete id="rows">
-        delete from 
-          tc_keet_paquetes_detalles
-        where
-          id_paquete= {idPaquete}
+delete from 
+  tc_keet_paquetes_detalles
+where
+  id_paquete= {idPaquete}
       </delete>
     </unit>     
     <unit id="TcKeetEntregasDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_keet_entregas
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_keet_entregas
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_entregas
-        where      
-          id_entrega = {idEntrega}
+select      
+  *
+from      
+  tc_keet_entregas
+where      
+  id_entrega = {idEntrega}
       </select>
 			<select id="siguiente">
-        select
-					max(orden)+ 1 as siguiente
-				from 
-					tc_keet_entregas
-				where				  
-				  ejercicio = {ejercicio}			
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_keet_entregas
+where				  
+  ejercicio= {ejercicio}			
 			</select>			
     </unit>    
     <unit id="TcKeetEntregasDetallesDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_keet_entregas_detalles
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_keet_entregas_detalles
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_entregas_detalles
-        where      
-          id_entrega = {idEntrega} and id_articulo = {idArticulo}
+select      
+  *
+from      
+  tc_keet_entregas_detalles
+where      
+  id_entrega = {idEntrega} and id_articulo = {idArticulo}
       </select>
+      <select id="igual">
+select      
+  tc_keet_entregas_detalles.id_entrega_detalle as id_key,
+  tc_keet_entregas_detalles.*
+from      
+  tc_keet_entregas_detalles
+where      
+  id_entrega = {idEntrega}
+order by        
+  id_entrega_detalle      
+      </select>
+      <delete id="rows">
+ delete from tc_keet_entregas_detalles where id_entrega = {idEntrega}       
+      </delete>
     </unit>    
     <unit id="TcKeetEtapasDto">
       <select id="row">
-        select      
-          tc_keet_etapas.id_etapa as id_key,
-          tc_keet_etapas.*
-        from      
-          tc_keet_etapas
-        where 
-          {condicion} 
+select      
+  tc_keet_etapas.id_etapa as id_key,
+  tc_keet_etapas.*
+from      
+  tc_keet_etapas
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_etapas
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_keet_etapas
+where      
+  nombre = '{nombre}'
       </select>
     </unit>    
     <unit id="TcKeetDesarrollosEtapasDto">

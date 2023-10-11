@@ -57,7 +57,7 @@
                 </p:column>   
               </p:selectOneMenu>                            
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>
 							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{manticIncidentesFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItems value="#{manticIncidentesFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombre}"/>

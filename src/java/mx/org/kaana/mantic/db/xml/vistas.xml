@@ -5180,8 +5180,8 @@
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
-					(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '.*{nombreEmpleado}.*')
-				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+          tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+          and (concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '.*{nombreEmpleado}.*')
 			</select>              
 			<select id="autoCompletarAccion">
 				select 
@@ -6784,7 +6784,7 @@ order by
 				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
-				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
+				  and tc_mantic_articulos.id_articulo_tipo in (1, 2, 3)
 				  and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) 			
 				order by 
 				  tc_mantic_articulos.nombre				

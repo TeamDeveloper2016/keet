@@ -11,9 +11,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -24,6 +28,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
 
 @Named(value = "keetNominaExtras")
 @ViewScoped
@@ -50,7 +55,7 @@ public class Extras extends IBaseFilter implements Serializable {
 	
 	@Override
   public void doLoad() {
-    List<Columna> columns= new ArrayList<>();
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
@@ -191,6 +196,53 @@ public class Extras extends IBaseFilter implements Serializable {
     Long idNomina= row.toLong("idNomina");
 		return Objects.equals(idNomina, null)? "janal-tr-yellow": "";
 	}
- 
+
+  public void doRechazo() {
+		Transaccion transaccion= null;	
+    Long idKey             = -1L;
+    try {						
+      idKey= ((Entity)this.attrs.get("extra")).getKey();
+      Revision revision= this.toLoadPuntoRevision();
+      if(!Objects.equals(revision, null)) {
+        transaccion= new Transaccion(revision, EEstacionesEstatus.EN_PROCESO.getKey());
+        if(transaccion.ejecutar(EAccion.ELIMINAR)) {
+          JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de forma correcta", ETipoMensaje.INFORMACION);
+          ((Entity)this.attrs.get("extra")).setKey(idKey);
+          this.attrs.put("justificacion", null);
+          this.doLoad();
+        } // if  
+        else
+          JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision", ETipoMensaje.ERROR);
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+
+	protected Revision toLoadPuntoRevision() {
+		Revision regresar  = new Revision();
+		Entity seleccionado= (Entity)this.attrs.get("extra");
+		try {
+			if(!Objects.equals(seleccionado, null)) {
+        seleccionado.setKey(seleccionado.toLong("idPuntoPaquete"));
+        regresar.setIdFigura(seleccionado.toLong("idContratoLotePivote"));
+        regresar.setTipo(seleccionado.toLong("tipo"));
+        regresar.setIdEstacion(seleccionado.toLong("idEstacion"));
+        regresar.setPuntosRevision(new Entity[] {seleccionado});
+        regresar.setObservaciones((String)this.attrs.get("justificacion"));			
+        regresar.setIdContratoLote(seleccionado.toLong("idContratoLote"));
+        regresar.setClave(seleccionado.toString("claveEstacion"));
+      } // if  
+      else
+        regresar= null;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} 
+  
 }
 

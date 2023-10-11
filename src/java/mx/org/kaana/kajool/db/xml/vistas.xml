@@ -224,6 +224,7 @@
     <unit id="VistaPerfilesDto">
       <select id="row">
         select
+          tc_janal_perfiles.id_perfil as id_key,
           tc_janal_perfiles.id_perfil as id_key_perfil,
           tc_janal_perfiles.descripcion,
           tc_janal_perfiles.acceso,

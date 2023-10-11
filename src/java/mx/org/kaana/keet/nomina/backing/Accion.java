@@ -19,7 +19,9 @@ import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -335,8 +337,14 @@ public class Accion extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-      params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina is null or tc_keet_contratos_destajos_contratistas.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
-      params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+      if(Objects.equals(this.attrs.get("nomina"), null) || !Objects.equals(((Nomina)this.attrs.get("nomina")).getIdNominaEstatus(), 4L)) {
+        params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina is null or tc_keet_contratos_destajos_contratistas.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+        params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+      } // if
+      else {
+        params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+        params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina= "+ ((Nomina)this.attrs.get("nomina")).getIdNomina()+ ")");
+      } // else
 			params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.id_desarrollo, tt_keet_temporal.clave, tt_keet_temporal.lote, tt_keet_temporal.codigo");
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -362,4 +370,51 @@ public class Accion extends IBaseFilter implements Serializable {
 		return Objects.equals(idNomina, null)? "janal-tr-yellow": "";
 	}
 
+  public void doRechazo() {
+		mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion transaccion= null;	
+    Long idKey             = -1L;
+    try {						
+      idKey= ((Entity)this.attrs.get("extra")).getKey();
+      Revision revision= this.toLoadPuntoRevision();
+      if(!Objects.equals(revision, null)) {
+        transaccion= new mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion(revision, EEstacionesEstatus.EN_PROCESO.getKey());
+        if(transaccion.ejecutar(EAccion.ELIMINAR)) {
+          JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de forma correcta", ETipoMensaje.INFORMACION);
+          ((Entity)this.attrs.get("extra")).setKey(idKey);
+          this.attrs.put("justificacion", null);
+          this.doExtras();
+        } // if  
+        else
+          JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision", ETipoMensaje.ERROR);
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+
+	protected Revision toLoadPuntoRevision() {
+		Revision regresar  = new Revision();
+		Entity seleccionado= (Entity)this.attrs.get("extra");
+		try {
+			if(!Objects.equals(seleccionado, null)) {
+        seleccionado.setKey(seleccionado.toLong("idPuntoPaquete"));
+        regresar.setIdFigura(seleccionado.toLong("idContratoLotePivote"));
+        regresar.setTipo(seleccionado.toLong("tipo"));
+        regresar.setIdEstacion(seleccionado.toLong("idEstacion"));
+        regresar.setPuntosRevision(new Entity[] {seleccionado});
+        regresar.setObservaciones((String)this.attrs.get("justificacion"));			
+        regresar.setIdContratoLote(seleccionado.toLong("idContratoLote"));
+        regresar.setClave(seleccionado.toString("claveEstacion"));
+      } // if  
+      else
+        regresar= null;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} 
+  
 }

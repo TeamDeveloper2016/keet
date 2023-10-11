@@ -19,7 +19,7 @@ public class Revision implements Serializable{
 	private Long idDepartamento;
 
 	public Revision() {
-		this(null, null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null, -1L);
 	}
 
 	public Revision(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String latitud, String longitud, Double metros, Long idContratoLote, String clave, Long idDepartamento) {

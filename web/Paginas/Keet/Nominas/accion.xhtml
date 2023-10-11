@@ -15,7 +15,11 @@
 				'contenedorGrupos\\:idNomina'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'nomina'},
 				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};	
-			
+      
+			fieldsDialog= {
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+      
 			function start() {
         PF('statusDialog').show();
       };
@@ -63,12 +67,12 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{keetNominasAccion.doTabChange}" process="@this" update="contenedorGrupos:tabla contenedorGrupos:movimientos @(.nominas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
+            <p:ajax event="tabChange" listener="#{keetNominasAccion.doTabChange}" process="@this" update="contenedorGrupos:tabla contenedorGrupos:movimientos contenedorGrupos:extras @(.nominas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
             <p:tab title="Generales">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="idTipoNomina" value="Tipo nómina:"/>
 								<p:selectOneMenu id="idTipoNomina" value="#{keetNominasAccion.attrs.idTipoNomina}" var="row" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" process="@this" update="idNomina aceptar aceptarIcon @(.nominas)" listener="#{keetNominasAccion.doLoadNominas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/> 
+									<p:ajax event="change" process="@this" update="idNomina aceptar aceptarIcon @(.nominas)" listener="#{keetNominasAccion.doLoadNominas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadNominas()"/> 
 									<f:selectItems value="#{keetNominasAccion.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{row.nombre}"/>
@@ -125,6 +129,7 @@
                 </p:progressBar>  			
               </p:panel>
 							<p:outputLabel id="registros" value="#{keetNominasAccion.attrs.tuplas}" styleClass="importado" style="display: none"/>
+              <p:remoteCommand name="reloadNominas" process="@this" update="idNomina"/>
             </p:tab>
 						<p:tab title="Movimientos">
 							<p:panelGrid columns="1" class="janal-wid-100-txt">
@@ -153,11 +158,11 @@
 								<p:ajax event="contextMenu" update="contenedorGrupos:kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 								<f:facet name="header">
 									<p:menuButton styleClass="lg-pantalla" value="Opciones">
-										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
-									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'contenedorGrupos\\:tabla')" oncomplete="janal.desbloquear()"/>
 								</f:facet>												
 								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.sucursal}">
 									<f:facet name="header">
@@ -219,11 +224,11 @@
               <p:dataTable lazy="true" id="movimientos" widgetVar="kajoolMovimientos" var="row" reflow="true" value="#{keetNominasAccion.lazyMovimientos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.destajo}" selectionMode="single" paginator="#{keetNominasAccion.lazyMovimientos.rowCount gt keetNominasAccion.lazyMovimientos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
                 <f:facet name="header">
                   <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('exportPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
-                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('exportXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:exportPdf', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:exportXls', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('exportPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('exportXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:exportPdf', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:exportXls', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
                 </f:facet>												
                 <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
                   <f:facet name="header">
@@ -296,23 +301,28 @@
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="movimientos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
               </h:commandLink>			
             </p:tab>
-						<p:tab title="Extras">
+            <p:tab title="Extras" rendered="false">
               <p:dataTable lazy="true" id="extras" widgetVar="kajoolExtras" var="row" reflow="true" value="#{keetNominasAccion.lazyExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.extra}" selectionMode="single" paginator="#{keetNominasAccion.lazyExtras.rowCount gt keetNominasAccion.lazyExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetNominasAccion.doRowColor(row)}">
                 <f:facet name="header">
                   <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('exportExtrasPdf', 'extras')" oncomplete="janal.desbloquear()"/>
-                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('exportExtrasXls', 'extras')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:exportExtrasPdf', 'contenedorGrupos\\:extras')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:exportExtrasXls', 'contenedorGrupos\\:extras')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('exportExtrasPdf', 'extras')" oncomplete="janal.desbloquear()"/>
-                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('exporExtrastXls', 'extras')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:exportExtrasPdf', 'contenedorGrupos\\:extras')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:exporExtrastXls', 'contenedorGrupos\\:extras')" oncomplete="janal.desbloquear()"/>
                 </f:facet>												
+                <p:column class="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Registró"/>
+                  </f:facet>
+                  <h:outputText value="#{row['residente']}"/>
+                </p:column>														
                 <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
                   <f:facet name="header">
                     <h:outputText value="(Sub)Contratista"/>
                   </f:facet>
-                  <i class="fa fa-user janal-float-right janal-color-blue" title="Registró: [#{row['residente']}]"></i>
                   <h:outputText value="#{row['razonSocial']}"/>
-                </p:column>														
+                </p:column>					
                 <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
                   <f:facet name="header">
                     <h:outputText value="Desarrollo"/>
@@ -361,6 +371,14 @@
                   </f:facet>
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>	
+                <p:column class="janal-wid-col-40 janal-column-center">							
+                  <f:facet name="header">
+                    <p:outputLabel value=".." styleClass="xs-pantalla"/>
+                  </f:facet>
+                  <p:commandButton icon="fa fa-arrows-alt" title="Rechazar" onstart="return janal.bloquear()" process="@this extras" oncomplete="PF('dlgRechazo').show();" update="dialogoRechazo" disabled="#{row.idEstacionEstatus eq '1'}">
+                    <f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.extra}"/>
+                  </p:commandButton>  
+                </p:column>
                 <f:facet name="footer">
                   <p:outputLabel value="La filas en color son concepto aun pendientes de pago" styleClass="janal-float-left"/>
                   <p:outputLabel value="Total [#{keetNominasAccion.lazyExtras== null? 0: keetNominasAccion.lazyExtras.rowCount}] registros"/>
@@ -389,4 +407,28 @@
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
+  <ui:param name="componenteBloqueo" value="contenedorGrupos:tabla contenedorGrupos:extras"/>
+	<ui:define name="dialogos">		
+    <p:dialog id="dialogoRechazo" widgetVar="dlgRechazo" header="¿ Está seguro de rechazar el concepto ?" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoRechazo', fieldsDialog); janal.refresh();" onHide="janal.restore(); janal.refresh(); janal.desbloquear();">
+			<h:form id="formDialogoRechazo" prependId="false">
+        <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+          <p:outputLabel value="Registró: #{keetNominasAccion.attrs.extra.residente}"/>
+          <p:outputLabel value="(Sub)Contratista: #{keetNominasAccion.attrs.extra.razonSocial}"/>
+          <p:outputLabel value="Contrato: #{keetNominasAccion.attrs.extra.contrato}"/>
+          <p:outputLabel value="Prototipo: #{keetNominasAccion.attrs.extra.prototipo}"/>
+          <p:outputLabel value="Codigo: #{keetNominasAccion.attrs.extra.codigo}"/>
+          <p:outputLabel value="Concepto: #{keetNominasAccion.attrs.extra.nombre}"/>
+          <p:outputLabel value="Costo: #{keetNominasAccion.attrs.extra.costo}"/>
+          <p:outputLabel value="Fecha: #{keetNominasAccion.attrs.extra.registro}"/>
+				</p:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+        <p:inputTextarea id="justificacion" placeholder="ESCRIBA SU JUSTIFICACIÓN, ES OBLIGATORIA" value="#{keetNominasAccion.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+          <p:commandButton value="Aceptar" icon="fa fa-check" process="@form" update="contenedorGrupos:extras" actionListener="#{keetNominasAccion.doRechazo}" onstart="return janal.partial('dialogo')" oncomplete="PF('dlgRechazo').hide();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('dlgRechazo').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+  </ui:define>  
 </ui:composition>
