@@ -467,10 +467,9 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", ((Transferencia)this.getAdminOrden().getOrden()).getIdEmpresa());

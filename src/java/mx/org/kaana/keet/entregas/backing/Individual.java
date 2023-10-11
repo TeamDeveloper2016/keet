@@ -86,6 +86,7 @@ public class Individual extends IBaseFilter implements Serializable {
       this.attrs.put("hoy", LocalDate.now());
       this.doLoadMateriales();
       this.idEntrega= -1L;
+      this.toLoadAlmacenes();
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -394,4 +395,26 @@ public class Individual extends IBaseFilter implements Serializable {
     else
       JsfBase.addMessage("Se tiene que seleccionar un material !", ETipoMensaje.ERROR);      			
   }
+  
+	private void toLoadAlmacenes() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      this.attrs.put("almacenes", UIEntity.build("TcKeetDesarrollosAlmacenesDto", "almacen", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+  	  this.orden.setIkAlmacen(UIBackingUtilities.toFirstKeySelectEntity(almacenes));
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+   
 }

@@ -88,6 +88,7 @@ public class Accion extends IBaseFilter implements Serializable {
       this.attrs.put("hoy", LocalDate.now());
       this.toLoadProcesos();
       this.idEntrega= -1L;
+      this.toLoadAlmacenes();
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -372,6 +373,7 @@ public class Accion extends IBaseFilter implements Serializable {
       List<UISelectItem> subProcesos= UISelect.seleccione("TcKeetSubProcesosDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("subprocesos", subProcesos);
       this.attrs.put("idSubProceso", row.toLong("idSubProceso"));
+      this.toAlmacenes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -382,6 +384,35 @@ public class Accion extends IBaseFilter implements Serializable {
     } // finally
   }  									
  
+	private void toAlmacenes() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      this.attrs.put("almacenes", UIEntity.build("TcKeetDesarrollosAlmacenesDto", "almacen", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+      if(almacenes!= null && !almacenes.isEmpty()) {
+        int index= almacenes.indexOf(new UISelectEntity(this.orden.getEntrega().getIdAlmacen()));
+        if(index>= 0)
+  	      this.orden.setIkAlmacen(almacenes.get(index));
+        else
+  	      this.orden.setIkAlmacen(UIBackingUtilities.toFirstKeySelectEntity(almacenes));
+      } // if 
+      else
+        this.orden.setIkAlmacen(new UISelectEntity(this.orden.getEntrega().getIdAlmacen()));
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
   public void doEliminar() {
 		Transaccion transaccion = null;
 		try {
@@ -401,5 +432,26 @@ public class Accion extends IBaseFilter implements Serializable {
   public String doRowStyle(Entity row) {
     return Objects.equals(this.accion, EAccion.MODIFICAR) && !Objects.equals(row.toDouble("cantidad"), row.toDouble("total"))? "janal-tr-yellow": "";
   }
+ 
+	private void toLoadAlmacenes() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      this.attrs.put("almacenes", UIEntity.build("TcKeetDesarrollosAlmacenesDto", "almacen", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+  	  this.orden.setIkAlmacen(UIBackingUtilities.toFirstKeySelectEntity(almacenes));
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
   
 }

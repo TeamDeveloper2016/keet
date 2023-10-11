@@ -38,6 +38,7 @@ public class AdminEntregas implements Serializable {
   
   private UISelectEntity ikSolicita;
   private UISelectEntity ikRecibe;
+  private UISelectEntity ikAlmacen;
   
   public AdminEntregas() {
     this(-1L, -1L, -1L, -1L);
@@ -90,6 +91,16 @@ public class AdminEntregas implements Serializable {
     if(!Objects.equals(ikRecibe, null))
       this.entrega.setIdRecibe(ikRecibe.getKey());
   }
+
+  public UISelectEntity getIkAlmacen() {
+    return ikAlmacen;
+  }
+
+  public void setIkAlmacen(UISelectEntity ikAlmacen) {
+    this.ikAlmacen = ikAlmacen;
+    if(!Objects.equals(ikAlmacen, null))
+      this.entrega.setIdAlmacen(ikAlmacen.getKey());
+  }
   
   private void init() {
     Map<String, Object> params= new HashMap<>();
@@ -112,7 +123,8 @@ public class AdminEntregas implements Serializable {
           1L, // Long orden, 
           -1L, // Long idRecibe, 
           new Long(Fecha.getAnioActual()), // Long ejercicio      
-          LocalDate.now() // LocalDate fecha
+          LocalDate.now(), // LocalDate fecha
+          -1L  // Long idAlmacen
         );
         this.materiales= (List<Material>)DaoFactory.getInstance().toEntitySet(Material.class, "VistaProcesosDto", "igual", params);
       } // if  

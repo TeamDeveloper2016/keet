@@ -11,6 +11,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idAlmacen'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fecha'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idAutoriza'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idRecibe'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -53,6 +54,16 @@
 								<p:inputText value="#{keetEntregasIndividual.attrs.seleccionado.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="contratos" value="Contratos:"/>
 								<p:inputText id="contratos" value="#{keetEntregasIndividual.attrs.seleccionado.nombreContrato}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:outputLabel for="idAlmacen" value="Almacen:"/>
+								<p:selectOneMenu id="idAlmacen" value="#{keetEntregasIndividual.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetEntregasIndividual.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.clave? '': ' | '} #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
               </p:panelGrid>  
             </p:tab>  
 						<p:tab id="informacion" title="#{keetEntregasIndividual.attrs.seleccionado.codigo} | #{keetEntregasIndividual.attrs.seleccionado.prototipo}">

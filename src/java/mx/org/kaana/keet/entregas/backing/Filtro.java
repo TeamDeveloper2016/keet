@@ -51,8 +51,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-//			opcion      = EOpcionesResidente.PAQUETES;
-//			idDesarrollo= 15L;
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));				
