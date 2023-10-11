@@ -20,6 +20,76 @@ where
   {condicion}        
 {sortOrder}        
       </select>
+      <select id="seguimiento">
+select 
+	tc_keet_contratos_lotes.id_contrato_lote as id_key,
+  tc_keet_contratos_lotes.id_contrato,
+  tc_keet_prototipos.id_prototipo,
+	ifnull(tt_keet_entregas.id_entrega, -1) as id_entrega,
+	ifnull(tt_keet_entregas.id_paquete, -1) as id_paquete,
+	ifnull(tt_keet_entregas.id_completo, -1) as id_completo,
+	tc_keet_contratos.clave as clave_contrato, 
+	tc_keet_contratos.nombre as nombre_contrato, 
+	tc_keet_contratos.etapa as etapa_contrato,
+	concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
+	tc_keet_prototipos.nombre as prototipo,
+	tc_keet_contratos_lotes.clave,
+  tc_keet_contratos_lotes.manzana,
+  tc_keet_contratos_lotes.lote,
+  tc_keet_contratos_lotes.inicio,
+  tc_keet_contratos_lotes.termino,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  concat(tt_mantic_personas.nombres,' ', ifnull(tt_mantic_personas.paterno, ''),' ', ifnull(tt_mantic_personas.materno, '')) as autorizo,
+  concat(ta_mantic_personas.nombres,' ', ifnull(ta_mantic_personas.paterno, ''),' ', ifnull(ta_mantic_personas.materno, '')) as recibio,
+  ifnull(tt_keet_entregas.fecha, now()) as fecha
+from 
+	tc_keet_contratos
+inner join 
+	tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+inner join
+	tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+inner join 
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+left join 
+  tc_keet_entregas on  tc_keet_contratos_lotes.id_contrato_lote= tc_keet_entregas.id_contrato_lote and tc_keet_entregas.id_paquete is not null
+left join
+(
+  select  
+    tc_keet_entregas.id_entrega,
+    tc_keet_entregas.id_paquete,
+    tc_keet_entregas.id_completo,
+    tc_keet_entregas.fecha,
+    tc_keet_entregas.id_autoriza,
+    tc_keet_entregas.id_recibe
+  from  
+    tc_keet_entregas
+  inner join  
+    tc_keet_paquetes on tc_keet_entregas.id_paquete= tc_keet_paquetes.id_paquete
+  where  
+    tc_keet_paquetes.id_proceso= {idProceso}
+    and tc_keet_paquetes.id_sub_proceso= {idSubProceso}
+) as tt_keet_entregas on tc_keet_entregas.id_entrega= tt_keet_entregas.id_entrega
+left join
+  tr_mantic_empresa_personal on tt_keet_entregas.id_autoriza= tr_mantic_empresa_personal.id_empresa_persona
+left join
+  tr_mantic_empresa_personal as tt_mantic_empresa_personal on tt_keet_entregas.id_recibe= tt_mantic_empresa_personal.id_empresa_persona
+left join
+	tc_mantic_personas as tt_mantic_personas on tr_mantic_empresa_personal.id_persona= tt_mantic_personas.id_persona
+left join
+	tc_mantic_personas as ta_mantic_personas on tt_mantic_empresa_personal.id_persona= ta_mantic_personas.id_persona
+where
+  tc_keet_contratos.id_empresa in ({sucursales})
+  and tc_keet_contratos_lotes.id_contrato_lote_estatus in (1, 2, 6)
+  and {condicion}
+group by
+  tc_keet_contratos_lotes.id_contrato_lote	
+order by
+	tc_keet_contratos.clave desc, 
+	tc_keet_contratos_lotes.orden	        
+      </select>  
       <select id="lotes">
 select 
 	tc_keet_contratos_lotes.id_contrato_lote as id_key,
@@ -51,6 +121,21 @@ order by
 	tc_keet_contratos.clave desc, 
 	tc_keet_contratos_lotes.orden				
       </select>
+      <select id="desarrollos">
+select
+  tc_keet_procesos.id_proceso as id_key,
+  tc_keet_procesos.*
+from
+  tc_keet_paquetes
+inner join
+  tc_keet_procesos on tc_keet_paquetes.id_proceso= tc_keet_procesos.id_proceso
+where                        
+  tc_keet_paquetes.id_desarrollo= {idDesarrollo}
+group by 
+  tc_keet_procesos.id_proceso
+order by  
+  tc_keet_procesos.nombre        
+      </select>  
       <select id="procesos">
 select
   tc_keet_procesos.id_proceso as id_key,

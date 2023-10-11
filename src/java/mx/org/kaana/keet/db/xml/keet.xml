@@ -85,7 +85,8 @@ where
     inner join
       tc_keet_paquetes on tc_keet_entregas.id_paquete= tc_keet_paquetes.id_paquete
     where
-      tc_keet_paquetes.id_proceso= {idProceso}
+      tc_keet_entregas.id_contrato_lote= {idContratoLote}
+      and tc_keet_paquetes.id_proceso= {idProceso}
   )
 order by
   tc_keet_sub_procesos.nombre

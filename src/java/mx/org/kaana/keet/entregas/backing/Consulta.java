@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
@@ -21,17 +22,19 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "keetEntregasFiltro")
+@Named(value = "keetEntregasConsulta")
 @ViewScoped
-public class Filtro extends IBaseReporteDestajos implements Serializable {
+public class Consulta extends IBaseReporteDestajos implements Serializable {
 
-  private static final long serialVersionUID= 8193667741599428879L;			
-  private static final Log LOG = LogFactory.getLog(Filtro.class);
+  private static final long serialVersionUID= 1193667741599428879L;			
+  private static final Log LOG = LogFactory.getLog(Consulta.class);
   
 	private List<Entity> lotes;
 	
@@ -59,7 +62,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("idCasa", JsfBase.getFlashAttribute("idCasa"));				
       this.attrs.put("idFirstContrato", Objects.equals(this.attrs.get("idContrato"), null));
       this.attrs.put("idFirstCasa", Objects.equals(this.attrs.get("idCasa"), null));
+      this.attrs.put("idFirstTime", Boolean.TRUE);
 			this.toLoadCatalogos();			
+      this.attrs.put("idFirstTime", Boolean.FALSE);
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,6 +82,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       if(!Objects.equals(desarrollo, null))
         this.attrs.put("desarrollo", desarrollo.getDesarrollo().getClave().concat(" ").concat(Constantes.SEPARADOR).concat(" ").concat(desarrollo.getDesarrollo().getNombres()));
       this.toLoadContratos();
+      this.toLoadProcesos();
 		} // try
     finally {
 			Methods.clean(params);
@@ -133,10 +139,25 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     StringBuilder regresar   = new StringBuilder();
 		UISelectEntity idContrato= (UISelectEntity)this.attrs.get("idContrato");
 		UISelectEntity idCasa    = (UISelectEntity)this.attrs.get("idCasa");
+		Long idEstatus           = (Long)this.attrs.get("idEstatus");
     if(idContrato!= null && idContrato.getKey()> 0L)
 		  regresar.append("(tc_keet_contratos.id_contrato= ").append(idContrato.getKey()).append(") and ");
     if(idCasa!= null && idCasa.getKey()> 0L)
       regresar.append("(tc_keet_contratos_lotes.id_contrato_lote=").append(idCasa.getKey()).append(") and ");
+    if(idEstatus!= null)
+      switch(idEstatus.intValue()) {
+        case -1:
+          break;
+        case 1:
+          regresar.append("(tt_keet_entregas.id_completo= 2) and ");
+          break;
+        case 2:
+          regresar.append("(tt_keet_entregas.id_completo= 1) and ");
+          break;
+        case 3:
+          regresar.append("(tt_keet_entregas.id_entrega is null) and ");
+          break;
+      } // switch
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
   
@@ -145,14 +166,21 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     List<Columna> columns    = new ArrayList<>();		
 		Map<String, Object>params= new HashMap<>();
     try {   
-      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-      this.lotes= DaoFactory.getInstance().toEntitySet("VistaProcesosDto", "lotes", params);		
-      if(!this.lotes.isEmpty()) 
-        UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
+   		Long idProceso   = (Long)this.attrs.get("idProceso");
+	  	Long idSubProceso= (Long)this.attrs.get("idSubProceso");
+      if(!Objects.equals(idProceso, null) && !Objects.equals(idProceso, -1L) && !Objects.equals(idSubProceso, null) && !Objects.equals(idSubProceso, -1L)) {
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+        params.put("idProceso", this.attrs.get("idProceso"));
+        params.put("idSubProceso", this.attrs.get("idSubProceso"));
+        params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+        columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
+        columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));                  
+        this.lotes= DaoFactory.getInstance().toEntitySet("VistaProcesosDto", "seguimiento", params);		
+        if(!this.lotes.isEmpty()) 
+          UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
+      } // else
+      else
+        JsfBase.addMessage("Se tiene que seleccionar primero un paquete !", ETipoMensaje.ERROR);      		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -206,5 +234,49 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   public void doReporte(String nombre, boolean sendMail) throws Exception {
     throw new UnsupportedOperationException("Not supported yet."); 
   }
+ 
+  private void toLoadProcesos() {
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      List<UISelectItem> procesos= UISelect.seleccione("VistaProcesosDto", "desarrollos", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+      this.attrs.put("procesos", procesos);
+      if(procesos!= null && !procesos.isEmpty()) 
+        this.attrs.put("idProceso", procesos.get(0).getValue());
+      else
+        this.attrs.put("idProceso", -1L);
+      this.doLoadSubprocesos();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+  
+  public void doLoadSubprocesos() {
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, "tc_keet_sub_procesos.id_proceso= "+ this.attrs.get("idProceso"));
+      List<UISelectItem> subProcesos= UISelect.seleccione("TcKeetSubProcesosDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+      this.attrs.put("subprocesos", subProcesos);
+      if(subProcesos!= null && !subProcesos.isEmpty()) 
+        this.attrs.put("idSubProceso", subProcesos.get(0).getValue());
+      else
+        this.attrs.put("idSubProceso", -1L);
+      if(!(Boolean)this.attrs.get("idFirstCasa"))
+        this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  									
+ 
   
 }

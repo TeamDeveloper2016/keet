@@ -213,6 +213,7 @@ public class Accion extends IBaseFilter implements Serializable {
   public void doLoadSubprocesos() {
     Map<String, Object> params= new HashMap<>();
     try {
+			params.put("idContratoLote", ((Entity)this.attrs.get("seleccionado")).toLong("idContratoLote"));
 			params.put("idProceso", this.attrs.get("idProceso"));
       List<UISelectItem> subProcesos= UISelect.seleccione("TcKeetSubProcesosDto", "unicos", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("subprocesos", subProcesos);

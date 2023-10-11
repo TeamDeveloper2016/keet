@@ -34,7 +34,8 @@ public enum EOpcionesResidente {
 	LUBRICANTE      ("Registrar un suministro de lubricante", "aabf54d864e06de06ef006", "/Paginas/Sakbe/Suministros/lubricante.jsf", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=", 8L),
 	HERRAMIENTA     ("Registrar un suministro de herramientas", "a8b9bf5ce16ef272f677fb0d", "/Paginas/Sakbe/Suministros/herramienta.jsf", "/Paginas/Sakbe/Combustibles/desarrollos.jsf?opcion=", 8L),
   // MATERIALES
-	PAQUETES     ("Entrega de materiales", "5ae364fb1e2ecb5ff3", "/Paginas/Keet/Entregas/filtro.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L);
+	PAQUETES        ("Entrega de materiales", "5ae364fb1e2ecb5ff3", "/Paginas/Keet/Entregas/filtro.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
+	SUPERVISAR      ("Entrega de materiales", "fa071d232734c343d72b4d", "/Paginas/Keet/Entregas/consulta.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L);
   
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;
