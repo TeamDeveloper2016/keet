@@ -109,27 +109,23 @@ public class AdminEntregas implements Serializable {
       params.put("idPrototipo", this.idPrototipo);      
       params.put("idProceso", this.idProceso);      
       params.put("idSubProceso", this.idSubProceso);      
-      this.materiales= (List<Material>)DaoFactory.getInstance().toEntitySet(Material.class, "VistaProcesosDto", "entrega", params);
-      if(Objects.equals(this.materiales, null) || this.materiales.isEmpty()) {
-        this.entrega= new TcKeetEntregasDto(
-          null, // String consecutivo, 
-          -1L, // Long idAutoriza, 
-          2L, // Long idCompleto, 
-          -1L, // Long idPaquete, 
-          JsfBase.getIdUsuario(), // Long idUsuario, 
-          -1L, // Long idEntrega, 
-          -1L, // Long idContratoLote, 
-          null, // String observaciones, 
-          1L, // Long orden, 
-          -1L, // Long idRecibe, 
-          new Long(Fecha.getAnioActual()), // Long ejercicio      
-          LocalDate.now(), // LocalDate fecha
-          -1L  // Long idAlmacen
-        );
-        this.materiales= (List<Material>)DaoFactory.getInstance().toEntitySet(Material.class, "VistaProcesosDto", "igual", params);
-      } // if  
-      else 
-        this.entrega= (TcKeetEntregasDto)DaoFactory.getInstance().findById(TcKeetEntregasDto.class, this.materiales.get(0).getIdEntrega());
+      this.entrega= new TcKeetEntregasDto(
+        null, // String consecutivo, 
+        -1L, // Long idAutoriza, 
+        2L, // Long idCompleto, 
+        -1L, // Long idPaquete, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        -1L, // Long idEntrega, 
+        -1L, // Long idContratoLote, 
+        null, // String observaciones, 
+        1L, // Long orden, 
+        -1L, // Long idRecibe, 
+        new Long(Fecha.getAnioActual()), // Long ejercicio      
+        LocalDate.now(), // LocalDate fecha
+        -1L, // Long idAlmacen
+        JsfBase.getAutentifica().getEmpresa().getIdEmpresa() // Long idEmpresa
+      );
+      this.materiales= (List<Material>)DaoFactory.getInstance().toEntitySet(Material.class, "VistaProcesosDto", "igual", params);
       if(Objects.equals(this.materiales, null) || this.materiales.isEmpty()) 
         this.materiales= new ArrayList<>();
     } // try

@@ -290,9 +290,8 @@ public class Nomina implements Serializable {
 	}
 	
 	private void toIncidencias(List<Concepto> particulares, Long idEmpresaPersona) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcManticIncidentesDto.class, "VistaNominaDto", "incidentes", params, Constantes.SQL_TODOS_REGISTROS);
@@ -376,26 +375,44 @@ public class Nomina implements Serializable {
 
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
 		Double regresar           = 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
 			List<TcKeetContratosDestajosContratistasDto> lotes= (List<TcKeetContratosDestajosContratistasDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosContratistasDto.class, "VistaNominaDto", "contratista", params, Constantes.SQL_TODOS_REGISTROS);
 			if(lotes!= null && !lotes.isEmpty()) {
+        // RECUPERAR EL COSTOS DE TODOS LOS LOTES QUE SE TRABAJARON A DESTAJO
 				for(TcKeetContratosDestajosContratistasDto lote: lotes) {
 					lote.setIdNomina(this.nomina.getIdNomina());
 					regresar+= lote.getCosto();
 					DaoFactory.getInstance().update(this.sesion, lote);
 				} // for
 				this.toLookUpConcepto(particulares, ECodigosIncidentes.DESTAJO, regresar);
+        // RECUPERAR EL SUELDO BASE DE TODOS LOS AGRAMIADOS O CHALES Y SE LE RESTA A LOS DESTAJOS REALIZDOS
 				Entity agremiados= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "VistaNominaDto", "agremiados", params);
 				if(agremiados!= null && !agremiados.isEmpty()) {
 					this.toLookUpConcepto(particulares, ECodigosIncidentes.AGREMIADOS, agremiados.toDouble("agremiados"));
 					this.toLookUpConcepto(particulares, ECodigosIncidentes.SALARIOS, agremiados.toDouble("salarios"));
 					regresar-= agremiados.toDouble("salarios")== null? 0D: agremiados.toDouble("salarios");
 				} // if
-				regresar-= empleado.getNeto();
+        // UNA VEZ RESTADO LOS DESTAJOS MENOS LOS SALARIOS DE LOS CHALES SUMAR AL SUELDO BASE DEL TRABAJO EL RESTO
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            regresar-= empleado.getNeto();
+            break;
+          case "gylvi": 
+            // 12/10/2023 SON CONTRATISTAS QUE TAMBIEN SON EMPLEADOS Y TIENE UN SALARIO 
+            // POR LO GENERAL PARA EL CALCULO ES QUE EL DESTAJO-CHALES-SUELDO BASE ES EL COMPLMENTO DE PAGO
+            // SI LOS DESTAJOS, MENOS LOS SUELDOS DE LOS CHALES NO ALCANZA SE TEDRA QUE DESCONTAR DE LOS SUELDO DEL CONTRATISTA
+            // POR LO TANTO PARA GYLVI LA INDICACION ES QUE LOS CONTRATISTAS NO DEBEN DE TENER UN SALARIO BASE
+            break;
+          case "triana":
+            regresar-= empleado.getNeto();
+            break;
+          default:  
+            regresar-= empleado.getNeto();
+            break;
+        } // swtich
 				this.toLookUpConcepto(particulares, ECodigosIncidentes.COMPLEMENTO, regresar);
 			} // if
 		} // try

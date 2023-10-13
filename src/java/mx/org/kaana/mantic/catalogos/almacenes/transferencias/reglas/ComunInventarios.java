@@ -63,9 +63,8 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
@@ -123,10 +122,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
 			//Afectar el almacen destino sumando los articulos que fueron agregados
-			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
 			params.put("consecutivo", consecutivo);

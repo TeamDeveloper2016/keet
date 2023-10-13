@@ -3246,6 +3246,35 @@
 				order by
 				  tc_mantic_ventas_detalles.registro				
 			</select>
+			<select id="vale">
+select
+	tc_keet_entregas_detalles.id_entrega_detalle as id_key,
+	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as razon_social,
+	tc_keet_entregas.registro as fecha,
+	tc_keet_entregas.consecutivo,
+	0 as total,
+	tc_keet_entregas_detalles.codigo as propio,
+	tc_keet_entregas_detalles.nombre,
+	tc_keet_entregas_detalles.cantidad,
+	0 as precio,
+	0 as impuestos,
+	0 as importe,
+  tc_keet_entregas.registro
+from 
+	tc_keet_entregas
+inner join
+	tc_keet_entregas_detalles on tc_keet_entregas.id_entrega= tc_keet_entregas_detalles.id_entrega
+inner join 
+  tr_mantic_empresa_personal on tc_keet_entregas.id_autoriza= tr_mantic_empresa_personal.id_empresa_persona
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
+where 
+	tc_keet_entregas.id_entrega= {idEntrega}
+group by
+  tc_keet_entregas_detalles.id_entrega_detalle 	
+order by
+	tc_keet_entregas_detalles.registro
+			</select>
 			<select id="devolucion">
 				select
 					tc_mantic_devoluciones_detalles.id_devolucion_detalle as id_key,

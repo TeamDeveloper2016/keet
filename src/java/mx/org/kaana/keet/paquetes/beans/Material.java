@@ -17,8 +17,6 @@ public class Material extends TcKeetPaquetesDetallesDto implements Serializable 
 
   private static final long serialVersionUID = 3518579943910403842L;
   
-  private String codigo;
-  private String nombre;
   private ESql sql;
 
   public Material() {
@@ -29,22 +27,6 @@ public class Material extends TcKeetPaquetesDetallesDto implements Serializable 
     super();
     this.setIdArticulo(idArticulo);
     this.sql= ESql.INSERT;
-  }
-
-  public String getCodigo() {
-    return codigo;
-  }
-
-  public void setCodigo(String codigo) {
-    this.codigo = codigo;
-  }
-  
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
   }
 
   public ESql getSql() {

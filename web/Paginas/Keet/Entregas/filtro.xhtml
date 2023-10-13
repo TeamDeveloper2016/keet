@@ -70,12 +70,12 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetEntregasFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-                  <p:outputLabel value="&lt;b&gt;#{row.nombreContrato}&lt;/b&gt; | Etapa: #{row.etapaContrato}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-orange"/>
+                  <p:outputLabel value="&lt;b&gt;#{row.nombreContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-orange"/>
+									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
+                  <p:outputLabel value="&lt;b&gt;Etapa:&lt;/b&gt;#{row.etapaContrato}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-orange"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<p:outputLabel value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
-									<p:outputLabel value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
-									<p:spacer style="display: #{row.termino eq '-' ? '' : 'none'}"/>
 								</p:panelGrid>								
 							</h:panelGrid>
 							<f:facet name="footer">

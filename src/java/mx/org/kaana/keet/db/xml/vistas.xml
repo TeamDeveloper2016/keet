@@ -218,12 +218,12 @@ where
 select      
   truncate(rand()*(-10000-1)+1, 0) as id_key,
   tc_keet_paquetes.id_paquete,
+  0 as cuantos,
   -1 as id_entrega,
   tc_keet_paquetes_detalles.id_articulo,
 	tc_keet_paquetes_detalles.codigo,
 	tc_keet_paquetes_detalles.nombre,
 	tc_keet_paquetes_detalles.cantidad,
-  ' ' as observaciones,
   2 as id_completo,
   tc_keet_paquetes_detalles.cantidad as total,
   -1 as id_recibe 
@@ -238,25 +238,6 @@ where
   and tc_keet_paquetes.id_sub_proceso= {idSubProceso}
 order by
   tc_keet_paquetes_detalles.id_paquete_detalle
-      </select>
-      <select id="entrega">
-select      
-  tc_keet_entregas_detalles.id_entrega_detalle as id_key,
-  tc_keet_paquetes.id_paquete,
-  tc_keet_entregas_detalles.*
-from      
-  tc_keet_paquetes
-inner join
-  tc_keet_entregas on tc_keet_paquetes.id_paquete= tc_keet_entregas.id_paquete
-inner join
-  tc_keet_entregas_detalles on tc_keet_entregas.id_entrega= tc_keet_entregas_detalles.id_entrega
-where 
-  tc_keet_paquetes.id_desarrollo= {idDesarrollo}
-  and tc_keet_paquetes.id_prototipo= {idPrototipo}
-  and tc_keet_paquetes.id_proceso= {idProceso}
-  and tc_keet_paquetes.id_sub_proceso= {idSubProceso}
-order by
-  tc_keet_entregas_detalles.id_entrega_detalle
       </select>
     </unit>  
 		<unit id="VistaPaquetesDto">

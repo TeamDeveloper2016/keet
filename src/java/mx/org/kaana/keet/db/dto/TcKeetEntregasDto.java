@@ -56,6 +56,8 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   private LocalDate fecha;
   @Column (name="id_almacen")
   private Long idAlmacen;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -64,11 +66,11 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetEntregasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, LocalDate.now(), -1L);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, LocalDate.now(), -1L, -1L);
     setKey(key);
   }
 
-  public TcKeetEntregasDto(String consecutivo, Long idAutoriza, Long idCompleto, Long idPaquete, Long idUsuario, Long idEntrega, Long idContratoLote, String observaciones, Long orden, Long idRecibe, Long ejercicio, LocalDate fecha, Long idAlmacen) {
+  public TcKeetEntregasDto(String consecutivo, Long idAutoriza, Long idCompleto, Long idPaquete, Long idUsuario, Long idEntrega, Long idContratoLote, String observaciones, Long orden, Long idRecibe, Long ejercicio, LocalDate fecha, Long idAlmacen, Long idEmpresa) {
     setConsecutivo(consecutivo);
     setIdAutoriza(idAutoriza);
     setIdCompleto(idCompleto);
@@ -82,6 +84,7 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setFecha(fecha);
     setIdAlmacen(idAlmacen);
+    setIdEmpresa(idEmpresa);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -189,6 +192,14 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
     this.idAlmacen = idAlmacen;
   }
 
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -238,6 +249,8 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -259,6 +272,7 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("fecha", getFecha());
 		regresar.put("idAlmacen", getIdAlmacen());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -266,7 +280,7 @@ public class TcKeetEntregasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getConsecutivo(), getIdAutoriza(), getIdCompleto(), getIdPaquete(), getIdUsuario(), getIdEntrega(), getIdContratoLote(), getObservaciones(), getOrden(), getIdRecibe(), getEjercicio(), getFecha(), getIdAlmacen(), getRegistro()
+      getConsecutivo(), getIdAutoriza(), getIdCompleto(), getIdPaquete(), getIdUsuario(), getIdEntrega(), getIdContratoLote(), getObservaciones(), getOrden(), getIdRecibe(), getEjercicio(), getFecha(), getIdAlmacen(), getIdEmpresa(), getRegistro()
     };
     return regresar;
   }

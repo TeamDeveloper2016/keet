@@ -154,9 +154,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetValesDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)

@@ -19,6 +19,7 @@ public class Material extends TcKeetEntregasDetallesDto implements Serializable 
   private static final long serialVersionUID = 3518579943910403842L;
 
   private Long idPaquete;  
+  private Double cuantos;  
   private ESql sql;
 
   public Material() {
@@ -37,6 +38,14 @@ public class Material extends TcKeetEntregasDetallesDto implements Serializable 
 
   public void setIdPaquete(Long idPaquete) {
     this.idPaquete = idPaquete;
+  }
+
+  public Double getCuantos() {
+    return cuantos;
+  }
+
+  public void setCuantos(Double cuantos) {
+    this.cuantos = cuantos;
   }
 
   public ESql getSql() {

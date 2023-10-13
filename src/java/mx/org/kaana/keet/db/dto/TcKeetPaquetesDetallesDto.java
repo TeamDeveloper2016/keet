@@ -41,6 +41,10 @@ public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_paquete_detalle")
   private Long idPaqueteDetalle;
+  @Column (name="codigo")
+  private String codigo;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -49,16 +53,18 @@ public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPaquetesDetallesDto(Long key) {
-    this(null, null, null, 1D, null, new Long(-1L));
+    this(null, null, null, 1D, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetPaquetesDetallesDto(Long idPaquete, Long idUsuario, String observaciones, Double cantidad, Long idArticulo, Long idPaqueteDetalle) {
+  public TcKeetPaquetesDetallesDto(Long idPaquete, Long idUsuario, String observaciones, Double cantidad, Long idArticulo, Long idPaqueteDetalle, String codigo, String nombre) {
     setIdPaquete(idPaquete);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
+    setCodigo(codigo);
+    setNombre(nombre);
     setIdPaqueteDetalle(idPaqueteDetalle);
     setRegistro(LocalDateTime.now());
   }
@@ -111,6 +117,22 @@ public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
     return idPaqueteDetalle;
   }
 
+  public String getCodigo() {
+    return codigo;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
+  
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+  
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -146,6 +168,10 @@ public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPaqueteDetalle());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -160,14 +186,16 @@ public class TcKeetPaquetesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idPaqueteDetalle", getIdPaqueteDetalle());
+		regresar.put("codigo", getCodigo());
+		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdPaquete(), getIdUsuario(), getObservaciones(), getCantidad(), getIdArticulo(), getIdPaqueteDetalle(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdPaquete(), getIdUsuario(), getObservaciones(), getCantidad(), getIdArticulo(), getIdPaqueteDetalle(), getCodigo(), getNombre(), getRegistro()
     };
     return regresar;
   }

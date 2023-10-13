@@ -173,23 +173,17 @@
 							</f:facet>
               <p:rowToggler/>
             </p:column>            
-						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-20" sortBy="#{paquete.consecutivo}">
+						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-10" sortBy="#{paquete.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Consecutivo"/>
 							</f:facet>
 							<h:outputText value="#{paquete['consecutivo']}"/>
 						</p:column>					
-						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-10" sortBy="#{paquete.codigo}">
+						<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-6" sortBy="#{paquete.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
 							<h:outputText value="#{paquete['codigo']}"/>
-						</p:column>					
-						<p:column styleClass="MarAuto Responsive janal-column-left janal-display-none" sortBy="#{paquete.autorizo}">
-							<f:facet name="header">
-								<h:outputText value="Autorizo"/>
-							</f:facet>
-							<h:outputText value="#{paquete['autorizo']}"/>
 						</p:column>					
 						<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{paquete.recibio}">
 							<f:facet name="header">
@@ -197,7 +191,7 @@
 							</f:facet>
 							<h:outputText value="#{paquete['recibio']}"/>
 						</p:column>					
-						<p:column styleClass="MarAuto Responsive janal-fix-10" sortBy="#{paquete.idCompleto}">
+						<p:column styleClass="MarAuto Responsive janal-fix-8" sortBy="#{paquete.idCompleto}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>

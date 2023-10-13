@@ -52,10 +52,8 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
-//			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-//			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			opcion      = EOpcionesResidente.PAQUETES;
-			idDesarrollo= 15L;
+			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));				

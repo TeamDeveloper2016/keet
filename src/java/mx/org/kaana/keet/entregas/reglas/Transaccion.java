@@ -1,10 +1,12 @@
 package mx.org.kaana.keet.entregas.reglas;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
@@ -14,9 +16,14 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetEntregasDetallesDto;
 import mx.org.kaana.keet.entregas.beans.Material;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
@@ -118,6 +125,7 @@ public class Transaccion extends IBaseTnx {
           case SELECT:
             break;
         } // switch
+        this.toAffectAlmacenes(sesion, this.orden.getEntrega().getConsecutivo(), item);
       } // for
       regresar= Boolean.TRUE;
     } // try
@@ -131,6 +139,7 @@ public class Transaccion extends IBaseTnx {
 		Siguiente regresar        = null;
 		Map<String, Object> params= new HashMap<>();
 		try {
+			params.put("idEmpresa", this.orden.getEntrega().getIdEmpresa());			
 			params.put("ejercicio", this.getCurrentYear());			
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetEntregasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
@@ -146,5 +155,72 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} 
-  
+ 
+  protected void toAffectAlmacenes(Session sesion, String consecutivo, Material item) throws Exception {
+		Map<String, Object> params= new HashMap<>();
+		double stock= 0D;
+		try {
+			params.put("idAlmacen", this.orden.getEntrega().getIdAlmacen());
+			params.put("idArticulo", item.getIdArticulo());
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.orden.getEntrega().getIdAlmacen(), -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toDouble("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toDouble("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), (item.getCantidad()- item.getCuantos()));
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				stock= ubicacion.getStock();
+				ubicacion.setStock(ubicacion.getStock()- (item.getCantidad()- item.getCuantos()));
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				8L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.orden.getEntrega().getIdAlmacen(), // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				(item.getCantidad()- item.getCuantos()), // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock- (item.getCantidad()- item.getCuantos())), // Double calculo
+				null // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
+			
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, 
+          new TcManticInventariosDto(
+            JsfBase.getIdUsuario(), 
+            this.orden.getEntrega().getIdAlmacen(), // idAlmacen
+            (item.getCantidad()- item.getCuantos()), // entrada
+            -1L, //idInventario
+            item.getIdArticulo(), // idArticulo
+            0D,  // inicial
+            (item.getCantidad()- item.getCuantos()), // stock
+            0D, // salida
+            new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
+            1L)); // idAutomatico
+			else {
+				inventario.setEntradas(inventario.getEntradas()- item.getCantidad());
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())- (item.getCantidad()- item.getCuantos()));
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
+
 }

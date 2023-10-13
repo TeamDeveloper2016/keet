@@ -106,7 +106,7 @@ select
 from      
   tc_keet_sub_procesos
 inner join
-  tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso
+  tc_keet_procesos on tc_keet_sub_procesos.id_proceso= tc_keet_procesos.id_proceso and tc_keet_procesos.id_proceso= {idProceso}  
 where 
   tc_keet_sub_procesos.id_sub_proceso not in (
     select 
@@ -221,8 +221,19 @@ select
 from 
   tc_keet_entregas
 where				  
-  ejercicio= {ejercicio}			
+  id_empresa= {idEmpresa}
+  and ejercicio= {ejercicio}			
 			</select>			
+      <select id="consecutivo">
+select      
+  tc_keet_entregas.id_entrega as id_key
+from      
+  tc_keet_entregas
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo = '{consecutivo}'
+      </select>
+      
     </unit>    
     <unit id="TcKeetEntregasDetallesDto">
       <select id="row">

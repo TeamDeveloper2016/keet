@@ -85,16 +85,16 @@
 						<p:panel header="#{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="lotes" title="Ver detalle del lote" action="#{keetEntregasConsulta.doConceptos('accion')}">
-									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Kit materiales" styleClass="manzana-lote-font #{row.idEntrega.toLong() eq -1? 'janal-color-red': row.idCompleto.toLong() eq 1? 'janal-color-green': 'janal-color-yellow'}" style="cursor: pointer;"/>
+									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Kit materiales" styleClass="manzana-lote-font #{row.idEntrega.toLong() eq -1? 'janal-color-red': row.idCompleto.toLong() eq 1? 'janal-color-green': 'janal-color-orange'}" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetEntregasConsulta.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
                   <p:outputLabel value="&lt;b&gt;#{row.nombreContrato}&lt;/b&gt; | Etapa: #{row.etapaContrato}" escape="false" styleClass="janal-color-orange"/>
-									<p:outputLabel value="&lt;b&gt;Recibio:&lt;/b&gt; #{row.recibio}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none' : ''}"/>
-									<p:spacer style="display: #{row.idEntrega.toLong() eq -1? '' : 'none'}"/>
-									<p:outputLabel value="&lt;b&gt;Estatus:&lt;/b&gt; #{row.idCompleto.toLong() eq 1? 'COMPLETO': 'PARCIAL'}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none' : ''}"/>
-									<p:spacer style="display: #{row.idEntrega.toLong() eq -1? '' : 'none'}"/>
-									<p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none' : ''}"/>
+									<p:outputLabel value="&lt;b&gt;Recibio:&lt;/b&gt; #{row.recibio}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none': ''}"/>
+									<p:spacer style="display: #{row.idEntrega.toLong() eq -1? '': 'none'}"/>
+									<p:outputLabel value="&lt;b&gt;Estatus:&lt;/b&gt; #{row.idCompleto.toLong() eq 1? 'COMPLETO': 'PARCIAL'}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none': ''}"/>
+									<p:spacer style="display: #{row.idEntrega.toLong() eq -1? '': 'none'}"/>
+									<p:outputLabel value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.fecha}" escape="false" style="display: #{row.idEntrega.toLong() eq -1? 'none': ''}"/>
 									<p:spacer style="display: #{row.idEntrega.toLong() eq -1? '': 'none'}"/>
 								</p:panelGrid>								
 							</h:panelGrid>

@@ -692,11 +692,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		
 	public String doMoveSection() {
 		UISelectEntity consecutivo= (UISelectEntity)this.attrs.get("consecutivo");
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -754,6 +753,24 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "del conteo");
+					break;
+				case 7: // RECEPCION
+					break;
+				case 8: // VALES DE ALMACEN
+					Long idEntrega= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcKeetEntregasDto", "consecutivo");
+          columns.remove(new Columna("total"));
+      		params.put("idEntrega", idEntrega);
+      		params.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "vale", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+    			if(documento!= null && !documento.isEmpty()) {
+            Double suma= 0D;
+            for (UISelectEntity item : documento) {
+              suma+= item.toDouble("total");
+            } // for
+   				 documento.get(0).get("total").setData(Numero.toRedondearSat(suma));
+          } // if
+          this.attrs.put("tipoDocumento", "vales de almacen");
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {
@@ -816,10 +833,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
   public void toLoadUbicaciones() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			this.tabPage= 4;
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("piso", EFormatoDinamicos.MAYUSCULAS));
