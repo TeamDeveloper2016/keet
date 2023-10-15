@@ -7,37 +7,6 @@
   </model>
 
   <dml>
-    <unit id="TcKeetDesarrollosAlmacenesDto">
-      <select id="row">
-select      
-  *
-from      
-  tc_keet_desarrollos_almacenes
-where 
-  {condicion} 
-      </select>
-      <select id="identically">
-select      
-  *
-from      
-  tc_keet_desarrollos_almacenes
-where      
-  id_desarrollo = {idDesarrollo} and id_almacen = {idAlmacen}
-      </select>
-      <select id="almacen">
-select      
-  tc_mantic_almacenes.id_almacen as id_key,
-  tc_mantic_almacenes.*
-from      
-  tc_keet_desarrollos_almacenes
-inner join
-  tc_mantic_almacenes on tc_keet_desarrollos_almacenes.id_almacen= tc_mantic_almacenes.id_almacen
-where      
-  tc_keet_desarrollos_almacenes.id_desarrollo= {idDesarrollo}
-order by
-  tc_mantic_almacenes.id_almacen
-      </select>
-    </unit>    
     <unit id="TcKeetProcesosDto">
       <select id="row">
 select      

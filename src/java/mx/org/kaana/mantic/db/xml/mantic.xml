@@ -4246,6 +4246,18 @@ where
         where      
           id_empresa in ({sucursales}) and clave= '{clave}'
       </select>
+<select id="desarrollo">
+select      
+  tc_mantic_almacenes.id_almacen as id_key,
+  tc_mantic_almacenes.*
+from      
+  tc_mantic_almacenes
+where      
+  id_principal= 1
+  and id_desarrollo= {idDesarrollo}
+order by
+  id_almacen
+      </select>      
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">
       <select id="row">

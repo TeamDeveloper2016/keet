@@ -163,8 +163,11 @@
 							</f:facet>
 							<h:outputText value="#{row['total']}"/>
 						</p:column>	
-						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-							<p:commandButton icon="fa fa-search" process="@this" update="detalle" action="#{keetNominasProveedores.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
+							<p:commandButton icon="fa fa-search" process="@this" update="detalle" action="#{keetNominasProveedores.doLoadDetalle(0)}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
+								<f:setPropertyActionListener value="#{row}" target="#{keetNominasProveedores.attrs.seleccionado}" />
+							</p:commandButton>
+							<p:commandButton icon="fa fa-list-ol" process="@this" update="detalle" action="#{keetNominasProveedores.doLoadDetalle(55)}" title="Desglose" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" rendered="false">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasProveedores.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>
@@ -196,7 +199,13 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasProveedores.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('NOMINA_SUBCONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
-						</f:facet>												
+						</f:facet>		
+						<p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.idNomina}">
+							<f:facet name="header">
+								<h:outputText value="Nomina"/>
+							</f:facet>
+							<h:outputText value="#{row['nomina']}"/>
+						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
 							<f:facet name="header">
 								<h:outputText value="Desarrollo"/>
@@ -209,19 +218,19 @@
 							</f:facet>
 							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}" rendered="false">
+						<p:column class="MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.etapa}">
 							<f:facet name="header">
 								<h:outputText value="Etapa"/>
 							</f:facet>
 							<h:outputText value="#{row['etapa']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.lote}">
+						<p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
 							<h:outputText value="#{row['lote']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
@@ -233,25 +242,31 @@
 							</f:facet>
 							<h:outputText value="#{row['concepto']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.fondoGarantia}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.anticipo}">
+							<f:facet name="header">
+								<h:outputText value="Anticipo"/>
+							</f:facet>
+							<h:outputText value="#{row['anticipo']}"/>
+						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.fondoGarantia}">
 							<f:facet name="header">
 								<h:outputText value="Fondo garantia"/>
 							</f:facet>
 							<h:outputText value="#{row['fondoGarantia']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.subtotal}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.subtotal}">
 							<f:facet name="header">
 								<h:outputText value="Subtotal"/>
 							</f:facet>
 							<h:outputText value="#{row['subtotal']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.iva}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.iva}">
 							<f:facet name="header">
 								<h:outputText value="IVA"/>
 							</f:facet>
 							<h:outputText value="#{row['iva']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
 							<f:facet name="header">
 								<h:outputText value="Total"/>
 							</f:facet>

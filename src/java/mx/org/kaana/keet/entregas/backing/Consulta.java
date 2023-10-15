@@ -160,6 +160,7 @@ public class Consulta extends IBaseReporteDestajos implements Serializable {
           regresar.append("(tt_keet_entregas.id_entrega is null) and ");
           break;
       } // switch
+    regresar.append("(tc_keet_proyectos.id_desarrollo=").append(this.attrs.get("idDesarrollo")).append(") and ");
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
   

@@ -112,11 +112,13 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("seleccionado", entity);
 				this.doLoad();
 				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")) && entity.toLong("idEmpresaPersona")!= -1L)
-					this.doLoadDetalle();
+					this.doLoadDetalle(0);
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idEmpresaPersona", new UISelectEntity(-1L));
 		  }
       this.idDepartamento= new String[] {};
+      // ESTE ES PARA CONTRALAR LA CANTIDAD DE SEMANAS A DESGLOZAR
+      this.attrs.put("factor", 0);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -265,7 +267,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
-				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+				sb.append("(tr_mantic_empresa_personal.id_empresa_persona=").append(this.attrs.get("idContratista")).append(" or tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(") and");
 		if(!Cadena.isVacio(this.attrs.get("netoMayor")))
 			sb.append("tc_keet_nominas_personas.neto>=").append(this.attrs.get("netoMayor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("netoMenor")))
@@ -407,6 +409,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
         paramsPpal.put(Constantes.SQL_CONDICION, "tc_keet_nominas_personas.id_nomina= ".concat(entity.toLong("idNomina").toString()).concat(" and tc_keet_nominas_personas.id_empresa_persona= ").concat(entity.toLong("idEmpresaPersona").toString()));      
         params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
         params.put("idNomina", entity.toLong("idNomina"));
+   			params.put("factor", this.attrs.get("factor"));
         params.put("nomina", entity.toString("nomina"));
         params.put("nombreCompleto", entity.toString("nombreCompleto"));
         params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
@@ -446,7 +449,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
     } // catch	
   } // doReporte 		
 	
-  public void doLoadDetalle() {
+  public void doLoadDetalle(Integer factor) {
     List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
@@ -463,7 +466,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			Long puesto= entity.toLong("idPuesto");
 			this.attrs.put("destajo", puesto== 6L);
 			if(puesto== 6L)
-			  this.doLoadDestajo();
+			  this.doLoadDestajo(factor);
 			this.attrs.put("nomina", true);
       UIBackingUtilities.scrollTo("detalle");
       this.attrs.put("incidencia", this.doCheckIncidente(entity));
@@ -476,14 +479,16 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoadDetalle
+  } 
 	
-  public void doLoadDestajo() {
+  public void doLoadDestajo(Integer factor) {
     List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
-			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+			params.put("sortOrder", "order by tc_keet_nominas.id_nomina desc, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+      this.attrs.put("factor", factor);
+			params.put("factor", factor);
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
@@ -492,6 +497,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idFiguraCorreo", entity.toLong("idPersona"));
 			this.attrs.put("figuraNombreCompletoCorreo", entity.toString("nombreCompleto"));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);

@@ -35,6 +35,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -357,9 +358,8 @@ public class Nomina implements Serializable {
 	
 	private Double toSobreSueldoEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
 		Double regresar           = 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
 			Value sobreSueldo= (Value)DaoFactory.getInstance().toField(this.sesion, "TrManticEmpresaPersonalDto", "sobreSueldo", params, "sobreSueldo");
       if(sobreSueldo!= null && sobreSueldo.getData()!= null) {
@@ -396,23 +396,14 @@ public class Nomina implements Serializable {
 					regresar-= agremiados.toDouble("salarios")== null? 0D: agremiados.toDouble("salarios");
 				} // if
         // UNA VEZ RESTADO LOS DESTAJOS MENOS LOS SALARIOS DE LOS CHALES SUMAR AL SUELDO BASE DEL TRABAJO EL RESTO
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-          case "cafu":
-            regresar-= empleado.getNeto();
-            break;
-          case "gylvi": 
-            // 12/10/2023 SON CONTRATISTAS QUE TAMBIEN SON EMPLEADOS Y TIENE UN SALARIO 
-            // POR LO GENERAL PARA EL CALCULO ES QUE EL DESTAJO-CHALES-SUELDO BASE ES EL COMPLMENTO DE PAGO
-            // SI LOS DESTAJOS, MENOS LOS SUELDOS DE LOS CHALES NO ALCANZA SE TEDRA QUE DESCONTAR DE LOS SUELDO DEL CONTRATISTA
-            // POR LO TANTO PARA GYLVI LA INDICACION ES QUE LOS CONTRATISTAS NO DEBEN DE TENER UN SALARIO BASE
-            break;
-          case "triana":
-            regresar-= empleado.getNeto();
-            break;
-          default:  
-            regresar-= empleado.getNeto();
-            break;
-        } // swtich
+        // 12/10/2023 SON CONTRATISTAS QUE TAMBIEN SON EMPLEADOS Y TIENE UN SALARIO 
+        // POR LO GENERAL PARA EL CALCULO ES QUE EL DESTAJO-CHALES-SUELDO BASE ES EL COMPLMENTO DE PAGO
+        // SI LOS DESTAJOS, MENOS LOS SUELDOS DE LOS CHALES NO ALCANZA SE TEDRA QUE DESCONTAR DE LOS SUELDO DEL CONTRATISTA
+        // POR LO TANTO PARA GYLVI LA INDICACION ES QUE LOS CONTRATISTAS NO DEBEN DE TENER UN SALARIO BASE
+          TrManticEmpresaPersonalDto contratista= (TrManticEmpresaPersonalDto)DaoFactory.getInstance().findById(TrManticEmpresaPersonalDto.class, empleado.getIdEmpresaPersona());
+        if(Objects.equals(contratista, null) || Objects.equals(contratista.getIdPorDia(), 2L))
+          regresar-= empleado.getNeto();
+        // SI ES CONTRATISTA Y ES EMPLEADO POR EL DÍA SE SUMA EL IMPORTE DE SUS DESTAJOS
 				this.toLookUpConcepto(particulares, ECodigosIncidentes.COMPLEMENTO, regresar);
 			} // if
 		} // try

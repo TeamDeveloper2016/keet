@@ -292,10 +292,9 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean registrarIncidencia(Session sesion, Long idEmpresaPersona, Long idTipoIncidencia, String observaciones) throws Exception{
 		Boolean regresar                = false;
-		TcManticIncidentesDto incidencia= null;
+		TcManticIncidentesDto incidencia= new TcManticIncidentesDto();
 		Siguiente consecutivo           = null;
 		try {
-			incidencia= new TcManticIncidentesDto();
 			consecutivo= this.toSiguiente(sesion);			
 			incidencia.setConsecutivo(consecutivo.getConsecutivo());			
 			incidencia.setOrden(consecutivo.getOrden());			
@@ -318,9 +317,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus, String observaciones) throws Exception{
 		boolean regresar                 = false;
-		TcManticIncidentesBitacoraDto dto= null;
+		TcManticIncidentesBitacoraDto dto= new TcManticIncidentesBitacoraDto();
 		try {
-			dto= new TcManticIncidentesBitacoraDto();
 			dto.setIdIncidente(idIncidente);
 			dto.setIdIncidenteEstatus(idEstatus);
 			dto.setIdUsuario(JsfBase.getIdUsuario());
@@ -355,9 +353,8 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                          = false;
 		TrManticEmpresaPersonalDto empresaPersonal= null;
 		TrManticEmpresaPersonalDto oldData        = null;
-		Map<String, Object>params                 = null;
+		Map<String, Object>params                 = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
 			if(empresaPersonal!= null && empresaPersonal.isValid()) {						
@@ -383,6 +380,7 @@ public class Transaccion extends IBaseTnx {
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				empresaPersonal.setIdNomina(this.persona.getEmpresaPersona().getIdNomina());
 				empresaPersonal.setIdSeguro(this.persona.getEmpresaPersona().getIdSeguro());
+				empresaPersonal.setIdPorDia(this.persona.getEmpresaPersona().getIdPorDia());
         this.toRegistrarDepartamentos(sesion, empresaPersonal.getIdEmpresaPersona());
 				this.bitacora(sesion, "Empleados", empresaPersonal);
 				oldData= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, empresaPersonal.getClass(), empresaPersonal.getKey());

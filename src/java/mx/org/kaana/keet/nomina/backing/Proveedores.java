@@ -59,7 +59,7 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
   @Override
   protected void init() {
     try {
-			initBase();
+			this.initBase();
 			this.attrs.put("idTipoFiguraCorreo", 2L);			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
@@ -76,9 +76,10 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("seleccionado", entity);
 				this.doLoad();
 				if(!Cadena.isVacio(entity.toLong("idProveedor")) && entity.toLong("idProveedor")!= -1L)
-					this.doLoadDetalle();
+					this.doLoadDetalle(0);
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idProveedor", new UISelectEntity(-1L));
+				this.attrs.put("factor", 0);
 		  }
     } // try
     catch (Exception e) {
@@ -89,12 +90,11 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina desc");
-      columns= new ArrayList<>();
       columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -113,11 +113,9 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
   } // doLoad
 
 	private void loadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -171,10 +169,9 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 	} // toPrepare
 
 	private void loadCatalogs() {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
 			this.loadEmpresas();
-			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
       this.attrs.put("estatus", new UISelectEntity(-1L));
@@ -195,11 +192,11 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 
   public String doExportar() {
 		String regresar           = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+			params.put("factor", this.attrs.get("factor"));
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
@@ -226,14 +223,13 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 	public void doReporte(String nombre, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
     Entity entity                = null;
 		try {		  
       reporteSeleccion= EReportes.valueOf(nombre);
       entity= (Entity)this.attrs.get("seleccionado");
       if(reporteSeleccion.equals(EReportes.NOMINA_SUBCONTRATISTA)){
-        params= new HashMap<>();    
         params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
         params.put("idNomina", entity.toLong("idNomina"));
         params.put("idProveedor", entity.toLong("idProveedor"));		
@@ -267,22 +263,25 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
     } // catch	
   } // doReporte 			
 	
-  public void doLoadDetalle() {
-    List<Columna> columns    = null;
+  public void doLoadDetalle(Integer factor) {
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
+      this.attrs.put("factor", factor);
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+			params.put("factor", factor);
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idFiguraCorreo", entity.toLong("idProveedor"));
 			this.attrs.put("figuraNombreCompletoCorreo", entity.toString("nombreCompleto"));
-      columns= new ArrayList<>();
-      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("iva", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "proveedor", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
@@ -296,5 +295,6 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad	
+  } 
+  
 }

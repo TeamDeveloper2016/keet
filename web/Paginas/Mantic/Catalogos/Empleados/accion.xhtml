@@ -159,8 +159,15 @@
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>	
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-                <p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                <p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doChangePuesto}" onstart="return janal.bloquear()" process="@this" update="@(.empleado)" oncomplete="janal.desbloquear()"/>
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
+								</p:selectOneMenu>																
+								<p:outputLabel for="idPorDia" value="Tiene sueldo por el día:" styleClass="empleado #{manticCatalogosPersonasAccion.registroPersona.idPuesto eq 6? '': 'janal-display-none'}"/>
+                <p:selectOneMenu id="idPorDia" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idPorDia}" styleClass="janal-wid-100-txt empleado #{manticCatalogosPersonasAccion.registroPersona.idPuesto eq 6? '': 'janal-display-none'}" panelStyleClass="janal-wid-99" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
                 <p:selectCheckboxMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.departamentos}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" converter="janal.convertidor.Entity" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">

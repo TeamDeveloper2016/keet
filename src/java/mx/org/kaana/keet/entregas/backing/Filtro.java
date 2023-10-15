@@ -135,6 +135,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		  regresar.append("(tc_keet_contratos.id_contrato= ").append(idContrato.getKey()).append(") and ");
     if(idCasa!= null && idCasa.getKey()> 0L)
       regresar.append("(tc_keet_contratos_lotes.id_contrato_lote=").append(idCasa.getKey()).append(") and ");
+    regresar.append("(tc_keet_proyectos.id_desarrollo=").append(this.attrs.get("idDesarrollo")).append(") and ");
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
   

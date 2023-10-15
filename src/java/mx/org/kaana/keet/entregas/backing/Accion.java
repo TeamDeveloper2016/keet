@@ -440,7 +440,7 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      this.attrs.put("almacenes", UIEntity.build("TcKeetDesarrollosAlmacenesDto", "almacen", params, columns));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "desarrollo", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
   	  this.orden.setIkAlmacen(UIBackingUtilities.toFirstKeySelectEntity(almacenes));
    } // try

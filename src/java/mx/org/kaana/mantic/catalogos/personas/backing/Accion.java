@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -1074,5 +1075,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Methods.clean(campos);
 			Methods.clean(params);
 		} // finally
-	} // loadBitacora
+	} 
+  
+  public void doChangePuesto() {
+    if(!Objects.equals(this.getRegistroPersona().getIdPuesto(), 6L))
+      this.getRegistroPersona().getEmpresaPersona().setIdPorDia(2L);
+  }
+  
 }

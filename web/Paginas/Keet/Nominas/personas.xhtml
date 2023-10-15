@@ -260,8 +260,11 @@
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
-						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
+							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle(0)}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
+								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
+							</p:commandButton>
+							<p:commandButton icon="fa fa-list-ol" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle(55)}" title="Desglose" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" rendered="false">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>
@@ -373,6 +376,12 @@
 							</f:facet>
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.idNomina}">
+							<f:facet name="header">
+								<h:outputText value="Nomina"/>
+							</f:facet>
+							<h:outputText value="#{row['nomina']}"/>
+						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
 							<f:facet name="header">
 								<h:outputText value="Desarrollo"/>
@@ -391,13 +400,13 @@
 							</f:facet>
 							<h:outputText value="#{row['etapa']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.lote}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
 							<h:outputText value="#{row['lote']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
@@ -409,13 +418,19 @@
 							</f:facet>
 							<h:outputText value="#{row['concepto']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.porcentaje}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.porcentaje}">
 							<f:facet name="header">
 								<h:outputText value="Porcentaje"/>
 							</f:facet>
 							<h:outputText value="#{row['porcentaje']} %"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.anticipo}">
+							<f:facet name="header">
+								<h:outputText value="Anticipo"/>
+							</f:facet>
+							<h:outputText value="#{row['anticipo']}"/>
+						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
 							<f:facet name="header">
 								<h:outputText value="Costo"/>
 							</f:facet>
