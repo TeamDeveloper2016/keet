@@ -63,17 +63,15 @@ public class CargaInformacionUsuarios {
    * @throws Exception
    */
   private void cargarPerfiles(boolean optionAll) throws Exception {
-    Map<String, Object> params= null;
-    List<Columna> formatos    = null;
+    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns     = new ArrayList<>();
     Entity entityDefault      = null;
     try {
-      formatos = new ArrayList<>();
-      params = new HashMap<>();
-      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
       entityDefault = new Entity();
-      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", params, formatos));
-      entityDefault.put("idKeyPerfil", new Value("idKeyPerfil", -1L, "id_Key_Perfil"));      
+      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", params, columns));
+      entityDefault.put("idKeyPerfil", new Value("idKey", -1L, "id_key"));      
       entityDefault.put("descripcion", new Value("descripcion", "TODOS", "descripcion")); 
       if (optionAll)
         this.criteriosBusqueda.getListaPerfiles().add(0, new UISelectEntity(entityDefault));
@@ -86,21 +84,19 @@ public class CargaInformacionUsuarios {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(formatos);
+      Methods.clean(columns);
     } // finally
   }
 	
   public void cargarPerfilesDisponible() throws Exception {
-    Map<String, Object> params= null;
-    List<Columna> formatos    = null;
+    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns     = new ArrayList<>();
     try {
-      formatos= new ArrayList<>();
-      params= new HashMap<>();
-      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
       params.put("idPersona", this.criteriosBusqueda.getPersona().getKey());			
       this.criteriosBusqueda.getListaPerfiles().clear();
-      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignadosPersona", params, formatos));      
+      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignadosPersona", params, columns));      
       if (!getCriteriosBusqueda().getListaPerfiles().isEmpty())
         getCriteriosBusqueda().setPerfil((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPerfiles()));
     } // try
@@ -109,7 +105,7 @@ public class CargaInformacionUsuarios {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(formatos);
+      Methods.clean(columns);
     } // finally
   } // cargarPerfilesDisponible
 
@@ -186,19 +182,18 @@ public class CargaInformacionUsuarios {
     try {
       idPerfiles  = recuperarIdPerfiles();
       condicionemp= condicionEmpleado("", getCriteriosBusqueda().getNombre().toUpperCase());
-      if (!Cadena.isVacio(condicionemp)) {
+      if (!Cadena.isVacio(condicionemp)) 
         regresar.append(condicionemp);
-        regresar.append(" and ");
-      } // if			
-      regresar.append(" tc_janal_perfiles.id_perfil in (");
-      regresar.append(idPerfiles);
-      regresar.append(")");
-    }// try
+      if(!idPerfiles.contains("-1")) {
+        regresar.append(" and tc_janal_perfiles.id_perfil in (");
+        regresar.append(idPerfiles).append(")");
+      } // if  
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
     return regresar.toString();
-  } // busquedaPorNombre
+  } 
 
   public String busquedaPorPerfil() throws Exception {
     String regresar = null;
@@ -209,12 +204,12 @@ public class CargaInformacionUsuarios {
       throw e;
     } //  catch
     return regresar;
-  }//busquedaPorOficina
+  } 
 
   public String busquedaPorPerfilNombre() {
-    StringBuilder regresar = new StringBuilder();
-    String idPerfiles = "";
-    String condicionEmp = "";
+    StringBuilder regresar= new StringBuilder();
+    String idPerfiles     = "";
+    String condicionEmp   = "";
     try {
       if (getCriteriosBusqueda().getPerfil().getKey().equals(-1L)) {
         idPerfiles = recuperarIdPerfiles();
@@ -237,5 +232,6 @@ public class CargaInformacionUsuarios {
       Error.mensaje(e);
     } //  catch
     return regresar.toString();
-  } // busquedaPorOficinaPerfilNombre 
+  } 
+  
 }

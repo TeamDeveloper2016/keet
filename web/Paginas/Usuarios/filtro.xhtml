@@ -16,7 +16,7 @@
         'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},      
         'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'tipoPerfil'  : {validaciones: 'libre', mascara: 'libre'}
+        'idPerfil'    : {validaciones: 'libre', mascara: 'libre'}
       };
 
       function mensajeConfirmacion() {
@@ -37,7 +37,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolUsuariosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{kajoolUsuariosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -46,20 +46,21 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="cuenta" value="Cuenta:"/>
-              <p:inputText id="cuenta" value="#{kajoolUsuariosFiltro.attrs.cuenta}" placeholder="ejemplo: alejandro.jimenez" styleClass="janal-wid-100-txt"/> 
+              <p:inputText id="cuenta" value="#{kajoolUsuariosFiltro.attrs.cuenta}" placeholder="Ej. alejandro.jimenez" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="nombre" value="Nombre completo:"/>
-              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" placeholder="ejemplo: ALEJANDRO JIMENEZ" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')" />              
-              <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
-              <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
-                <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" placeholder="Ej. alejandro jimenez" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')" />              
+              <p:outputLabel for="idPerfil" value="Perfil:"/>
+              <p:selectOneMenu id="idPerfil" value="#{kajoolUsuariosFiltro.attrs.idPerfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" process="@this" listener="#{kajoolUsuariosFiltro.doChangePerfil}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.perfiles}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
                 <p:column>
                   <h:outputText value="#{item.descripcion}"/>
                 </p:column>                
               </p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Ultimo ingreso inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="Ej. 01/01/2020" value="#{kajoolUsuariosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Ultimo ingreso termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" />
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="Ej. 01/01/2020" value="#{kajoolUsuariosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" />
               <p:outputLabel for="estatus" value="Estatus:"/>
               <p:selectOneMenu id="estatus" value="#{kajoolUsuariosFiltro.attrs.estatus}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItem itemValue="2" itemLabel="TODOS"/>

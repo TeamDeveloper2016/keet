@@ -301,7 +301,7 @@
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="movimientos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
               </h:commandLink>			
             </p:tab>
-            <p:tab title="Extras" rendered="false">
+            <p:tab title="Extras">
               <p:dataTable lazy="true" id="extras" widgetVar="kajoolExtras" var="row" reflow="true" value="#{keetNominasAccion.lazyExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.extra}" selectionMode="single" paginator="#{keetNominasAccion.lazyExtras.rowCount gt keetNominasAccion.lazyExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetNominasAccion.doRowColor(row)}">
                 <f:facet name="header">
                   <p:menuButton styleClass="lg-pantalla" value="Opciones">

@@ -121,7 +121,7 @@ public class Accion extends IBaseFilter implements Serializable {
 
 	public void doRowToggle(ToggleEvent event) {
 		try {
-			this.attrs.put("paquete", (Entity) event.getData());
+			this.attrs.put("consecutivo", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
 				this.toLoadDetalle();
 		} // try
@@ -134,15 +134,20 @@ public class Accion extends IBaseFilter implements Serializable {
 	private void toLoadDetalle() {
     List<Columna> columns    = new ArrayList<>();		
 		Map<String, Object>params= new HashMap<>();
+    Entity paquete           = (Entity)this.attrs.get("consecutivo");
     try {   
       params.put("sortOrder", "order by tc_keet_entregas_detalles.id_entrega_detalle");
-      params.put("idEntrega", ((Entity)this.attrs.get("paquete")).toLong("idEntrega"));
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyDetalle= new FormatLazyModel("VistaProcesosDto", "detalle", params, columns);
+      if(!Objects.equals(paquete, null)) {
+        params.put("idEntrega", paquete.toLong("idEntrega"));
+        columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+        this.lazyDetalle= new FormatLazyModel("VistaProcesosDto", "detalle", params, columns);
+      } // if
+      else
+        this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -230,8 +235,12 @@ public class Accion extends IBaseFilter implements Serializable {
       if(subProcesos!= null && !subProcesos.isEmpty()) 
         if((Boolean)this.attrs.get("idFirstSubProceso") || Objects.equals(subProcesos.size(), 1))
           this.attrs.put("idSubProceso", subProcesos.get(0).getValue());
-        else
+        else {
+          int index= subProcesos.indexOf(new UISelectItem((Long)this.attrs.get("idSubProceso")));
+          if(index< 0)
+            this.attrs.put("idSubProceso", -1L);
           this.attrs.put("idFirstSubProceso", Boolean.TRUE);          
+        } // else  
       else
         this.attrs.put("idSubProceso", -1L);
       this.doLoadMateriales();
@@ -430,7 +439,7 @@ public class Accion extends IBaseFilter implements Serializable {
   } 
  
   public String doRowStyle(Entity row) {
-    return Objects.equals(this.accion, EAccion.MODIFICAR) && !Objects.equals(row.toDouble("cantidad"), row.toDouble("total"))? "janal-tr-yellow": "";
+    return !Objects.equals(row.toDouble("cantidades"), row.toDouble("totales"))? "janal-tr-yellow": "";
   }
  
 	private void toLoadAlmacenes() {

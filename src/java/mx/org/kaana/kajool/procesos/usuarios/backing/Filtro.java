@@ -1,7 +1,6 @@
 package mx.org.kaana.kajool.procesos.usuarios.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,9 +86,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
 			if(JsfBase.getFlashAttribute("idPersonaProcess")!= null){
 				this.attrs.put("idPersonaProcess", JsfBase.getFlashAttribute("idPersonaProcess"));
-				this.doBuscar();
+				this.doLoad();
 				this.attrs.put("idPersonaProcess", null);
 			} // if
+      this.attrs.put("perfiles", this.criteriosBusqueda.getListaPerfiles());
+      this.attrs.put("idPerfil", UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPerfiles()));
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -98,10 +99,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -115,7 +115,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}	
 
   /**
@@ -123,19 +123,17 @@ public class Filtro extends IBaseFilter implements Serializable {
    * Recarga los datos segun la acicón que se ejecutó.
    */
   private void recargarTablaDatos(ETipoBusqueda tipoBusqueda) {
-    Map<String, Object> params    = null;
-    List<Columna> campos          = null;
+    Map<String, Object> params    = new HashMap<>();
+    List<Columna> columns         = new ArrayList<>();
     CargaInformacionUsuarios carga= null;
     try {
-      carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
-      params = new HashMap<>();
-      campos = new ArrayList<>();
-      campos.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("ultimoAcceso", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      carga = new CargaInformacionUsuarios(this.getCriteriosBusqueda());
+      columns.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("ultimoAcceso", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			StringBuilder sb= new StringBuilder();
       switch (tipoBusqueda) {
         case NOMBRE:
@@ -171,7 +169,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.delete(sb.length()- 4, sb.length());
 			params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres");
-      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -179,23 +177,21 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally
   }
 
   public void doActivarUsuario() {
-    Entity seleccionado            = null;
-    Transaccion  transaccion       = null;
-    TcJanalUsuariosDto usuario     = null;
+    Entity seleccionado       = (Entity) this.attrs.get("seleccionado");
+    Transaccion  transaccion  = null;
+    TcJanalUsuariosDto usuario= null;
     try {
-      seleccionado = (Entity) this.attrs.get("seleccionado");
       usuario = new TcJanalUsuariosDto(seleccionado.getKey());
       usuario.setActivo(seleccionado.toLong("activo").equals(ESTATUS_ACTIVO)?0L:ESTATUS_ACTIVO);
       transaccion = new Transaccion(usuario);
-      if (transaccion.ejecutar(EAccion.ACTIVAR)) {
+      if (transaccion.ejecutar(EAccion.ACTIVAR)) 
         JsfBase.addMessage(usuario.getActivo().equals(ESTATUS_ACTIVO) ? "Se activó el usuario con éxito." : "Se desactivó el usuario con éxito.");
-      }
-      doBuscar();
+      this.doLoad();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -242,13 +238,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public void doEliminar() {
-    Transaccion tx = null;
-    TcJanalUsuariosDto usuario = null;
-    Entity seleccionado = null;
-    Map<String, Object> params = null;
+    Transaccion tx            = null;
+    TcJanalUsuariosDto usuario= null;
+    Entity seleccionado       = null;
+    Map<String, Object> params= new HashMap<>();
     try {
       seleccionado = (Entity) this.attrs.get("seleccionado");
-      params = new HashMap<>();
       usuario = new TcJanalUsuariosDto(seleccionado.getKey());
       tx = new Transaccion(usuario);
       if (tx.ejecutar(EAccion.ELIMINAR)) {
@@ -271,10 +266,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    Entity seleccionado = (Entity)this.attrs.get("seleccionado");
     try {
-      //this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(seleccionado.getKey()));      
-      this.doBuscar();
+      if (Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L))
+        recargarTablaDatos(ETipoBusqueda.SIN_CONDICION);
+			else 
+        if (!Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) 
+          recargarTablaDatos(ETipoBusqueda.NOMBRE);
+        else 
+          recargarTablaDatos(Cadena.isVacio(this.criteriosBusqueda.getNombre()) ? ETipoBusqueda.PERFIL: ETipoBusqueda.TODOS);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -290,9 +289,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         JsfBase.setFlashAttribute("idUsuario", seleccionado.getKey());
         regresar = "delegar";
       } // if
-      else {
+      else 
         JsfBase.addMessage("Delegar usuario", "No tienes permisos para delegar a otro usuario", ETipoMensaje.ERROR);
-      }
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -320,26 +318,17 @@ public class Filtro extends IBaseFilter implements Serializable {
         JsfBase.addMessage("La cuenta del usuario ".concat(seleccionado.toString("cuenta")).concat(" ya fue resetada con exito."));      
       else 
         JsfBase.addMessage("Error", "No se puede resetar la contraseña del usuario", ETipoMensaje.ERROR);      
-    } // try // try
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessage("Error", "Ocurrió un error al resetear la contraseña del usuario".concat(e.getMessage()), ETipoMensaje.FATAL);
     } // catch
   }
-
-  private void doBuscar() {
-    try {
-      if (Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L))
-        recargarTablaDatos(ETipoBusqueda.SIN_CONDICION);
-			else 
-        if (!Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) 
-          recargarTablaDatos(ETipoBusqueda.NOMBRE);
-        else 
-          recargarTablaDatos(Cadena.isVacio(this.criteriosBusqueda.getNombre()) ? ETipoBusqueda.PERFIL : ETipoBusqueda.TODOS);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessage("Ocurrió un error en la busqueda de los usuarios", ETipoMensaje.ERROR);
-    } // catch
+ 
+  public void doChangePerfil() {
+    int index= this.criteriosBusqueda.getListaPerfiles().indexOf((UISelectEntity)this.attrs.get("idPerfil"));
+    if(index>= 0)
+      this.criteriosBusqueda.setPerfil(this.criteriosBusqueda.getListaPerfiles().get(index));
   }
+  
 }

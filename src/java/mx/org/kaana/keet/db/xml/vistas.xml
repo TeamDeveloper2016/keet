@@ -205,6 +205,8 @@ order by
       <select id="detalle">
 select
   tc_keet_entregas_detalles.id_entrega_detalle as id_key,
+  tc_keet_entregas_detalles.cantidad as cantidades,
+  tc_keet_entregas_detalles.total as totales,        
   tc_keet_entregas_detalles.*
 from        
   tc_keet_entregas

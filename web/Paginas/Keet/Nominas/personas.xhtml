@@ -260,11 +260,11 @@
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
-						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-80" exportable="false">
 							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle(0)}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
 							</p:commandButton>
-							<p:commandButton icon="fa fa-list-ol" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle(55)}" title="Desglose" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" rendered="false">
+							<p:commandButton icon="fa fa-list-ol" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle(55)}" title="Desglose" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>

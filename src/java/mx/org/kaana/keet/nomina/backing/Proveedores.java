@@ -159,7 +159,7 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 			sb.append("departamentos.id_departamentos like '%|").append(this.attrs.get("idDepartamento")).append("|%' and ");
 		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("(upper(tc_mantic_proveedores.razon_social, ' ', ifnull(tc_mantic_proveedores.nombre_comercial, ' '), ' ', ifnull(tc_mantic_proveedores.grupo, ' '))) regexp '.*").append(nombre).append(".*') and ");
+  		sb.append("(upper(concat(tc_mantic_proveedores.razon_social, ' ', ifnull(tc_mantic_proveedores.nombre_comercial, ' '), ' ', ifnull(tc_mantic_proveedores.grupo, ' '))) regexp '.*").append(nombre).append(".*') and ");
 		} // if
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

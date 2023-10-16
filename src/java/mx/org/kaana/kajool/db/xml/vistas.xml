@@ -1101,13 +1101,16 @@
 			</select>
 			<select id="jerarquiaMostrarAsignados">
 				select
-					tc_janal_perfiles.id_perfil id_key_perfil, tc_janal_perfiles.descripcion
+					tc_janal_perfiles.id_perfil as id_key, 
+          tc_janal_perfiles.descripcion
 				from
 					tr_janal_perfiles_jerarquias
 				inner join
 				  tc_janal_perfiles on tr_janal_perfiles_jerarquias.id_perfil_alta = tc_janal_perfiles.id_perfil
 				where
 					tr_janal_perfiles_jerarquias.id_perfil ={idPerfil}
+        group by
+          tc_janal_perfiles.id_perfil
 				order by
 					tr_janal_perfiles_jerarquias.orden
 			</select>
