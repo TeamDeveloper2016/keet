@@ -103,8 +103,8 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
       this.costoAnticipo= "$ 0.00";
   		opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			// opcion      = EOpcionesResidente.PROPUESTA;
-			// idDesarrollo= 3L;			
+//			opcion      = EOpcionesResidente.PROPUESTA;
+//			idDesarrollo= 7L;
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -131,10 +131,9 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-    List<Columna> columns    = null;		
+    List<Columna> columns    = new ArrayList<>();		
 		Map<String, Object>params= null;
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			params= new HashMap<>();
@@ -173,10 +172,9 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 	} // toLadCatalogos	
 	
 	private void toLoadContratos() {
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {      
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.build("VistaTableroDto", "contratos", params);
 			this.attrs.put("contratos", contratos);
@@ -194,12 +192,11 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadManzanas() {
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectEntity> manzanas= null;
     try {      
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
@@ -219,11 +216,10 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   
 	private void toLoadEspecialidades() {
 		List<UISelectItem>especialidades= null;
-		Map<String, Object>params       = null;
+		Map<String, Object>params       = new HashMap<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
@@ -246,16 +242,14 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 	
 	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
-		Map<String, Object>params   = null;
-		List<Columna> columns       = null;
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> columns       = new ArrayList<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idDepartamento", this.attrs.get("especialidad"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
 			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, columns);
@@ -281,11 +275,9 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 	} 
 	
   public void doLoadManzanas() {
-    List<UISelectEntity> contratos= null;    
-		UISelectEntity contrato       = null;
+    List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");    
+		UISelectEntity contrato       = (UISelectEntity)this.attrs.get("contrato");
     try {   
-			contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-			contrato = (UISelectEntity)this.attrs.get("contrato");
       int index= contratos.indexOf(contrato);
       if(index>= 0)
         this.attrs.put("contrato", contratos.get(index));
@@ -298,11 +290,9 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
   
 	public void doLoadDepartamentos() {
-    List<UISelectEntity> manzanas= null;    
-		UISelectEntity manzana       = null;
+    List<UISelectEntity> manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");    
+		UISelectEntity manzana       = (UISelectEntity)this.attrs.get("manzana");
     try {   
-			manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");
-			manzana = (UISelectEntity)this.attrs.get("manzana");
       int index= manzanas.indexOf(manzana);
       if(index>= 0)
         this.attrs.put("manzana", manzanas.get(index));
@@ -361,13 +351,11 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   
   public void doLoadCasas() {
 		Map<String, Object>params   = new HashMap<>();
-		List<UISelectEntity> figuras= null;
+		List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+		UISelectEntity figura       = (UISelectEntity)this.attrs.get("figura");
 		List<UISelectEntity> casas  = null;
-		UISelectEntity figura       = null;
 		String idXml                = null;
     try {   
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      figura = (UISelectEntity)this.attrs.get("figura");
       int index= figuras.indexOf(figura);
       if(index>= 0) {
 			  figura= figuras.get(index);
@@ -406,8 +394,8 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 	
   @Override
   public void doLoad() {
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
+		List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+		UISelectEntity figura       = (UISelectEntity)this.attrs.get("figura");
 		Map<String, Object>params   = new HashMap<>();
     List<Entity> casas          = null;
     List<Entity> rubros         = null;
@@ -415,8 +403,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 		String idXml                = null;
     String anterior             = "";
     try {
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      figura = (UISelectEntity)this.attrs.get("figura");
       int index= figuras.indexOf(figura);
       if(index>= 0) {
 			  figura= figuras.get(index);
@@ -549,7 +535,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   } // doCancelar		
 	
 	public void doDestajos() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
@@ -565,7 +551,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
         params.put("nomina", "PreNomina");
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-        columns= new ArrayList<>();
         columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
         columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -794,7 +779,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         regresar= "puntos".concat(Constantes.REDIRECIONAR);			
       } // if
       else 
-        JsfBase.addMessage("  Este concepto ya esta pagado, favor de verificarlo !", ETipoMensaje.ALERTA);
+        JsfBase.addMessage("Este concepto ya esta pagado, favor de verificarlo !", ETipoMensaje.ALERTA);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -53,7 +53,6 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
   @Override
   protected void init() {		
     EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
     try {
       if(JsfBase.getFlashAttribute("seleccionado")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
@@ -66,9 +65,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("claveEstacion", JsfBase.getFlashAttribute("claveEstacion"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
-			this.attrs.put("idDesarrollo", idDesarrollo);
+			this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
@@ -93,14 +91,14 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
+      Entity item= (Entity)this.attrs.get("seleccionadoPivote");
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(item.toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contratos", contrato);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(item.toString("idContratoLote")));
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
 		} // try
@@ -115,13 +113,11 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+		Map<String, Object>params= this.toPrepare();
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
-			params= this.toPrepare();
       params.put("importe", (Double)this.attrs.get("importe"));
       params.put("anticipo", (Double)this.attrs.get("anticipo"));
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                        
@@ -144,9 +140,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
   } // doLoad	
 	
 	private Map<String, Object> toPrepare() {
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();
 			regresar.put("idDepartamento", this.attrs.get("idDepartamento"));
 			regresar.put("idPuntoGrupo", ((Entity)this.attrs.get("concepto")).toLong("idPuntoGrupo"));
 			regresar.put("idEstacion", ((Entity)this.attrs.get("concepto")).getKey());
@@ -194,14 +189,11 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
   } // doAceptar
 	
 	private Revision loadRevision() {
-		Revision regresar  = null;
-		Entity figura      = null;
-		Entity seleccionado= null;
+		Revision regresar  = new Revision();
+		Entity figura      = (Entity)this.attrs.get("figura");
+		Entity seleccionado= (Entity)this.attrs.get("seleccionadoPivote");
 		Long idFigura      = -1L;
 		try {
-			regresar= new Revision();
-			figura  = (Entity)this.attrs.get("figura");
-			seleccionado= (Entity)this.attrs.get("seleccionadoPivote");
 			idFigura= figura.toLong("tipo").equals(1L)? seleccionado.toLong("idContratoLoteContratista"): seleccionado.toLong("idContratoLoteProveedor");
 			regresar.setIdFigura(idFigura);
 			regresar.setTipo(figura.toLong("tipo"));
@@ -226,7 +218,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     try {						
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
 			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
+			JsfBase.setFlashAttribute("idFigura", (Entity)this.attrs.get("figura"));									
 			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
+			JsfBase.setFlashAttribute("idDesarrolloProcess", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
@@ -242,6 +236,6 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
     return regresar;
-  } // doCancelar		
+  } 
   
 }

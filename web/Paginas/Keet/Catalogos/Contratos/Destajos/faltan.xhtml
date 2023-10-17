@@ -134,7 +134,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="2">
+          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="2">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Lotes asignados a los contratistas/subcontratistas" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">

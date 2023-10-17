@@ -20,7 +20,6 @@ import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -79,14 +78,14 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
+      Entity item= (Entity)this.attrs.get("seleccionadoPivote");
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(item.toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(item.toString("idContratoLote")));
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
 		} // try
@@ -101,11 +100,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+		Map<String, Object>params= this.toPrepare();
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
-			params = this.toPrepare();
-      columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -124,11 +121,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
   } // doLoad	
 	  
   public void doLoadExtras() {
-		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+		Map<String, Object>params= this.toPrepare();
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
-			params= this.toPrepare();
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
@@ -143,12 +138,11 @@ public class Conceptos extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally		
-  } // doLoad	
+  } 
 	
 	private Map<String, Object> toPrepare() {
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();
 			regresar.put("idDepartamento", this.attrs.get("idDepartamento"));
 			regresar.put("clave", toClaveEstacion());
 			regresar.put("estatus", EEstacionesEstatus.INICIAR.getKey() + "," + EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());			
@@ -161,9 +155,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	} // toPrepare
 	
 	private String toClaveEstacion() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {			
-			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("idEmpresa"), 3, '0', true));
 			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
@@ -282,6 +275,6 @@ public class Conceptos extends IBaseFilter implements Serializable {
         break;
       } // if        
 		return color;
-	} // toColor
+	} 
   
 }
