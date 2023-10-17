@@ -132,11 +132,10 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 
 	private void toLoadCatalogos() throws Exception {
     List<Columna> columns    = new ArrayList<>();		
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
       params.put("idTipoNomina", "1");
@@ -306,9 +305,8 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
   
 	private String toDomicilio() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {
-			regresar= new StringBuilder();
 			regresar.append(this.registroDesarrollo.getDomicilio().getCalle()).append(" , ");
 			if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroExterior()))
 				regresar.append(this.registroDesarrollo.getDomicilio().getNumeroExterior()).append(" , ");

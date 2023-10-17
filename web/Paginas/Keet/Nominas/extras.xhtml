@@ -178,7 +178,7 @@
             </p:column>	
             <p:column class="janal-wid-col-40 janal-column-center" exportable="false">	
               <f:facet name="header">
-                <p:outputLabel value=".." styleClass="xs-pantalla"/>
+                <p:outputLabel value="..." styleClass="xs-pantalla"/>
               </f:facet>
 							<p:commandButton icon="fa fa-arrows-alt" title="Rechazar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgRechazo').show();" update="dialogoRechazo" disabled="#{row.idEstacionEstatus eq '1'}">
                 <f:setPropertyActionListener value="#{row}" target="#{keetNominaExtras.attrs.extra}"/>

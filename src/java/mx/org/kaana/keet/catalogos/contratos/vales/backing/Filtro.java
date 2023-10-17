@@ -32,6 +32,7 @@ import org.primefaces.event.SelectEvent;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  
 	private FormatLazyModel lazyDetalle;  
 
   public FormatLazyModel getLazyDetalle() {
@@ -317,6 +318,6 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad	
+  } 
 	
 }

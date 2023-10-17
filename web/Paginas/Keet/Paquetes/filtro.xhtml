@@ -5,6 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Catálogo de paquete de materiales"/>
   <ui:define name="librerias">
@@ -70,15 +71,16 @@
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
-							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem icon="fa fa-plus" value="Agregar" action="#{keetPaquetesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>
-								<p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{keetPaquetesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:outputLabel value="Paquetes asignados a los prototipos" styleClass="janal-text-white janal-float-left"/>
+              <p:menuButton styleClass="lg-pantalla janal-float-right" value="Opciones">
+                <p:menuitem icon="fa fa-plus" value="Agregar" action="#{keetPaquetesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>
+                <p:separator/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+              <p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{keetPaquetesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-fix-3">
               <f:facet name="header">
@@ -115,7 +117,15 @@
 								<h:outputText value="Fecha"/>
 							</f:facet>
 							<h:outputText value="#{row['registro']}"/>
-						</p:column>					
+						</p:column>	
+            <p:column class="janal-wid-col-40 janal-column-center" exportable="false">	
+              <f:facet name="header">
+                <p:outputLabel value="..." styleClass="xs-pantalla"/>
+              </f:facet>
+              <p:commandButton icon="fa fa-copy" title="Clonar" onstart="return janal.bloquear()" actionListener="#{keetPaquetesFiltro.doLoadDetalle(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle)">
+                <f:setPropertyActionListener value="#{row}" target="#{keetPaquetesFiltro.attrs.clon}"/>
+              </p:commandButton>  
+						</p:column>
 						<f:facet name="footer">
 							Total [#{keetPaquetesFiltro.lazyModel== null? 0: keetPaquetesFiltro.lazyModel.rowCount}] registros
 						</f:facet>
@@ -126,6 +136,73 @@
             <p:separator/>					
             <p:menuitem icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 					</p:contextMenu>
+          <p:spacer/>
+          <p:selectOneMenu id="idColonia" value="#{keetPaquetesFiltro.attrs.idColonia}" styleClass="janal-wid-100-txt detalle #{keetPaquetesFiltro.attrs.detalle? '': 'janal-display-none'}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+            <p:ajax event="change" listener="#{keetPaquetesFiltro.doLoadDesarrollo}" process="@this" update="detalle" oncomplete="janal.refresh()"/>
+            <f:selectItems value="#{keetPaquetesFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+            <p:column headerText="Clave">
+              <h:outputText value="#{item.clave}"/>
+            </p:column>   
+            <p:column headerText="Nombre">
+              <h:outputText value="#{item.nombres}"/>
+            </p:column>   
+          </p:selectOneMenu>	
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetPaquetesFiltro.lazyDetalle}" styleClass="detalle #{keetPaquetesFiltro.attrs.detalle? '': 'janal-display-none'}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPaquetesFiltro.modelos}" paginator="#{keetPaquetesFiltro.lazyDetalle.rowCount gt keetPaquetesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header">
+              <div class="janal-float-left">
+                <p:outputLabel value="Prototipos disponibles | Replicar [ #{keetPaquetesFiltro.attrs.clon.proceso} - #{keetPaquetesFiltro.attrs.clon.subProceso} ]" styleClass="janal-text-white"/>
+              </div>  
+              <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+            </f:facet>									
+            <p:column selectionMode="multiple" styleClass="janal-col-20 janal-column-center"/>
+            <p:column class="janal-column-center MarAuto Responsive janal-fix-3">
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-fix-5" sortBy="#{row.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-fix-20" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>		
+						<p:column class="MarAuto Responsive" sortBy="#{row.prototipo}">
+							<f:facet name="header">
+								<h:outputText value="Prototipo"/>
+							</f:facet>
+							<h:outputText value="#{row['prototipo']}"/>
+						</p:column>														
+						<f:facet name="footer">
+							Total [#{keetPaquetesFiltro.lazyDetalle== null? 0: keetPaquetesFiltro.lazyDetalle.rowCount}] registros
+						</f:facet>
+					</p:dataTable>
+					<h:commandLink id="detallePdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>	
+          <hr class="ui-widget-content"/>
+          <div class="janal-line-button">
+            <div class="lg-pantalla">
+              <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" styleClass="detalle #{keetPaquetesFiltro.attrs.detalle? '': 'janal-display-none'}" accesskey="a" process="@form" update="tabla @(.detalle)" action="#{keetPaquetesFiltro.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+            </div>		
+            <div class="xs-pantalla">
+              <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" styleClass="detalle #{keetPaquetesFiltro.attrs.detalle? '': 'janal-display-none'}" process="@form" update="tabla @(.detalle)" action="#{keetPaquetesFiltro.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+            </div>		
+          </div>
         </div>
       </div>
     </div>	    		

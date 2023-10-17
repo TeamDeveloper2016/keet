@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.paquetes.beans.Paquete;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -35,7 +36,22 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793167742599428879L;
+  
+  private FormatLazyModel lazyDetalle;  
+  protected Entity[] modelos;	
 
+  public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}  
+
+  public Entity[] getModelos() {
+    return modelos;
+  }
+
+  public void setModelos(Entity[] modelos) {
+    this.modelos = modelos;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -46,6 +62,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  this.doLoad();
       this.toLoadDesarrollos();
       this.toLoadProcesos();
+			this.attrs.put("detalle", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -58,7 +75,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_paquetes.registro desc");
+      params.put("sortOrder", "order by tc_keet_prototipos.nombre, tc_keet_procesos.nombre, tc_keet_sub_procesos.nombre");
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("prototipo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("proceso", EFormatoDinamicos.MAYUSCULAS));
@@ -67,6 +84,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyModel = new FormatCustomLazy("VistaPaquetesDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idPaquete", null);
+			this.attrs.put("detalle", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -140,6 +158,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			List<UISelectEntity> desarrollos= UIEntity.build("VistaPaquetesDto", "desarrollos", params);
       this.attrs.put("desarrollos", desarrollos);
       this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+      this.attrs.put("idColonia", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
       this.doLoadPrototipos();
 		} // try
 		catch (Exception e) {
@@ -203,5 +222,77 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
   }    
+
+  public void doLoadDetalle(Entity row) {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+    try {
+      this.attrs.put("idColonia", new UISelectEntity(row.toLong("idDesarrollo")));
+			params.put("sortOrder", "order by tc_keet_prototipos.nombre");
+			params.put("idDesarrollo", row.toLong("idDesarrollo"));
+			params.put("idSubProceso", row.toLong("idSubProceso"));
+      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("prototipo", EFormatoDinamicos.MAYUSCULAS));
+      this.lazyDetalle= new FormatCustomLazy("VistaPaquetesDto", "modelos", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+			this.attrs.put("detalle", Boolean.TRUE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } 
+  
+  public void doLoadDesarrollo() {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+		Entity row               = (Entity)this.attrs.get("clon");
+    try {
+			params.put("sortOrder", "order by tc_keet_prototipos.nombre");
+			params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idColonia")).getKey());
+			params.put("idSubProceso", row.toLong("idSubProceso"));
+      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("prototipo", EFormatoDinamicos.MAYUSCULAS));
+      this.lazyDetalle= new FormatCustomLazy("VistaPaquetesDto", "modelos", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } 
+  
+  public String doAceptar() {  
+    Transaccion transaccion= null;
+    String regresar        = null;
+    try {			
+			Entity row= (Entity)this.attrs.get("clon");
+      if(!Objects.equals(this.modelos, null) && this.modelos.length> 0) {
+        transaccion = new Transaccion(row.toLong("idPaquete"), modelos);
+        if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
+          this.attrs.put("detalle", Boolean.FALSE);
+          this.doLoad();
+          JsfBase.addMessage("Se clonaron de forma correcta los paquetes !", ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al clonar el paquete", ETipoMensaje.ERROR);      			
+      } // if
+      else
+        JsfBase.addMessage("Se tiene que seleccionar un prototipo !", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } 
   
 }
