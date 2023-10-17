@@ -6019,7 +6019,8 @@ order by
             tc_keet_contratos_destajos_contratistas.costo as total,
             tc_keet_contratos_destajos_contratistas.registro,
             0 as fondo_garantia,
-            tc_keet_contratos_destajos_contratistas.id_nomina
+            tc_keet_contratos_destajos_contratistas.id_nomina,
+            tc_keet_contratos_destajos_contratistas.justificacion
           from
             tc_keet_contratos_destajos_contratistas 
           inner join
@@ -6085,7 +6086,8 @@ order by
             round((tc_keet_contratos_destajos_proveedores.costo* (1- (tc_mantic_proveedores.fondo_garantia/100)))* 1.16, 2) as total,
             tc_keet_contratos_destajos_proveedores.registro,
             tc_mantic_proveedores.fondo_garantia,
-            tc_keet_contratos_destajos_proveedores.id_nomina         
+            tc_keet_contratos_destajos_proveedores.id_nomina,
+            tc_keet_contratos_destajos_proveedores.justificacion      
           from
             tc_keet_contratos_destajos_proveedores 
           inner join
@@ -10356,8 +10358,9 @@ order by
 					tc_keet_estaciones.id_estacion_estatus,
 					tc_keet_estaciones.costo,
           tc_keet_estaciones.costo as importe,
+          ifnull(tc_keet_contratos_destajos_contratistas.justificacion, tc_keet_contratos_destajos_proveedores.justificacion) as justificacion,
 					principal.*
-				from(  
+				from (  
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  
 					tc_keet_puntos_grupos.id_departamento,

@@ -2,7 +2,7 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.beans;
 
 import java.io.Serializable;
 
-public class ConceptoExtra extends Revision implements Serializable{
+public class ConceptoExtra extends Revision implements Serializable {
 
 	private static final long serialVersionUID= 6911382265102010131L;	
 	private Long idEstacion;
@@ -10,24 +10,28 @@ public class ConceptoExtra extends Revision implements Serializable{
 	private Long idRubro;
 	private String descripcion;
 	private Double importe;
+	private String justificacion;
 
 	public ConceptoExtra() {
-		this(-1L, -1L, -1L, "", 0D);
+		this(-1L, -1L, -1L, "", 0D, "");
 	}
 
-	public ConceptoExtra(Long idEstacion, Long idPuntoGrupo, Long idRubro, String descripcion, Double importe) {
+	public ConceptoExtra(Long idEstacion, Long idPuntoGrupo, Long idRubro, String descripcion, Double importe, String justificacion) {
 		super();
-		this.idEstacion  = idEstacion;
-		this.idPuntoGrupo= idPuntoGrupo;
-		this.idRubro     = idRubro;
-		this.descripcion = descripcion;
-		this.importe     = importe;
+		this.idEstacion   = idEstacion;
+		this.idPuntoGrupo = idPuntoGrupo;
+		this.idRubro      = idRubro;
+		this.descripcion  = descripcion;
+		this.importe      = importe;
+    this.justificacion= justificacion;
 	}
 
+  @Override
 	public Long getIdEstacion() {
 		return idEstacion;
 	}
 
+  @Override
 	public void setIdEstacion(Long idEstacion) {
 		this.idEstacion = idEstacion;
 	}
@@ -63,4 +67,13 @@ public class ConceptoExtra extends Revision implements Serializable{
 	public void setIdRubro(Long idRubro) {
 		this.idRubro = idRubro;
 	}	
+
+  public String getJustificacion() {
+    return justificacion;
+  }
+
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
+  }
+  
 }

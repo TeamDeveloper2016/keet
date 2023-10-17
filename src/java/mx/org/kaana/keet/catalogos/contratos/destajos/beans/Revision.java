@@ -3,7 +3,7 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.beans;
 import java.io.Serializable;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 
-public class Revision implements Serializable{
+public class Revision implements Serializable {
 	
 	private static final long serialVersionUID = -6825011863521725695L;
 	private Long idFigura;

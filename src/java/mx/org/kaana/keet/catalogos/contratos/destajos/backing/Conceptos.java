@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -49,7 +50,16 @@ public class Conceptos extends IBaseFilter implements Serializable {
   protected void init() {		
     EOpcionesResidente opcion= null;
     try {
-			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "gylvi": 
+    			this.attrs.put("isAdmin", Boolean.TRUE);						
+          break;
+        case "cafu":
+        case "triana":
+        default:
+    			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
+          break;
+      } // swtich
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));

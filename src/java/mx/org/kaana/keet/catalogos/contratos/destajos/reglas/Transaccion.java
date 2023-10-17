@@ -716,6 +716,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setAnticipo(0D);
 			dto.setPorcentaje(100D);
 			dto.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+      dto.setJustificacion(this.conceptoExtra.getJustificacion());
 			idContratoDestajo= DaoFactory.getInstance().insert(sesion, dto);
 			this.conceptoExtra.setPuntosRevision(loadPuntosRevision(sesion, estacion.getIdEstacion()));
 			this.processPuntosContratistasExtras(sesion, JsfBase.getIdUsuario(), idContratoDestajo);
@@ -766,6 +767,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setAnticipo(0D);
 			dto.setPorcentaje(100D);
 			dto.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+      dto.setJustificacion(this.conceptoExtra.getJustificacion());
 			idContratoDestajo= DaoFactory.getInstance().insert(sesion, dto);
 			this.conceptoExtra.setPuntosRevision(this.loadPuntosRevision(sesion, estacion.getIdEstacion()));
 			this.processPuntosSubContratistasExtras(sesion, JsfBase.getIdUsuario(), idContratoDestajo);
@@ -826,12 +828,11 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= Boolean.FALSE;		
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
-		Map<String, Object>params   = null;
+		Map<String, Object>params   = new HashMap<>();
 		Double costo, anticipo      = 0D;
 		try {			
 			for(Entity puntoRevision: this.revision.getPuntosRevision()) {
 				this.factorAcumulado= 0D;
-				params= new HashMap<>();
 				params.put("idEstacion", this.revision.getIdEstacion());
 				params.put("idContratoLoteContratista", this.revision.getIdFigura());
 				params.put("idEstacionEstatus", EEstacionesEstatus.CANCELADO.getKey());
@@ -931,8 +932,8 @@ public class Transaccion extends IBaseTnx {
   }
  
   private Long toLoadUltimaNomina() throws Exception {
-    Long regresar= -1L;
-    Map<String, Object> params = new HashMap<>();
+    Long regresar             = -1L;
+    Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idTipoNomina", 1L);
       Entity ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);

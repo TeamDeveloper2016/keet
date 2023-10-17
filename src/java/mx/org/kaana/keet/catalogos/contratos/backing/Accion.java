@@ -117,11 +117,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.attrs.put("visualizar", Boolean.TRUE);	
           break;
         case "gylvi": 
-          this.attrs.put("visualizar", Boolean.FALSE);	
-          break;
         case "triana":
-          this.attrs.put("visualizar", Boolean.FALSE);	
-          break;
         default:
           this.attrs.put("visualizar", Boolean.FALSE);	
           break;

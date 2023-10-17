@@ -66,9 +66,8 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contratos", contrato);
@@ -88,11 +87,10 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params= null;
+		Map<String, Object>params= this.toPrepare();
     List<Columna> columns    = null;				
     Entity figura            = (Entity)this.attrs.get("figura");
     try {      			
-			params= this.toPrepare();
       params.put("idProveedor", -1L);
       params.put("idEmpresaPersona", -1L);
       if(figura!= null)

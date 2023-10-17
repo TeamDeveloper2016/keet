@@ -11,10 +11,11 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        				
-				'concepto'    : {validaciones: 'requerido', mascara: 'libre'},				
-				'especialidad': {validaciones: 'requerido', mascara: 'libre'},				
-				'descripcion' : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
-				'importe'     : {validaciones: 'requerido|diferente-a({"valor": 0})', mascara: 'libre'}
+				'concepto'     : {validaciones: 'requerido', mascara: 'libre'},				
+				'especialidad' : {validaciones: 'requerido', mascara: 'libre'},				
+				'descripcion'  : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
+				'importe'      : {validaciones: 'requerido|diferente-a({"valor": 0})', mascara: 'libre'},
+				'justificacion': {validaciones: '#{keetCatalogosContratosDestajosExtra.validacion}|texto', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };							
 			
 			function validateCriterios(){
@@ -26,7 +27,7 @@
 			
 		 function initLocalization() {												
 				if ("geolocation" in navigator) { 
-					navigator.geolocation.getCurrentPosition(function(position){ 						
+					navigator.geolocation.getCurrentPosition(function(position) {
 						asignaGeoreferencia(position.coords.latitude.toString(), position.coords.longitude.toString());												
 					}); // navigator
 				} // if
@@ -135,6 +136,8 @@
 					<p:inputText id="descripcion" value="#{keetCatalogosContratosDestajosExtra.attrs.descripcion}" styleClass="janal-wid-100-txt"/>
 					<p:outputLabel for="importe" value="Importe:"/>
 					<p:inputNumber id="importe" value="#{keetCatalogosContratosDestajosExtra.attrs.importe}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
+					<p:outputLabel for="justificacion" value="Justificación:"/>
+          <p:inputTextarea id="justificacion" value="#{keetCatalogosContratosDestajosExtra.attrs.justificacion}" rows="3" styleClass="janal-wid-100-txt"/>
 				</div>						        
       </div>
     </div>		           							

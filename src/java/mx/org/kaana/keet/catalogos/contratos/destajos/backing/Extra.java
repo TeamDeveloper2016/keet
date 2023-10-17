@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.ConceptoExtra;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.keet.comun.gps.Distance;
 import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
@@ -35,6 +36,20 @@ public class Extra extends IBaseAttribute implements Serializable {
 	private static final long serialVersionUID  = 4077399316243366480L;
 	private static final Long NIVEL_ESPECIALIDAD= 5L;
 		
+  public String getValidacion() {
+    String regresar= "libre";
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "gylvi": 
+        regresar= "requerido";					
+        break;
+      case "cafu":
+      case "triana":
+      default:
+        regresar= "libre";					
+        break;
+    } // swtich
+    return regresar;
+  }
   @PostConstruct
   @Override
   protected void init() {		
@@ -194,6 +209,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			regresar.setLongitud((String)this.attrs.get("longitud"));
 			regresar.setMetros(this.toDistance());
       regresar.setIdContratoLote(((Entity)this.attrs.get("seleccionadoPivote")).getKey());
+			regresar.setJustificacion((String)this.attrs.get("justificacion"));
 		} // try
 		catch (Exception e) {			
 			throw e;

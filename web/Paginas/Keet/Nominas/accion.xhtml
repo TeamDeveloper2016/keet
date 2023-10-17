@@ -335,7 +335,7 @@
                   </f:facet>
                   <h:outputText value="#{row['contrato']}"/>
                 </p:column>														
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.prototipo}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.prototipo}">
                   <f:facet name="header">
                     <h:outputText value="Prototipo"/>
                   </f:facet>
@@ -353,11 +353,24 @@
                   </f:facet>
                   <h:outputText value="#{row['codigo']}"/>
                 </p:column>	
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Concepto"/>
                   </f:facet>
                   <h:outputText value="#{row['nombre']}" styleClass="janal-color-black janal-font-bold"/>
+                  <i style="display: #{row['justificacion'].toString() eq null or row['justificacion'].toString() eq ''? 'none !important;': ''}" class="fa fa-fw fa-comments janal-color-orange janal-float-right" title="Justificación: #{row['justificacion']}"></i>
+                </p:column>
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.nombre}">
+                  <f:facet name="header">
+                    <h:outputText value="Concepto"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.justificacion}">
+                  <f:facet name="header">
+                    <h:outputText value="Justificación"/>
+                  </f:facet>
+                  <h:outputText value="#{row['justificacion']}"/>
                 </p:column>
                 <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
                   <f:facet name="header">

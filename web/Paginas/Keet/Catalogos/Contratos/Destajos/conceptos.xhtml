@@ -129,7 +129,7 @@
               </f:facet>
               <h:outputText value="#{row.anticipo}"/>
             </p:column>		                        
-						<p:column class="janal-wid-col-31 janal-column-center">
+						<p:column class="janal-wid-col-31 janal-column-center" exportable="false">
               <f:facet name="header">
                 <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>
               </f:facet>
@@ -141,7 +141,7 @@
               </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
 						</p:column>
-						<p:column class="janal-wid-col-116 janal-column-center">
+            <p:column class="janal-wid-col-116 janal-column-center" exportable="false">
               <f:facet name="header">
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
               </f:facet>
@@ -160,8 +160,13 @@
               </div>  
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>								
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>							
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>              
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
 						</f:facet>												
 						<p:column class="janal-wid-col-31 janal-column-center">              
               <f:facet name="header">
@@ -175,11 +180,24 @@
               </f:facet>
               <h:outputText value="#{row.codigo}" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Concepto(s) extras"/>
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo: #{row.costo}"/>
+              <i style="display: #{row['justificacion'].toString() eq null or row['justificacion'].toString() eq ''? 'none !important;': ''}" class="fa fa-fw fa-comments janal-color-orange janal-float-right" title="Justificación: #{row['justificacion']}"></i>
+            </p:column>		           
+            <p:column class="janal-column-left MarAuto Responsive janal-display-none janal-wid-1" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Concepto(s) extras"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold"/>
+            </p:column>		           
+            <p:column class="janal-column-left MarAuto Responsive janal-display-none janal-wid-1" sortBy="#{row.justificacion}">
+              <f:facet name="header">
+                <h:outputText value="Justificación"/>
+              </f:facet>
+              <h:outputText value="#{row.justificacion}" styleClass="janal-color-black FontBold"/>
             </p:column>		           
             <p:column class="janal-column-right MarAuto Responsive janal-wid-col-101" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
               <f:facet name="header">
@@ -187,13 +205,13 @@
               </f:facet>
               <h:outputText value="#{row.costo}"/>
             </p:column>		                        
-						<p:column class="janal-wid-col-31 janal-column-center">
+						<p:column class="janal-wid-col-31 janal-column-center" exportable="false">
               <f:facet name="header">
                 <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>
               </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
-						<p:column class="janal-wid-col-86 janal-column-center">							
+            <p:column class="janal-wid-col-86 janal-column-center" exportable="false">							
               <f:facet name="header">
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
               </f:facet>
@@ -204,6 +222,12 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModelExtras== null? 0: keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
+					<h:commandLink id="detallePdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tablaExtras" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaExtras" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>	
 				</div>						        
       </div>
     </div>		           							

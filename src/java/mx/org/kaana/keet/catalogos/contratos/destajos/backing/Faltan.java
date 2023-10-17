@@ -376,11 +376,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
             params.put("estatus", "5");	
             break;
           case "gylvi": 
-            params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
-            break;
           case "triana":
-            params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
-            break;
           default:
             params.put("estatus", "1, 2, 3, 4, 5, 6, 7, 8, 9, 10");	
             break;
