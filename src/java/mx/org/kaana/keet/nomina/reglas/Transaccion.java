@@ -1011,6 +1011,40 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		} // finally
 	} // toSendMail
 
+  public String toListadoNomina(Session sesion, Reporte jasper, Entity figura) throws Exception {    
+    String regresar              = null;
+		Map<String, Object>parametros= null;
+		EReportes seleccion          = null;    
+    Map<String, Object>params    = new HashMap<>();
+    Parametros comunes           = null;
+    try {
+      seleccion = EReportes.LISTADO_NOMINA_CALCULADA;  
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
+      parametros.put("REPORTE_TITULO", seleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));	
+      parametros.put("REPORTE_ICON", this.realPath.concat("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
+      params.put("sortOrder", "order by nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");
+      params.put(Constantes.SQL_CONDICION, "tc_keet_nominas.id_nomina= "+  this.idNomina+ " and tc_keet_contratos_personal.id_desarrollo="+ figura.toLong("idDesarrollo"));
+      String nombre= "LISTADO-"+ Cadena.rellenar(""+ figura.toString("desarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
+      jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
+      regresar= jasper.getAlias();
+      String name= this.realPath.concat(this.realPath.endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
+      File file= new File(name);
+      if(file.exists())
+        file.delete();
+    	jasper.toProcess(sesion, this.realPath, this.automatico);
+      LOG.info("Reporte generado: "+ name);
+    } // try
+    catch(Exception e) {
+     throw e;
+    } // catch	
+    return regresar;
+  }
+  
   public String toReporte(Session sesion, Reporte jasper, Entity figura) throws Exception {    
     String regresar              = null;
 		Map<String, Object>parametros= null;
@@ -1443,6 +1477,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Map<String, Object> params      = new HashMap<>();
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new LinkedHashMap<>();
+    Map<String, String> empleados   = new HashMap<>();
 		try {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
@@ -1457,11 +1492,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
             contratistas.put("Desarrollo_"+ item.toLong("idDesarrollo"), "*".concat(item.toString("desarrollo")).concat("*\\n"));
             idDesarrollo= item.toLong("idDesarrollo");
+            empleados.put(item.toString("desarrollo"), this.toListadoNomina(sesion, jasper, item));
           } // for
           contratistas.put(Cadena.rellenar(""+ item.toLong("idDesarrollo"), 3, '0', true)+ "-"+ item.toString("contratista"), this.toReporte(sesion, jasper, item));
         } // for
         // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE TODOS SUS CONTRATISTAS Y/O SUBCONTRATISTAS
-        this.toNotificarSupervisor(sesion, contratistas, items.get(0));
+        this.toNotificarSupervisor(sesion, contratistas, items.get(0), empleados);
       } // if  
     } // try
     catch (Exception e) {
@@ -1475,7 +1511,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // finally
   }
 
-  public void toNotificarSupervisor(Session sesion, Map<String, Object> contratistas, Entity periodo) throws Exception {		
+  public void toNotificarSupervisor(Session sesion, Map<String, Object> contratistas, Entity periodo, Map<String, String> empleados) throws Exception {		
 		Cafu cafu                     = null;
     Map<String, Object> residentes= new HashMap<>();
 		try {
@@ -1502,7 +1538,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         residentes.putAll(cuentas.all());
       else
         residentes.putAll(cuentas.admin());
-      cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.realPath);
+      cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.realPath, empleados);
       for (String residente: residentes.keySet()) {
         cafu.setNombre(Cadena.nombrePersona(residente));
         cafu.setCelular((String)residentes.get(residente));

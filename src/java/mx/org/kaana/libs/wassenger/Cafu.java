@@ -83,6 +83,7 @@ public final class Cafu implements Serializable {
   private String correo;
   private String realPath;
   private Long idUsuario;
+  private Map<String, String> empleados;
 
   public Cafu() {
     this("", "");  
@@ -122,6 +123,10 @@ public final class Cafu implements Serializable {
   }
   
   public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas, String desarrollo, String realPath) {
+    this(nombre, celular, nomina, periodo, ticket, fecha, contratistas, desarrollo, realPath, Collections.EMPTY_MAP);     
+  }
+  
+  public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas, String desarrollo, String realPath, Map<String, String> empleados) {
     this.nombre = Cadena.nombrePersona(nombre);
     this.celular= this.clean(celular);
     this.nomina = nomina;
@@ -132,6 +137,7 @@ public final class Cafu implements Serializable {
     this.contratistas= contratistas;
     this.desarrollo  = desarrollo;
     this.realPath    = realPath;
+    this.empleados   = empleados;
     this.prepare();
     this.empresa= Configuracion.getInstance().getEmpresa("titulo");
     this.url    = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
@@ -689,6 +695,10 @@ public final class Cafu implements Serializable {
             files.add(construccion.replaceAll("(\\*|\\\\n)+", "")+ Constantes.SEPARADOR+ this.realPath.concat("/".concat(EFormatos.PDF.toPath()).concat(name))+ Constantes.SEPARADOR+ key.replaceAll("( )+", "_")+ "_"+ name);
           } // else  
         } // for
+        if(!Objects.equals(this.empleados, null) && !this.empleados.isEmpty())
+          for (String key: this.empleados.keySet()) {
+            files.add(key+ Constantes.SEPARADOR+ this.realPath.concat("/".concat(EFormatos.PDF.toPath()).concat(this.empleados.get(key)))+ Constantes.SEPARADOR+ this.empleados.get(key));
+          } // for
         String concentado= this.toZipFile(files);
         params.put("numero", "_#_");
         params.put("reporte", concentado);

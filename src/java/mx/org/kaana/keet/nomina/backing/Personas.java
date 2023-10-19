@@ -422,7 +422,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       } // if
       else {
         params= this.toPrepare();	
-        params.put("sortOrder", "order by	nombre_empresa, nomina, desarrollo, puesto,  nombre_completo asc");
+        params.put("sortOrder", "order by	nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");
         Long idNominaEstatus= -1L;
         List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
         if(nominas!= null && !nominas.isEmpty()) {

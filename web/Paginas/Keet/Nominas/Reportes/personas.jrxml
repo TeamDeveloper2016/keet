@@ -113,7 +113,7 @@
 	<group name="GRUPO_NOMINA">
 		<groupExpression><![CDATA[$F{NOMINA}]]></groupExpression>
 		<groupHeader>
-			<band height="15">
+			<band height="16">
 				<frame>
 					<reportElement mode="Opaque" x="0" y="0" width="752" height="15" forecolor="#000000" backcolor="#000000" uuid="8ce2e949-5f80-46e3-8c14-a31405e67202"/>
 					<box>
@@ -130,14 +130,14 @@
 						<text><![CDATA[No.]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="230" y="0" width="140" height="15" forecolor="#FFFFFF" uuid="767a2532-c686-4c76-a31a-ea8a13f4790c"/>
+						<reportElement x="212" y="0" width="134" height="15" forecolor="#FFFFFF" uuid="767a2532-c686-4c76-a31a-ea8a13f4790c"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Puesto]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="369" y="0" width="173" height="15" forecolor="#FFFFFF" uuid="c3ca295f-d885-48aa-b066-ec35f5007c9a"/>
+						<reportElement x="346" y="0" width="196" height="15" forecolor="#FFFFFF" uuid="c3ca295f-d885-48aa-b066-ec35f5007c9a"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -151,28 +151,28 @@
 						<text><![CDATA[Percepciones]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="685" y="0" width="67" height="15" forecolor="#FFFFFF" uuid="238f0096-ba56-4511-8a0d-c838d41f6dd3"/>
+						<reportElement x="695" y="0" width="57" height="15" forecolor="#FFFFFF" uuid="238f0096-ba56-4511-8a0d-c838d41f6dd3"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Neto]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="619" y="0" width="66" height="15" forecolor="#FFFFFF" uuid="e3bdfc9d-0e43-4242-9dec-7749b0ffdee2"/>
+						<reportElement x="619" y="0" width="76" height="15" forecolor="#FFFFFF" uuid="e3bdfc9d-0e43-4242-9dec-7749b0ffdee2"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Deducciones]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="31" y="0" width="67" height="15" forecolor="#FFFFFF" uuid="1a6758e3-ce0e-42c2-9391-e072e899d7fe"/>
+						<reportElement x="31" y="0" width="47" height="15" forecolor="#FFFFFF" uuid="1a6758e3-ce0e-42c2-9391-e072e899d7fe"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Nómina]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="98" y="0" width="132" height="15" forecolor="#FFFFFF" uuid="d69bde4e-19a4-4dbd-a177-b7626e43a8e5"/>
+						<reportElement x="80" y="0" width="132" height="15" forecolor="#FFFFFF" uuid="d69bde4e-19a4-4dbd-a177-b7626e43a8e5"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -327,7 +327,7 @@
 			<frame>
 				<reportElement x="0" y="0" width="752" height="14" uuid="a8af0608-5c65-4a58-bb0b-8fb09ce401c6"/>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="230" y="0" width="140" height="14" uuid="31041b29-1112-42f6-8fe7-b56a4208bfcf"/>
+					<reportElement x="212" y="0" width="134" height="14" uuid="31041b29-1112-42f6-8fe7-b56a4208bfcf"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
@@ -341,7 +341,7 @@
 					<textFieldExpression><![CDATA[$F{PERCEPCIONES}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="369" y="0" width="173" height="14" uuid="5cf24e1d-b888-40a9-a34d-9d3f00b15e9c"/>
+					<reportElement x="346" y="0" width="196" height="14" uuid="5cf24e1d-b888-40a9-a34d-9d3f00b15e9c"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
@@ -355,28 +355,28 @@
 					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
 				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
-					<reportElement x="685" y="0" width="67" height="14" uuid="dbed6d0c-77da-4abe-a8ba-a15f0eae1f7f"/>
+					<reportElement x="695" y="0" width="57" height="14" uuid="dbed6d0c-77da-4abe-a8ba-a15f0eae1f7f"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NETO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
-					<reportElement x="619" y="0" width="66" height="14" uuid="f285cc63-4213-4585-80ac-8f22eb15d50b"/>
+					<reportElement x="619" y="0" width="76" height="14" uuid="f285cc63-4213-4585-80ac-8f22eb15d50b"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DEDUCCIONES}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="29" y="0" width="70" height="14" forecolor="#000000" uuid="325ee78a-f389-405d-b3ce-7752ec085be1"/>
+					<reportElement x="29" y="0" width="49" height="14" forecolor="#000000" uuid="325ee78a-f389-405d-b3ce-7752ec085be1"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NOMINA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="98" y="0" width="132" height="14" uuid="82ccee53-a037-4bc4-b8f5-b910f3553f61"/>
+					<reportElement x="80" y="0" width="132" height="14" uuid="82ccee53-a037-4bc4-b8f5-b910f3553f61"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
@@ -396,21 +396,21 @@
 			<textField>
 				<reportElement style="Column header" x="500" y="2" width="233" height="20" forecolor="#000000" uuid="67396b29-1e72-47fc-a3df-ab58f0a1cc2a"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="10" isBold="false"/>
+					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+"/"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy h.mm a">
 				<reportElement style="Column header" x="0" y="2" width="250" height="20" forecolor="#000000" uuid="6a459161-e212-4f65-b5c6-dd9fb9ec4c65"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="10" isBold="false"/>
+					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REPORT_SCRIPTLET}.getFecha(7,new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement style="Column header" x="733" y="2" width="18" height="20" forecolor="#000000" uuid="d58b80b6-4dca-4440-a806-8b7170e3d324"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="10" isBold="false"/>
+					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
