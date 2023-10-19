@@ -267,13 +267,26 @@ public abstract class IAdminArticulos implements Serializable {
 	public void toCheckTotales() {
 		// verificar que el importe total de la factura sea igual que el importe del detalle de sus articulos
     this.toCalculate();
-		double total  = this.totales.getTotal();
-		double detalle= 0D; 
+		// double total  = ;
+		double total     = 0D; 
+		double subTotal  = 0D; 
+		double impuestos = 0D; 
+		double extras    = 0D; 
+		double descuentos= 0D; 
 		for (Articulo item : this.articulos) {
-			detalle= Numero.toRedondear(detalle+ item.getImporte());
+			total     = Numero.toRedondear(total+ item.getImporte());
+			subTotal  = Numero.toRedondear(subTotal+ item.getSubTotal());
+			impuestos = Numero.toRedondear(impuestos+ item.getImpuestos());
+			extras    = Numero.toRedondear(extras+ item.getExcedentes());
+			descuentos= Numero.toRedondear(descuentos+ item.getDescuentos());
 		} // for
-		if(!Numero.toTruncate(total,  1).equals(Numero.toTruncate(detalle, 1))) {
-			LOG.warn("Diferencias en los importes del documento ["+ this.getClass().getSimpleName()+ "] id: "+ this.getOrden().getKey()+ " verificar situacion, total ["+ total+ "] detalle["+ detalle+ "]");
+		if(!Numero.toTruncate(this.totales.getTotal(),  1).equals(Numero.toTruncate(total, 1))) {
+      this.getTotales().setTotal(total);
+      this.getTotales().setSubTotal(subTotal);
+      this.getTotales().setIva(impuestos);
+      this.getTotales().setExtra(extras);
+      this.getTotales().setDescuento(descuentos);
+			LOG.warn("Diferencias en los importes del documento ["+ this.getClass().getSimpleName()+ "] id: "+ this.getOrden().getKey()+ " verificar situacion, total ["+ total+ "] detalle["+ total+ "]");
 			throw new KajoolBaseException("Por favor verifique que los importes sean correctos y vuelva a guardar el documento !");	
 		} // if
 	}

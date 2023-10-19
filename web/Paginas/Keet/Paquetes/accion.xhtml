@@ -61,7 +61,7 @@
               <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-97, janal-column-center janal-fix-3">
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
                   <p:outputLabel for="idArticulo" value="Articulo:"/>
-                  <p:autoComplete id="idArticulo" placeholder="Ej. VARILLA 1/2" var="codigo" itemLabel="#{codigo.propio} | #{codigo.nombre}" inputStyleClass="janal-wid-100-txt adicional" itemValue="#{codigo}" value="#{keetPaquetesAccion.attrs.seleccionado}" completeMethod="#{keetPaquetesAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt adicional">
+                  <p:autoComplete id="idArticulo" placeholder="Ej. VARILLA 1/2" var="codigo" itemLabel="#{codigo.propio} | #{codigo.nombre}" inputStyleClass="janal-wid-100-txt adicional" itemValue="#{codigo}" value="#{keetPaquetesAccion.attrs.seleccionado}" completeMethod="#{keetPaquetesAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="30" styleClass="janal-wid-100-txt adicional">
                     <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetPaquetesAccion.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
                     <f:facet name="itemtip">
                       <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

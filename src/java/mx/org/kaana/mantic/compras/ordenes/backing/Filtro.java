@@ -198,19 +198,28 @@ public class Filtro extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+    Map<String, Object> params = new HashMap<>();
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idOrdenCompra")!= null) 
+      if(this.attrs.get("idOrdenCompra")!= null) {
+        params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+        Entity item= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "control", params);
+        if(item!= null && !item.isEmpty()) 
+          UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'La orden de compra se guardo de forma incorrecta !'}], 'error');"); 
 			  this.doLoad();
+      } // if  
       this.attrs.put("activa", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
   } // init
  
   @Override

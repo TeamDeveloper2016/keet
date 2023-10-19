@@ -159,16 +159,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doLoadPrototipos
 	
 	private void loadPrototipos() {
+    Map<String, Object> params= new HashMap<>();
 	  try {
-			this.attrs.put("idCliente", ((TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosDto.class, this.contrato.getContrato().getIdProyecto())).getIdCliente());
-      this.prototipos= UISelect.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			params.put("idCliente", ((TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosDto.class, this.contrato.getContrato().getIdProyecto())).getIdCliente());
+      this.prototipos= UISelect.seleccione("TcKeetPrototiposDto", "byCliente", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.contrato.getContrato().validaPrototipos(this.prototipos);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doLoadPrototipos
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
 
   public void doLoad() {
     try {

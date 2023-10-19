@@ -266,6 +266,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         query= query.substring(1);
       } // if  
 			String codigo= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+      codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			

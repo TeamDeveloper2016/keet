@@ -195,13 +195,13 @@ public class Contrato extends TcKeetContratosDto {
 	} // doAddLote
 	
 	public boolean validaPrototipos(List<UISelectItem> lista) throws Exception{
-		boolean regresar= true;
+		boolean regresar= Boolean.TRUE;
 		try {
 		  for(Lote item: this.lotes) {
 				if(!lista.contains(new UISelectItem(item.getIdPrototipo()))){
 					this.loteSeleccion= item;
 					this.doRemoveLote();
-					regresar= false;
+					regresar= Boolean.FALSE;
 				} // if
 			} // for
 		} // try
