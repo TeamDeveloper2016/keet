@@ -23,8 +23,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_nominas_contratos_costos")
-public class TcNominasContratosCostosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_nominas_contratos_costos")
+public class TcKeetNominasContratosCostosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="por_obra")
@@ -50,16 +50,16 @@ public class TcNominasContratosCostosDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcNominasContratosCostosDto() {
+  public TcKeetNominasContratosCostosDto() {
     this(new Long(-1L));
   }
 
-  public TcNominasContratosCostosDto(Long key) {
+  public TcKeetNominasContratosCostosDto(Long key) {
     this(0D, 0D, null, 0D, null, 0D, new Long(-1L), 0D, null);
     setKey(key);
   }
 
-  public TcNominasContratosCostosDto(Double porObra, Double total, Long idUsuario, Double porcentajeDia, Long idContrato, Double porDia, Long idNominaContratoCosto, Double porcentajeObra, Long idNomina) {
+  public TcKeetNominasContratosCostosDto(Double porObra, Double total, Long idUsuario, Double porcentajeDia, Long idContrato, Double porDia, Long idNominaContratoCosto, Double porcentajeObra, Long idNomina) {
     setPorObra(porObra);
     setTotal(total);
     setIdUsuario(idUsuario);
@@ -238,7 +238,7 @@ public class TcNominasContratosCostosDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcNominasContratosCostosDto.class;
+    return TcKeetNominasContratosCostosDto.class;
   }
 
   @Override
@@ -248,16 +248,13 @@ public class TcNominasContratosCostosDto implements IBaseDto, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
-    final TcNominasContratosCostosDto other = (TcNominasContratosCostosDto) obj;
-    if (getIdNominaContratoCosto() != other.idNominaContratoCosto && (getIdNominaContratoCosto() == null || !getIdNominaContratoCosto().equals(other.idNominaContratoCosto))) {
+    final TcKeetNominasContratosCostosDto other = (TcKeetNominasContratosCostosDto) obj;
+    if (getIdNominaContratoCosto() != other.idNominaContratoCosto && (getIdNominaContratoCosto() == null || !getIdNominaContratoCosto().equals(other.idNominaContratoCosto))) 
       return false;
-    }
     return true;
   }
 

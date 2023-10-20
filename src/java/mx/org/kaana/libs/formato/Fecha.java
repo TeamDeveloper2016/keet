@@ -54,6 +54,8 @@ public class Fecha {
   public static final int DIA_FECHA = 25;
   public static final int DIA_CORTO_FECHA = 26;
   public static final int DIA_FECHA_CORTA = 27;
+  public static final int CODIGO_SEGURIDAD = 28;
+  
 
 	protected Fecha (){
 	}
@@ -219,6 +221,9 @@ public class Fecha {
         fecha =
 					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))+ ", "+
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(0, 4));
+        break;
+      case CODIGO_SEGURIDAD: // ddhhmmss  03122633 202109121448580
+        fecha = fecha.substring(6, 8).concat(fecha.substring(8,10)).concat(fecha.substring(10,12)).concat(fecha.substring(12,14));
         break;
       } // switch
     }

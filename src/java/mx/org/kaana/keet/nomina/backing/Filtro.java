@@ -729,7 +729,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 3L);
         if(nominas!= null && nominas.size()> 0) {
           params.put("idNomina", nominas.get(1).toLong("idNomina"));
-          Entity nomina= (Entity)DaoFactory.getInstance().toEntity("TcNominasContratosCostosDto", "existe", params);
+          Entity nomina= (Entity)DaoFactory.getInstance().toEntity("TcKeetNominasContratosCostosDto", "existe", params);
           if(nomina== null || Objects.equals(nomina.toLong("total"), 0L)) {
             JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nominas/filtro");
             JsfBase.setFlashAttribute("idNomina", nominas.get(1).toLong("idNomina"));

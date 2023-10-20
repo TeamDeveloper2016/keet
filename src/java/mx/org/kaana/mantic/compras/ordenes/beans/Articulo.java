@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.keet.db.dto.TcKeetBoletasDetallesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -813,7 +814,22 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad()- this.getSolicitados() // Double diferencia
    	);
 	}
-	
+
+	public TcKeetBoletasDetallesDto toBoletaDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al vale de almacen");
+		return new TcKeetBoletasDetallesDto(
+      this.getPropio(), // String codigo, 
+      this.getImporte(), // Double precio, 
+      this.getCosto(), // Double costo, 
+      this.getCantidad(), // Double cantidad, 
+      -1L, // Long idBoleta, 
+      this.getIdArticulo(), // Long idArticulo, 
+      this.getNombre(), // String nombre, 
+      this.getIdComodin() // Long idBoletaDetalle                
+		);
+	}
+  
 	public UISelectEntity toUISelectEntity() {
 		UISelectEntity regresar= new UISelectEntity(this.getIdArticulo());
 		Map<String, Object> map= this.toMap();

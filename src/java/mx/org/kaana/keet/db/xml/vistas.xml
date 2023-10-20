@@ -4,6 +4,105 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaBoletasDto">
+      <select id="folio">
+select 
+  tc_keet_boletas.id_boleta as id_key,
+  tc_keet_boletas.consecutivo,
+  concat(tc_mantic_empresas.clave, '-', tc_keet_boletas.consecutivo) as codigo_barra,
+  tc_keet_boletas.registro,
+  tc_keet_boletas_detalles.*,
+  tc_keet_boletas_detalles.precio,
+  tc_mantic_personas.cuenta,
+  tc_keet_boletas.id_boleta_estatus,
+  'VALE DE ALMACEN' as tipo_venta,
+  'CONSECUTIVO' as leyenda_venta,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as entregado,
+  concat(tt_mantic_personas.nombres, ' ', tt_mantic_personas.paterno, ' ', tt_mantic_personas.materno) as usuario,
+  tc_keet_boletas.observaciones
+from 
+  tc_keet_boletas 
+inner join 
+  tc_keet_boletas_detalles on tc_keet_boletas.id_boleta= tc_keet_boletas_detalles.id_boleta
+inner join 
+  tc_keet_boletas_estatus on tc_keet_boletas.id_boleta_estatus= tc_keet_boletas_estatus.id_boleta_estatus
+inner join				
+  tc_mantic_empresas on tc_keet_boletas.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tr_mantic_empresa_personal on tc_keet_boletas.id_solicito= tr_mantic_empresa_personal.id_empresa_persona
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
+inner join 
+  tc_janal_usuarios on tc_keet_boletas.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas as tt_mantic_personas on tt_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+where
+  tc_keet_boletas.id_boleta= {idBoleta}
+group by
+  tc_keet_boletas.id_boleta,
+  tc_keet_boletas_detalles.id_boleta_detalle
+order by 
+  tc_keet_boletas.id_boleta,
+  tc_keet_boletas_detalles.id_boleta_detalle asc
+      </select>
+      <select id="lazy">
+select
+  tc_keet_boletas.id_boleta as id_key,
+  tc_keet_boletas.id_boleta,
+  tc_keet_boletas.id_empresa,  
+  tc_mantic_empresas.nombre as empresa,  
+  tc_keet_boletas.consecutivo,  													
+  tc_mantic_almacenes.nombre as almacen,
+  tc_keet_boletas.id_boleta_estatus,
+  tc_keet_boletas_estatus.nombre as estatus,
+  tc_keet_boletas_estatus.estatus_asociados, 
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  count(tc_keet_boletas_detalles.id_boleta_detalle) as articulos,
+  tc_keet_boletas.registro
+from 
+  tc_keet_boletas						
+left join 
+  tc_keet_boletas_detalles on tc_keet_boletas.id_boleta = tc_keet_boletas_detalles.id_boleta
+inner join 
+  tc_mantic_empresas on tc_keet_boletas.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_boletas_estatus on tc_keet_boletas.id_boleta_estatus=tc_keet_boletas_estatus.id_boleta_estatus
+inner join 
+  tc_mantic_almacenes on tc_keet_boletas.id_almacen= tc_mantic_almacenes.id_almacen
+inner join 
+  tr_mantic_empresa_personal on tc_keet_boletas.id_solicito= tr_mantic_empresa_personal.id_empresa_persona
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
+where
+  tc_keet_boletas.id_empresa in ({idEmpresa})
+group by 
+  tc_keet_boletas.id_boleta
+{sortOrder}
+      </select>
+      <select id="detalle">
+select      
+  tc_keet_boletas_detalles.id_boleta_detalle as id_comodin,
+  tc_keet_boletas_detalles.id_boleta_detalle,
+  tc_keet_boletas_detalles.id_boleta,
+  tc_keet_boletas_detalles.id_articulo,
+  ifnull(tc_keet_boletas_detalles.codigo, tc_mantic_articulos_codigos.codigo) as codigo,
+  tc_keet_boletas_detalles.nombre,
+  tc_keet_boletas_detalles.cantidad,
+  tc_keet_boletas_detalles.costo,
+  tc_keet_boletas_detalles.precio,
+  tc_keet_boletas_detalles.registro
+from      
+  tc_keet_boletas_detalles
+inner join
+  tc_mantic_articulos on tc_keet_boletas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+left join
+  tc_mantic_articulos_codigos on tc_keet_boletas_detalles.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where      
+  tc_keet_boletas_detalles.id_boleta = {idBoleta}
+order by
+  tc_keet_boletas_detalles.registro
+      </select>
+    </unit>      
 		<unit id="VistaProcesosDto">
       <select id="lazy">
 select
@@ -778,18 +877,18 @@ order by
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
           tc_keet_contratos.etapa,
-          tc_nominas_contratos_costos.porcentaje_dia,
-          tc_nominas_contratos_costos.porcentaje_obra,
-          sum(tc_nominas_contratos_costos.por_dia) as por_dia,
-          sum(tc_nominas_contratos_costos.por_obra) as por_obra,
-          sum(tc_nominas_contratos_costos.total) as total,
+          tc_keet_nominas_contratos_costos.porcentaje_dia,
+          tc_keet_nominas_contratos_costos.porcentaje_obra,
+          sum(tc_keet_nominas_contratos_costos.por_dia) as por_dia,
+          sum(tc_keet_nominas_contratos_costos.por_obra) as por_obra,
+          sum(tc_keet_nominas_contratos_costos.total) as total,
           tc_keet_contratos.por_el_dia,
-          (tc_keet_contratos.por_el_dia- sum(tc_nominas_contratos_costos.total)) as diferencia,        
-          ifnull((tc_keet_contratos.por_el_dia- sum(tc_nominas_contratos_costos.total)), 0) as costos        
+          (tc_keet_contratos.por_el_dia- sum(tc_keet_nominas_contratos_costos.total)) as diferencia,        
+          ifnull((tc_keet_contratos.por_el_dia- sum(tc_keet_nominas_contratos_costos.total)), 0) as costos        
         from
-          tc_nominas_contratos_costos
+          tc_keet_nominas_contratos_costos
         inner join
-          tc_keet_contratos on tc_nominas_contratos_costos.id_contrato= tc_keet_contratos.id_contrato    
+          tc_keet_contratos on tc_keet_nominas_contratos_costos.id_contrato= tc_keet_contratos.id_contrato    
         inner join
           tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
         inner join
@@ -838,8 +937,8 @@ order by
       </select>  
       <select id="contratos">  
         select
-          ifnull(tc_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_key,
-          ifnull(tc_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_nomina_contrato_costo,
+          ifnull(tc_keet_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_key,
+          ifnull(tc_keet_nominas_contratos_costos.id_nomina_contrato_costo, -1) as id_nomina_contrato_costo,
           tc_keet_contratos.id_contrato,
           tc_keet_desarrollos.id_desarrollo,
           ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden), '{semana}') as semana,
@@ -849,13 +948,13 @@ order by
 					tc_keet_contratos.clave,
 				  tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
-				  ifnull(tc_nominas_contratos_costos.porcentaje_dia, 0) as porcentaje_dia,
-				  ifnull(tc_nominas_contratos_costos.por_dia, 0) as por_dia,
-				  ifnull(tc_nominas_contratos_costos.porcentaje_obra, 0) as porcentaje_obra,
-				  ifnull(tc_nominas_contratos_costos.por_obra, 0) as por_obra,
- 				  ifnull(tc_nominas_contratos_costos.total, 0) as total,
-				  ifnull(tc_nominas_contratos_costos.id_usuario, -1) as id_usuario,
-				  ifnull(tc_nominas_contratos_costos.registro, now()) as registro
+				  ifnull(tc_keet_nominas_contratos_costos.porcentaje_dia, 0) as porcentaje_dia,
+				  ifnull(tc_keet_nominas_contratos_costos.por_dia, 0) as por_dia,
+				  ifnull(tc_keet_nominas_contratos_costos.porcentaje_obra, 0) as porcentaje_obra,
+				  ifnull(tc_keet_nominas_contratos_costos.por_obra, 0) as por_obra,
+ 				  ifnull(tc_keet_nominas_contratos_costos.total, 0) as total,
+				  ifnull(tc_keet_nominas_contratos_costos.id_usuario, -1) as id_usuario,
+				  ifnull(tc_keet_nominas_contratos_costos.registro, now()) as registro
         from 
           tc_keet_contratos 
         left join (
@@ -894,7 +993,7 @@ order by
 			  inner join
 				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				left join
-				  tc_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_nominas_contratos_costos.id_contrato and tc_nominas_contratos_costos.id_nomina= {idNomina}
+				  tc_keet_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_keet_nominas_contratos_costos.id_contrato and tc_keet_nominas_contratos_costos.id_nomina= {idNomina}
         left join  
           tc_keet_nominas on tt_keet_desarrollos_contratos.id_nomina= tc_keet_nominas.id_nomina
         left join 

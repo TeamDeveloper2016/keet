@@ -2,7 +2,7 @@ package mx.org.kaana.keet.nomina.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.db.dto.TcNominasContratosCostosDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasContratosCostosDto;
 
 /**
  *@company KAANA
@@ -12,7 +12,7 @@ import mx.org.kaana.keet.db.dto.TcNominasContratosCostosDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Contrato extends TcNominasContratosCostosDto implements Serializable {
+public class Contrato extends TcKeetNominasContratosCostosDto implements Serializable {
 
   private static final long serialVersionUID = -2438191491652242045L;
   
@@ -97,7 +97,7 @@ public class Contrato extends TcNominasContratosCostosDto implements Serializabl
 
   @Override
   public Class toHbmClass() {
-    return TcNominasContratosCostosDto.class;
+    return TcKeetNominasContratosCostosDto.class;
   }
 
   @Override

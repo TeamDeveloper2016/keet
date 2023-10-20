@@ -7,6 +7,131 @@
   </model>
 
   <dml>
+    <unit id="TcKeetBooletasEstatusDto">
+      <select id="row">
+select      
+  tc_keet_boletas_estatus.id_boleta_estatus as id_key,
+  tc_keet_boletas_estatus.*
+from      
+  tc_keet_boletas_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_boletas_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetBooletasBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_boletas_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_boletas_bitacora
+where      
+  id_boleta_bitacora = {idBoletaBitacora}
+      </select>
+			<select id="ultimo">
+select
+  *
+from
+  tc_keet_boletas_bitacora
+where
+  id_boleta= {idBoleta}
+order by
+  registro desc
+			</select>
+      <delete id="rows">
+delete from tc_keet_boletas_bitacora where id_boleta= {idBoleta}        
+      </delete>  
+    </unit>   
+    <unit id="TcKeetBooletasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_boletas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_boletas
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="detalle">
+select      
+  *
+from      
+  tc_keet_boletas
+where 
+  id_boleta= {idBoleta} 
+      </select>
+			<select id="siguiente">
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_keet_boletas
+where
+  id_empresa= {idEmpresa}
+  and ejercicio= {ejercicio} 
+  and orden{operador} 900000			
+			</select>
+      <select id="consecutivo">
+select      
+  tc_keet_boletas.id_boleta as id_key
+from      
+  tc_keet_boletas
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo = '{consecutivo}'
+      </select>
+    </unit>  
+    <unit id="TcKeetBooletasDetallesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_boletas_detalles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_boletas_detalles
+where      
+  id_boleta = {idBoleta} and id_articulo = {idArticulo}
+      </select>
+      <select id="igual">
+select      
+  tc_keet_boletas_detalles.id_boleta_detalle as id_key,
+  tc_keet_boletas_detalles.*
+from      
+  tc_keet_boletas_detalles
+where      
+  id_boleta = {idBoleta}
+      </select>
+      <delete id="rows">
+delete from tc_keet_boletas_detalles where id_boleta= {idBoleta}        
+      </delete>  
+    </unit>       
     <unit id="TcKeetProcesosDto">
       <select id="row">
 select      
@@ -494,12 +619,12 @@ where
          nombre
       </select>
     </unit>    
-    <unit id="TcNominasContratosCostosDto">
+    <unit id="TcKeetNominasContratosCostosDto">
       <select id="row">
         select      
           *
         from      
-          tc_nominas_contratos_costos
+          tc_keet_nominas_contratos_costos
         where 
           {condicion} 
       </select>
@@ -507,25 +632,25 @@ where
         select      
           *
         from      
-          tc_nominas_contratos_costos
+          tc_keet_nominas_contratos_costos
         where      
           id_contrato = {idContrato} and id_nomina = {idNomina}
       </select>
       <select id="existe">
         select      
-          tc_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
+          tc_keet_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
           count(*) as total
         from      
-          tc_nominas_contratos_costos
+          tc_keet_nominas_contratos_costos
         where      
           id_nomina = {idNomina}
       </select>
       <select id="contrato">
         select      
-          tc_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
+          tc_keet_nominas_contratos_costos.id_nomina_contrato_costo as id_key,
           total as costo
         from      
-          tc_nominas_contratos_costos
+          tc_keet_nominas_contratos_costos
         where      
           id_nomina = {idNomina}
           and id_contrato= {idContrato}

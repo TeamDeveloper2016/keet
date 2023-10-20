@@ -1029,7 +1029,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");
       params.put(Constantes.SQL_CONDICION, "tc_keet_nominas.id_nomina= "+  this.idNomina+ " and tc_keet_contratos_personal.id_desarrollo="+ figura.toLong("idDesarrollo"));
-      String nombre= "LISTADO-"+ Cadena.rellenar(""+ figura.toString("desarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
+      String nombre= "EMPLEADOS-"+ Cadena.rellenar(""+ figura.toString("desarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
       String name= this.realPath.concat(this.realPath.endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());

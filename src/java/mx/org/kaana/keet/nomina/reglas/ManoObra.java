@@ -268,7 +268,7 @@ public class ManoObra extends XlsBase implements Serializable {
       params.put("idDesarrollo", this.idDesarrollo);
       params.put("operador", "");
       // RECUPERAR EL COSTO DE LA NOMINA DE DESTAJOS MAS LA NOMINA DE MANO DE OBRA
-      Entity porDia= (Entity)DaoFactory.getInstance().toEntity("TcNominasContratosCostosDto", "contrato", params);
+      Entity porDia= (Entity)DaoFactory.getInstance().toEntity("TcKeetNominasContratosCostosDto", "contrato", params);
       Corte corte   = new Corte(contrato.toLong("idContrato"), this.nomina.toLong("idNomina"));
       int index     = this.nominas.indexOf(corte);
       if(index>= 0)
