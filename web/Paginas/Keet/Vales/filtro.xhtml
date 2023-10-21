@@ -18,7 +18,7 @@
         idArticulo   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idValeEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        idBoletaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -54,8 +54,7 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetValesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetValesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{keetValesFiltro.doLoadAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{keetValesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.titulo}"/>
+                <f:selectItems value="#{keetValesFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -65,7 +64,6 @@
               </p:selectOneMenu>
               <p:outputLabel for="idAlmacen" value="Almacen:"/>
               <p:selectOneMenu id="idAlmacen" value="#{keetValesFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{keetValesFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -107,9 +105,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetValesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetValesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idValeEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idValeEstatus" value="#{keetValesFiltro.attrs.idValeEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+              <p:outputLabel for="idBoletaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idBoletaEstatus" value="#{keetValesFiltro.attrs.idBoletaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetValesFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -191,11 +188,11 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem action="#{keetValesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-						<p:separator rendered="#{keetValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-edit" action="#{keetValesFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:separator rendered="#{keetValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetValesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
+						<p:separator rendered="#{keetValesFiltro.attrs.seleccionado.idBoletaEstatus eq '1'}"/>
+            <p:menuitem icon="fa fa-edit" action="#{keetValesFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetValesFiltro.attrs.seleccionado.idBoletaEstatus eq '1'}"/>
+            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetValesFiltro.attrs.seleccionado.idBoletaEstatus eq '1'}"/>
+            <p:separator rendered="#{keetValesFiltro.attrs.seleccionado.idBoletaEstatus eq '1'}"/>
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetValesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetValesFiltro.attrs.seleccionado.idBoletaEstatus eq '1'}"/>
             <p:separator/>					
 						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetValesFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" rendered="false"/>
             <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetValesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
@@ -231,6 +228,7 @@
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="lineaSeparacion" value="false"/>	1
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
       <p:outputLabel value="Consecutivo:"/>

@@ -1,11 +1,11 @@
 package mx.org.kaana.keet.vales.backing;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -55,8 +55,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Vales/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-      if(JsfBase.getFlashAttribute("retorno")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//      if(JsfBase.getFlashAttribute("retorno")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idBoleta", JsfBase.getFlashAttribute("idBoleta")== null? -1L: JsfBase.getFlashAttribute("idBoleta"));
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
@@ -261,7 +261,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
-				articulo.setModificado(codigo!= null? !Objects.equal(codigo.toString(), articulo.getCodigo()): !Cadena.isVacio(articulo.getCodigo()));
+				articulo.setModificado(codigo!= null? !Objects.equals(codigo.toString(), articulo.getCodigo()): !Cadena.isVacio(articulo.getCodigo()));
 				articulo.setCodigo(codigo== null? "": codigo.toString());
 			} // for
 		} // try

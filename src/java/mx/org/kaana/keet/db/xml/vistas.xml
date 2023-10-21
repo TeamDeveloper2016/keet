@@ -75,6 +75,7 @@ inner join
   tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
 where
   tc_keet_boletas.id_empresa in ({idEmpresa})
+  and {condicion}
 group by 
   tc_keet_boletas.id_boleta
 {sortOrder}

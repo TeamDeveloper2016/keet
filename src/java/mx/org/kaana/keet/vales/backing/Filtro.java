@@ -21,9 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.db.dto.TcKeetBoletasBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetBoletasDto;
 import mx.org.kaana.keet.vales.beans.Vale;
-import mx.org.kaana.keet.vales.reglas.AdminVales;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
@@ -40,8 +38,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.keet.vales.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.apache.commons.logging.Log;
@@ -70,7 +66,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idBoleta", JsfBase.getFlashAttribute("idBoleta"));
       this.attrs.put("sortOrder", "order by tc_keet_boletas.registro desc");
 			this.toLoadCatalog();
@@ -121,7 +117,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar;
-  } // doAccion  
+  } 
 	
   public void doEliminar() {
 		Transaccion transaccion   = null;
@@ -154,9 +150,6 @@ public class Filtro extends IBaseTicket implements Serializable {
   		sb.append("(tc_keet_boletas.id_almacen=").append(this.attrs.get("idAlmacen")).append(") and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
 	 	  sb.append("tc_keet_boletas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-//		else 
-//		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
-//			  sb.append("(upper(tc_keet_boletas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
 		if(!Cadena.isVacio(this.attrs.get("articulo")) && !Objects.equals(((Entity)this.attrs.get("articulo")).getKey(), -1L))
 			sb.append("(tc_keet_boletas_detalles.id_articulo= ").append(((Entity)this.attrs.get("articulo")).getKey()).append(") and ");					
 		else 
@@ -172,8 +165,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  sb.append("(date_format(tc_keet_boletas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_keet_boletas.id_boleta_estatus= ").append(estatus.getKey()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+  	if(!Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
+		  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(sb.length()== 0) {
@@ -198,11 +191,12 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			columns.clear();
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
-			this.attrs.put("idBoletaEstatus", new UISelectEntity("-1"));
+      List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns);
+      this.attrs.put("estatusFiltro", estatus);
+			this.attrs.put("idBoletaEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));
       this.doLoadAlmacenes();
     } // try
     finally {
@@ -215,15 +209,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("sucursales", this.attrs.get("idEmpresa"));
-			else
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
-			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+      List<UISelectEntity> almacenes= (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave");
+      this.attrs.put("almacenes", almacenes);
+			this.attrs.put("idAlmacen", UIBackingUtilities.toFirstKeySelectEntity(almacenes));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -302,8 +294,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			String search= (String)this.attrs.get("codigoCodigo"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("sucursales", this.attrs.get("idEmpresa"));
+			if(!Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
+				params.put("sucursales", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
@@ -349,8 +341,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			String search= (String)this.attrs.get("codigoArticulo"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("sucursales", this.attrs.get("idEmpresa"));
+			if(!Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
+				params.put("sucursales", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			

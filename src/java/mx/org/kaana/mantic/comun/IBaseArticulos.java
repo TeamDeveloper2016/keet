@@ -986,7 +986,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     if (dataTable!= null) {
 			dataTable.reset();
       dataTable.setFirst(0);		
-      dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
+      // dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
 		}	// if
 	}
 	
