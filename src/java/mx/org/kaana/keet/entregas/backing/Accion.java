@@ -317,7 +317,7 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
 			query= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
-			params.put("nombreEmpleado", query);	
+			params.put("nombreEmpleado", query.replaceAll("[ ]", "*.*"));	
       regresar= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "autoCompletar", params, columns, 20L);
       this.attrs.put(name, regresar);
 		} // try

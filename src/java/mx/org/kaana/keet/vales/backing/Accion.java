@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -33,6 +34,7 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -61,7 +63,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
 			this.doLoad();
-      this.toLoadPersonas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -71,6 +72,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	@Override
   public void doLoad() {
+    Map<String, Object> params= new HashMap<>();
     try {
       switch (this.accion) {
         case AGREGAR:											
@@ -79,20 +81,23 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           break;
         case MODIFICAR:			
         case CONSULTAR:											
-          this.setAdminOrden(new AdminVales((Vale)DaoFactory.getInstance().toEntity(Vale.class, "TcKeetBoletasDto", "detalle", this.attrs)));
+          params.put("idBoleta", this.attrs.get("idBoleta"));
+          this.setAdminOrden(new AdminVales((Vale)DaoFactory.getInstance().toEntity(Vale.class, "TcKeetBoletasDto", "detalle", params)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			this.doResetDataTable();
 			this.toLoadCatalogos();
-			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
 
   public String doAceptar() {  
     Transaccion transaccion= null;
@@ -119,7 +124,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  }
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idBoleta", ((Vale)this.getAdminOrden().getOrden()).getIdBoleta());
@@ -140,7 +145,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
 			if(!empresas.isEmpty()) {
-				this.attrs.put("idPedidoSucursal", empresas.get(0));
 				if(this.accion.equals(EAccion.AGREGAR))
   				((Vale)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
         else {
@@ -165,6 +169,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
             ((Vale)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
         } // else  
 			} // if
+      this.toLoadPersonas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -307,34 +312,67 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 
   private void toLoadPersonas() {
-    List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> personas= null;
     try {
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> personas= UIEntity.seleccione("VistaAlmacenesTransferenciasDto", "solicito", params, columns, "nombres");
-      this.attrs.put("personas", personas);
-			if(!personas.isEmpty()) {
-				if(this.accion.equals(EAccion.AGREGAR))
-				  ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(0));
-        else {
-          int index= personas.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkSolicito());
-          if(index>= 0)
-				    ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(index));
-          else
-  				  ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(0));
-        } // else  
+			if(!this.accion.equals(EAccion.AGREGAR)) {
+        params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_empresa_persona= "+ ((Vale)this.getAdminOrden().getOrden()).getIkSolicito().getKey());
+        Entity solicito= (Entity)DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "solicito", params);
+        if(!Objects.equals(solicito, null))
+  		    ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(new UISelectEntity(solicito));
 			} // if
     } // try
     catch (Exception e) {
-      throw e;
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
     } // catch    
     finally {
       Methods.clean(params);
       Methods.clean(columns);
+      Methods.clean(personas);
     } // finally 
   }
+ 
+	public List<UISelectEntity> doCompleteSolicita(String query) {
+    List<UISelectEntity> regresar= null;
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
+			query= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
+			params.put("nombreEmpleado", query.replaceAll("[ ]", "*.*"));	
+      regresar= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "autoCompletar", params, columns, 20L);
+      this.attrs.put("solicitan", regresar);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+    return regresar;
+  }	
+ 
+	public void doSolicita(SelectEvent event) {
+		List<UISelectEntity> empleados= null;
+		try {
+			empleados= (List<UISelectEntity>) this.attrs.get("solicitan");
+      int index= empleados.indexOf((UISelectEntity)event.getObject());
+      if(index>= 0)
+			  ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(empleados.get(index));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} 
   
 }

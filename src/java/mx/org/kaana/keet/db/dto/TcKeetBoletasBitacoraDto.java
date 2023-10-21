@@ -23,7 +23,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_vales_bitacora")
+@Table(name="tc_keet_boletas_bitacora")
 public class TcKeetBoletasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;

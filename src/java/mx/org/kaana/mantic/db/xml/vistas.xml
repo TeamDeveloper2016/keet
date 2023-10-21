@@ -8990,6 +8990,7 @@ order by
 				select
 					tc_mantic_personas.id_persona as id_key,
 					tc_mantic_personas.id_persona,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,
 					tc_mantic_personas.materno
@@ -9000,6 +9001,7 @@ order by
 				where
 					tr_mantic_empresa_personal.id_empresa in ({sucursales})
 					and tc_mantic_personas.id_tipo_persona in (2, 6)
+          and {condicion}
 				order by
 					tc_mantic_personas.rfc			
 			</select>

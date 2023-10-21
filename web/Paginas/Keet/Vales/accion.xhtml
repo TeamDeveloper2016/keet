@@ -135,18 +135,18 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Recibe:"/>
-                <p:selectOneMenu id="idSolicito" value="#{keetValesAccion.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{keetValesAccion.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
-                  <p:column>
+                <p:autoComplete id="idSolicito" var="item" placeholder="EMPLEADO QUE SOLICITA" itemLabel="#{item.nombreCompleto}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{keetValesAccion.adminOrden.orden.ikSolicito}" completeMethod="#{keetValesAccion.doCompleteSolicita}" maxResults="12" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetValesAccion.doSolicita}" oncomplete="janal.desbloquear();"/>
+                  <p:column headerText="Nombre(s)">
                     <h:outputText value="#{item.nombres}"/>
                   </p:column>                
-                  <p:column>
+                  <p:column headerText="1er apellido">
                     <h:outputText value="#{item.paterno}"/>
                   </p:column>                
-                  <p:column>
+                  <p:column headerText="2do apellido">
                     <h:outputText value="#{item.materno}"/>
                   </p:column>                
-                </p:selectOneMenu>
+                </p:autoComplete>  
 								<p:separator/>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
   							<p:inputTextarea id="observaciones" rows="4" cols="33" styleClass="janal-wid-100-txt" value="#{keetValesAccion.adminOrden.orden.observaciones}"/>
@@ -156,17 +156,15 @@
 							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-      							<p:panelGrid id="datosArticulos" columns="3" styleClass="janal-wid-99" columnClasses="janal-fix-5, janal-fix-5, janal-fix-90 janal-column-right">
+      							<p:panelGrid id="datosArticulos" columns="3" styleClass="janal-wid-99" columnClasses="janal-fix-5, janal-fix-5, janal-fix-90">
                       <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(jsArticulos.cursor.index)" style="float:right;"/>
                       <p:commandButton process="@form" icon="fa fa-save" title="Guardar orden de compra" actionListener="#{keetValesAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
-											<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                        <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;" columnClasses="janal-fix-90 janal-column-right, janal-fix-10 janal-column-center">
-													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="display:#{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
-													<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{keetValesAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
-														<p:ajax event="change" process="@this" listener="#{keetValesAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
-				  								</p:inputSwitch>			
-												</p:panelGrid>	 
-											</p:panelGrid>	
+                      <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;" columnClasses="janal-fix-95 janal-column-right, janal-fix-5 janal-column-center">
+                        <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="display:#{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+                        <p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{keetValesAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{keetValesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
+                          <p:ajax event="change" process="@this" listener="#{keetValesAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
+                        </p:inputSwitch>			
+                      </p:panelGrid>	 
 										</p:panelGrid>	
 										<p:panelGrid id="registros" columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
 											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetValesAccion.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{keetValesAccion.attrs.paginator}" rows="#{keetValesAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">

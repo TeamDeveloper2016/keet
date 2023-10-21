@@ -68,7 +68,6 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idBoleta", JsfBase.getFlashAttribute("idBoleta"));
-      this.attrs.put("sortOrder", "order by tc_keet_boletas.registro desc");
 			this.toLoadCatalog();
       if(this.attrs.get("idBoleta")!= null) {
 			  this.doLoad();
@@ -86,7 +85,7 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by tc_keet_boletas.registro desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
@@ -146,6 +145,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb            = new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idBoletaEstatus");
+		if(!Cadena.isVacio(this.attrs.get("idBoleta")) && !this.attrs.get("idBoleta").toString().equals("-1"))
+  		sb.append("(tc_keet_boletas.id_boleta=").append(this.attrs.get("idBoleta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		sb.append("(tc_keet_boletas.id_almacen=").append(this.attrs.get("idAlmacen")).append(") and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
@@ -155,8 +156,6 @@ public class Filtro extends IBaseTicket implements Serializable {
 		else 
   		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
     		sb.append("(upper(tc_keet_boletas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("idBoleta")) && !this.attrs.get("idBoleta").toString().equals("-1"))
-  		sb.append("(tc_keet_boletas.id_boleta=").append(this.attrs.get("idBoleta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_keet_boletas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

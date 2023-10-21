@@ -154,21 +154,33 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
   
 	private void toFillArticulos(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaValesDto", "detalle", this.orden.toMap());
-		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item.toBoletaDetalle());
-		for (Articulo articulo: this.articulos) {
-			TcKeetBoletasDetallesDto item= articulo.toBoletaDetalle();
-			item.setIdBoleta(this.orden.getIdBoleta());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcKeetBoletasDetallesDto.class, item.toMap())== null) 
-		    DaoFactory.getInstance().insert(sesion, item);
-			else
-				if(articulo.isModificado())
-		      DaoFactory.getInstance().update(sesion, item);
-			articulo.setObservacion("ARTICULO SOLICITADO EN EL VALE ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
-		} // for
+    Map<String, Object> params= new HashMap<>();
+    try {
+      List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaBoletasDto", "detalle", this.orden.toMap());
+      for (Articulo item: todos) 
+        if(this.articulos.indexOf(item)< 0)
+          DaoFactory.getInstance().delete(sesion, item.toBoletaDetalle());
+      for (Articulo articulo: this.articulos) {
+        TcKeetBoletasDetallesDto item= articulo.toBoletaDetalle();
+        item.setIdBoleta(this.orden.getIdBoleta());
+        if(DaoFactory.getInstance().findIdentically(sesion, TcKeetBoletasDetallesDto.class, item.toMap())== null) 
+          DaoFactory.getInstance().insert(sesion, item);
+        else
+          if(articulo.isModificado())
+            DaoFactory.getInstance().update(sesion, item);
+        articulo.setObservacion("ARTICULO SOLICITADO EN EL VALE ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+        params.put("idEmpresa", this.orden.getIdEmpresa());
+        params.put("idArticulo", articulo.getIdArticulo());
+        params.put("observacion", articulo.getObservacion());
+        DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
 	}
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {

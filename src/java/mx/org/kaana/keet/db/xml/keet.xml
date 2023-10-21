@@ -7,7 +7,7 @@
   </model>
 
   <dml>
-    <unit id="TcKeetBooletasEstatusDto">
+    <unit id="TcKeetBoletasEstatusDto">
       <select id="row">
 select      
   tc_keet_boletas_estatus.id_boleta_estatus as id_key,
@@ -26,7 +26,7 @@ where
   nombre = '{nombre}'
       </select>
     </unit>    
-    <unit id="TcKeetBooletasBitacoraDto">
+    <unit id="TcKeetBoletasBitacoraDto">
       <select id="row">
 select      
   *
@@ -57,7 +57,7 @@ order by
 delete from tc_keet_boletas_bitacora where id_boleta= {idBoleta}        
       </delete>  
     </unit>   
-    <unit id="TcKeetBooletasDto">
+    <unit id="TcKeetBoletasDto">
       <select id="row">
 select      
   *
@@ -102,7 +102,7 @@ where
   and consecutivo = '{consecutivo}'
       </select>
     </unit>  
-    <unit id="TcKeetBooletasDetallesDto">
+    <unit id="TcKeetBoletasDetallesDto">
       <select id="row">
 select      
   *
