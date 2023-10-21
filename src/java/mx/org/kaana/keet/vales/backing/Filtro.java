@@ -100,7 +100,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -309,13 +309,13 @@ public class Filtro extends IBaseTicket implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}	// doUpdateCodigos
+	}	
 
 	public List<UISelectEntity> doCompleteCodigo(String query) {
 		this.attrs.put("codigoCodigo", query);
     this.doUpdateCodigos();		
 		return (List<UISelectEntity>)this.attrs.get("codigos");
-	}	// doCompleteCodigo
+	}	
 
 	public void doAsignaCodigo(SelectEvent event) {
 		UISelectEntity seleccion    = null;
@@ -329,7 +329,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCodigo
+	} 
 	
 	public void doUpdateArticulos() {
 		List<Columna> columns     = new ArrayList<>();
@@ -388,7 +388,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		EReportes reporteSeleccion   = null;
 		try{				
 			reporteSeleccion= EReportes.VALE_ALMACEN;
-			this.reporte= JsfBase.toReporte();
+			this.reporte    = JsfBase.toReporte();
 			params.put("idBoleta", ((Entity)this.attrs.get("seleccionado")).getKey());			
       Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			parametros= comunes.getComunes();
@@ -398,14 +398,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "iib":
-   			  parametros.put("REPORTE_SUB_TITULO", "GRANOS Y SEMILLAS");		
-          break;
-        case "kalan":
-   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
-          break;
-        case "tsaak":
-   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+        case "cafu":
+        case "gylvi": 
+        case "triana":
+   			  parametros.put("REPORTE_SUB_TITULO", "POR FAVOR REVISAR EL MAETERIAL ENTREGADO");
           break;
       } // swtich
 			parametros.put("REPORTE_NOTIFICA", Configuracion.getInstance().getEmpresa("celular"));		

@@ -756,7 +756,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					break;
 				case 7: // RECEPCION
 					break;
-				case 8: // VALES DE ALMACEN
+				case 8: // KIT DE MATERIALES
 					Long idEntrega= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcKeetEntregasDto", "consecutivo");
           columns.remove(new Columna("total"));
       		params.put("idEntrega", idEntrega);
@@ -772,6 +772,22 @@ public class Kardex extends IBaseAttribute implements Serializable {
           } // if
           this.attrs.put("tipoDocumento", "vales de almacen");
 					break;
+				case 9: // VALES DE ALMACEN
+					Long idVale= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcKeetBoletasDto", "consecutivo");
+          columns.remove(new Columna("total"));
+      		params.put("idVale", idVale);
+      		params.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "boleta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+    			if(documento!= null && !documento.isEmpty()) {
+            Double suma= 0D;
+            for (UISelectEntity item : documento) {
+              suma+= item.toDouble("total");
+            } // for
+   				  documento.get(0).get("total").setData(Numero.toRedondearSat(suma));
+          } // if
+          this.attrs.put("tipoDocumento", "vales de almacen");
+          break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {
 				documento.get(0).put("articulos", new Value("articulos", documento.size()));
