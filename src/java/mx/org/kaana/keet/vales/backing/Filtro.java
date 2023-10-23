@@ -55,10 +55,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}	
 
 	public void setReporte(Reporte reporte) {
-		this.reporte=reporte;
+		this.reporte= reporte;
 	}
   
   @PostConstruct
@@ -89,7 +89,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaBoletasDto", params, columns);
+      this.lazyModel= new FormatCustomLazy("VistaBoletasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
