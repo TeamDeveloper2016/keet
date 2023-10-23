@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.LocalDateTime;
+
 
 @Named(value = "keetCatalogosContratosDestajosFaltan")
 @ViewScoped
@@ -214,30 +215,32 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadEspecialidades() {
-		List<UISelectItem>especialidades= null;
-		Map<String, Object>params       = new HashMap<>();
+		List<UISelectEntity>especialidades= null;
+		Map<String, Object>params         = new HashMap<>();
+		List<Columna> columns             = new ArrayList<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			especialidades= UIEntity.build("VistaCapturaDestajosDto", "especialidades", params, columns);
 			this.attrs.put("especialidades", especialidades);
       if(especialidades!= null && !especialidades.isEmpty()) {
         if(this.attrs.get("idDepartamento")!= null) {
-          int index= especialidades.indexOf(new UISelectItem(this.attrs.get("idDepartamento")));
+          int index= especialidades.indexOf(new UISelectEntity((Long)this.attrs.get("idDepartamento")));
           if(index>= 0)
-			      this.attrs.put("especialidad", this.attrs.get("idDepartamento"));
+			      this.attrs.put("especialidad", new UISelectEntity((Long)this.attrs.get("idDepartamento")));
         } // if  
         else
-			    this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
+			    this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectEntity(especialidades));
       } // if  
       this.doLoadFiguras();
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // loadEspecialidades
+	} 
 	
 	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
@@ -246,8 +249,17 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
+      
+      List<UISelectEntity> especialidades= (List<UISelectEntity>)this.attrs.get("especialidades");
+      if(!Objects.equals(especialidades, null)) {
+        int index= especialidades.indexOf((UISelectEntity)this.attrs.get("especialidad"));
+        if(index>= 0)
+          this.attrs.put("especialidad", especialidades.get(index));
+        else
+          this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectEntity(especialidades));
+      } // if  
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idDepartamento", this.attrs.get("especialidad"));
+			params.put("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
@@ -410,7 +422,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         this.attrs.put("idFiguraCorreo", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
         params.put("clave", this.toTokenClave());
-        params.put("idDepartamento", this.attrs.get("especialidad"));
+        params.put("idDepartamento",  ((UISelectEntity)this.attrs.get("especialidad")).getKey());
         params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         params.put("idTipoNomina", "1");
         params.put("nombreConcepto", "");
@@ -614,7 +626,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
           parametros.put("REPORTE_DESARROLLO_CP", getRegistroDesarrollo().getDomicilio().getCodigoPostal()); 
           parametros.put("REPORTE_FIGURA", figura.toString("puesto").concat(": ").concat(figura.toString("nombreCompleto")));
         } // else
-        index= ((List<UISelectItem>)this.attrs.get("especialidades")).indexOf(new UISelectItem(Long.valueOf(this.attrs.get("especialidad").toString())));
+        index= ((List<UISelectEntity>)this.attrs.get("especialidades")).indexOf((UISelectEntity)this.attrs.get("especialidad"));
         parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
         parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
         parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -761,7 +773,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
         JsfBase.setFlashAttribute("figura", figura);									
         JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
-        JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
+        JsfBase.setFlashAttribute("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
         JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
         JsfBase.setFlashAttribute("georreferencia", new Point(21.890563, -102.252030));				
         JsfBase.setFlashAttribute("concepto", criterio.getDatos());

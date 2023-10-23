@@ -1,7 +1,7 @@
 package mx.org.kaana.sakbe.suministros.beans;
 
 import java.io.Serializable;
-import mx.org.kaana.kajool.db.dto.TcSakbeSuministrosDto;
+import mx.org.kaana.sakbe.db.dto.TcSakbeSuministrosDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
