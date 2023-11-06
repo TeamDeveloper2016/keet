@@ -41,9 +41,9 @@
         border-radius: 5px;				
 			}
 			.syntaxhighlighter {
-					overflow-y: auto !important;
-					overflow-x: auto !important;
-					max-height: 470px;
+				overflow-y: auto !important;
+				overflow-x: auto !important;
+				max-height: 470px;
 			}		
 			.pad-description{
 				padding-left: 20px !important;				
@@ -102,7 +102,7 @@
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" disabled="true"/>								
                 <p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Contrato:"/>
-								<p:inputText value="[ #{keetCatalogosContratosDestajosImportar.attrs.clave} ] #{keetCatalogosContratosDestajosImportar.attrs.contratos.etapa} M#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.lote}" styleClass="janal-wid-100-txt" disabled="true"/>
+								<p:inputText value="[ #{keetCatalogosContratosDestajosImportar.attrs.contratos.clave} ] #{keetCatalogosContratosDestajosImportar.attrs.contratos.etapa} M#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.lote}" styleClass="janal-wid-100-txt" disabled="true"/>
 								<p:outputLabel value="Proyecto:" rendered="false"/>
 								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contratos.claveProyecto}] #{keetCatalogosContratosDestajosImportar.attrs.contratos.etapaProyecto}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
 								<p:outputLabel value="Desarrollo:"/>																		

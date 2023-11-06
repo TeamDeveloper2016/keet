@@ -35,7 +35,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 
 	private static final long serialVersionUID  = 4077399316243366480L;
 	private static final Long NIVEL_ESPECIALIDAD= 5L;
-		
+  
   public String getValidacion() {
     String regresar= "libre";
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -110,7 +110,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally	
-	} // loadCatalogos		
+	} 
 	  
   public void doLoad() {
 		Map<String, Object>params        = null;
@@ -215,7 +215,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // loadConceptoExtra
+	} 
 	
 	public String doCancelar() {
     String regresar= null;    		
@@ -237,5 +237,6 @@ public class Extra extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doCancelar		
+  } 
+ 
 }

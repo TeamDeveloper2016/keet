@@ -2810,9 +2810,9 @@ public final class DaoFactory<T extends IBaseDto> {
    * @throws Exception
    */
   public List<T> toEntitySet(String process, String idXml, Map params, Long records) throws Exception {
-    List<T> regresar = null;
-    Session session = null;
-    Transaction transaction = null;
+    List<T> regresar       = null;
+    Session session        = null;
+    Transaction transaction= null;
     try {
       session = SessionFactoryFacade.getInstance().getSession();
       transaction = session.beginTransaction();

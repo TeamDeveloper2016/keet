@@ -20,7 +20,6 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 	private static final long serialVersionUID=-6128600239501961407L;
 
   public Entity() {
-    this(-1L);
   }
 
   public Entity(Long key) {

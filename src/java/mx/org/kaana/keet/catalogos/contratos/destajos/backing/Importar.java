@@ -93,7 +93,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-      this.pathImage= this.pathImage.substring(0, this.pathImage.indexOf(JsfBase.getContext())).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
+      int index= this.pathImage.indexOf(JsfBase.getContext())< 0? this.pathImage.length()- 1: this.pathImage.indexOf(JsfBase.getContext());
+      this.pathImage= this.pathImage.substring(0, index).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
       this.attrs.put("idContratoArchivo", -1L);
 			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
       this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
@@ -110,9 +111,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contratos", contrato);
@@ -140,10 +140,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	
   @Override
   public void doLoad() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		String idXml         = null;		
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombrePersona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
@@ -237,9 +236,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doFileUpload		
 	
 	private String toClaveEstacion() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {			
-			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(String.valueOf(((Entity)this.attrs.get("seleccionadoPivote")).toLong("idEmpresa")), 3, '0', true));
 			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
@@ -303,11 +301,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	private Long toIdContratoDestajoFigura() throws Exception {
 		Entity destajoFigura     = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Long regresar            = -1L;
 		String idXml             = null;
 		try {
-			params= new HashMap<>();
 			params.put("idEstacion", this.attrs.get("idEstacion"));			
 			params.put("idEstacionEstatus", 4L);			
 			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L)) {
@@ -502,7 +499,7 @@ public class Importar extends IBaseImportar implements Serializable {
       ((Entity)this.attrs.get("concepto")).toString("codigo")
 		); 		
 		return regresar;
-	} // toDestajoContratistaJustificacion
+	} 
 	
 	private IBaseDestajoArchivo toDestajoProveedorJustificacion(Long tipo) throws Exception {	
 		DestajoProveedorArchivo regresar= new DestajoProveedorArchivo(
@@ -525,6 +522,6 @@ public class Importar extends IBaseImportar implements Serializable {
       ((Entity)this.attrs.get("concepto")).toString("codigo")
 		); // estatus	
 		return regresar;
-	} // toDestajoProveedorJustificacion	
+	} 
   
 }
