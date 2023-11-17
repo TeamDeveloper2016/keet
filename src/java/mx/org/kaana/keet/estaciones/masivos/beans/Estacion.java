@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 
 /**
  *@company KAANA
@@ -32,7 +33,7 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 		this.setDescripcion(nombre);
 		this.setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
 		this.setCantidad(1D);
-		this.setIdEstacionEstatus(1L);
+		this.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
 		this.setInicio(LocalDate.now());
 		this.setTermino(LocalDate.now());
 		this.setIdUsuario(idUsuario);

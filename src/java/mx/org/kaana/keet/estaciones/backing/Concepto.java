@@ -78,13 +78,12 @@ public class Concepto extends IBaseAttribute implements Serializable {
   }
 
 	private void toLoadCatalogos()  {
-    List<Columna> columns     = null;    
+    List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idContratoLote", this.attrs.get("idContratoLote"));      
 			this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaEstacionesDto", "lote", params);
       if(this.contrato!= null && !this.contrato.isEmpty()) {
-        columns= new ArrayList<>();		
         columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
         columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
         UIBackingUtilities.toFormatEntity(this.contrato, columns);
@@ -102,9 +101,8 @@ public class Concepto extends IBaseAttribute implements Serializable {
 	} // toLoadCatalogos
 	
 	private void toLoadEstaciones()  {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idPrototipo", this.contrato.toLong("idPrototipo"));      
       params.put("idUsuario", JsfBase.getIdUsuario());      
       StringBuilder sb= new StringBuilder();

@@ -257,8 +257,6 @@ where
       <select id="igual">
 select      
   tc_keet_paquetes_detalles.id_paquete_detalle as id_key,
-  tc_mantic_articulos_codigos.codigo,
-  tc_mantic_articulos.nombre,
   tc_keet_paquetes_detalles.*
 from      
   tc_keet_paquetes_detalles

@@ -3,6 +3,7 @@ package mx.org.kaana.keet.estaciones.masivos.beans;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 
 /**
  *@company KAANA
@@ -30,7 +31,7 @@ public class Material extends TcKeetMaterialesDto implements Cloneable, Serializ
 		this.setDescripcion(nombre);
 		this.setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
 		this.setCantidad(1D);
-		this.setIdEstacionEstatus(1L);
+		this.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
 		this.setIdUsuario(idUsuario);
 		this.setRegistro(LocalDateTime.now());
 		this.setCosto(0D);

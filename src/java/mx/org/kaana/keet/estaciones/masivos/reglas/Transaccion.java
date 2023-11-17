@@ -727,7 +727,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                         concepto.setNivel(estacion.getNivel()+ 1L);
                         concepto.setUltimo(1L);
                         concepto.setCodigo(codigo);
-                        concepto.setIdEstacionEstatus(1L);
+                        concepto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
                         diferencia= costo;
                         disparidad= anticipo;
                       } // if

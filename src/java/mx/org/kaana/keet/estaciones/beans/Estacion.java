@@ -3,6 +3,7 @@ package mx.org.kaana.keet.estaciones.beans;
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class Estacion extends TcKeetEstacionesDto implements Serializable {
@@ -22,7 +23,7 @@ public class Estacion extends TcKeetEstacionesDto implements Serializable {
 		this.ikEmpaqueUnidadMedida= ikEmpaqueUnidadMedida;
 		this.pantilla             = pantilla;
     this.setIdPlantilla(this.pantilla? EBooleanos.SI.getIdBooleano():EBooleanos.NO.getIdBooleano());
-		this.setIdEstacionEstatus(1L);
+		this.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
 	}
 		
 	public UISelectEntity getIkEmpaqueUnidadMedida() {

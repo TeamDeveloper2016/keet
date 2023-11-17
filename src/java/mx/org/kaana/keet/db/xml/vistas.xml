@@ -9064,6 +9064,7 @@ order by
           tc_keet_estaciones.nivel= 6
           and tc_keet_estaciones.clave like '{clave}%'
           and tc_keet_estaciones.codigo= '{codigo}'
+          and tc_keet_estaciones.id_estacion_estatus= 1
         order by
           tc_keet_estaciones.clave        
 			</select>

@@ -226,7 +226,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setPorcentaje(dto.getPorcentaje()+ this.factorAcumulado);
 				dto.setCosto(dto.getCosto()+ ((estacion.getCosto()* this.factorAcumulado)/ 100));
 				dto.setAnticipo(dto.getAnticipo()+ ((estacion.getAnticipo()* this.factorAcumulado)/ 100));
-				dto.setIdEstacionEstatus(toIdEstacionEstatus());
+				dto.setIdEstacionEstatus(this.toIdEstacionEstatus());
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 					params.clear();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
@@ -419,7 +419,7 @@ public class Transaccion extends IBaseTnx {
 	} // processRechazosContratistas
 	
 	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoContratista, boolean detalle) throws Exception {
-		boolean regresar= Boolean.TRUE;
+		boolean regresar                          = Boolean.TRUE;
 		TcKeetContratosRechazosContratistasDto dto= null;
 		TcKeetContratosPuntosContratistasDto punto= null;
 		Map<String, Object>params                 = new HashMap<>();		
