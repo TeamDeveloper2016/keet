@@ -661,7 +661,7 @@ public class Transaccion extends IBaseTnx {
       if(Objects.equals(gastoDto.getIdGastoEstatus(), EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()))
         gastoDto.setIdGastoEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
 			gastoDto.setRevisado(1L);
-      // VERIFICAR SI LA SEMANA DE REFERENCIA ES LA ULTIMA SI NO ENTONCES ACTUALIZARLO CON LA SEMANA A LA QUE CORRESPONDA
+      // VERIFICAR SI LA SEMANA DE REFERENCIA ES LA ULTIMA, SI NO ENTONCES ACTUALIZAR EL GASTO A LA ULTIMA SEMANA DE LA CAJA CHICA
       params.put("idCajaChicaCierre", gastoDto.getIdCajaChicaCierre());      
       Entity corte= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCajaChicaDto", "corte", params);
       if(!Objects.equals(corte, null) && !corte.isEmpty() && !Objects.equals(corte.toLong("ikNominaPeriodo"), corte.toLong("idNominaPeriodo"))) {
