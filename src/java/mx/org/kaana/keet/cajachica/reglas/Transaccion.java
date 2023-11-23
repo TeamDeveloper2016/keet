@@ -653,18 +653,38 @@ public class Transaccion extends IBaseTnx {
 	} // registrarBitacora
 	
 	private boolean revisarGasto(Session sesion) throws Exception {
-		boolean regresar        = false;
-		TcKeetGastosDto gastoDto= null;
+		boolean regresar          = false;
+		TcKeetGastosDto gastoDto  = null;
+    Map<String, Object> params= new HashMap<>();
 		try {
 			gastoDto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.idGasto);
       if(Objects.equals(gastoDto.getIdGastoEstatus(), EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()))
         gastoDto.setIdGastoEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
 			gastoDto.setRevisado(1L);
+      // VERIFICAR SI LA SEMANA DE REFERENCIA ES LA ULTIMA SI NO ENTONCES ACTUALIZARLO CON LA SEMANA A LA QUE CORRESPONDA
+      params.put("idCajaChicaCierre", gastoDto.getIdCajaChicaCierre());      
+      Entity corte= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCajaChicaDto", "corte", params);
+      if(!Objects.equals(corte, null) && !corte.isEmpty() && !Objects.equals(corte.toLong("ikNominaPeriodo"), corte.toLong("idNominaPeriodo"))) {
+        params.put("idNominaPeriodo", corte.toLong("ikNominaPeriodo"));      
+        params.put("idCajaChica", corte.toLong("idCajaChica"));      
+        Entity cierre= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetCajasChicasCierresDto", "igual", params);
+        if(!Objects.equals(corte, null) && !corte.isEmpty()) {
+          params.put("idCajaChicaCierre", cierre.toLong("idCajaChicaCierre"));
+          params.put("importe", gastoDto.getImporte());
+          DaoFactory.getInstance().updateAll(sesion, TcKeetCajasChicasCierresDto.class, params);
+          params.put("idCajaChicaCierre", gastoDto.getIdCajaChicaCierre());
+          DaoFactory.getInstance().updateAll(sesion, TcKeetCajasChicasCierresDto.class, params, "eliminar");
+          gastoDto.setIdCajaChicaCierre(cierre.toLong("idCajaChicaCierre"));
+        } // if
+      } // if
 			regresar= DaoFactory.getInstance().update(sesion, gastoDto)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 		return regresar;
 	} // revisarGasto
   

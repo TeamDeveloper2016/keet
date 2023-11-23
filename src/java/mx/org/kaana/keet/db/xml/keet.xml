@@ -2221,6 +2221,18 @@ where
         where      
           consecutivo = '{consecutivo}'
       </select>
+      <select id="igual">
+        select      
+          tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+          tc_keet_cajas_chicas_cierres.*
+        from      
+          tc_keet_cajas_chicas_cierres
+        where 
+          id_caja_chica= {idCajaChica}
+          and id_nomina_periodo= {idNominaPeriodo}
+        order by
+          registro desc
+      </select>  
       <select id="ultima">
         select      
           tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
@@ -2242,6 +2254,24 @@ where
 				where				  
 				  ejercicio = {ejercicio}			
 			</select>			
+			<update id="rows">			
+        update
+          tc_keet_cajas_chicas_cierres
+        set
+          disponible= disponible- {importe},
+          acumulado= acumulado+ {importe}
+        where
+          id_caja_chica_cierre= {idCajaChicaCierre}
+      </update>  
+			<update id="eliminar">			
+        update
+          tc_keet_cajas_chicas_cierres
+        set
+          disponible= disponible+ {importe},
+          acumulado= acumulado- {importe}
+        where
+          id_caja_chica_cierre= {idCajaChicaCierre}
+      </update>  
     </unit>		
     <unit id="TcKeetCajasChicasCierresBitacoraDto">
       <select id="row">

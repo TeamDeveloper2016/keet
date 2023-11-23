@@ -12741,6 +12741,19 @@ order by
 			</select>						
 		</unit>
 		<unit id="VistaCajaChicaDto">
+			<select id="corte">
+select
+  tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+  (select max(tc_keet_cajas_chicas_cierres.id_nomina_periodo) from tc_keet_cajas_chicas_cierres) as ik_nomina_periodo,
+  tc_keet_cajas_chicas_cierres.id_nomina_periodo,
+  tc_keet_cajas_chicas_cierres.id_caja_chica
+from
+  tc_keet_cajas_chicas_cierres
+where
+  tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= {idCajaChicaCierre}
+group by  
+  tc_keet_cajas_chicas_cierres.id_nomina_periodo
+      </select>  
 			<select id="findDesarrollo">
 				select
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
