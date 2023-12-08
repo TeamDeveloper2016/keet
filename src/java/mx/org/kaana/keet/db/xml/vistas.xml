@@ -8060,6 +8060,7 @@ order by
 						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
 					where 
 						tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+            and {condicion}
 					group by
 						tr_mantic_empresa_personal.id_empresa_persona				  
 					 ) as departamento,
@@ -8102,7 +8103,6 @@ order by
         where 
           tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_contratistas.id_trabajo=2
 				  and tr_mantic_empresa_personal.id_activo= 1
-				  and {condicion}
 				order by 
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres) contratistas
@@ -8179,6 +8179,7 @@ order by
 							tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
 						where 
 							tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+              and {condicion}
 						group by
 							tc_keet_contratistas_departamentos.id_empresa_persona				  
   				) as departamento,
@@ -8204,7 +8205,6 @@ order by
 				and 
 					tr_mantic_empresa_personal.id_empresa= {idEmpresa}		
           and tr_mantic_empresa_personal.id_activo= 1  		  
-				  and {condicion}
 					and tc_mantic_puestos.nombre= 'CONTRATISTA'
 				order by 
 					tc_mantic_puestos.nombre,
