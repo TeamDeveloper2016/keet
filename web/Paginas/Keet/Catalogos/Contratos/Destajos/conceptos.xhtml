@@ -147,7 +147,7 @@
               </f:facet>
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión" disabled="#{row.idEstacionEstatus eq '3' or (row.idEvidencia eq '1' and row.imagen eq '0')}"/>
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1' and row.idEvidencia eq '2'}"/>
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1' or row.idNomina.toLong gt '0'}"/>
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel== null? 0: keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>

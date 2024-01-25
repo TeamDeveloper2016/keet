@@ -10357,6 +10357,8 @@ order by
 			<select id="conceptos">
 				select
 					tc_keet_estaciones.id_estacion as id_key,
+          ifnull(tc_keet_contratos_destajos_contratistas.id_nomina, ifnull(tc_keet_contratos_destajos_proveedores.id_nomina, -1)) as id_nomina,
+          ifnull(tc_keet_contratos_destajos_contratistas.porcentaje, ifnull(tc_keet_contratos_destajos_proveedores.porcentaje, 0)) as porcentaje,
 					tc_keet_estaciones.nivel,
 					tc_keet_estaciones.clave,
 					tc_keet_estaciones.id_empaque_unidad_medida,
