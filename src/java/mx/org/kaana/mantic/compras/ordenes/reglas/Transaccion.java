@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -22,6 +23,7 @@ import mx.org.kaana.keet.db.dto.TcKeetOrdenesFamiliasDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesMaterialesDto;
 import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
@@ -31,17 +33,22 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenFamilia;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLote;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.log4j.Logger;
@@ -200,6 +207,7 @@ public class Transaccion extends Inventarios implements Serializable {
        			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
 					break;
 				case JUSTIFICAR:
+          Long idOrdenEstatus= this.orden.getIdOrdenEstatus();
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -213,7 +221,7 @@ public class Transaccion extends Inventarios implements Serializable {
                 DaoFactory.getInstance().update(sesion, codigo);
               } // if
             } // if
-						if(this.orden.getIdOrdenEstatus().equals(7L)) {
+						if(Objects.equals(this.orden.getIdOrdenEstatus(), 7L)) {
 							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
               // ESTO ES PARA GENERAR UNA NUEVA ORDEN DE COMPRA PARTIENDO DE LAS PARTIDAS QUE NO FUERON SURTIDAS O QUE LES FALTO POR SURTIR
               TcManticOrdenesComprasDto clone= (TcManticOrdenesComprasDto)orden.clone();
@@ -225,7 +233,10 @@ public class Transaccion extends Inventarios implements Serializable {
               clone.setEjercicio(new Long(Fecha.getAnioActual()));
               clone.setObservaciones((clone.getObservaciones()!= null? clone.getObservaciones()+ ", ": "")+ "ORDEN FUENTE "+ this.orden.getConsecutivo());
               this.cloneOrdenCompra= this.toCreateOrdenCompra(sesion, this.orden.getKey(), clone);
-            } // if  
+            } // if 
+            else  // SI SE CANCELA O ELIMINA UNA ORDEN DE COMPRA NOTIFICAR
+  						if(Objects.equals(idOrdenEstatus, 3L) && Objects.equals(this.orden.getIdOrdenEstatus(), 2L)) 
+                this.notificarCancelacion();
 					} // if
 					break;
 				case DEPURAR:
@@ -557,5 +568,89 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // catch	
 		return regresar;
 	} // registrarFamilias
+
+	private Reporte doReporte(String nombre) throws Exception {
+    Reporte regresar             = null;
+		Parametros comunes           = null;
+		Map<String, Object>params    = new HashMap();
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try{		
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
+      comunes= new Parametros(this.orden.getIdEmpresa(), this.orden.getIdAlmacen(), this.orden.getIdProveedor(), -1L);
+      regresar= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
+      if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE)) 
+        parametros.put("REPORTE_FIRMA", JsfBase.getRealPath("/Paginas/Mantic/Catalogos/Empleados/Firmas/"));
+      regresar.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
+      regresar.doAceptarSimple();			
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  } 
+  
+  private void notificarCancelacion() throws Exception {
+		StringBuilder sb          = new StringBuilder("");
+		Map<String, Object> params= new HashMap<>();
+		String[] emails           = null;
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        sb.append("auxadministrativo@cafuconstrucciones.com");
+        emails= sb.toString().split("[,]");
+        break;
+      case "gylvi":
+		    emails= sb.toString().split("[,]");
+        break;
+      case "triana":
+     		emails= sb.toString().split("[,]");
+        break;
+    } // swtich   
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Orden de compra");			
+			params.put("razonSocial", "<<< CANCELADO >>>");
+			params.put("correo", ECorreos.ORDENES_CANCEL.getEmail());		
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
+			Reporte reporte= this.doReporte("ORDEN_DETALLE");
+			Attachment attachments= new Attachment(reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.ORDENES_CANCEL.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_CANCEL, ECorreos.ORDENES_CANCEL.getEmail(), item, ECorreos.ORDENES_CANCEL.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - Orden de compra"), params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+		} // try // try
+		catch(Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally    
+  }
   
 } 

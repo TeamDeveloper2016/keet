@@ -483,7 +483,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         transaccion = new Transaccion(orden, bitacora, idOrdenCodigo);
         if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
           JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-          // SI CAMBIA EL ESTATUS A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA A LOS PROVEEDORES
+          // SI CAMBIA EL ESTATUS A SOLICITADA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA A LOS PROVEEDORES
           if(Objects.equals(orden.getIdOrdenEstatus(), 3L)) {
             this.doLoadMails();
             UIBackingUtilities.update("dialogoCorreos");

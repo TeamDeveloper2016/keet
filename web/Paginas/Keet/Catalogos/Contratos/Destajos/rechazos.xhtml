@@ -64,7 +64,7 @@
 						</p:tab>																			
 					</p:accordionPanel>	
 					<p:spacer/>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosRechazos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosRechazos.selecteds}" paginator="#{keetCatalogosContratosDestajosRechazos.lazyModel.rowCount gt keetCatalogosContratosDestajosRechazos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosRechazos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosRechazos.selecteds}" paginator="#{keetCatalogosContratosDestajosRechazos.lazyModel.rowCount gt keetCatalogosContratosDestajosRechazos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
 						<p:column selectionMode="multiple" class="janal-wid-col-30 janal-column-center"/>						
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
@@ -96,11 +96,11 @@
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" disabled="#{keetCatalogosContratosDestajosRechazos.lazyModel== null or keetCatalogosContratosDestajosRechazos.lazyModel.rowCount lt 1}"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"  disabled="#{keetCatalogosContratosDestajosRechazos.lazyModel== null or keetCatalogosContratosDestajosRechazos.lazyModel.rowCount lt 1}"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

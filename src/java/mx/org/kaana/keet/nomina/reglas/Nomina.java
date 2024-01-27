@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
@@ -386,6 +387,8 @@ public class Nomina implements Serializable {
 					lote.setIdNomina(this.nomina.getIdNomina());
 					regresar+= lote.getCosto();
 					DaoFactory.getInstance().update(this.sesion, lote);
+          params.put("idContratoDestajoContratista", lote.getIdContratoDestajoContratista());
+    			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosContratistasDto.class, params, "marcar");
 				} // for
 				this.toLookUpConcepto(particulares, ECodigosIncidentes.DESTAJO, regresar);
         // UNA VEZ RESTADO LOS DESTAJOS MENOS LOS SALARIOS DE LOS CHALES SUMAR AL SUELDO BASE DEL TRABAJO EL RESTO

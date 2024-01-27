@@ -88,7 +88,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
   @Override
   public void doLoad() {
 		Map<String, Object>params= this.toPrepare();
-    List<Columna> columns    = null;				
+    List<Columna> columns    = new ArrayList<>();				
     Entity figura            = (Entity)this.attrs.get("figura");
     try {      			
       params.put("idProveedor", -1L);
@@ -98,7 +98,6 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
           params.put("idEmpresaPersona", new Long(figura.getKey().toString().substring(4)));
         else
           params.put("idProveedor", new Long(figura.getKey().toString().substring(4)));
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                  
@@ -153,14 +152,11 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
   } // doPagina
 	
 	protected Revision loadRevision() {
-		Revision regresar  = null;
-		Entity figura      = null;
-		Entity seleccionado= null;
+		Revision regresar  = new Revision();
+		Entity figura      = (Entity) this.attrs.get("figura");
+		Entity seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 		Long idFigura      = -1L;
 		try {
-			regresar= new Revision();
-			figura= (Entity) this.attrs.get("figura");
-			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 			idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
 			regresar.setIdFigura(idFigura);
 			regresar.setTipo(figura.toLong("tipo"));
@@ -197,5 +193,6 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doCancelar		
+  } 
+  
 }

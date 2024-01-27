@@ -24,6 +24,8 @@ import mx.org.kaana.keet.db.dto.TcKeetAnticiposDto;
 import mx.org.kaana.keet.db.dto.TcKeetAnticiposPagosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetIncidentesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetIncidentesDto;
@@ -284,19 +286,20 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 	
 	private void cleanNomina(Session sesion) throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		try {		
-			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDetallesDto.class, "nomina", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasPersonasDto.class, "nomina", params);
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosContratistasDto.class, params, "nomina");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosContratistasDto.class, params, "nomina");
 			DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params, "nomina");
 			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "nomina");
 			
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasRubrosDto.class, "nomina", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasProveedoresDto.class, "nomina", params);
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params, "nomina");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "nomina");
 			sesion.flush();
     } // try
 		finally {
@@ -312,6 +315,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params, "persona");
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDetallesDto.class, "persona", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasPersonasDto.class, "persona", params);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosContratistasDto.class, params, "persona");
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosContratistasDto.class, params, "persona");
     } // try
 		finally {
@@ -327,6 +331,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "persona");
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasRubrosDto.class, "proveedor", params);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasProveedoresDto.class, "proveedor", params);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "proveedor");
 			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params, "proveedor");
     } // try
 		finally {

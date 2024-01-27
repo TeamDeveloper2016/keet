@@ -10355,75 +10355,77 @@ order by
 				  and {condicion}
 			</select>
 			<select id="conceptos">
-				select
-					tc_keet_estaciones.id_estacion as id_key,
-          ifnull(tc_keet_contratos_destajos_contratistas.id_nomina, ifnull(tc_keet_contratos_destajos_proveedores.id_nomina, -1)) as id_nomina,
-          ifnull(tc_keet_contratos_destajos_contratistas.porcentaje, ifnull(tc_keet_contratos_destajos_proveedores.porcentaje, 0)) as porcentaje,
-					tc_keet_estaciones.nivel,
-					tc_keet_estaciones.clave,
-					tc_keet_estaciones.id_empaque_unidad_medida,
-					tc_keet_estaciones.id_estacion_estatus,
-					tc_keet_estaciones.costo,
-					tc_keet_estaciones.anticipo,
-          tc_keet_estaciones.costo as importe,
-          tc_keet_estaciones.anticipo as retencion,
-          ifnull(tc_keet_contratos_contratistas_archivos.codigo, ifnull(tc_keet_contratos_proveedores_archivos.codigo, '0')) as imagen,
-          if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
-          if(tc_keet_estaciones.entrega is null, 'NO HA INICIADO', if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.entrega), ' DIAS ANTES'), if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 'TERMINO EN TIEMPO', concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.termino, tc_keet_estaciones.entrega), ' DIAS DESPUÉS')))) as dias,
-					principal.*
-				from(  
-				select
-					tc_keet_puntos_paquetes.id_punto_grupo,  
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_departamentos.nombre departamento,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-          tc_keet_rubros.id_evidencia,
-          tc_keet_rubros.criterio,
-					tc_keet_rubros.orden
-				from 
-					tc_keet_puntos_paquetes
-				inner join 
-					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
-				inner join
-					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
-				inner join
-					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
-				inner join
-					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
-				where
-					tc_keet_puntos_grupos.id_departamento in ({idDepartamento})
-          and (tc_keet_rubros.nombre like upper('%{nombreConcepto}%') 
-          or tc_keet_rubros.codigo like upper('%{nombreConcepto}%')) 
-          and tc_keet_puntos_grupos.id_extra=2
-				group by
-					tc_keet_puntos_paquetes.id_punto_grupo,   
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros.codigo
-				) principal
-				inner join
-					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
-        left join
-          tc_keet_contratos_destajos_contratistas on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_contratistas.id_estacion
-        left join
-          tc_keet_contratos_contratistas_archivos on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista= tc_keet_contratos_contratistas_archivos.id_contrato_destajo_contratista and tc_keet_contratos_contratistas_archivos.codigo= tc_keet_estaciones.codigo
-        left join
-          tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_proveedores.id_estacion         
-        left join
-          tc_keet_contratos_proveedores_archivos on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor= tc_keet_contratos_proveedores_archivos.id_contrato_destajo_proveedor and tc_keet_contratos_proveedores_archivos.codigo= tc_keet_estaciones.codigo     
-				where
-					tc_keet_estaciones.clave like '{clave}%'
-				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
-          and tc_keet_estaciones.costo&gt; 0
-        group by
-           tc_keet_estaciones.id_estacion
-        order by 
-				  tc_keet_estaciones.clave
+select
+  tc_keet_estaciones.id_estacion as id_key,
+  ifnull(tc_keet_nominas.id_nomina_estatus, -1) as id_nomina_estatus,
+  ifnull(tc_keet_contratos_destajos_contratistas.porcentaje, ifnull(tc_keet_contratos_destajos_proveedores.porcentaje, 0)) as porcentaje,
+  tc_keet_estaciones.nivel,
+  tc_keet_estaciones.clave,
+  tc_keet_estaciones.id_empaque_unidad_medida,
+  tc_keet_estaciones.id_estacion_estatus,
+  tc_keet_estaciones.costo,
+  tc_keet_estaciones.anticipo,
+  tc_keet_estaciones.costo as importe,
+  tc_keet_estaciones.anticipo as retencion,
+  ifnull(tc_keet_contratos_contratistas_archivos.codigo, ifnull(tc_keet_contratos_proveedores_archivos.codigo, '0')) as imagen,
+  if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
+  if(tc_keet_estaciones.entrega is null, 'NO HA INICIADO', if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.entrega), ' DIAS ANTES'), if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 'TERMINO EN TIEMPO', concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.termino, tc_keet_estaciones.entrega), ' DIAS DESPUÉS')))) as dias,
+  principal.*
+from(  
+select
+  tc_keet_puntos_paquetes.id_punto_grupo,  
+  tc_keet_puntos_grupos.id_departamento,
+  tc_keet_departamentos.nombre departamento,
+  tc_keet_puntos_grupos.grupo,
+  tc_keet_puntos_grupos.descripcion,
+  tc_keet_rubros_grupos.id_rubro_grupo,
+  tc_keet_rubros_grupos.id_rubro,
+  tc_keet_rubros.codigo,
+  tc_keet_rubros.nombre,
+  tc_keet_rubros.id_evidencia,
+  tc_keet_rubros.criterio,
+  tc_keet_rubros.orden
+from 
+  tc_keet_puntos_paquetes
+inner join 
+  tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+inner join
+  tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+inner join
+  tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+inner join
+  tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+where
+  tc_keet_puntos_grupos.id_departamento in ({idDepartamento})
+  and (tc_keet_rubros.nombre like upper('%{nombreConcepto}%') 
+  or tc_keet_rubros.codigo like upper('%{nombreConcepto}%')) 
+  and tc_keet_puntos_grupos.id_extra=2
+group by
+  tc_keet_puntos_paquetes.id_punto_grupo,   
+  tc_keet_puntos_grupos.id_departamento,
+  tc_keet_rubros_grupos.id_rubro_grupo,
+  tc_keet_rubros.codigo
+) principal
+inner join
+  tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+left join
+  tc_keet_contratos_destajos_contratistas on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_contratistas.id_estacion
+left join
+  tc_keet_contratos_contratistas_archivos on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista= tc_keet_contratos_contratistas_archivos.id_contrato_destajo_contratista and tc_keet_contratos_contratistas_archivos.codigo= tc_keet_estaciones.codigo
+left join
+  tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_proveedores.id_estacion         
+left join
+  tc_keet_contratos_proveedores_archivos on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor= tc_keet_contratos_proveedores_archivos.id_contrato_destajo_proveedor and tc_keet_contratos_proveedores_archivos.codigo= tc_keet_estaciones.codigo     
+left join
+  tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina or tc_keet_contratos_destajos_proveedores.id_nomina= tc_keet_nominas.id_nomina
+where
+  tc_keet_estaciones.clave like '{clave}%'
+  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
+  and tc_keet_estaciones.costo&gt; 0
+group by
+   tc_keet_estaciones.id_estacion
+order by 
+  tc_keet_estaciones.clave
 			</select>
 			<select id="controles">
 				select
@@ -11000,53 +11002,57 @@ order by
 					)
 			</select>
 			<select id="puntosRechazos">
-        select
-          tc_keet_puntos_paquetes.id_punto_paquete as id_key,
-          tc_keet_puntos_grupos.grupo,
-          tc_keet_puntos_grupos.descripcion,
-          tc_keet_puntos_controles.id_punto_control,
-          tc_keet_puntos_controles.nombre,
-          tc_keet_puntos_controles.factor,
-          tc_keet_puntos_controles.orden,
-          ifnull(tc_keet_contratos_puntos_proveedores.registro, tc_keet_contratos_puntos_contratistas.registro) as registro             
-        from
-          tc_keet_puntos_paquetes     
-        inner join
-          tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo     
-        inner join
-          tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control         
-        left join
-          tc_keet_contratos_puntos_proveedores on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_proveedores.id_punto_paquete         
-        left join
-          tc_keet_contratos_puntos_contratistas on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_contratistas.id_punto_paquete     
-        where
-          tc_keet_puntos_grupos.id_departamento= {idDepartamento}             
-          and tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}       
-          and (
-           concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista) in (
-						select
-							concat(tc_keet_contratos_puntos_contratistas.id_punto_paquete, '-', tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista)       
-						from
-							tc_keet_contratos_destajos_contratistas       
-						inner join
-							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista       
-						inner join
-							tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista 
-						where
-							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion} and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona})
-           or
-						concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor) in (
-						select
-							concat(tc_keet_contratos_puntos_proveedores.id_punto_paquete, '-', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor)       
-						from
-							tc_keet_contratos_destajos_proveedores       
-						inner join
-							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor 
-						inner join
-							tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor 
-						where
-							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion} and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor})
-				)
+select
+  tc_keet_puntos_paquetes.id_punto_paquete as id_key,
+  ifnull(tc_keet_nominas.id_nomina_estatus, -1) as id_nomina_estatus,
+  tc_keet_puntos_grupos.grupo,
+  tc_keet_puntos_grupos.descripcion,
+  tc_keet_puntos_controles.id_punto_control,
+  tc_keet_puntos_controles.nombre,
+  tc_keet_puntos_controles.factor,
+  tc_keet_puntos_controles.orden,
+  ifnull(tc_keet_contratos_puntos_proveedores.registro, tc_keet_contratos_puntos_contratistas.registro) as registro             
+from
+  tc_keet_puntos_paquetes     
+inner join
+  tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo     
+inner join
+  tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control         
+left join
+  tc_keet_contratos_puntos_proveedores on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_proveedores.id_punto_paquete         
+left join
+  tc_keet_contratos_puntos_contratistas on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_contratistas.id_punto_paquete     
+left join
+  tc_keet_nominas on tc_keet_contratos_puntos_contratistas.id_nomina= tc_keet_nominas.id_nomina or tc_keet_contratos_puntos_proveedores.id_nomina= tc_keet_nominas.id_nomina
+where
+  tc_keet_puntos_grupos.id_departamento= {idDepartamento}             
+  and tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo} 
+  and (tc_keet_nominas.id_nomina_estatus!= 4 or tc_keet_nominas.id_nomina_estatus is null)
+  and (
+   concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista) in (
+    select
+      concat(tc_keet_contratos_puntos_contratistas.id_punto_paquete, '-', tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista)       
+    from
+      tc_keet_contratos_destajos_contratistas       
+    inner join
+      tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista       
+    inner join
+      tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista 
+    where
+      tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion} and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona})
+   or
+    concat(tc_keet_puntos_paquetes.id_punto_paquete, '-', tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor) in (
+    select
+      concat(tc_keet_contratos_puntos_proveedores.id_punto_paquete, '-', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor)       
+    from
+      tc_keet_contratos_destajos_proveedores       
+    inner join
+      tc_keet_contratos_puntos_proveedores on tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor 
+    inner join
+      tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor 
+    where
+      tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion} and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor})
+)
 			</select>
 			<select id="puntosRechazosResidentes">
 				select

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
 import mx.org.kaana.keet.nomina.beans.Rubro;
@@ -39,9 +40,8 @@ public class Factura implements Serializable {
 	}
 	
 	public void process(TcKeetNominasProveedoresDto proveedor) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			params.put("idProveedor", proveedor.getIdProveedor());
 			List<TcKeetContratosDestajosProveedoresDto> lotes= (List<TcKeetContratosDestajosProveedoresDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosProveedoresDto.class, "VistaNominaDto", "subContratista", params);
@@ -53,6 +53,8 @@ public class Factura implements Serializable {
 					suma+= lote.getCosto();
 					anticipo+= lote.getAnticipo();
 					DaoFactory.getInstance().update(this.sesion, lote);
+          params.put("idContratoDestajoContratista", lote.getIdContratoDestajoProveedor());
+    			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "marcar");
 				} // for
 				proveedor.setDestajo(Numero.toRedondearSat(suma));
 				proveedor.setAnticipo(Numero.toRedondearSat(anticipo));
@@ -76,7 +78,7 @@ public class Factura implements Serializable {
             DaoFactory.getInstance().insert(this.sesion, rubro);
           } // try
           catch(Exception e) {
-            LOG.error("FALLO: "+ rubro);
+            LOG.error("FALLO: "+ rubro+ "["+ e+ "]");
           } // catch
         } // for		
 			} // if
