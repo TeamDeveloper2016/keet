@@ -19,35 +19,6 @@
   <ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
     <script type="text/javascript">		
-PrimeFaces.locales['es'] = {
-    backLabel: 'Atras',
-    nextLabel: 'Siguiente',
-    closeText: 'Cerrar',
-    prevText: 'Anterior',
-    nextText: 'Siguiente',
-    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-    dayNames: ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'],
-    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-    dayNamesMin: ['D','L','M','M','J','V','S'],
-    weekHeader: 'Semana',
-    firstDay: 1,
-    isRTL: false,
-    showMonthAfterYear: false,
-    yearSuffix: '',
-    timeOnlyTitle: 'S\u00F3lo hora',
-    timeText: 'Tiempo',
-    hourText: 'Hora',
-    minuteText: 'Minuto',
-    secondText: 'Segundo',
-    currentText: 'Fecha actual',
-    ampm: false,
-    month: 'Mes',
-    week: 'Semana',
-    day: 'D\u00EDa',
-    allDayText : 'Todo el d\u00EDa'
-};
-  
       function executeViewChange() {
         $('.fc-prev-button, .fc-next-button, .fc-today-button, .fc-month-button, .fc-agendaWeek-button, .fc-agendaDay-button ').on('click.schedule', function(event) {
           event.stopImmediatePropagation();
@@ -145,7 +116,8 @@ PrimeFaces.locales['es'] = {
                 <p:panel style="height:505px;" class="graphic-update-pagar">
                   <div class="Container100">
                     <h:form>                  			                  
-                      <p:dataTable lazy="true" id="agendar" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModelAgendar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                      <p:dataTable lazy="true" id="agendar" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModelAgendar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolCalendario.attrs.seleccionadoDetalle}" reflow="true" paginatorPosition="top">
+                        <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
                         <f:facet name="header">
                           <p:outputLabel value="&lt;i class='icon-calendar'&gt;&lt;/i&gt; Cuentas por agendar" escape="false" styleClass="janal-icons-header janal-color-white"/>
                           <p:menuButton value="Opciones">
@@ -182,6 +154,11 @@ PrimeFaces.locales['es'] = {
                           <p:outputLabel value="Total [#{kajoolCalendario.lazyModelAgendar.rowCount}] registros"/>
                         </f:facet>
                       </p:dataTable>
+                      <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="agendar"> 
+                        <p:menuitem icon="fa fa-check-square-o" value="Calendarizar" onstart="return janal.bloquear()" action="#{kajoolCalendario.doModificar}" process="@this agendar" />
+            						<p:separator/>
+                        <p:menuitem icon="fa fa-plus" value="Nota de entrada" action="#{kajoolCalendario.doManual}" onstart="return janal.bloquear()" process="@this agendar"/>						
+                      </p:contextMenu>
                       <h:commandLink id="dataPdfAgendar">                    
                         <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
                       </h:commandLink>

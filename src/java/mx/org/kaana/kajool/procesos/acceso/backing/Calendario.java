@@ -15,6 +15,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -282,7 +283,7 @@ public class Calendario extends Comun implements Serializable {
         else
           if(Objects.equals(item.toLong("cantidad"), item.toLong("liquidadas")))
             color= "verde";
-        registro= new DefaultScheduleEvent(item.toLong("cantidad")+ " CUENTAS", item.toTimestamp("limite"), item.toTimestamp("limite"));
+        registro= new DefaultScheduleEvent(item.toLong("cantidad")+ " CUENTAS", item.toDate("limite").atStartOfDay(), item.toDate("limite").atStartOfDay());
         registro.setStyleClass("janal-semaforo-".concat(color));
         registro.setId(item.getKey().toString());
         registro.setEditable(Boolean.FALSE);
@@ -322,5 +323,38 @@ public class Calendario extends Comun implements Serializable {
     } // switch
     return regresar;
   }
+ 
+	public String doModificar() {
+		String regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/prorroga";
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Contenedor/calendario");		
+			JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idNotaEntrada"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresaDeuda"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresa"));
+			regresar= regresar.concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} 
+ 
+  public String doManual() {
+		String regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion";
+		try {
+		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Contenedor/calendario");		
+			JsfBase.setFlashAttribute("idProveedor", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idProveedor"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresa"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda", -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  } 
   
 }

@@ -337,13 +337,13 @@ private static final long serialVersionUID = 8793667741599428879L;
 	} // doImportar
 	
 	public String doModificar() {
-		String regresar= null;
+		String regresar= "prorroga";
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
 			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
-			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toString("idEmpresa"));
-			regresar= "prorroga".concat(Constantes.REDIRECIONAR);
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresa"));
+			regresar= regresar.concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

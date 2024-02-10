@@ -180,6 +180,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(0D);
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(0D);
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(0D);
+			((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(((NotaEntrada)this.getAdminOrden().getOrden()).getDeuda());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(((NotaEntrada)this.getAdminOrden().getOrden()).getDeuda());
       ((NotaEntrada)this.getAdminOrden().getOrden()).setIdAlmacenista(null);
 			nota= new NotaEntradaProcess();
@@ -188,8 +189,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml())) {
-          if(this.getEmisor().getRfc().equals(this.proveedor.getRfc())) {
+        if(Boolean.TRUE || !Cadena.isVacio(this.getXml())) {
+          if(Cadena.isVacio(this.getXml()) || this.getEmisor().getRfc().equals(this.proveedor.getRfc())) {
             transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.COMPLETO) || this.aplicar) {
@@ -201,7 +202,7 @@ public class Accion extends IBaseArticulos implements Serializable {
               } // if	
               else 
                 if(!this.accion.equals(EAccion.CONSULTAR)) 
-                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.COMPLETO) ? "agregó" : "modificó").concat(" la nota de entrada manual."), ETipoMensaje.INFORMACION);
+                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.COMPLETO) ? "agregó" : "modificó").concat(" la nota de entrada"), ETipoMensaje.INFORMACION);
               JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
               JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedor"));
               JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
