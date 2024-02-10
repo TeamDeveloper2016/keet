@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,11 +88,18 @@ public class Fecha {
     return nombreMes[mes];
   } // getNombreMesCorto
 
-  public static int  getNumeroMes(String mes) {
+  public static int getNumeroMesCorto(String mes) {
     String[] nombreMes = { "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC" };
     return  Arrays.asList(nombreMes).indexOf(mes.substring(0,3).toUpperCase())+1;
   } // getNumeroMes
 
+  public static int getNumeroMesLargo(String mes) {
+    String[] nombreMes =
+    { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+    List<String> meses= Arrays.asList(nombreMes);
+    return meses.indexOf(Cadena.letraCapital(mes))+ 1;
+  } 
+  
   public static String getNombreDia(int dia) {
     String nombreDia[] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };
     return nombreDia[dia - 1];
@@ -796,7 +804,15 @@ public class Fecha {
       regresar = date.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     return regresar;
   } // getLocalTimeBD
-	
+
+  public static LocalDate getLocalDate(Calendar calendar) {
+    Calendar regresar = calendar.getInstance();
+    Date date = regresar.getTime();
+    Instant instant = date.toInstant();
+    ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+    return zonedDateTime.toLocalDate();
+  }   
+        
 	public static void main(String ... args) {
     String value= "12/12/2017 17:15:19";
     LocalDateTime date= Instant.ofEpochMilli(Fecha.getFechaHora(value).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -806,5 +822,5 @@ public class Fecha {
 		LOG.info(Fecha.toFormatSecondsToHour(SECONDS.between(date, LocalDateTime.now())));
 		LOG.info(Fecha.toFormatSecondsToHour(DAYS.between(date.toLocalDate(), LocalDate.now())* 86400));
 	}
-	
+
 } // Fecha

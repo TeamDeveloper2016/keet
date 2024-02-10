@@ -177,23 +177,23 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosFiltro.lazyModel==null?0:keetCatalogosContratosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<!--p:menuitem action="#{keetCatalogosContratosFiltro.doHola()}" icon="fa fa-search" value="Verificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" /-->					
-						<p:menuitem id="consultar" action="#{keetCatalogosContratosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetCatalogosContratosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					            
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					            
 						<p:separator/>
-            <p:menuitem id="materiales" action="#{keetCatalogosContratosFiltro.doMateriales()}" icon="fa fa-upload" ajax="false" value="Materiales" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="importar" action="#{keetCatalogosContratosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="generadores" action="#{keetCatalogosContratosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="presupuestos" action="#{keetCatalogosContratosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="estaciones" action="#{keetCatalogosContratosFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" ajax="false" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doMateriales()}" icon="fa fa-upload" ajax="false" value="Materiales" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem action="#{keetCatalogosContratosFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" ajax="false" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
-            <p:menuitem id="garantias" icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
-            <p:menuitem id="extras" icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
-            <p:menuitem id="adicionales" icon="fa fa-server" value="Adicionales" action="#{keetCatalogosContratosFiltro.doAdicionales()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:menuitem icon="fa fa-copy" value="Garantías" action="#{keetCatalogosContratosFiltro.doGarantias()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
+            <p:menuitem icon="fa fa-paste" value="Extras" action="#{keetCatalogosContratosFiltro.doExtras()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:menuitem icon="fa fa-server" value="Adicionales" action="#{keetCatalogosContratosFiltro.doAdicionales()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="fondo" icon="fa fa-medium" value="Fondo garantía" action="#{keetCatalogosContratosFiltro.doFondoGarantia()}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:separator/>					

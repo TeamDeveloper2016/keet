@@ -3224,7 +3224,7 @@ where
         from      
           tr_mantic_empresa_tipo_contacto
         where      
-          id_empresa = {idEmpresa} 
+          id_empresa in ({idEmpresa})
           and id_tipo_contacto in ({idTipoContacto})
         order by
           id_tipo_contacto desc

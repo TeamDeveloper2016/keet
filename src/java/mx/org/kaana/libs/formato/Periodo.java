@@ -140,8 +140,24 @@ public class Periodo {
     return getDiaComodin(1);
   }
 
+  public Periodo getSemanaSiguiente() {
+    return getDiaComodin(7);
+  }
+
+  public Periodo getQuincenaSiguiente() {
+    return getDiaComodin(15);
+  }
+
   public Periodo getDiaAnterior() {
     return getDiaComodin(-1);
+  }
+  
+  public Periodo getSemanaAnterior() {
+    return getDiaComodin(-7);
+  }
+  
+  public Periodo getQuincenaAnterior() {
+    return getDiaComodin(-15);
   }
 
   public boolean isQuincenaImpar() {

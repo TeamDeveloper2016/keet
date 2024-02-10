@@ -335,7 +335,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
 			if(!condiciones.isEmpty()) {        
-				if(this.accion.equals(EAccion.AGREGAR)){
+				if(this.accion.equals(EAccion.AGREGAR)) {
 					((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(condiciones.get(0).toString("descuento"));
 					this.doUpdatePorcentaje();
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
@@ -389,12 +389,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	private void toUpdateFamilias() throws Exception {
-		UISelectEntity proveedor     = null;
+		UISelectEntity proveedor     = (UISelectEntity) this.attrs.get("proveedor");
 		List<UISelectEntity> familias= null;
 		Map<String, Object>params    = new HashMap<>();
     Object[] list                = null;
 		try {
-			proveedor= (UISelectEntity) this.attrs.get("proveedor");
 			params.put("idProveedor", proveedor.getKey());
 			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			

@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetNotasContratosLotesDto;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
@@ -104,11 +105,10 @@ public class Transaccion extends Inventarios implements Serializable {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                     = false;
 		TcManticNotasBitacoraDto bitacoraNota= null;
-		Map<String, Object> params           = null;
+		Map<String, Object> params           = new HashMap<>();
 		Siguiente consecutivo                = null;
 		try {
-			if(this.orden!= null) {
-				params= new HashMap<>();
+			if(!Objects.equals(this.orden, null)) {
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
         if(Objects.equals(-1L, this.orden.getIdBanco()))
@@ -116,7 +116,7 @@ public class Transaccion extends Inventarios implements Serializable {
         if(Objects.equals(-1L, this.orden.getIdTipoPago()))
           this.orden.setIdTipoPago(null);
 			} // if
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada");
 			switch(accion) {
 				case MOVIMIENTOS:
 					if(this.orden.isValid()) {
@@ -379,9 +379,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private void toApplyNotaEntrada(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
 				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
@@ -394,10 +393,10 @@ public class Transaccion extends Inventarios implements Serializable {
 
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
-			if(Objects.equals(1L, this.orden.getIdTipoMedioPago())) // EFECTIVO 
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
+			if(Objects.equals(1L, this.orden.getIdTipoMedioPago()) && this.orden.getDiasPlazo()<= 1) // EFECTIVO 
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
 			else
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
 			DaoFactory.getInstance().insert(sesion, deuda);
       this.addSaldoProveedor(sesion, this.orden.getIdProveedor(), deuda.getSaldo());
       TcManticEmpresasBitacoraDto movimiento= new TcManticEmpresasBitacoraDto(

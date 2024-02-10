@@ -174,7 +174,7 @@
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
-                      <p:menuitem value="Nota de entrada manual" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
+                      <p:menuitem value="Nota de entrada" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion}" icon="fa fa-plus" title="Agregar nota de entrada" onstart="return janal.bloquear()"/>						
                       <p:separator/>
                       <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
                       <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
@@ -183,7 +183,7 @@
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">              
-                    <p:commandButton title="Nota de entrada manual" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+                    <p:commandButton title="Nota de entrada" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                     <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
@@ -274,6 +274,8 @@
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle"> 
                 <p:menuitem icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this detalle" />
                 <p:menuitem icon="fa fa-minus-circle" value="Pagar deuda" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doDeuda}" process="@this detalle"/>					
+                <p:separator/>
+                <p:menuitem icon="fa fa-check-square-o" value="Calendarizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this detalle" />
                 <p:separator/>
                 <p:menuitem icon="fa fa-check-square-o" value="Revisar doc" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this detalle" />
                 <p:separator/>

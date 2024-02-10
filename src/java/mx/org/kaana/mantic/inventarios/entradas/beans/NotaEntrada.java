@@ -21,6 +21,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 
 	private static final long serialVersionUID=3088884892456452488L;
 	
+	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikProveedor;
   private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
@@ -35,7 +36,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	private UISelectEntity ikEmpresaTipoContacto;
 
 	public NotaEntrada() throws Exception {
-		this(1L, null);
+		this(-1L, null);
 	}
 
 	public NotaEntrada(Long key, Long idOrdenCompra) throws Exception {
@@ -50,6 +51,16 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 
 	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, LocalDate fechaRecepcion, String extras, Long idNotaEntrada, LocalDate fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idProveedorPago) {
 		super(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subTotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, 30L, LocalDate.now(), 0D, idProveedorPago, 0D, -1L, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L);
+	}
+
+	public UISelectEntity getIkEmpresa() {
+		return ikEmpresa;
+	}
+
+	public void setIkEmpresa(UISelectEntity ikEmpresa) {
+		this.ikEmpresa=ikEmpresa;
+		if(this.ikEmpresa!= null)
+		  this.setIdEmpresa(this.ikEmpresa.getKey());
 	}
 
 	public UISelectEntity getIkAlmacen() {

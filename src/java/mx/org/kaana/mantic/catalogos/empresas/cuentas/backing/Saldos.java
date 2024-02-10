@@ -135,11 +135,10 @@ private static final long serialVersionUID = 8793667741599428879L;
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -210,10 +209,9 @@ private static final long serialVersionUID = 8793667741599428879L;
 	}
   
  	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasEstatusDto", "row", params, columns, "nombre");
@@ -241,12 +239,10 @@ private static final long serialVersionUID = 8793667741599428879L;
 	
 	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		String allEmpresa              = "";
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -262,13 +258,12 @@ private static final long serialVersionUID = 8793667741599428879L;
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // loadSucursales
+	} 
 	
 	public String doPago() {
 		String regresar    = null;
-		Entity seleccionado= null;
+		Entity seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
 			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
 			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
@@ -282,7 +277,7 @@ private static final long serialVersionUID = 8793667741599428879L;
 	} // doPago	
   
   public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
@@ -345,6 +340,7 @@ private static final long serialVersionUID = 8793667741599428879L;
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
+			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toString("idEmpresa"));
 			regresar= "prorroga".concat(Constantes.REDIRECIONAR);
@@ -360,9 +356,10 @@ private static final long serialVersionUID = 8793667741599428879L;
 		String regresar= "accion";
 		try {
 		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
-			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+			JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedor"));
 			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -373,9 +370,8 @@ private static final long serialVersionUID = 8793667741599428879L;
 
 	public String doDeuda() {
 		String regresar    = null;
-		Entity seleccionado= null;
+		Entity seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
 			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
 			regresar= "deuda".concat(Constantes.REDIRECIONAR);
@@ -389,9 +385,8 @@ private static final long serialVersionUID = 8793667741599428879L;
 	
 	public String doEstructura() {
 		String regresar    = null;
-		Entity seleccionado= null;
+		Entity seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
 			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
 			regresar= "estructura".concat(Constantes.REDIRECIONAR);
@@ -404,11 +399,10 @@ private static final long serialVersionUID = 8793667741599428879L;
 	} // doEstructura
 	
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo    = Boolean.FALSE;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -460,7 +454,7 @@ private static final long serialVersionUID = 8793667741599428879L;
 	}
 
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();
@@ -468,7 +462,7 @@ private static final long serialVersionUID = 8793667741599428879L;
 			params.put("sortOrder", "order by consecutivo desc");
 			params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
-      columns= new ArrayList<>();
+			this.attrs.put("idEmpresaDeuda", entity.getKey());
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    
@@ -513,14 +507,12 @@ private static final long serialVersionUID = 8793667741599428879L;
 	} // doRowTogglePagosRealizados
   
   public void doLoadDetallePagosRealizados() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {
-      params = new HashMap<>();      
 			Entity entity= (Entity)this.attrs.get("pagoRealizado");
 			params.put("sortOrder", "order by tc_mantic_empresas_pagos.registro desc");
 			params.put("idEmpresaPagoControl", entity.toLong("idEmpresaPagoControl"));
-      columns= new ArrayList<>();
       columns.add(new Columna("venta", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));      
 			this.lazyPagosRealizados= new FormatCustomLazy("VistaEmpresasDto", "detallePagosRealizados", params, columns);
@@ -537,16 +529,14 @@ private static final long serialVersionUID = 8793667741599428879L;
   }  
   
   public void doLoadPagosRealizados(Entity row) {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
       this.attrs.put("seleccionado", row);
-      params = new HashMap<>();      
       params.put("idProveedor", row.toLong("idProveedor"));      
       Periodo periodo= new Periodo();
       periodo.addMeses(-12);
       params.put("inicio", periodo.toString());      
-      columns = new ArrayList<>();
       columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEmpresasDto", "pagosRealizados", params);

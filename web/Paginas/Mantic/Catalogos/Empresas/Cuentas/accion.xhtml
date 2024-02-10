@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion} una nota de entrada (MANUAL)"/>
+	<ui:param name="titulo" value="#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion} una nota de entrada manual"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
@@ -21,9 +21,17 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idSucursal'     : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idDesarrollo'   : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idCliente'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idContrato'     : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:factura'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idBanco'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:referencia'     : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idEmpresaTipoContacto': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:extra'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})|menor-a({"cual": "contenedorGrupos\\\\:deuda"})', mascara: 'libre', formatos:'precio', individual: true},			
@@ -81,31 +89,55 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
-            <p:tab id="datosProveedor" title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+            <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle(); PF('panelReceptor').toggle()"/>
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
-								<p:spacer width="1px" style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/><p:separator style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
-								<p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.diasPlazo}">
-									<p:ajax event="keyup" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
-								</p:inputText>
-								<p:outputLabel for="extra" value="Descuento extra:"/>
-								<p:inputText id="extra" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.excedentes}"/>
-								<p:outputLabel for="deuda" value="Deuda:"/>
-								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.deuda}"/>
-								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario">
-									<p:ajax event="dateSelect" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
-								</p:calendar>
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
+								<p:outputLabel for="idSucursal" value="Sucursal:" />
+								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doLoadDesarrollos}" process="@this idSucursal" update="idDesarrollo idAlmacen idCliente idContrato lote" oncomplete="reloadDesarrollo();"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosEmpresasCuentasAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>                   
+								</p:selectOneMenu>
+								<p:outputLabel for="idCliente" value="Cliente:"/>
+								<p:inputText id="idCliente" value="#{manticCatalogosEmpresasCuentasAccion.attrs.cliente}" styleClass="janal-wid-100-txt todos" readonly="true"/>
+                <p:outputLabel for="idContrato" value="Contrato:"/>
+                <p:selectOneMenu id="idContrato" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doLoadLotes}" update="lote" process="@this idContrato" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+									<p:column headerText="Clave">
+										<p:outputLabel value="#{list.clave}"/>
+									</p:column>   
+									<p:column headerText="Etapa">
+										<p:outputLabel value="#{list.etapa}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="No. viviendas">
+										<p:outputLabel value="#{list.noViviendas}"/>
+									</p:column>   
+								</p:selectOneMenu>																						
+								<p:outputLabel for="lote" value="Lotes:"/>							
+                <p:selectCheckboxMenu id="lote" value="#{manticCatalogosEmpresasCuentasAccion.attrs.lotesSeleccion}" converter="janal.convertidor.Entity" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-100-txt" multiple="true" onchange="reloadLotes()" panelStyleClass="janal-wid-90">
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.lotes}" var="two" itemValue="#{two.key}" itemLabel="#{two.descripcionLote}"/>
+								</p:selectCheckboxMenu>
+								<p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
@@ -116,7 +148,7 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doUpdateProveedor}" update="@(.involucrados)" process="@this diasPlazo fechaPago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -148,8 +180,69 @@
 										<h:outputText value="#{item.plazo}"/>
 									</p:column>   
 								</p:selectOneMenu>
+								<p:outputLabel for="familia" value="Familia de materiales:"/>							
+                <p:selectCheckboxMenu id="familia" value="#{manticCatalogosEmpresasCuentasAccion.attrs.familiasSeleccion}" converter="janal.convertidor.Entity" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="recalculo janal-wid-100-txt" multiple="true" panelStyle="janal-wid-100-txt">
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.familias}" var="three" itemValue="#{three.key}" itemLabel="#{three.nombre}"/>
+								</p:selectCheckboxMenu>		
               </p:panelGrid>
 						</p:tab>						            						            																																																
+						<p:tab title="Forma de pago">
+              <p:panelGrid id="bancos" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-35, janal-wid-35, janal-wid-35">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
+                  <p:selectOneMenu id="idTipoMedioPago" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
+                    <f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
+                  <p:selectOneMenu id="idBanco" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-92 janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticCatalogosEmpresasCuentasAccion.attrs.isBanco}">
+                    <f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                    <p:column headerText="Razón social">
+                      <h:outputText value="#{item.razonSocial}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
+                  <p:inputText id="referencia" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticCatalogosEmpresasCuentasAccion.attrs.isBanco}"/>
+                </p:panelGrid>  
+              </p:panelGrid>       
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+                <p:outputLabel for="idEmpresaTipoContacto" value="Correo contacto:"/>
+                <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.empresaTiposContactos}" var="next" itemValue="#{next}" itemLabel="#{next.valor}"/>
+                </p:selectOneMenu>
+								<p:outputLabel for="factura" value="No factura:"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.factura}" onblur="if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaFactura}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaRecepcion}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
+								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.diasPlazo}">
+									<p:ajax event="keyup" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
+								</p:inputText>
+								<p:outputLabel for="extra" value="Descuento extra:"/>
+								<p:inputText id="extra" styleClass="recalculo involucrados janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.excedentes}"/>
+								<p:outputLabel for="deuda" value="Deuda:"/>
+								<p:inputText id="deuda" styleClass="recalculo involucrados janal-color-blue janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.deuda}"/>
+								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario">
+									<p:ajax event="dateSelect" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
+								</p:calendar>
+              </p:panelGrid>       
+            </p:tab>  
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
@@ -163,13 +256,14 @@
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/><br style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.attrs.observaciones}" style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/>
 							<p:spacer height="5px"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosEmpresasCuentasAccion.doFileUpload}" 
+              <p:fileUpload listener="#{manticCatalogosEmpresasCuentasAccion.doFileUpload}" 
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticCatalogosEmpresasCuentasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasCuentasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticCatalogosEmpresasCuentasAccion.xml.ruta}#{manticCatalogosEmpresasCuentasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticCatalogosEmpresasCuentasAccion.xml)? 'display: none': ''}"/>
 							<br/>
 							<p:commandLink value="PDF importado: #{manticCatalogosEmpresasCuentasAccion.pdf.ruta}#{manticCatalogosEmpresasCuentasAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticCatalogosEmpresasCuentasAccion.pdf)? 'display: none': ''}"/>
+							<br/>
 							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty manticCatalogosEmpresasCuentasAccion.emisor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								  <p:outputLabel value="Nombre:"/>
@@ -190,6 +284,10 @@
 									<p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.receptor.usoCfdi}" readonly="true"/>
 								</p:panelGrid>
 							</p:panel>
+              <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this lote" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContactos" onstart="return janal.bloquear();" process="@this" update="idEmpresaTipoContacto" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -199,12 +297,12 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpresasCuentasAccion.isAplicar}"/>
+      <p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{false and manticCatalogosEmpresasCuentasAccion.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosEmpresasCuentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpresasCuentasAccion.isAplicar}"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticCatalogosEmpresasCuentasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{false and manticCatalogosEmpresasCuentasAccion.isAplicar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasCuentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

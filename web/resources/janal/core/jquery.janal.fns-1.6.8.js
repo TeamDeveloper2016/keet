@@ -78,7 +78,7 @@ PrimeFaces.locales['mx'] = {
 };
 try {
   if(typeof(PrimeFacesExt)!== 'undefined') {
-    PrimeFacesExt.locales.TimePicker['es'] = {
+    PrimeFacesExt.locales.TimePicker['mx'] = {
         hourText: 'Hora',
         minuteText: 'Minuto',
         amPmText: ['AM', 'PM'],
@@ -86,7 +86,7 @@ try {
         nowButtonText: 'Ahora',
         deselectButtonText: 'Deseleccionar'
     };
-    PrimeFacesExt.locales.Timeline['es'] = {
+    PrimeFacesExt.locales.Timeline['mx'] = {
         MONTHS: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         MONTHS_SHORT: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
         DAYS: ['Domingo', 'Lunes', 'Martes', 'Mi\u00E9rcoles', 'Jueves', 'Viernes', 'S\u00E1bado'],

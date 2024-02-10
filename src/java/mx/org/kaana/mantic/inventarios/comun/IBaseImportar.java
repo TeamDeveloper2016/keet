@@ -306,9 +306,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	protected void doLoadFiles(String proceso, Long idSelected, String idNombre, Boolean sinIva, Double tipoDeCambio) {
 		Entity tmp= null;
 		if(idSelected!=null && idSelected> 0) {
-			Map<String, Object> params=null;
+			Map<String, Object> params= new HashMap<>();
 			try {
-				params=new HashMap<>();
 				params.put(idNombre, idSelected);
 				params.put("idTipoArchivo", 1L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);

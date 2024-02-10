@@ -74,6 +74,9 @@ public class Transaccion extends IBaseTnx {
 	private Long idEmpresaPago;
 	private TcManticEmpresasPagosControlesDto control;
   private Long idRevisado;
+  private LocalDate fechaRecepcion;
+  private Long idRecibio;
+  private Long proveedorPago;
 
 	public Transaccion(Long idArchivo) {
 		this.idArchivo= idArchivo;
@@ -132,6 +135,15 @@ public class Transaccion extends IBaseTnx {
     this.referencia   = referencia;
   }
 	
+	public Transaccion(Entity detalle, LocalDate fecha, LocalDate fechaRecepcion, Long idRevisado, Long idRecibio, Long proveedorPago) {
+		this.detalle   = detalle;
+		this.fecha     = fecha;
+		this.fechaRecepcion= fechaRecepcion;
+    this.idRevisado= idRevisado;
+		this.idRecibio = idRecibio;
+    this.proveedorPago= proveedorPago;
+	} // Transaccion	
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar    = false;
@@ -457,13 +469,26 @@ public class Transaccion extends IBaseTnx {
 		Double importe                 = 0.0D;
 		try {
 			deuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.detalle.getKey());
-			if(deuda.isValid()){				
+			if(deuda.isValid()) {				
 				importe= Double.valueOf(String.valueOf(this.detalle.get("importe")));
 				deuda.setLimite(this.fecha);
+        deuda.setIdRevisado(this.idRevisado);
+        deuda.setIdRecibio(this.idRecibio);
+        deuda.setFechaRecepcion(this.fechaRecepcion);
+        deuda.setIdProveedorPago(this.proveedorPago);
 				deuda.setImporte(importe);
 				deuda.setPagar(importe);
-				deuda.setSaldo(-1 * calculateSaldo(sesion, importe, this.detalle.getKey()));
-				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
+				deuda.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
+        deuda.setObservaciones(String.valueOf(this.detalle.get("observaciones")));
+				DaoFactory.getInstance().update(sesion, deuda);
+        TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
+          String.valueOf(this.detalle.get("observaciones")), // String justificacion, 
+          deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+          -1L // Long idEmpresaBitacora, 
+        );
+				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 			} // if
 		} // try
 		catch (Exception e) {
@@ -476,9 +501,8 @@ public class Transaccion extends IBaseTnx {
 		Double regresar          = 0.0D;
 		Double totalPagos        = 0.0D;
 		List<Entity>pagos        = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresaDeuda", idEmpresaDeuda);
 			pagos= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "pagosDeuda", params);
 			if(!pagos.isEmpty()){

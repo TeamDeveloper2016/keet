@@ -55,11 +55,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // init
 
 	private void loadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -91,11 +89,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params = this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoDia", EFormatoDinamicos.MAYUSCULAS));
@@ -142,11 +139,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doEliminar
 	
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -227,5 +223,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+
+  public String doManual() {
+		String regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion";
+		try {
+		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");		
+      JsfBase.setFlashAttribute("idProveedor", ((Entity) this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idEmpresaDeuda", -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  } 
   
 }

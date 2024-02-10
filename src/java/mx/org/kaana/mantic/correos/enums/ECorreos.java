@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public enum ECorreos {
+public enum ECorreos { 
   
   FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Facturas"), 
 	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
@@ -47,6 +47,8 @@ public enum ECorreos {
     empresas.put("cafu.cotizaciones.backup", "compras2@cafuconstrucciones.com");  
     empresas.put("cafu.ordenes_compra.email", "compras@cafuconstrucciones.com");  
     empresas.put("cafu.ordenes_compra.backup", "compras2@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_cancel.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_cancel.backup", "compras2@cafuconstrucciones.com");  
     empresas.put("cafu.cuentas.email", "ventas@cafuconstrucciones.com");  
     empresas.put("cafu.cuentas.backup", "");  
     empresas.put("cafu.ventas.email", "ventas@cafuconstrucciones.com");  
@@ -68,6 +70,8 @@ public enum ECorreos {
     empresas.put("gylvi.cotizaciones.backup", "compras2@gylvi.com");  
     empresas.put("gylvi.ordenes_compra.email", "compras@gylvi.com");  
     empresas.put("gylvi.ordenes_compra.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.ordenes_cancel.email", "compras@gylvi.com");  
+    empresas.put("gylvi.ordenes_cancel.backup", "compras2@gylvi.com");  
     empresas.put("gylvi.cuentas.email", "ventas@gylvi.com");  
     empresas.put("gylvi.cuentas.backup", "");  
     empresas.put("gylvi.ventas.email", "ventas@gylvi.com");  
@@ -89,6 +93,8 @@ public enum ECorreos {
     empresas.put("triana.cotizaciones.backup", "compras2@trianamx.com");  
     empresas.put("triana.ordenes_compra.email", "compras@trianamx.com");  
     empresas.put("triana.ordenes_compra.backup", "compras2@trianamx.com");  
+    empresas.put("triana.ordenes_cancel.email", "compras@trianamx.com");  
+    empresas.put("triana.ordenes_cancel.backup", "compras2@trianamx.com");  
     empresas.put("triana.cuentas.email", "ventas@trianamx.com");  
     empresas.put("triana.cuentas.backup", "");  
     empresas.put("triana.ventas.email", "ventas@trianamx.com");  
