@@ -21,8 +21,9 @@
 				  setTimeout(PF('kajoolTable').selectRow(0, false), 500);	
 				  $('#kajoolTable .ui-datatable-data').focus();
 				} // if	
-				else
-					populate();
+				else {
+					// populate();
+        } // if  
 			}
 			
 			function apply() {
@@ -82,7 +83,7 @@
                 <h:outputText value="Orden compra"/>
               </f:facet>
 							<p:commandLink action="#{manticComprasOrdenesDiferencias.doOrdenCompra}">
-								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.idOrdenCompra}" value="#{row.idOrdenCompra}"/>
+								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.ikOrdenCompra}" value="#{row.idOrdenCompra}"/>
                 <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		

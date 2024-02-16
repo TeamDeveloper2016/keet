@@ -2223,10 +2223,10 @@ where
 				  ejercicio
 			</select>
 			<update id="rows">
-				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
 			</update>
 			<delete id="rows">
-				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
+delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
 			</delete>
    </unit>		
    <unit id="TcManticCreditosArchivosDto">
@@ -5110,6 +5110,9 @@ order by
 				order by
 				  registro desc
 			</select>
+      <delete id="rows">
+delete from tc_mantic_notas_bitacora where id_nota_entrada = {idNotaEntrada}
+      </delete>
     </unit>		
 	  <unit id="TcManticVentasDto">
       <select id="row">

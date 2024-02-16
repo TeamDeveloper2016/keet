@@ -7128,54 +7128,54 @@ order by
   tc_mantic_proveedores.clave
 			</select>
 		  <select id="consulta">
-				select
-					tc_mantic_notas_detalles.id_nota_detalle as id_key,
-					tc_mantic_notas_entradas.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-					tc_mantic_notas_detalles.sat,
-					tc_mantic_notas_detalles.codigo,
-					tc_mantic_notas_detalles.nombre,
-					tc_mantic_notas_detalles.cantidad,
-					tc_mantic_notas_detalles.descuento,
-					tc_mantic_notas_detalles.extras,
-					tc_mantic_notas_detalles.cantidades,
-					tc_mantic_notas_detalles.costo,
-					tc_mantic_notas_detalles.costo_real,
-					tc_mantic_notas_detalles.costo_calculado,
-					tc_mantic_notas_detalles.importe,
-				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
-  				tc_mantic_notas_detalles.declarados,
-  				tc_mantic_notas_detalles.diferencia,
-				  tc_mantic_notas_estatus.nombre as estatus,
-				  tc_mantic_notas_estatus.id_nota_estatus,
-				  tc_mantic_notas_entradas.id_nota_entrada,
-				  tc_mantic_notas_entradas.id_orden_compra,
-				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_articulos.precio, tc_mantic_ordenes_detalles.costo) as valor,
-				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo_calculado, tc_mantic_ordenes_detalles.costo_calculado- tc_mantic_notas_detalles.costo_calculado) as temporal,
-				  if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)- 100)&lt; -5, 'janal-color-orange', if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)-100)&gt; 5, 'janal-color-blue', 'janal-color-green')) as color,
-				  if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)- 100) as porcentaje,
-				  tc_mantic_notas_detalles.id_aplicar,
-					tc_mantic_notas_detalles.id_articulo,
-				  ifnull(tc_mantic_notas_archivos.id_principal, 2) as id_principal,
-				  tc_mantic_notas_archivos.alias,
-				  tc_mantic_notas_archivos.nombre as archivo,
-					tc_mantic_notas_entradas.observaciones
-				from
-					tc_mantic_notas_entradas
-				inner join
-					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
-				inner join
-					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-				  tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
-				left join
-				  tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada and tc_mantic_notas_archivos.id_principal= 1 and tc_mantic_notas_archivos.id_tipo_archivo= 2
-				left join
-				  tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
-				where  
-					tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
-				  {condicion}
-				{sortOrder}
+select
+  tc_mantic_notas_detalles.id_nota_detalle as id_key,
+  tc_mantic_notas_entradas.consecutivo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+  tc_mantic_notas_detalles.sat,
+  tc_mantic_notas_detalles.codigo,
+  tc_mantic_notas_detalles.nombre,
+  tc_mantic_notas_detalles.cantidad,
+  tc_mantic_notas_detalles.descuento,
+  tc_mantic_notas_detalles.extras,
+  tc_mantic_notas_detalles.cantidades,
+  tc_mantic_notas_detalles.costo,
+  tc_mantic_notas_detalles.costo_real,
+  tc_mantic_notas_detalles.costo_calculado,
+  tc_mantic_notas_detalles.importe,
+  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
+  tc_mantic_notas_detalles.declarados,
+  tc_mantic_notas_detalles.diferencia,
+  tc_mantic_notas_estatus.nombre as estatus,
+  tc_mantic_notas_estatus.id_nota_estatus,
+  tc_mantic_notas_entradas.id_nota_entrada,
+  tc_mantic_notas_entradas.id_orden_compra,
+  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_articulos.precio, tc_mantic_ordenes_detalles.costo) as valor,
+  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo_calculado, tc_mantic_ordenes_detalles.costo_calculado- tc_mantic_notas_detalles.costo_calculado) as temporal,
+  if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)- 100)&lt; -5, 'janal-color-orange', if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)-100)&gt; 5, 'janal-color-blue', 'janal-color-green')) as color,
+  if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)- 100) as porcentaje,
+  tc_mantic_notas_detalles.id_aplicar,
+  tc_mantic_notas_detalles.id_articulo,
+  ifnull(tc_mantic_notas_archivos.id_principal, 2) as id_principal,
+  tc_mantic_notas_archivos.alias,
+  tc_mantic_notas_archivos.nombre as archivo,
+  tc_mantic_notas_entradas.observaciones
+from
+  tc_mantic_notas_entradas
+inner join
+  tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+inner join
+  tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
+left join
+  tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada and tc_mantic_notas_archivos.id_principal= 1 and tc_mantic_notas_archivos.id_tipo_archivo= 2
+left join
+  tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
+where  
+  tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
+  {condicion}
+{sortOrder}
 			</select>
 			<select id="confronta">
 				select

@@ -81,9 +81,12 @@ public class Diferencias extends IFilterImportar implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      columns = new ArrayList<>();
+      params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));      
+      params.put("idProveedor", this.attrs.get("idProveedor"));      
+      params.put("idAlmacen", this.attrs.get("idAlmacen"));      
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -94,28 +97,28 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      this.attrs.put("sortOrder", "order by nombre");
+      params.put("sortOrder", "order by nombre");
 			switch((Integer)this.attrs.get("tipoDiferencia")) {
 				case 0: // TODOS
-					this.attrs.put("seleccionado", null);
-					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+					params.put("seleccionado", null);
+					params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 					break;
 				case 1: // DIFERENCIA POR PRECIO
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes!= 0 and tc_mantic_ordenes_detalles.cantidad!= tc_mantic_ordenes_detalles.cantidades");
+					params.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes!= 0 and if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_ordenes_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo_real)- 100)!= 0");
 					break;
 				case 2: // DIFERENCIA POR CANTIDAD
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades!= 0 and tc_mantic_ordenes_detalles.cantidad!= tc_mantic_ordenes_detalles.cantidades");
+					params.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades!= 0 and tc_mantic_ordenes_detalles.cantidad!= tc_mantic_ordenes_detalles.cantidades");
 					break;
 				case 3: // PARTIDAS NO SOLICITADAS
-					this.attrs.put("seleccionado", null);
-					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
+					params.put("seleccionado", null);
+					params.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
 					break;
 				case 4: // PARTIDAS NO SURTIDAS
-					this.attrs.put("seleccionado", null);
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidad= tc_mantic_ordenes_detalles.cantidades");
+					params.put("seleccionado", null);
+					params.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidad= tc_mantic_ordenes_detalles.cantidades");
 					break;
 			} // switch
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("seleccionado", null);
 			this.doRowSelectEvent();
@@ -126,6 +129,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
     } // catch
     finally {
       Methods.clean(columns);
+      Methods.clean(params);
     } // finally		
   } // doLoad
 
@@ -182,9 +186,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	}
 
   public void doChangeAplicar(Entity afectado) {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAplicar", (boolean)afectado.toBoolean("afectar")? 1L: 2L);
 			DaoFactory.getInstance().update(TcManticNotasDetallesDto.class, afectado.getKey(), params);
 		} // try
@@ -198,12 +201,10 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	}	
 	
 	public void doRowSelectEvent() {
-		Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;
+		Entity seleccionado       = (Entity)this.attrs.get("seleccionado");
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
-      columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -228,7 +229,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		finally {
-			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally	
 	}
   

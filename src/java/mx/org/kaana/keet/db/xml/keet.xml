@@ -1795,10 +1795,10 @@ where
           id_nota_entrada = {idNotaEntrada}
       </select>
       <delete id="rows">
-        delete from
-          tc_keet_ordenes_contratos_lotes
-        where
-          id_nota_entrada = {idNotaEntrada}
+delete from
+  tc_keet_notas_contratos_lotes
+where
+  id_nota_entrada = {idNotaEntrada}
       </delete>
     </unit>
     <unit id="TcKeetContratosPuntosResidentesDto">
