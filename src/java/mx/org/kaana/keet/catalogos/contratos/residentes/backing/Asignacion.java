@@ -53,10 +53,9 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 	private void loadCatalogos() throws Exception {
 		Entity contrato          = null;
 		List<UISelectItem> lotes = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		String[] idsLotes        = null;
 		try {
-			params= new HashMap<>();			
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(this.attrs.get("idContrato").toString()));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);

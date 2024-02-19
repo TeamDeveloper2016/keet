@@ -73,9 +73,8 @@ public class Entrega extends IBaseFilter implements Serializable {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Entity vale              = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
@@ -87,7 +86,7 @@ public class Entrega extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.id_vale=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
 			vale= (Entity) DaoFactory.getInstance().toEntity("TcKeetValesDto", "row", params);
 			this.attrs.put("vale", vale);
-			toQr();
+			this.toQr();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

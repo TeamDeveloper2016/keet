@@ -121,9 +121,8 @@ public class Conceptos extends Accion implements Serializable {
 	private void loadCatalogos(){
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);

@@ -68,9 +68,8 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(this.attrs.get("idContrato").toString()));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
@@ -104,14 +103,13 @@ public class Registro extends IBaseAttribute implements Serializable {
 		List<SelectionItem>sAsignados    = null;
 		MotorBusqueda motorBusqueda      = null;
 		String condicion                 = null;
-		String condicionProveedor        = null;
     try {			
 			motorBusqueda= new MotorBusqueda((Long)this.attrs.get("idContratoLote"));
-			condicion= this.toPrepare();
-			disponibles= motorBusqueda.toResidentesDisponibles(condicion);
-			sDisponibles= toListSelectionIten(disponibles);
-			asignados= motorBusqueda.toResidentesAsignados(condicion);
-			sAsignados= toListSelectionIten(asignados);
+			condicion    = this.toPrepare();
+			disponibles  = motorBusqueda.toResidentesDisponibles(condicion);
+			sDisponibles = this.toListSelectionIten(disponibles);
+			asignados    = motorBusqueda.toResidentesAsignados(condicion);
+			sAsignados   = this.toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
 			this.loadAllEmpleados(sAsignados, sDisponibles);								
@@ -158,18 +156,16 @@ public class Registro extends IBaseAttribute implements Serializable {
 	} // toListSelectionIten	
 	
 	public void onTransfer(TransferEvent event) {
-		List<SelectionItem> transfers= null;
-		List<SelectionItem> empleados= null;
+		List<SelectionItem> transfers= (List<SelectionItem>) event.getItems();
+		List<SelectionItem> empleados= new ArrayList<>();
 		Transaccion transaccion      = null;
 		EAccion accion               = null;
 		try {
-			transfers= (List<SelectionItem>) event.getItems();
-			empleados= new ArrayList<>();
 			for(SelectionItem item: transfers){
 				if(this.allEmpleados.contains(item))
 					empleados.add(this.allEmpleados.get(this.allEmpleados.indexOf(item)));
 			} // for
-			accion= event.isAdd() ? EAccion.PROCESAR : EAccion.DEPURAR;
+			accion= event.isAdd() ? EAccion.PROCESAR: EAccion.DEPURAR;
 			transaccion= new Transaccion((Long)this.attrs.get("idContratoLote"), empleados);
 			if(transaccion.ejecutar(accion))
 				JsfBase.addMessage("Registro de residentes de obra en el desarrollo.", "Se ".concat(accion.equals(EAccion.PROCESAR) ? "asignaron" : "desasignaron").concat(" de forma correcta los residentes de obra."), ETipoMensaje.INFORMACION);			

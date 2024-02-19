@@ -43,26 +43,16 @@ public class Conceptos extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {		
-    EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
-		Entity figura            = null;
-		Entity seleccionado      = null;
-		Long idDepartamento      = null;
     try {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
-			opcion        = (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo  = (Long) JsfBase.getFlashAttribute("idDesarrollo");			
-			figura        = (Entity) JsfBase.getFlashAttribute("figura");	
-			seleccionado  = (Entity) JsfBase.getFlashAttribute("seleccionado");	
-			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
-			this.attrs.put("opcionResidente", opcion);
-			this.attrs.put("figura", figura);      
-			this.attrs.put("seleccionadoPivote", seleccionado);      			
-			this.attrs.put("idDesarrollo", idDesarrollo);      
-			this.attrs.put("idDepartamento", idDepartamento);      			
+			this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
+			this.attrs.put("figura", JsfBase.getFlashAttribute("figura"));      
+			this.attrs.put("seleccionadoPivote", JsfBase.getFlashAttribute("seleccionado"));      			
+			this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));      
+			this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));      			
 			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto")!= null? JsfBase.getFlashAttribute("nombreConcepto"): "");      			
 			this.loadCatalogos();						
 			this.doLoad();
@@ -82,7 +72,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		try {
       Entity item= (Entity)this.attrs.get("seleccionadoPivote");
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(item.toString("idContrato")));
-			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
+			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "referencia", params);
 			this.attrs.put("contrato", contrato);
 			params.clear();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(item.toString("idContratoLote")));

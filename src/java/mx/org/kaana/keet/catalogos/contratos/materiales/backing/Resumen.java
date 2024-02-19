@@ -72,9 +72,8 @@ public class Resumen extends IBaseFilter implements Serializable {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Entity vale              = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
@@ -97,13 +96,11 @@ public class Resumen extends IBaseFilter implements Serializable {
 	} // loadCatalogos			
 	
 	private void toQr(){
-		StringBuilder cadenaQr= null;
-		Entity figura         = null;
+		StringBuilder cadenaQr= new StringBuilder();
+		Entity figura         = (Entity) this.attrs.get("figura");
 		Entity seleccionado   = null;
 		try {			
-			figura= (Entity) this.attrs.get("figura");
 			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
-			cadenaQr= new StringBuilder();
 			cadenaQr.append(seleccionado.toString("idEmpresa")).append("-");
 			cadenaQr.append(seleccionado.toString("consecutivo")).append("-");
 			cadenaQr.append(figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor")).append("-");

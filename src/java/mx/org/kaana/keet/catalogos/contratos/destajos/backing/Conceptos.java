@@ -88,11 +88,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
       Entity seleccion= (Entity)this.attrs.get("seleccionadoPivote");
       if(seleccion!= null && seleccion.containsKey("idContrato")) {
-			  params= new HashMap<>();
 			  params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= ".concat(seleccion.toString("idContrato")));
 			  contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			  this.attrs.put("contratos", contrato);

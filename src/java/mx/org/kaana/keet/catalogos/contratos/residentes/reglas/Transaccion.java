@@ -19,6 +19,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
+  
 	private Long idContratoLote;	
 	private List<SelectionItem> empleados;		
 	private Long idEmpresaPersona;
@@ -38,7 +39,7 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar         = true;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		IBaseDto dto             = null;
 		Long idUsuario           = -1L;
 		try {
@@ -47,13 +48,13 @@ public class Transaccion extends IBaseTnx {
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					for(SelectionItem item: this.empleados) {
-  					dto= this.loadResidentes(Long.valueOf(item.getKey().substring(4)), idUsuario);
+            this.idEmpresaPersona= Long.valueOf(item.getKey().substring(4));
+  					dto= this.loadResidentes(this.idContratoLote, idUsuario);
 						DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
 					break;				
 				case DEPURAR:
 					for(SelectionItem item: this.empleados) {
-						params= new HashMap<>();
 						params.put("idContratoLote", this.idContratoLote);
 						params.put("idEmpresaPersona", Long.valueOf(item.getKey().substring(4)));
 						params.put("idProveedor", Long.valueOf(item.getKey().substring(4)));

@@ -118,9 +118,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", toDomicilio());			
       params.put("idTipoNomina", "1");
@@ -134,11 +133,10 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	
 	private void toLoadEspecialidades() {
 		List<UISelectItem>especialidades= null;
-		Map<String, Object>params       = null;
+		Map<String, Object>params       = new HashMap<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			especialidades= UISelect.build("VistaCapturaDestajosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
@@ -161,18 +159,16 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	
 	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
-		Map<String, Object>params   = null;
-		List<Columna> campos        = null;
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> columns       = new ArrayList<>();
 		try {
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idDepartamento", this.attrs.get("especialidad"));
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			figuras= UIEntity.build("VistaCapturaDestajosDto", "residentesAsociados", params, campos);
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			figuras= UIEntity.build("VistaCapturaDestajosDto", "residentesAsociados", params, columns);
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("destajos", false);
 			this.attrs.put("persona", false);
@@ -192,14 +188,13 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doLoadFiguras
 	
 	private String toDomicilio() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {
-			regresar= new StringBuilder();
 			regresar.append(this.registroDesarrollo.getDomicilio().getCalle()).append(" , ");
 			if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroExterior()))
 				regresar.append(this.registroDesarrollo.getDomicilio().getNumeroExterior()).append(" , ");
@@ -216,18 +211,17 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;		
-		List<UISelectEntity> figuras= null;
+		Map<String, Object>params   = new HashMap<>();
+    List<Columna> columns       = new ArrayList<>();		
+		List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 		UISelectEntity figura       = null;
     try {   
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			params= new HashMap<>();
+			int index= figuras.indexOf((UISelectEntity) this.attrs.get("figura"));
+      if(index>= 0)
+			  figura= figuras.get(index);
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
+			params.put("idFigura", figura.getKey()> 0 ? figura.getKey().toString().substring(4) : figura.getKey());
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
@@ -237,7 +231,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "lotesResidentes", params);		
 			if(!this.lotes.isEmpty()) { 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
-				this.lotes.add(0, this.toLoteDefault());
+				this.lotes.add(0, this.toLoteDefault(this.lotes.get(0).toLong("idEmpresa"), this.lotes.get(0).toLong("ejercicio")));
 				this.toEstatusManzanaLote();
 			} //
 			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
@@ -254,8 +248,9 @@ public class Control extends IBaseReporteDestajos implements Serializable {
     } // finally		
   } // doLoad	
 	
-	private Entity toLoteDefault() {
+	private Entity toLoteDefault(Long idEmpresa, Long ejercicio) {
 		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
+		regresar.put("idEmpresa", new Value("idEmpresa", idEmpresa));
 		regresar.put("clave", new Value("clave", "EVIDENCIAS"));
 		regresar.put("manzana", new Value("manzana", "00N"));
 		regresar.put("lote", new Value("lote", "N"));
@@ -268,15 +263,14 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		regresar.put("longitud", new Value("longitud", -102.252030));
 		regresar.put("ordenContrato", new Value("ordenContrato", ""));
 		regresar.put("claveContrato", new Value("claveContrato", ""));
-		regresar.put("ejercicio", new Value("ejercicio", Fecha.getAnioActual()));
+		regresar.put("ejercicio", new Value("ejercicio", ejercicio));
 		return regresar;
 	} // toLoteDefault
 	
 	private void toEstatusManzanaLote() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity estatus           = null;
 		try {
-			params= new HashMap<>();
 			for(Entity mzaLote: this.lotes) {
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
@@ -309,9 +303,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	} // toEstatusManzanaLote
 	
 	private String toClaveEstacion(Entity lote) {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {			
-			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
 			regresar.append(lote.toString("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
@@ -325,13 +318,13 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	
 	public String doConceptos() {
     String regresar             = null;    		
-		Entity seleccionado         = null;
-		List<UISelectEntity> figuras= null;
+		Entity seleccionado         = (Entity) this.attrs.get("seleccionado");
+		List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 		UISelectEntity figura       = null;
     try {			
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
+      int index= figuras.indexOf((UISelectEntity) this.attrs.get("figura"));
+      if(index>= 0)
+			  figura= figuras.get(index);
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
 			if(this.attrs.get("opcionAdicional")!= null)
 				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
@@ -378,7 +371,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
   } // doCancelar		
 	
 	public void doDestajos() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
@@ -388,7 +381,6 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      columns= new ArrayList<>();
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResidente", params, columns);
@@ -416,14 +408,12 @@ public class Control extends IBaseReporteDestajos implements Serializable {
   public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
-    boolean isCompleto           = false;
+    boolean isCompleto           = tipo.equals("COMPLETO");
     try {
-      isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
       UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-      params = new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       if(isCompleto) {
@@ -470,10 +460,9 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	}
  
 	private void toLoadContratos() {
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {      
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
@@ -501,18 +490,15 @@ public class Control extends IBaseReporteDestajos implements Serializable {
   }  
   
   public void doLoadCasas() {
-		Map<String, Object> params  = null;
-		List<UISelectEntity> figuras= null;
+		Map<String, Object> params  = new HashMap<>();
+		List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 		List<UISelectEntity> casas  = null;
-		UISelectEntity figura       = null;
+		UISelectEntity figura       = (UISelectEntity)this.attrs.get("figura");
     try {   
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      figura = (UISelectEntity)this.attrs.get("figura");
       int index= figuras.indexOf(figura);
       if(index>= 0) {
-        params  = new HashMap<>();
         params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-        params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4) : figura.getKey());
+        params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
         casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesResidentes", params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
         this.attrs.put("casas", casas);
