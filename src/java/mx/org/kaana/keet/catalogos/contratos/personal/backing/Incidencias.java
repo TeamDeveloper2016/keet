@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -349,7 +350,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idTipoIncidente", seleccionado.getIdTipoIncidente());
 			this.attrs.put("observaciones", seleccionado.getObservaciones());
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(seleccionado.getIdIncidente().toString()));
-			this.attrs.put("isDelete", seleccionado.getIdIncidenteEstatus().equals(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()));
+			this.attrs.put("isMostrar", Objects.equals(seleccionado.getIdIncidenteEstatus(), EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()) || Objects.equals(seleccionado.getIdIncidenteEstatus(), EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente()));
+			this.attrs.put("isDelete", Objects.equals(seleccionado.getIdIncidenteEstatus(), EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

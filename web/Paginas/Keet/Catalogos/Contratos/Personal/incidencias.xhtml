@@ -168,14 +168,14 @@
 						<p:separator/>
 						<div class="janal-line-button">
 							<div class="lg-pantalla janal-column-right">
-								<p:commandButton value="Aplicar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados"/>
+								<p:commandButton value="Aplicar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalIncidencias.attrs.isMostrar}"/>
 								<p:commandButton value="Eliminar" iconPos="left" styleClass="janal-text-white" accesskey="d" icon="fa fa-trash" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doDelete}" oncomplete="janal.desbloquear();hidePanelIncidencia();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalIncidencias.attrs.isDelete}"/>
 								<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
 							</div>
 							<div class="xs-pantalla janal-column-right">
-								<p:commandButton title="Aplicar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados"/>
-								<p:commandButton title="Eliminar evento" iconPos="left" styleClass="janal-text-whit" accesskey="d" icon="fa fa-trash" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doDelete}" oncomplete="janal.desbloquear();hidePanelIncidencia();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalIncidencias.attrs.isDelete}"/>
-								<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
+								<p:commandButton title="Aplicar" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalIncidencias.attrs.isMostrar}"/>
+								<p:commandButton title="Eliminar" iconPos="left" styleClass="janal-text-whit" accesskey="d" icon="fa fa-trash" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doDelete}" oncomplete="janal.desbloquear();hidePanelIncidencia();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalIncidencias.attrs.isDelete}"/>
+								<p:commandButton title="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
 							</div>
 						</div>	
           </p:panel>        

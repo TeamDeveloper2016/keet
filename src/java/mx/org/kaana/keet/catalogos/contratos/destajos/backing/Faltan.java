@@ -105,7 +105,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   		opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 //			opcion      = EOpcionesResidente.PROPUESTA;
-//			idDesarrollo= 7L;
+//			idDesarrollo= 13L;
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);

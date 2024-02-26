@@ -124,9 +124,8 @@ public class Seguimiento extends Respaldos implements Serializable {
   } // doLoad
   
   private void toLoadNombres() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
       this.desarrollo= new ArrayList<>();
       this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);

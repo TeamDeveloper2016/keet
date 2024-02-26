@@ -1928,7 +1928,7 @@ order by
           tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor,
           tt_destajo_nomina.id_nomina,
           tt_keet_rubros.id_punto_grupo,
-          tc_keet_puntos_grupos.descripcion,
+          tt_keet_rubros.descripcion,
           concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
           if(substring(tc_keet_estaciones.codigo, 1, 1)= '#', 4, if(tt_destajo_nomina.id_nomina is null, 3, if(concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden)= '{semana}', 1, 2))) as actual
         from
@@ -1958,12 +1958,12 @@ order by
 					where
 						tc_keet_puntos_grupos.id_departamento in ({idDepartamento})           
 						and (
-							tc_keet_rubros.nombre like upper('%{{nombreConcepto}}%') or tc_keet_rubros.codigo like upper('%{{nombreConcepto}}%')
+							tc_keet_rubros.nombre like upper('%{nombreConcepto}%') or tc_keet_rubros.codigo like upper('%{nombreConcepto}%')
 						)            
 						and tc_keet_puntos_grupos.id_extra= 2     
 					group by
 						tc_keet_rubros.codigo        
-        ) as tt_keet_rubros on tc_keet_estaciones.codigo = tt_keet_rubros.codigo 
+        ) as tt_keet_rubros on tc_keet_estaciones.codigo= tt_keet_rubros.codigo 
         left join (
           select 
             id_estacion,

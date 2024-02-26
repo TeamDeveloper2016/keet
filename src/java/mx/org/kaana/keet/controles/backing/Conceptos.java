@@ -58,11 +58,11 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.doLoad();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				this.doLoadExtras();
-    } // try // try
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch		7
+    } // catch		
   } // init
 
 	private void loadCatalogos() {
@@ -221,7 +221,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina
+  } 
 	
 	private void toSetFlash(Entity seleccionado){
 		JsfBase.setFlashAttribute("claveEstacion", toClaveEstacion());									
@@ -235,7 +235,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 		JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
-	} // toSetFlash
+	} 
 	
 	public String doCancelar() {
     String regresar          = null;    
@@ -255,7 +255,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doCancelar		
+  } 
   
 	public String toColor(Entity row) {
     String color= "";
