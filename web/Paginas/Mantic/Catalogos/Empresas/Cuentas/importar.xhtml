@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar los archivos XML/PDF/PNG/JPGE de la factura correspondiente"/>
+	<ui:param name="titulo" value="Importar los archivos XML/PDF/PNG/JPGE de la factura"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -83,31 +83,31 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasCuentasImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosEmpresasCuentasImportar.attrs.paginator}" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom">
-								<p:column styleClass="janal-wid-col-30" headerText="No.">
+								<p:column styleClass="MarAuto Responsive janal-wid-3" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+								<p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-10" headerText="Comprobante">
+								<p:column styleClass="MarAuto Responsive janal-wid-10" headerText="Comprobante">
 									<h:outputText value="#{row.comprobante}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Nombre">
+								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-                <p:column styleClass="janal-wid-15" headerText="Usuario" rendered="false">
+                <p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Usuario" rendered="false">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   								
-								<p:column headerText="Observaciones" rendered="false">
+								<p:column headerText="MarAuto Responsive Observaciones" rendered="false">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-8 janal-column-right" headerText="Pago">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" headerText="Pago">
 									<h:outputText value="#{row.pago}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha de pago">
+								<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" headerText="Fecha de pago">
 									<h:outputText value="#{row.registroPago}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Registró">
+								<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" headerText="Registró">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-3">
@@ -116,7 +116,7 @@
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-3">
-									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
 									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
@@ -132,22 +132,22 @@
 						</p:tab>			
 						<p:tab title="Facturas">
 							<p:dataTable id="facturas" var="row" value="#{manticCatalogosEmpresasCuentasImportar.attrs.facturas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
-								<p:column styleClass="janal-wid-col-30" headerText="No.">
+								<p:column styleClass="MarAuto Responsive janal-wid-3" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+								<p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-30" headerText="Nombre">
+								<p:column styleClass="MarAuto Responsive janal-wid-30" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-20" headerText="Usuario">
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+								<p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column headerText="Observaciones">
+								<p:column headerText="MarAuto Responsive Observaciones">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
@@ -155,7 +155,7 @@
 										<p:fileDownload value="#{manticCatalogosEmpresasCuentasImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column style="text-align: center" styleClass="MarAuto Responsive janal-wid-col-38">
 									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	

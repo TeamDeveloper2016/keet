@@ -102,7 +102,6 @@ public class Calendario extends Comun implements Serializable {
       this.toLoadCuentasPagar(Fecha.getHoyEstandar());
       this.toLoadCuentasAgendar();
       this.toLoadCalendario(Fecha.formatear(Fecha.FECHA_ESTANDAR, LocalDate.now()));
-      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -183,7 +182,7 @@ public class Calendario extends Comun implements Serializable {
         params.put("sortOrder", "order by dias desc");
         this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
         this.attrs.put("particular", this.toTotales("VistaIndicadoresTableroDto", "particular", params));
-        UIBackingUtilities.resetDataTable("pagar");
+        UIBackingUtilities.resetDataTable("detalle");
         this.pivot= hoy;
       } // if  
     } // try
