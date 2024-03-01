@@ -25,6 +25,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
@@ -78,6 +79,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private List<Correo> celulares;
 	private List<Correo> selectedCelulares;	
 	private Correo celular;
+  
+  private FormatLazyModel lazyDetalle;
+
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
   
 	public List<Correo> getCorreos() {
 		return correos;
@@ -237,6 +244,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idOrdenCompra", null);
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -767,7 +775,39 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} 
-  
+
+  public void doDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+    		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+          params.put("idEmpresa", this.attrs.get("idEmpresa"));
+        else
+          params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+        params.put("idOrdenCompra", row.getKey());
+        params.put("sortOrder", "order by tc_mantic_ordenes_detalles.propio");
+				columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaOrdenesComprasDto", "desglose", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+    
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

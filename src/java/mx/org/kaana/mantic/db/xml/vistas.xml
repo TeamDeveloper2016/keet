@@ -6340,6 +6340,33 @@ order by
 				  tc_mantic_ordenes_compras.id_orden_compra	
         {sortOrder}
 			</select>
+			<select id="desglose">
+select
+  tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+  tc_mantic_ordenes_detalles.id_orden_compra,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_mantic_ordenes_compras.consecutivo,  
+  tc_mantic_ordenes_compras.total,
+  tc_mantic_ordenes_detalles.codigo,
+  tc_mantic_ordenes_detalles.propio,
+  tc_mantic_ordenes_detalles.nombre,
+  tc_mantic_ordenes_detalles.cantidad,
+  tc_mantic_ordenes_detalles.costo,
+  tc_mantic_ordenes_detalles.importe,
+  tc_mantic_ordenes_detalles.registro
+from 
+  tc_mantic_ordenes_compras
+inner join 
+  tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+left join 
+  tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+where
+  tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
+  and tc_mantic_ordenes_compras.id_orden_compra = {idOrdenCompra}
+group by
+  tc_mantic_ordenes_detalles.id_orden_detalle
+{sortOrder}
+			</select>
 			<select id="solicitado">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,

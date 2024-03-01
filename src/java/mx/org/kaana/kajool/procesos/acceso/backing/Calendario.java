@@ -88,9 +88,6 @@ public class Calendario extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
-      //Calendar calendar= new GregorianCalendar(2023, 4, 14);
-      Calendar calendar= Calendar.getInstance();
-			this.attrs.put("calendario", Calendar.getInstance());
       this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());
       this.attrs.put("fechaInicio", LocalDate.now());
       this.attrs.put("hoy", Fecha.formatear(Fecha.DIA_FECHA));
