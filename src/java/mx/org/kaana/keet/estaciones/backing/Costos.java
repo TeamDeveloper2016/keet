@@ -19,11 +19,14 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.estaciones.beans.Partida;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 
@@ -56,6 +59,7 @@ public class Costos extends IBaseAttribute implements Serializable {
       this.attrs.put("idContratoLote", JsfBase.getFlashAttribute("idContratoLote"));
       this.attrs.put("siguiente", JsfBase.getFlashAttribute("siguiente"));
       this.attrs.put("codigo", JsfBase.getFlashAttribute("codigo"));
+      this.attrs.put("xcode", JsfBase.getFlashAttribute("codigo"));
       this.attrs.put("estacionProcess", JsfBase.getFlashAttribute("estacionProcess"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.toLoadCatalogos();
@@ -98,11 +102,11 @@ public class Costos extends IBaseAttribute implements Serializable {
 	} // toLoadCatalogos
 	
 	private void toLoadEstaciones()  {
+    StringBuilder sb          = new StringBuilder();
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idPrototipo", this.contrato.toLong("idPrototipo"));      
       params.put("idUsuario", JsfBase.getIdUsuario());      
-      StringBuilder sb= new StringBuilder();
       sb.append(Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)).
       append(Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)).
       append(Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true));
@@ -122,6 +126,7 @@ public class Costos extends IBaseAttribute implements Serializable {
             this.estaciones.remove(count);
         } // for
       } // if  
+      this.toLoadConceptos();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -130,7 +135,7 @@ public class Costos extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-	} // toLoadEstaciones
+	} 
   
   public String doAceptar() {  
     String regresar       = null;
@@ -165,6 +170,7 @@ public class Costos extends IBaseAttribute implements Serializable {
     JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("ikDesarrollo"));
     JsfBase.setFlashAttribute("idContrato", this.attrs.get("ikContrato"));
     JsfBase.setFlashAttribute("idLote", this.attrs.get("ikLote"));      
+    JsfBase.setFlashAttribute("codigo", this.attrs.get("xcode"));      
     JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionado"));      
 		JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
@@ -197,6 +203,85 @@ public class Costos extends IBaseAttribute implements Serializable {
       if(item.isCostoEditable() && !Objects.equals(item.getIdEstacion(), row.getIdEstacion()) && item.getOrden()> row.getOrden())
         item.setAnticipo(row.getAnticipo()); 
     } // for
+  }
+ 
+  private void toLookRubro() {
+		List<UISelectEntity> rubros= null;
+		try {
+			rubros= (List<UISelectEntity>)this.attrs.get("rubros");
+      if(rubros!= null && !rubros.isEmpty()) {
+        int index= rubros.indexOf((UISelectEntity)this.attrs.get("idRubro"));
+        if(index>= 0)
+			    this.attrs.put("idRubro", rubros.get(index));
+      } // if  
+ 		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+  }
+  
+	private void toLoadConceptos() {
+		List<UISelectEntity> rubros= null;
+		Map<String, Object>params  = new HashMap<>();
+    Estaciones conceptos       = new Estaciones();
+    StringBuilder sb           = new StringBuilder();
+		try {
+      if(this.estaciones!= null && !this.estaciones.isEmpty()) {
+        String clave= conceptos.toKey(this.estaciones.get(0).getClave(), 3);
+        params.put("clave", clave);
+        params.put("nivel", 6L);
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetEstacionesDto", "distintos", params);
+        if(items!= null && !items.isEmpty())
+          for (Entity item: items) {
+            sb.append("'").append(item.toString("codigo")).append("', ");  
+          } // for
+        if(sb.length()> 1)
+          sb.delete(sb.length()- 2, sb.length());
+        else
+          sb.append("WXYZ");
+      } // if
+			params.put("codigo", this.attrs.get("codigo"));
+			params.put("codigos", sb.toString());
+			rubros= UIEntity.seleccione("TcKeetRubrosDto", "rubros", params, "nombre");
+      if(rubros!= null && !rubros.isEmpty()) {
+        this.attrs.put("rubros", rubros);
+        int index= 0;
+        while(index< rubros.size()  && !Objects.equals(rubros.get(index).toString("codigo"), (String)this.attrs.get("codigo"))) {
+          index++;
+        } // while
+        if(index>= 0 && index< rubros.size())
+          this.attrs.put("idRubro", rubros.get(index));
+        else
+          this.attrs.put("idRubro", UIBackingUtilities.toFirstKeySelectEntity(rubros));
+      } // if
+      else
+        this.attrs.put("idRubro", UIBackingUtilities.toFirstKeySelectEntity(rubros));
+ 		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			Methods.clean(params);
+      conceptos= null;
+		} // finally
+	} 
+  
+  public void doActualiza() {
+    UISelectEntity rubro= null;
+    try {      
+      this.toLookRubro();
+      rubro= (UISelectEntity)this.attrs.get("idRubro");     
+      if(rubro.containsKey("codigo")) {
+        this.attrs.put("codigo", rubro.toString("codigo"));
+        this.toLoadEstaciones();
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

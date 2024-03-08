@@ -59,6 +59,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
       this.attrs.put("idContratoLote", JsfBase.getFlashAttribute("idContratoLote"));
       this.attrs.put("siguiente", JsfBase.getFlashAttribute("siguiente"));
       this.attrs.put("codigo", JsfBase.getFlashAttribute("codigo"));
+      this.attrs.put("xcode", JsfBase.getFlashAttribute("codigo"));
       this.attrs.put("estacionProcess", JsfBase.getFlashAttribute("estacionProcess"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.toLoadCatalogos();
@@ -67,7 +68,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } 
 
   public Entity getContrato() {
     return contrato;
@@ -101,11 +102,11 @@ public class Concepto extends IBaseAttribute implements Serializable {
 	} // toLoadCatalogos
 	
 	private void toLoadEstaciones()  {
+    StringBuilder sb          = new StringBuilder();
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idPrototipo", this.contrato.toLong("idPrototipo"));      
       params.put("idUsuario", JsfBase.getIdUsuario());      
-      StringBuilder sb= new StringBuilder();
       sb.append(Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)).
       append(Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)).
       append(Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true));
@@ -134,47 +135,13 @@ public class Concepto extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-	} // toLoadEstaciones
+	} 
   
   public String doAceptar() {  
     String regresar       = null;
     Transaccion transacion= null;
     try {			
       if(!this.estaciones.isEmpty()) {
-        if(this.checkCostos()) {
-          this.toLookRubro();
-          for (Partida item: estaciones)
-            item.setIdRubro((UISelectEntity)this.attrs.get("idRubro"));
-          transacion= new Transaccion((Long)this.attrs.get("idContratoLote"), this.estaciones);
-          if(transacion.ejecutar(EAccion.GENERAR)) {
-            JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
-            regresar= this.doCancelar();				
-            JsfBase.addMessage("Se cambio el concepto de forma correcta", ETipoMensaje.ALERTA);
-          } // if
-          else  
-            JsfBase.addMessage("Ocurrió un error al registrar el concepto", ETipoMensaje.ERROR);      			
-        } // if
-        else
-          JsfBase.addMessage("El costo tiene que ser mayor a cero y no puede haber valores negativos", ETipoMensaje.ERROR);      			
-      } // if
-      else
-        JsfBase.addMessage("No se tienen estaciones que actualizar", ETipoMensaje.ERROR);      			
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return regresar;
-  } // doAccion
-  
-  public String doEliminar() {  
-    String regresar       = null;
-    Transaccion transacion= null;
-    try {			
-      if(!this.estaciones.isEmpty()) {
-        this.toLookRubro();
-        for (Partida item: estaciones)
-          item.setIdRubro((UISelectEntity)this.attrs.get("idRubro"));
         transacion= new Transaccion((Long)this.attrs.get("idContratoLote"), this.estaciones);
         if(transacion.ejecutar(EAccion.RESTAURAR)) {
           JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
@@ -217,6 +184,7 @@ public class Concepto extends IBaseAttribute implements Serializable {
     JsfBase.setFlashAttribute("idLote", this.attrs.get("ikLote"));      
     JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionado"));      
 		JsfBase.setFlashAttribute("estacionProcess", this.attrs.get("estacionProcess"));
+		JsfBase.setFlashAttribute("codigo", this.attrs.get("xcode"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar	
 
@@ -271,9 +239,20 @@ public class Concepto extends IBaseAttribute implements Serializable {
       } // if
 			params.put("codigo", this.attrs.get("codigo"));
 			params.put("codigos", sb.toString());
-			rubros= UIEntity.seleccione("VistaEstacionesDto", "rubros", params, "nombre");
-			this.attrs.put("rubros", rubros);
-			this.attrs.put("idRubros", UIBackingUtilities.toFirstKeySelectEntity(rubros));
+			rubros= UIEntity.seleccione("TcKeetRubrosDto", "rubros", params, "nombre");
+      if(rubros!= null && !rubros.isEmpty()) {
+        this.attrs.put("rubros", rubros);
+        int index= 0;
+        while(index< rubros.size()  && !Objects.equals(rubros.get(index).toString("codigo"), (String)this.attrs.get("codigo"))) {
+          index++;
+        } // while
+        if(index>= 0 && index< rubros.size())
+          this.attrs.put("idRubro", rubros.get(index));
+        else
+          this.attrs.put("idRubro", UIBackingUtilities.toFirstKeySelectEntity(rubros));
+      } // if
+      else
+        this.attrs.put("idRubro", UIBackingUtilities.toFirstKeySelectEntity(rubros));
  		} // try
 		catch (Exception e) {			
       Error.mensaje(e);
@@ -283,6 +262,22 @@ public class Concepto extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
       conceptos= null;
 		} // finally
-	} // toLoadConceptos  
+	} 
+  
+  public void doActualiza() {
+    UISelectEntity rubro= null;
+    try {      
+      this.toLookRubro();
+      rubro= (UISelectEntity)this.attrs.get("idRubro");     
+      if(rubro.containsKey("codigo")) {
+        this.attrs.put("codigo", rubro.toString("codigo"));
+        this.toLoadEstaciones();
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
 }

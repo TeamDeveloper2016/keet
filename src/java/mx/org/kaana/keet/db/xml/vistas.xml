@@ -9068,7 +9068,7 @@ order by
           tc_keet_puntos_grupos.id_departamento,
           tc_keet_rubros.id_rubro
 			 order by
-			   tc_keet_rubros.nombre        
+			   tc_keet_rubros.codigo        
       </select>  
 			<select id="costos">
         select

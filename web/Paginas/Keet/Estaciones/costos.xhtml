@@ -11,6 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
+        'contenedorGrupos\\:idRubro' : {validaciones: 'requerido', mascara: 'libre', grupo: 'todos'},
 				'contenedorGrupos\\:costo'   : {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre'},
 				'contenedorGrupos\\:anticipo': {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre'}
 			};
@@ -32,7 +33,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:tabView id="contenedorGrupos">
+					<p:tabView id="contenedorGrupos" widgetVar="contenedor">
             <p:tab title="Contrato">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-8, janal-wid-92">		
                 <p:outputLabel for="desarrollo" value="Desarrollo:"/>
@@ -45,14 +46,17 @@
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetEstacionesCostos.contrato.etapa}" readonly="true"/>
                 <p:outputLabel for="lote" value="Lote(s):"/>
                 <p:inputText id="lote" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstacionesCostos.contrato.noViviendas}" readonly="true"/>
-                <p:outputLabel for="inicio" value="Inicio:" rendered="false"/>
-                <p:inputText id="inicio" styleClass="janal-wid-100-txt" value="#{keetEstacionesCostos.contrato.inicio}" readonly="true" rendered="false"/>
-                <p:outputLabel for="termino" value="Termino:" rendered="false"/>
-                <p:inputText id="termino" styleClass="janal-wid-100-txt" value="#{keetEstacionesCostos.contrato.termino}" readonly="true" rendered="false"/>
-                <p:outputLabel for="prototipo" value="Prototipo:" rendered="false"/>
-                <p:inputText id="prototipo" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstacionesCostos.contrato.prototipo}" readonly="true" rendered="false"/>
-                <p:outputLabel for="diasConstruccion" value="Días de construccion:" rendered="false"/>
-                <p:inputText id="diasConstruccion" styleClass="janal-wid-100-txt" value="#{keetEstacionesCostos.contrato.diasConstruccion}" readonly="true" rendered="false"/>
+                <p:outputLabel for="idRubro" value="Concepto:"/>
+                <p:selectOneMenu id="idRubro" value="#{keetEstacionesCostos.attrs.idRubro}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetEstacionesCostos.attrs.rubros}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.codigo or element.codigo eq ''? '': ' | '}#{element.nombre}"/>
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:tabla" listener="#{keetEstacionesCostos.doActualiza}" oncomplete="PF('contenedor').select(1); janal.desbloquear();"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>                   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>
             <p:tab title="Conceptos">
@@ -95,20 +99,20 @@
                   </f:facet>
                   <h:outputText value="#{row['nombre']}"/>
                 </p:column>														
-                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Días"/>
                   </f:facet>
                   <p:outputLabel value="#{row['dias']}"/>
                 </p:column>														
-                <p:column styleClass="MarAuto Responsive janal-wid-15">
+                <p:column styleClass="MarAuto Responsive janal-wid-10">
                   <f:facet name="header">
                     <h:outputText value="Costo"/>
                   </f:facet>
                   <p:inputNumber id="costo" value="#{row['costo']}" converter="javax.faces.Double" decimalPlaces="2" decimalSeparator="." thousandSeparator="," inputStyleClass="costo janal-wid-70" minValue="0"/>
                   <p:commandButton icon="fa fa-copy" process="@this @(.costo)" update="@(.costo)" action="#{keetEstacionesCostos.doReplicarCosto(row)}" title="Replicar costo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-float-right"/>
                 </p:column>														
-                <p:column styleClass="MarAuto Responsive janal-wid-15">
+                <p:column styleClass="MarAuto Responsive janal-wid-10">
                   <f:facet name="header">
                     <h:outputText value="Anticipo"/>
                   </f:facet>

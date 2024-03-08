@@ -3528,10 +3528,11 @@ where
         where 
           clave like '{clave}%'
 				  and nivel = {nivel}
+          and id_estacion_estatus= 1
         group by
           tc_keet_estaciones.codigo
 				order by
-				  clave 
+				  tc_keet_estaciones.codigo
       </select>
       <select id="concepto">
         select      
@@ -5605,6 +5606,20 @@ where
         from      
           tc_keet_rubros
       </select>
+			<select id="rubros">
+        select
+          tc_keet_rubros.id_rubro as id_key,
+          tc_keet_rubros.codigo,
+          tc_keet_rubros.nombre
+        from
+          tc_keet_rubros
+			 where
+         tc_keet_rubros.codigo in ({codigos})
+			 group by
+          tc_keet_rubros.id_rubro
+			 order by
+			   tc_keet_rubros.codigo        
+      </select>  
     </unit>
 		<unit id="TcKeetRubrosGruposDto">
       <select id="row">
