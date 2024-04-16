@@ -1506,6 +1506,32 @@ order by
           and (datediff(now(), tc_mantic_facturas.timbrado)+ 1)&gt; 11        
           and tc_mantic_clientes_deudas.saldo&gt; 0
       </select>  
+			<select id="importados">
+select
+  tc_keet_estimaciones_archivos.id_estimacion_archivo as id_key,
+  tc_keet_estimaciones_archivos.id_estimacion,
+  tc_keet_estimaciones_archivos.id_tipo_archivo,
+  tc_mantic_tipos_archivos.nombre as tipo,
+  tc_keet_estimaciones_archivos.nombre,
+  tc_keet_estimaciones_archivos.alias,
+  tc_keet_estimaciones_archivos.ruta,
+  tc_keet_estimaciones_archivos.id_principal,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  tc_keet_estimaciones_archivos.observaciones,
+  tc_keet_estimaciones_archivos.registro
+from
+  tc_keet_estimaciones_archivos
+inner join
+  tc_mantic_tipos_archivos on tc_keet_estimaciones_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+inner join
+  tc_janal_usuarios on tc_keet_estimaciones_archivos.id_usuario= tc_janal_usuarios.id_usuario          
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_keet_estimaciones_archivos.id_estimacion= {idEstimacion}
+order by
+  tc_keet_estimaciones_archivos.id_tipo_archivo, tc_keet_estimaciones_archivos.registro desc			
+      </select>
 		</unit>
 		<unit id="VistaAnticiposPagosDto">
 			<select id="lazy">

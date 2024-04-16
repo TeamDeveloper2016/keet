@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -36,14 +37,23 @@ public class Extras extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = -2149414807855567759L;
 	
-	@PostConstruct
+  private Entity nomina;
+  
+  public Entity getNomina() {
+    return nomina;
+  }
+	
+  @PostConstruct
   @Override
   protected void init() {
+    Map<String, Object> params= new HashMap();
     try {
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")!= null? JsfBase.getFlashAttribute("idEmpresa"): new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo")!= null? JsfBase.getFlashAttribute("idDesarrollo"): null);
       this.attrs.put("idContrato",  JsfBase.getFlashAttribute("idContrato")!= null? JsfBase.getFlashAttribute("idContrato"): null);
       this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")!= null? JsfBase.getFlashAttribute("idNomina"): null);
+      params.put("idTipoNomina", 1);
+      this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
 		  this.toLoadEmpresas();
       this.toLoadNominas();
     } // try
@@ -51,8 +61,11 @@ public class Extras extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
   } // init
-	
+
 	@Override
   public void doLoad() {
     List<Columna> columns    = new ArrayList<>();
@@ -65,7 +78,7 @@ public class Extras extends IBaseFilter implements Serializable {
         params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null)");
       } // if  
       else {
-        params.put("bcontratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina= "+ idNomina+ ")");
+        params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina= "+ idNomina+ ")");
         params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina= "+ idNomina+ ")");
       } // if  
 			params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.id_desarrollo, tt_keet_temporal.clave, tt_keet_temporal.lote, tt_keet_temporal.codigo");
@@ -243,6 +256,10 @@ public class Extras extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} 
-  
+
+  public Boolean toHabilitar(Entity row) {
+    return !(Objects.equals(row.toLong("idNomina"), null) || (Objects.equals(row.toLong("idNomina"), this.nomina.toLong("idNomina")) && (Objects.equals(this.nomina.toLong("idEstatusNomina"), 1L) || Objects.equals(this.nomina.toLong("idEstatusNomina"), 2L)|| Objects.equals(this.nomina.toLong("idEstatusNomina"), 3L))));
+  }
+
 }
 

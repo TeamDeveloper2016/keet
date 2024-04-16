@@ -1,8 +1,10 @@
-package mx.org.kaana.keet.estimaciones.reglas;
+package mx.org.kaana.keet.estimacion.reglas;
 
+import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
@@ -14,16 +16,17 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstimacionesArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
-import mx.org.kaana.keet.estimaciones.beans.EEstatusEstimaciones;
-import mx.org.kaana.keet.estimaciones.beans.Retencion;
+import mx.org.kaana.keet.estimacion.beans.EEstatusEstimaciones;
+import mx.org.kaana.keet.estimacion.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,14 +45,16 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private Long idEstimacion;	
 	private Estimaciones orden;	
 	private String messageError;
+	private List<Importado> documentos;
   private TcKeetEstimacionesBitacoraDto bitacora;
 
 	public Transaccion(Long idEstimacion) {
 		this.idEstimacion= idEstimacion;
 	}
   
-	public Transaccion(Estimaciones orden) {
+	public Transaccion(Estimaciones orden, List<Importado> documentos) {
 		this.orden= orden;
+    this.documentos= documentos;
 	}
 
 	public Transaccion(TcKeetEstimacionesBitacoraDto bitacora) {
@@ -81,15 +86,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
           this.bitacora= new TcKeetEstimacionesBitacoraDto(this.orden.getEstimacion().getIdEstimacionEstatus(), -1L,  this.orden.getEstimacion().getIdEstimacion(), JsfBase.getIdUsuario(),  "");
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
+          this.toFillDocumentos(sesion);
 					break;
 				case MODIFICAR:
           DaoFactory.getInstance().update(sesion, this.orden.getEstimacion());
           this.bitacora= new TcKeetEstimacionesBitacoraDto(this.orden.getEstimacion().getIdEstimacionEstatus(), -1L,  this.orden.getEstimacion().getIdEstimacion(), JsfBase.getIdUsuario(),  "");
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
+          this.toFillDocumentos(sesion);
 					break;				
 				case ELIMINAR:
           regresar= this.toDeleteEstimacion(sesion);
+					break;
+				case DEPURAR:
+          regresar= this.toDeleteDocumento(sesion);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -144,10 +154,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
   }
   
 	private Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar= null;
-		Map<String, Object> params=null;
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getEstimacion().getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -167,12 +176,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	} // toSiguiente
 
   private Boolean toDeleteEstimacion(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
+    Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idEstimacion", this.idEstimacion);      
       DaoFactory.getInstance().deleteAll(sesion, TcKeetEstimacionesDetallesDto.class, params);
       DaoFactory.getInstance().deleteAll(sesion, TcKeetEstimacionesBitacoraDto.class, params);
+      DaoFactory.getInstance().deleteAll(sesion, TcKeetEstimacionesArchivosDto.class, params);
       regresar= DaoFactory.getInstance().delete(sesion, new TcKeetEstimacionesDto(this.idEstimacion))> 0L;
     } // try
     catch (Exception e) {
@@ -217,7 +227,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
   }
   
   private void toCheckContrato(Session sesion, Long idContrato) throws Exception {
-    Double total= 0D;
+    Double total              = 0D;
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idContrato", idContrato);      
@@ -240,4 +250,50 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // finally
   }
   
+  private void toFillDocumentos(Session sesion) throws Exception {
+    TcKeetEstimacionesArchivosDto tmp= null;
+    try {      
+      for (Importado item: this.documentos) {
+        tmp= new TcKeetEstimacionesArchivosDto(
+          -1L, // Long idEstimacionArchivo, 
+          this.orden.getEstimacion().getIdEstimacion(), // Long idEstimacion, 
+          item.getOriginal(), // String archivo, 
+          item.getRuta(), // String ruta, 
+          item.getFileSize(), // Long tamanio, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          2L, // Long idTipoArchivo, 
+          item.getObservaciones(), // String observaciones, 
+          1L, // Long idPrincipal, 
+          Configuracion.getInstance().getPropiedadSistemaServidor("estimaciones").concat(item.getRuta()).concat(item.getName()), // String alias, 
+          item.getName() // String nombre
+        );
+        this.toSaveFile(item.getIdArchivo());
+        TcKeetEstimacionesArchivosDto exists= (TcKeetEstimacionesArchivosDto)DaoFactory.getInstance().toEntity(TcKeetEstimacionesArchivosDto.class, "TcKeetEstimacionesArchivosDto", "identically", tmp.toMap());
+        File file= new File(tmp.getAlias());
+        if(exists== null && file.exists()) {
+          DaoFactory.getInstance().updateAll(sesion, TcKeetEstimacionesArchivosDto.class, tmp.toMap());
+          DaoFactory.getInstance().insert(sesion, tmp);
+        } // if
+        else
+          if(!file.exists())
+            LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
+        sesion.flush();
+        this.toCheckDeleteFile(sesion, item.getName());
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private Boolean toDeleteDocumento(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      regresar= DaoFactory.getInstance().delete(sesion, new TcKeetEstimacionesArchivosDto(this.idEstimacion))> 0L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
 } 

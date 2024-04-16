@@ -24,6 +24,7 @@
 				'contenedorGrupos\\:facturar'       : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:pagado'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
+				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'porcentaje': {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},
         'importe'   : {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'}
@@ -70,7 +71,16 @@
           } // if  
         }); // on
       }) // ready   
-      //]]>
+      
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+      
+    //]]>
 		</script>   
 		<style>
 			.ui-datatable .ui-datatable-header {
@@ -88,89 +98,95 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{keetEstimacionesAccion.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();"/>
+            <p:ajax event="tabChange" listener="#{keetEstimacionesAccion.doTabChange}" process="@this" update="contenedorGrupos:importados" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();"/>
             <p:tab title="General">							
-							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-								<p:selectOneMenu id="idSucursal" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{keetEstimacionesAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
-									<f:selectItems value="#{keetEstimacionesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
-								<p:selectOneMenu id="idDesarrollo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetEstimacionesAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
-									<f:selectItems value="#{keetEstimacionesAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombres}"/>
-									</p:column>                   
-								</p:selectOneMenu>
-								<p:outputLabel for="idCliente" value="Cliente:"/>												
-								<p:inputText id="idCliente" value="#{keetEstimacionesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
-                <p:outputLabel for="idContrato" value="Contrato:"/>
-                <p:selectOneMenu id="idContrato" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" update="contenedorGrupos:tabla @(.calculos)" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetEstimacionesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
-                  <p:column headerText="Clave" styleClass="janal-wid-10">
-										<p:outputLabel value="#{list.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<p:outputLabel value="#{list.nombre}"/>
-									</p:column>   
-									<p:column headerText="Etapa" styleClass="janal-wid-10">
-										<p:outputLabel value="#{list.etapa}"/>
-									</p:column>   
-									<p:column styleClass="janal-wid-15 janal-column-right" headerText="No. viviendas">
-										<p:outputLabel value="#{list.noViviendas}"/>
-									</p:column>   
-								</p:selectOneMenu>																						
-                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left">
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                    <p:outputLabel for="idNominaPeriodo" value="Semana:"/>
-                    <p:selectOneMenu id="idNominaPeriodo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNominaPeriodo}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-95" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <f:selectItems value="#{keetEstimacionesAccion.attrs.periodos}" var="one" itemValue="#{one.key}" itemLabel="#{one.nombre} [ #{one.inicio} al #{one.termino} ]"/>
-                      <p:column headerText="Semana" styleClass="janal-wid-10">
-                        <p:outputLabel value="#{list.nombre}"/>
-                      </p:column>   
-                      <p:column headerText="Inicio">
-                        <p:outputLabel value="#{list.inicio}"/>
-                      </p:column>   
-                      <p:column headerText="Termino">
-                        <p:outputLabel value="#{list.termino}"/>
-                      </p:column>   
-                    </p:selectOneMenu>																						
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
-                    <p:outputLabel for="folio" value="Folio:"/>
-                    <p:inputText id="folio" value="#{keetEstimacionesAccion.estimaciones.estimacion.folio}" styleClass="janal-wid-100-txt"/>
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                    <p:outputLabel for="importe" value="Importe:" styleClass="janal-color-blue"/>
-                    <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-95 janal-column-center janal-color-blue" minValue="0">
-                      <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateImporte}"/>
-                    </p:inputNumber>
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                    <p:outputLabel for="facturar" value="Por facturar:" styleClass="janal-color-orange janal-font-bold janal-icons-header"/>
-                    <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                    <p:outputLabel for="fechaPago" value="Fecha de pago:" styleClass="janal-icons-header"/>
-                    <p:calendar id="fechaPago" inputStyleClass="janal-wid-95 janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.fechaPago}" pattern="dd/MM/yyyy" locale="mx"/>                    
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                    <p:outputLabel for="pagado" value="Cuando fué pagado:" styleClass="janal-icons-header"/>
-                    <p:calendar id="pagado" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.pagado}" pattern="dd/MM/yyyy" locale="mx"/>                    
-                  </p:panelGrid>  
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+                  <p:selectOneMenu id="idSucursal" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" listener="#{keetEstimacionesAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
+                    <f:selectItems value="#{keetEstimacionesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
                 </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                  <p:selectOneMenu id="idDesarrollo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetEstimacionesAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
+                    <f:selectItems value="#{keetEstimacionesAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombres}"/>
+                    </p:column>                   
+                  </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">                
+                  <p:outputLabel for="idCliente" value="Cliente:"/>												
+                  <p:inputText id="idCliente" value="#{keetEstimacionesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">                
+                  <p:outputLabel for="idContrato" value="Contrato:"/>
+                  <p:selectOneMenu id="idContrato" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="contenedorGrupos:tabla @(.calculos)" listener="#{keetEstimacionesAccion.doUpdatePorcentaje}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    <f:selectItems value="#{keetEstimacionesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                    <p:column headerText="Clave" styleClass="janal-wid-10">
+                      <p:outputLabel value="#{list.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <p:outputLabel value="#{list.nombre}"/>
+                    </p:column>   
+                    <p:column headerText="Etapa" styleClass="janal-wid-10">
+                      <p:outputLabel value="#{list.etapa}"/>
+                    </p:column>   
+                    <p:column styleClass="janal-wid-15 janal-column-right" headerText="No. viviendas">
+                      <p:outputLabel value="#{list.noViviendas}"/>
+                    </p:column>   
+                  </p:selectOneMenu>																						
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idNominaPeriodo" value="Semana:"/>
+                  <p:selectOneMenu id="idNominaPeriodo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNominaPeriodo}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{keetEstimacionesAccion.attrs.periodos}" var="one" itemValue="#{one.key}" itemLabel="#{one.nombre} [ #{one.inicio} al #{one.termino} ]"/>
+                    <p:column headerText="Semana" styleClass="janal-wid-10">
+                      <p:outputLabel value="#{list.nombre}"/>
+                    </p:column>   
+                    <p:column headerText="Inicio">
+                      <p:outputLabel value="#{list.inicio}"/>
+                    </p:column>   
+                    <p:column headerText="Termino">
+                      <p:outputLabel value="#{list.termino}"/>
+                    </p:column>   
+                  </p:selectOneMenu>																						
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="folio" value="Folio:"/>
+                  <p:inputText id="folio" value="#{keetEstimacionesAccion.estimaciones.estimacion.folio}" styleClass="janal-wid-100-txt"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="importe" value="Importe:" styleClass="janal-color-blue"/>
+                  <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetEstimacionesAccion.estimaciones.estimacion.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" minValue="0">
+                    <p:ajax event="change" process="@this" update="@(.calculos)" listener="#{keetEstimacionesAccion.doRowUpdateImporte}"/>
+                  </p:inputNumber>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel for="facturar" value="Por facturar:" styleClass="janal-color-orange janal-font-bold janal-icons-header"/>
+                  <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel for="fechaPago" value="Fecha de pago:" styleClass="janal-icons-header"/>
+                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.fechaPago}" pattern="dd/MM/yyyy" locale="mx"/>                    
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel for="pagado" value="Cuando fué pagado:" styleClass="janal-icons-header"/>
+                  <p:calendar id="pagado" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.pagado}" pattern="dd/MM/yyyy" locale="mx"/>                    
+                </p:panelGrid>  
               </p:panelGrid>
               <p:remoteCommand name="reloadCalculos" process="@this" update="@(.calculos)"/>
               <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idEstimacionDetalle}" style="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones ne null and keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 0}">
@@ -233,6 +249,66 @@
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
 						</p:tab>
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{keetEstimacionesAccion.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="janal-wid-40" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column styleClass="janal-wid-20" headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   								
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>    
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
+                  <p:commandButton icon="fa fa-download" title="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" styleClass="janal-no-lock">
+										<p:fileDownload value="#{keetEstimacionesAccion.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
+									<p:commandLink actionListener="#{keetEstimacionesAccion.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear()" oncomplete="PF('dlgPDF').show()" styleClass="janal-no-lock">
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
+									<p:commandLink actionListener="#{keetEstimacionesAccion.doDeleteDocument(row)}" process="@this" update="importados" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" styleClass="janal-no-lock">
+									  <p:commandButton icon="fa fa-trash" title="Eliminar" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Importar">
+							<p:outputLabel value="Comentarios:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt importado import-local-file" value="#{keetEstimacionesAccion.attrs.comentarios}" onblur="procesDataFile();"/>
+							<p:remoteCommand name="procesDataFile" process="@this contenedorGrupos:comentarios"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{keetEstimacionesAccion.doFileUpload}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"
+							  mode="advanced" process="@this contenedorGrupos:observaciones" update="@(.importado)" label="Selecciona PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{keetEstimacionesAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetEstimacionesAccion.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{keetEstimacionesAccion.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-5" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column> 
+								<p:column styleClass="janal-wid-40" headerText="Nombre">
+									<h:outputText value="#{row.name}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-50" headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-5 janal-column-center" headerText="...">
+									<p:commandLink actionListener="#{keetEstimacionesAccion.doDepurar(row)}" process="@this" update="importado" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+									  <p:commandButton icon="fa fa-trash" title="Eliminar" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>   
+							</p:dataTable>
+						</p:tab>
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{keetEstimacionesAccion.estimaciones.estimacion.observaciones}"/>
 						</p:tab>
@@ -250,5 +326,22 @@
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEstimacionesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEstimacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{keetEstimacionesAccion.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's,
+					 <p:commandLink ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" value=" click ">
+							<p:fileDownload value="#{keetEstimacionesAccion.doFileDownload}" />
+					 </p:commandLink>>
+					 para descargarlo !.
+				</object>							
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{keetEstimacionesAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+    </h:form>
 	</ui:define>
 </ui:composition>

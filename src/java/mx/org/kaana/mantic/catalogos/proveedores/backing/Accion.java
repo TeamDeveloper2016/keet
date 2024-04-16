@@ -205,9 +205,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadDepartamentos() {
 		List<UISelectItem> departamentos= null;
-		Map<String, Object> params      = null;		
+		Map<String, Object> params      = new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				params.put(Constantes.SQL_CONDICION, "id_oficina in (2,3)");
 			else

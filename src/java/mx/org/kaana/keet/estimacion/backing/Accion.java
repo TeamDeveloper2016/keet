@@ -1,6 +1,7 @@
-package mx.org.kaana.keet.estimaciones.backing;
+package mx.org.kaana.keet.estimacion.backing;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,9 +12,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
+import static mx.org.kaana.kajool.enums.EAccion.CONSULTAR;
+import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -24,18 +29,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.estimaciones.reglas.Estimaciones;
-import mx.org.kaana.keet.estimaciones.beans.Retencion;
+import mx.org.kaana.keet.estimacion.reglas.Estimaciones;
+import mx.org.kaana.keet.estimacion.beans.Retencion;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.estimaciones.reglas.Transaccion;
+import mx.org.kaana.keet.estimacion.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -48,16 +55,21 @@ import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "keetEstimacionesAccion")
 @ViewScoped
-public class Accion extends IBaseFilter implements Serializable {
+public class Accion extends IBaseImportar implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 
 	protected EAccion accion;	
   protected Estimaciones estimaciones;
+  private List<Importado> documentos;
 
   public Estimaciones getEstimaciones() {
     return estimaciones;
+  }
+
+  public List<Importado> getDocumentos() {
+    return documentos;
   }
 
 	public String getConsultar() {
@@ -77,6 +89,9 @@ public class Accion extends IBaseFilter implements Serializable {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_CATALOGOS);
+			this.attrs.put("carpeta", "DOCS");
+      this.documentos= new ArrayList<>();
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -113,7 +128,7 @@ public class Accion extends IBaseFilter implements Serializable {
     try {
       // FALTA VERIFICAR SI EL MONTO DE TODAS LAS AMORTIZACIONES DE LOS ANTICIPOS ES MENOR O IGUAL AL ANTICIPO PAGADO DEL CONTRATO
       if(this.checkAnticipoGlobal()) {
-        transaccion = new Transaccion(this.estimaciones);
+        transaccion = new Transaccion(this.estimaciones, this.documentos);
         if (transaccion.ejecutar(this.accion)) {
           regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
           if(this.accion.equals(EAccion.AGREGAR)) 
@@ -223,9 +238,8 @@ public class Accion extends IBaseFilter implements Serializable {
 	
 	public void doLoadContratos() {
 		List<UISelectEntity> contratos= null;
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.estimaciones.getEstimacion().getIkDesarrollo().getKey());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
@@ -299,6 +313,9 @@ public class Accion extends IBaseFilter implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
     switch (event.getTab().getTitle()) {
       case "General":
+        break;
+      case "Archivos":
+  			this.doLoadImportados("VistaEstimacionesDto", "importados", this.estimaciones.getEstimacion().toMap());
         break;
     } // switch    
 	}
@@ -412,11 +429,40 @@ public class Accion extends IBaseFilter implements Serializable {
 
   private void toUpdateTotal() {
     double suma= 0D;
-    for (Retencion item : this.estimaciones.getEstimacion().getRetenciones()) 
+    for (Retencion item: this.estimaciones.getEstimacion().getRetenciones()) 
       suma+= item.getImporte();
     this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, suma));
   }
 
+	public void doFileUpload(FileUploadEvent event) {
+		this.doFileUpload(event, this.estimaciones.getEstimacion().getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("estimaciones"), (String)this.attrs.get("carpeta"));
+    if(!Objects.equals(this.getPdf(), null)) {
+      this.getPdf().setObservaciones(!Objects.equals((String)this.attrs.get("comentarios"), null)? ((String)this.attrs.get("comentarios")).toUpperCase(): null);
+      this.attrs.put("comentarios", null);
+      this.documentos.add(this.getPdf());
+    } // if  
+	} // doFileUpload	
+  
+  public void doDepurar(Importado row) {
+    this.documentos.remove(row);
+  }
+ 
+  public void doDeleteDocument(Entity row) {
+    Transaccion transaccion= new Transaccion(row.getKey());
+    try {
+      if(transaccion.ejecutar(EAccion.DEPURAR)) {
+  			this.doLoadImportados("VistaEstimacionesDto", "importados", this.estimaciones.getEstimacion().toMap());
+        JsfBase.addMessage("Se eliminó el documento de la estimación", ETipoMensaje.INFORMACION);
+      } // if  
+      else
+        JsfBase.addMessage("Ocurrio un error al eliminar el documento", ETipoMensaje.INFORMACION);
+ 		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+		} // catch		
+ }
+  
 	@Override
 	protected void finalize() throws Throwable {
 		try {

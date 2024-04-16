@@ -12,6 +12,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
+        'idEmpresa'     : {validaciones: 'libre', mascara: 'libre'},
+        'idDesarrollo'  : {validaciones: 'libre', mascara: 'libre'},
         'clave'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'nombre'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'etapa'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -58,12 +60,23 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCatalogosContratosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCatalogosContratosFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:ajax event="change" listener="#{keetCatalogosContratosFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+                <f:selectItems value="#{keetCatalogosContratosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCatalogosContratosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="clave" value="Clave:"/>

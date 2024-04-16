@@ -163,12 +163,12 @@
 								<p:column headerText="Observaciones">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
 										<p:fileDownload value="#{manticInventariosCreditosAccion.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
 									<p:commandLink actionListener="#{manticInventariosCreditosAccion.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
@@ -182,7 +182,6 @@
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosCreditosAccion.diferente? '': 'none'}">
   							<p:commandLink actionListener="#{manticInventariosCreditosAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('\u00BF Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
 									<p:outputLabel value="El RFC del proveedor [#{manticInventariosCreditosAccion.proveedor.rfc}] no coincide con el de la factura [#{manticInventariosCreditosAccion.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
-		  					  
 			  				</p:commandLink>
 							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
@@ -199,43 +198,43 @@
 								<p:outputLabel value="Conceptos XML:"/>
 								<p:selectOneMenu value="#{manticInventariosCreditosAccion.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
-									<p:column class="MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código SAT"/>
 										</f:facet>
 										<h:outputText value="#{row['sat']}"/>
 									</p:column>		
-									<p:column  class="MarAuto Responsive janal-wid-10">
+									<p:column styleClass="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código"/>
 										</f:facet>
 										<h:outputText value="#{row['codigo']}"/>
 									</p:column>		
-									<p:column  class="MarAuto Responsive">
+									<p:column styleClass="MarAuto Responsive">
 										<f:facet name="header">
 											<h:outputText value="Articulo"/>
 										</f:facet>
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Cantidad"/>
 										</f:facet>
 										<h:outputText value="#{row['cantidad']}"/>	
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Costo"/>
 										</f:facet>
 										<h:outputText value="#{row['costo']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="IVA"/>
 										</f:facet>
 										<h:outputText value="#{row['iva']}"/>
 									</p:column>		
-									<p:column  class="MarAuto Responsive janal-wid-10">
+									<p:column styleClass="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Unidad medida"/>
 										</f:facet>

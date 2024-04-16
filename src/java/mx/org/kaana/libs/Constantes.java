@@ -36,11 +36,11 @@ public final class Constantes {
   public static final String ARCHIVO_PATRON_SEPARADOR = "_";
   public static final String ARCHIVO_PATRON_NOMBRE    = "IMOX";
   public static final String NOMBRE_ARCHIVO_DEFAULT   = "SinNombre";
-  public static final String CAMPO_LLAVE = "id";
+  public static final String CAMPO_LLAVE              = "id";
   public static final String NOMBRE_FINAL_CLASE_DTO   = "Dto";
   public static final String PATRON_IMPORTAR_FACTURA  = "/(\\.|\\/)(xml|pdf)$/";
   public static final String PATRON_IMPORTAR_CATALOGOS= "/(\\.|\\/)(pdf)$/";
-  public static final String PATRON_IMPORTAR_MASIVO= "/(\\.|\\/)(xls)$/";
+  public static final String PATRON_IMPORTAR_MASIVO   = "/(\\.|\\/)(xls)$/";
   public static final String PATRON_IMPORTAR_LISTA_ARCHIVOS= "/(\\.|\\/)(xls|pdf)$/";
   public static final String PATRON_IMPORTAR_LOGOTIPOS= "/(\\.|\\/)(png|svg|jpg|gif|jfif)$/";
   public static final String PATRON_IMAGE_COMPRESS= "jpeg|jpg|tiff";

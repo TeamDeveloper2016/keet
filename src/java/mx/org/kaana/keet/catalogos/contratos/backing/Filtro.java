@@ -24,6 +24,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
 import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -81,12 +82,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
       params.put("sortOrder", "order by tc_keet_contratos.registro desc");
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -147,15 +147,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
@@ -214,6 +212,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_contratos.id_tipo_obra=").append(((UISelectEntity)this.attrs.get("tipoObra")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idContratoEstatus")) && !this.attrs.get("idContratoEstatus").toString().equals("-1"))
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idContratoEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)				
+			sb.append("tc_keet_proyectos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -228,11 +228,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_contrato_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcKeetContratosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);
@@ -283,16 +282,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	// doActualizaEstatus
 	
 	private void toLoadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      this.doLoadDesarrollos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -302,6 +300,32 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		}	// finally	
 	} // toLoadEmpresas
+  
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		UISelectEntity empresa    = null;
+    try {
+			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+			if(empresa.getKey()>= 1L)
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+      else
+			  params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			params.put("operador", "<=");
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} 
   
   public String doGarantias() {
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());

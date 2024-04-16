@@ -113,11 +113,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // loadCatalog
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -161,13 +159,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	} // doLoadDesarrollos	
+	} 	
 	
 	private void toLoadEstatus() {		
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {			
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			allEstatus= UISelect.seleccione("TcKeetCajasChicasCierresEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -223,10 +220,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
     try {			
-      columns = new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("inicial", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -280,8 +276,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toPrepare
 
   public void doGastos(Entity seleccionado) {
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		String dns               = null;
 		String url               = null;
 		try {
@@ -290,14 +286,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
       else
 			  url= dns.concat((String)this.attrs.get("pathPivote"));
-			campos = new ArrayList<>();
-      campos.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-			params= new HashMap<>();
+      columns.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params.put("idCajaChicaCierre", seleccionado.getKey());
 			params.put("pathImage", url);
-			this.lazyModelGastos= new FormatCustomLazy("VistaCierresCajasChicasDto", "gastos", params, campos);
+			this.lazyModelGastos= new FormatCustomLazy("VistaCierresCajasChicasDto", "gastos", params, columns);
 			this.lazyModelMateriales= null;
 			UIBackingUtilities.resetDataTable("tablaGastos");			
       UIBackingUtilities.resetDataTable("tablaMateriales");			
@@ -310,23 +304,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doGastos
   
 	public void doMateriales(Entity seleccionado) {
-		Map<String, Object>params= null;
-		List<Columna>campos       = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {			
-			campos = new ArrayList<>();
-      campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
-      campos.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-			params= new HashMap<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos_detalles.id_gasto=" + seleccionado.getKey());
-			this.lazyModelMateriales= new FormatCustomLazy("TcKeetGastosDetallesDto", "row", params, campos);
+			this.lazyModelMateriales= new FormatCustomLazy("TcKeetGastosDetallesDto", "row", params, columns);
       UIBackingUtilities.resetDataTable("tablaMateriales");			
 			this.attrs.put("seleccionadoGasto", seleccionado);
 		} // try
@@ -336,7 +328,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doGastos
 	

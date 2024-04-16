@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estimaciones.reglas;
+package mx.org.kaana.keet.estimacion.reglas;
 
 import java.io.File;
 import java.io.Serializable;

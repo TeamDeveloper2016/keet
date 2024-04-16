@@ -1,11 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -30,7 +26,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 @Table(name="tc_keet_departamentos")
 public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
 		
-  private static final long serialVersionUID=1L;
+  private static final long serialVersionUID= 1L;
   @Column (name="descripcion")
   private String descripcion;
   @Id
@@ -55,7 +51,7 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDepartamentosDto(Long key) {
-    this(null, new Long(-1L), null, null, 1L, 1L, 1L);
+    this(null, new Long(-1L), null, null, 1L, 2L, 1L);
     setKey(key);
   }
 

@@ -158,7 +158,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			if(result!= null)
 			  result.delete();
 		} // catch
-	} // doFileUpload	
+	} 
 	
 	public void doFileUpload(FileUploadEvent event, String clave, String propiedadServidor) {
 		StringBuilder path= new StringBuilder();  
@@ -363,7 +363,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));
-        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo");
 			} // else	
 		} // try
     catch (Exception e) {
@@ -557,9 +557,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	}
 
 	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));

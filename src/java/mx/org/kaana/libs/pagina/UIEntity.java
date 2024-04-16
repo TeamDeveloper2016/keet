@@ -216,6 +216,7 @@ public final class UIEntity {
       regresar.addAll(build(dtos,formato));				
     } // if
     else {
+      todos.put("idKey", new Value("idKey", -1L));
       todos.put(name, new Value(name, "TODOS"));
 			regresar.add(new UISelectEntity(todos));
     } // if      
@@ -238,6 +239,7 @@ public final class UIEntity {
 			regresar.addAll(build(dtos, formato));				
     } // if
     else {
+      todos.put("idKey", new Value("idKey", -1L));
       todos.put(name, new Value(name, "SELECCIONE"));
 			regresar.add(new UISelectEntity(todos));
     } // if      
@@ -260,6 +262,7 @@ public final class UIEntity {
 			regresar.addAll(build(dtos,formato));				
     } // if
     else {
+      todos.put("idKey", new Value("idKey", -1L));
       todos.put(label, new Value(label, descripcion));
 			regresar.add(new UISelectEntity(todos));
     } // if      

@@ -7,6 +7,27 @@
   </model>
 
   <dml>
+    <unit id="TcKeetEstimacionesArchivosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_estimaciones_archivos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_estimaciones_archivos
+where      
+  id_estimacion = {idEstimacion} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+      <delete id="rows">
+delete from tc_keet_estimaciones_archivos where id_estimacion= {idEstimacion}
+      </delete>
+    </unit>    
     <unit id="TcKeetBoletasEstatusDto">
       <select id="row">
 select      

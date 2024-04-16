@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estimaciones.backing;
+package mx.org.kaana.keet.estimacion.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.estimaciones.reglas.Transaccion;
+import mx.org.kaana.keet.estimacion.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
@@ -76,11 +76,10 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_keet_estimaciones.registro desc");
-      columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
@@ -183,10 +182,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -239,13 +237,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadDesarrollos
 	
 	public void doLoadContratos() {
-		List<Columna> columns    = null;
+		List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
 		UISelectEntity empresa   = null;
     List<UISelectEntity> clientes = null;
     List<UISelectEntity> contratos= null;
 	  try {
-			columns= new ArrayList<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -282,11 +279,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadContratos
   
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
 		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcKeetEstimacionesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);
@@ -304,9 +300,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion           = null;
 		TcKeetEstimacionesBitacoraDto bitacora= null;
-		Entity seleccionado               = null;
+		Entity seleccionado               = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora   = new TcKeetEstimacionesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), -1L, seleccionado.getKey(), JsfBase.getIdUsuario(), (String)this.attrs.get("justificacion"));
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))

@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estimaciones.reglas;
+package mx.org.kaana.keet.estimacion.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.estimaciones.beans.Estimacion;
-import mx.org.kaana.keet.estimaciones.beans.Retencion;
+import mx.org.kaana.keet.estimacion.beans.Estimacion;
+import mx.org.kaana.keet.estimacion.beans.Retencion;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UISelectEntity;

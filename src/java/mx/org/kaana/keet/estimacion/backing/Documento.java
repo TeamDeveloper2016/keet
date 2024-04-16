@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estimaciones.backing;
+package mx.org.kaana.keet.estimacion.backing;
 
 import java.io.File;
 import java.io.Serializable;
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.estimaciones.reglas.Estimaciones;
+import mx.org.kaana.keet.estimacion.reglas.Estimaciones;
 import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.keet.ingresos.enums.EClaveCatalogo;
@@ -49,7 +49,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import mx.org.kaana.keet.estimaciones.reglas.Operacion;
+import mx.org.kaana.keet.estimacion.reglas.Operacion;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -414,7 +414,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
     catch(Exception e ) {
       throw e;
     } // catch
-	} // doFileUpload	
+	} 
 	
 	public void doCheckFolio() {
 		Map<String, Object> params=null;
