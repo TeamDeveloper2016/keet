@@ -90,7 +90,6 @@ public class Accion extends IBaseImportar implements Serializable {
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion")== null? -1L: JsfBase.getFlashAttribute("idEstimacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Estimaciones/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_CATALOGOS);
-			this.attrs.put("carpeta", "DOCS");
       this.documentos= new ArrayList<>();
 			this.doLoad();
     } // try
@@ -435,7 +434,7 @@ public class Accion extends IBaseImportar implements Serializable {
   }
 
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, this.estimaciones.getEstimacion().getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("estimaciones"), (String)this.attrs.get("carpeta"));
+		this.doFileUpload(event, this.estimaciones.getEstimacion().getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("estimaciones"));
     if(!Objects.equals(this.getPdf(), null)) {
       this.getPdf().setObservaciones(!Objects.equals((String)this.attrs.get("comentarios"), null)? ((String)this.attrs.get("comentarios")).toUpperCase(): null);
       this.attrs.put("comentarios", null);

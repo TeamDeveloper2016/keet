@@ -160,6 +160,49 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		} // catch
 	} 
 	
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta) {
+    this.doFileUpload(event, carpeta, Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase()), fechaFactura);  
+  }
+  
+	protected void doFileUpload(FileUploadEvent event, String carpeta, String nameFile, Long fechaFactura) {
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {
+			Calendar calendar= Calendar.getInstance();
+			calendar.setTimeInMillis(fechaFactura);
+      path.append(carpeta);
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
+      temp.append("/");
+      temp.append(Calendar.getInstance().get(Calendar.YEAR));
+      temp.append("/");
+      temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
+      temp.append("/");
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      String ruta= path.toString();
+      path.append(nameFile);
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();	
+      this.toWriteFile(result, event.getFile().getInputStream(), Boolean.FALSE);
+			fileSize= event.getFile().getSize();	      
+      if(nameFile.endsWith(EFormatos.PDF.name())) {
+        this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 2L));
+        this.attrs.put("pdf", this.pdf.getName()); 
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} 
+	
 	public void doFileUpload(FileUploadEvent event, String clave, String propiedadServidor) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
