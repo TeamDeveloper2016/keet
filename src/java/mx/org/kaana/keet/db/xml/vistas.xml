@@ -4,6 +4,13 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaCostosDto">
+      <select id="row">
+select
+*
+from
+      </select>
+    </unit>    
     <unit id="VistaBoletasDto">
       <select id="folio">
 select 

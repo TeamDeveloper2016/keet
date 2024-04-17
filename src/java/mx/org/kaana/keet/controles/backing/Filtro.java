@@ -205,12 +205,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doInicio
 
 	protected void loadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			params= new HashMap<>();
-			columns= new ArrayList<>();		
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -257,7 +255,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // loadCombos
+	} 
 	
 	protected void loadCombos() {
 		try {
@@ -281,11 +279,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doReporte(String nombre) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
     Entity contratosLotes        = null;
 		try {		  
-      params=new HashMap<>();
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.valueOf(nombre);
       params.put("filtroReporte",((TcKeetControlesDto)this.attrs.get("seleccionado")).getClave()!= null? ((TcKeetControlesDto)this.attrs.get("seleccionado")).getClave().substring(0,13).concat("%"):"%");

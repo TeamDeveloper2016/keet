@@ -61,7 +61,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCatalogosContratosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" listener="#{keetCatalogosContratosFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
-                <f:selectItems value="#{keetCatalogosContratosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <f:selectItems value="#{keetCatalogosContratosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

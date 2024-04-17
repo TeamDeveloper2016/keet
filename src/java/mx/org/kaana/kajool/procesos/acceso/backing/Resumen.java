@@ -101,12 +101,10 @@ public class Resumen extends Respaldos implements Serializable {
   } // doLoad
   
 	protected void toLoadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			params= new HashMap<>();
-			columns= new ArrayList<>();		
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -126,9 +124,8 @@ public class Resumen extends Respaldos implements Serializable {
   
   public void doLoadDesarrollos() {
 		List<UISelectEntity>desarrollos= null;
-    Map<String, Object> params     = null;
+    Map<String, Object> params     = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
   		desarrollos= UIEntity.build("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("desarrollos", desarrollos);
@@ -146,10 +143,9 @@ public class Resumen extends Respaldos implements Serializable {
 
   public void doLoadContratos() {
 		List<UISelectEntity>contratos= null;
-    List<Columna> columns        = null;
+    List<Columna> columns        = new ArrayList<>();
     Map<String, Object> params   = new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -213,11 +209,10 @@ public class Resumen extends Respaldos implements Serializable {
   }
   
   private void toLoadAcumulado() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     Entity acumulado          = null;
     try {
-			columns= new ArrayList<>();
 			columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("facturado", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -294,11 +289,9 @@ public class Resumen extends Respaldos implements Serializable {
 
 	public void doRefreshEChartWith(ItemSelected itemSelected) {
 		LOG.info(itemSelected);
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {  
-      columns = new ArrayList<>();
-      params = new HashMap<>();
       switch(itemSelected.getChart()) {
         case "":
           break;
@@ -416,7 +409,7 @@ public class Resumen extends Respaldos implements Serializable {
 
   public StreamedContent getResumen() {
 		StreamedContent regresar= null;		
-    Comparativo cifras           = null;
+    Comparativo cifras      = null;
 		try {
 	  	cifras     = new Comparativo(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L);
       String name= cifras.execute();
