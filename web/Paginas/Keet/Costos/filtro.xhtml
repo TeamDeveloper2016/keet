@@ -15,7 +15,9 @@
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre'},
         'idCliente'   : {validaciones: 'libre', mascara: 'libre'},
         'idDesarrollo': {validaciones: 'libre', mascara: 'libre'},
-        'idContrato'  : {validaciones: 'libre', mascara: 'libre'}
+        'idEstatus': {validaciones: 'libre', mascara: 'libre'},
+        'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
+        'idSemana'    : {validaciones: 'libre', mascara: 'libre'}
       };
       //<![CDATA[
       //]]>
@@ -31,10 +33,10 @@
               <p:selectOneMenu id="idEmpresa" value="#{keetCostosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetCostosFiltro.doLoadClientes}" process="@this" update="idCliente idDesarrollo idContrato" oncomplete="reloadClientes()"/>
                 <f:selectItems value="#{keetCostosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                <p:column headerText="Clave" styleClass="janal-wid-20 janal-column-center">
+                <p:column headerText="Clave" styleClass="janal-fix-10 janal-column-center">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
-                <p:column headerText="Nombre">
+                <p:column headerText="Nombre" styleClass="janal-fix-90">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
@@ -42,39 +44,52 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idCliente" value="Clientes:"/>
               <p:selectOneMenu id="idCliente" value="#{keetCostosFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetCostosFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato" oncomplete="reloadDesarrollos()"/>
+                <p:ajax event="change" listener="#{keetCostosFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato @(.contrato)" oncomplete="reloadDesarrollos()"/>
                 <f:selectItems value="#{keetCostosFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty elementrazonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
-                <p:column headerText="Clave" styleClass="janal-wid-20 janal-column-center">
+                <p:column headerText="Clave" styleClass="janal-fix-10 janal-column-center">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
-                <p:column headerText="Razón social">
+                <p:column headerText="Razón social" styleClass="janal-fix-90">
                   <h:outputText value="#{item.razonSocial}"/>
                 </p:column>   
               </p:selectOneMenu>
             </p:panelGrid>  
-          </p:panelGrid>
-          <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-            <p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
-            <p:selectOneMenu id="idDesarrollo" value="#{keetCostosFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-              <p:ajax event="change" listener="#{keetCostosFiltro.doLoadContratos}" process="@this" update="idContrato @(.contrato)" oncomplete="reloadContratos()"/>
-              <f:selectItems value="#{keetCostosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
-              <p:column headerText="Clave" styleClass="janal-wid-20 janal-column-center">
-                <h:outputText value="#{item.clave}"/>
-              </p:column>   
-              <p:column headerText="Nombre">
-                <h:outputText value="#{item.nombres}"/>
-              </p:column>   
-            </p:selectOneMenu>
           </p:panelGrid>  
+          <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetCostosFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosFiltro.doLoadContratos}" process="@this" update="idContrato @(.contrato)" oncomplete="reloadContratos()"/>
+                <f:selectItems value="#{keetCostosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave" styleClass="janal-fix-10 janal-column-center">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre" styleClass="janal-fix-90">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEstatus" value="Estatus:" styleClass="janal-color-blue" />
+              <p:selectOneMenu id="idEstatus" value="#{keetCostosFiltro.attrs.idEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-color-blue" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosFiltro.doCalcular}" process="@this" update="@(.contrato)"/>
+                <f:selectItems value="#{keetCostosFiltro.attrs.estatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}" styleClass="janal-color-blue"/>
+                </p:column>   
+              </p:selectOneMenu>  
+            </p:panelGrid>  
+          </p:panelGrid>
           <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
             <p:outputLabel for="idContrato" value="Contratos: [#{keetCostosFiltro.attrs.total}]" styleClass="contrato janal-color-black"/>
             <p:selectOneMenu id="idContrato" value="#{keetCostosFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-              <f:selectItems value="#{keetCostosFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombres eq ''? '': '|'} #{element.nombres}"/>
-              <p:column headerText="Clave" styleClass="janal-wid-20 janal-column-center">
+              <p:ajax event="change" listener="#{keetCostosFiltro.doCalcular}" process="@this" update="@(.contrato)"/>
+              <f:selectItems value="#{keetCostosFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:column headerText="Clave" styleClass="janal-fix-10 janal-column-center">
                 <h:outputText value="#{item.clave}"/>
               </p:column>   
               <p:column headerText="Nombre">
-                <h:outputText value="#{item.nombre}"/>
+                <h:outputText value="#{item.nombre}" styleClass="janal-fix-90"/>
               </p:column>   
               <p:column headerText="Viviendas" styleClass="janal-column-right">
                 <h:outputText value="#{item.noViviendas}"/>
@@ -87,9 +102,39 @@
               </p:column>   
             </p:selectOneMenu>
           </p:panelGrid>
-          <p:remoteCommand name="reloadClientes" process="@this" update="idCliente"/>
-          <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
+          
+          <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
+							<p:selectOneMenu id="ejercicio" value="#{keetCostosFiltro.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosFiltro.doLoadSemanas}" process="@this" update="idSemana" oncomplete="reloadSemanas()"/>
+                <f:selectItems value="#{keetCostosFiltro.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio}"/>
+                <p:column headerText="Nombre" styleClass="janal-column-center">
+                  <h:outputText value="#{item.ejercicio}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+            </p:panelGrid>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idSemana" value="Semana:"/>
+              <p:selectOneMenu id="idSemana" value="#{keetCostosFiltro.attrs.idSemana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosFiltro.doCalcular}" process="@this" update="@(.contrato)"/>
+                <f:selectItems value="#{keetCostosFiltro.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
+                <p:column headerText="Nombre" styleClass="janal-column-center">
+                  <h:outputText value="#{item.semana}"/>
+                </p:column>   
+                <p:column headerText="Inicio" styleClass="janal-column-center">
+                  <h:outputText value="#{item.inicio}"/>
+                </p:column>   
+                <p:column headerText="Termino" styleClass="janal-column-center">
+                  <h:outputText value="#{item.termino}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+            </p:panelGrid>
+          </p:panelGrid>
+          <p:remoteCommand name="reloadClientes" process="@this" update="idCliente idDesarrollo idContrato @(.contrato)"/>
+          <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo idContrato @(.contrato)"/>
           <p:remoteCommand name="reloadContratos" process="@this" update="idContrato @(.contrato)"/>
+          <p:remoteCommand name="reloadSemanas" process="@this" update="idSemana"/>
         </div>
       </div>
       <div class="ui-grid-row janal-grid-row">

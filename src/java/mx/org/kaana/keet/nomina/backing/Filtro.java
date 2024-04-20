@@ -106,12 +106,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by tc_keet_nominas.id_nomina desc");
-      columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -134,11 +133,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
 	private void toLoadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

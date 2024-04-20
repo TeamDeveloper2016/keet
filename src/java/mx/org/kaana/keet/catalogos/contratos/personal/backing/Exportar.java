@@ -81,10 +81,9 @@ public class Exportar extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -105,12 +104,10 @@ public class Exportar extends IBaseFilter implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 		List<UISelectItem> estatus= null;
     try {
-			columns= new ArrayList<>();			
-			params = new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -165,11 +162,9 @@ public class Exportar extends IBaseFilter implements Serializable {
 	}	// doCompleteOrden
 	
 	public void doUpdateOrdenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("orden", EFormatoDinamicos.MAYUSCULAS));      
 			String orden= (String)this.attrs.get("orden"); 
 			orden= !Cadena.isVacio(orden) ? orden.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";			
@@ -197,11 +192,10 @@ public class Exportar extends IBaseFilter implements Serializable {
 	}	// doCompleteNombreEmpleado
 	
 	public void doUpdateNombresEmpleados() {
-		List<Columna> columns       = null;
+		List<Columna> columns       = new ArrayList<>();
     Map<String, Object> params  = new HashMap<>();
 		List<UISelectEntity> nombres= null;		
     try {
-			columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
 			String nombreEmpleado= (String)this.attrs.get("nombreEmpleado"); 
 			nombreEmpleado= !Cadena.isVacio(nombreEmpleado) ? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
@@ -232,12 +226,10 @@ public class Exportar extends IBaseFilter implements Serializable {
 	} // loadTiposInicidentes	
 	
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;		
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();			
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -254,11 +246,10 @@ public class Exportar extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion  = null;
-		Entity seleccionado      = null;
+		Entity seleccionado      = (Entity)this.attrs.get("seleccionado");
 		Incidente incidente      = null;
 		TcManticIncidentesDto dto= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(TcManticIncidentesDto.class, seleccionado.getKey());
 			incidente= new Incidente(dto);
 			incidente.setIdIncidenteEstatus(Long.valueOf(this.attrs.get("estatusDlg").toString()));
@@ -279,9 +270,8 @@ public class Exportar extends IBaseFilter implements Serializable {
 	
 	public String doExportar() {
 		String regresar          = null;				
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {									   
-			params= new HashMap<>();						  
 			params.put("idEmpresa", !Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1") ? JsfBase.getAutentifica().getEmpresa().getDependencias() : ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			params.put(Constantes.SQL_CONDICION, toCondicionExporter());
 			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_incidentes.inicio");
@@ -343,11 +333,9 @@ public class Exportar extends IBaseFilter implements Serializable {
 	
 	public void doEliminar() {
 		Transaccion transaccion  = null;
-		List<Incidente>incidentes= null;
-		Incidente dto            = null;
+		List<Incidente>incidentes= new ArrayList<>();
+		Incidente dto            = new Incidente();
 		try {						
-			incidentes= new ArrayList<>();
-			dto= new Incidente();
 			dto.setIdIncidente(((Entity)this.attrs.get("seleccionado")).getKey());
 			incidentes.add(dto);
 			transaccion= new Transaccion(null, incidentes);

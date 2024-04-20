@@ -4891,13 +4891,15 @@ update tc_keet_contratos set id_contrato_estatus= {idContratoEstatus} where id_c
     </unit>
 	<unit id="TcKeetContratosEstatusDto">
       <select id="row">
-        select      
-          tc_keet_contratos_estatus.id_contrato_estatus as id_key,
-					tc_keet_contratos_estatus.*
-        from      
-          tc_keet_contratos_estatus
-        where 
-          {condicion} 
+select      
+  tc_keet_contratos_estatus.id_contrato_estatus as id_key,
+  tc_keet_contratos_estatus.*
+from      
+  tc_keet_contratos_estatus
+where 
+  {condicion} 
+order by
+  id_contrato_estatus
       </select>
       <select id="identically">
         select      
