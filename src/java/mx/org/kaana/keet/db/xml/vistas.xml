@@ -7709,30 +7709,34 @@ order by
           and tc_keet_contratos_lotes.orden= {orden}
 			</select>	
 			<select id="findDesarrollo">
-				select 
-					tc_keet_contratos.id_contrato as id_key,
-          tc_mantic_clientes.id_cliente,
-          tc_keet_desarrollos.id_desarrollo,
-				  tc_mantic_empresas.nombre as empresa,  
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_mantic_clientes.razon_social,
-          (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
-					tc_keet_contratos.*
-				from
-					tc_keet_contratos
-				inner join
-					tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
-				inner join
-					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
-				inner join
-					tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-				inner join 
-					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
-				where
-					(tc_keet_desarrollos.id_desarrollo= {idDesarrollo} or {idDesarrollo}= -1)
-          and {condicion}
-        order by
-          tc_keet_contratos.registro desc 
+select 
+  tc_keet_contratos.id_contrato as id_key,
+  tc_mantic_clientes.id_cliente,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_mantic_clientes.razon_social,
+  (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
+  tc_keet_contratos.costo as valor,
+  tc_keet_contratos_estatus.nombre as estatus,
+  tc_keet_contratos.*
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+inner join 
+  tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+where
+  (tc_keet_desarrollos.id_desarrollo= {idDesarrollo} or {idDesarrollo}= -1)
+  and {condicion}
+order by
+  tc_keet_contratos.registro desc 
 			</select>
 			<select id="findPrototipos">
 				select 

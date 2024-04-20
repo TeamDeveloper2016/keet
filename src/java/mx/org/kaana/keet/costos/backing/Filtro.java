@@ -41,6 +41,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Estimados;
+import mx.org.kaana.libs.formato.Numero;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -56,6 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
+      this.attrs.put("total", "$0.00");
 			this.toLoadEmpresas();
     } // try
     catch (Exception e) {
@@ -149,9 +151,9 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<UISelectEntity> desarrollos= null;
     try {
 			cliente= (UISelectEntity) this.attrs.get("idCliente");
-      params.put("idCliente", cliente.getKey());
 			params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente= "+ cliente.getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
@@ -180,11 +182,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
-      params.put("idDesarrollo", desarrollo.getKey());
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      if(Objects.equals(desarrollo.getKey(), -1L))
+        params.put("idDesarrollo", 0L);
+      else
+        params.put("idDesarrollo", desarrollo.getKey());
+      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey());
       contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, columns, "clave");
       this.attrs.put("contratos", contratos);
       this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {
+        double sum= 0D;
+        for (UISelectEntity item: contratos) {
+          if(item.containsKey("valor"))
+            sum+= item.toDouble("valor");
+        } // for
+        this.attrs.put("total", Numero.formatear(Numero.MONEDA_CON_DECIMALES, sum));
+      } // if
+      else
+        this.attrs.put("total", "$0.00");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
