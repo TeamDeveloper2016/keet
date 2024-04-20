@@ -153,10 +153,29 @@ public class IBaseMail implements Serializable {
     try {
       properties= new Properties();
 			files     = new ArrayList<>();
+      
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.put("mail.smtp.ssl.enable", "true");
+      properties.put("mail.smtp.ssl.trust", "*");
+      properties.put("mail.smtp.starttls.enable", "true");
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-      properties.put("mail.smtp.port", "26");			
+      properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
+/*      
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          properties.put("mail.smtp.port", "26");		
+          break;
+        case "gylvi": 
+          properties.put("mail.smtp.port", "26");		
+          break;
+        case "triana":
+          break;
+        default:  
+          properties.put("mail.smtp.port", "26");		
+          break;
+      } // swtich
+  */    
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
       LOG.error("alias: ".concat(this.alias).concat("> from: ").concat(this.from).concat("> to: ").concat(this.to));
