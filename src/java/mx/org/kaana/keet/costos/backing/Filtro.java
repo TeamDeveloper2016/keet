@@ -60,8 +60,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
       this.attrs.put("total", "$0.00");
-			this.toLoadEmpresas();
       this.toLoadEstatus();
+			this.toLoadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -142,6 +142,15 @@ public class Filtro extends IBaseFilter implements Serializable {
       clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, columns);
       this.attrs.put("clientes", clientes);
 			this.attrs.put("idCliente", UIBackingUtilities.toFirstKeySelectEntity(clientes));
+      if(!Objects.equals(clientes, null) && !clientes.isEmpty()) {
+        int index= clientes.indexOf(new UISelectEntity(15L));
+        if(index>= 0)
+          this.attrs.put("idCliente", clientes.get(index));
+        else  
+  			  this.attrs.put("idCliente", UIBackingUtilities.toFirstKeySelectEntity(clientes));
+      } // if
+      else
+        this.attrs.put("idCliente", new UISelectEntity(-1L));
       this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
