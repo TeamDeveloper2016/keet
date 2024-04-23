@@ -1,51 +1,28 @@
 package mx.org.kaana.keet.costos.backing;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.servlet.ServletContext;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.EFormatos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
-import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.keet.catalogos.contratos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.estaciones.reglas.Estaciones;
-import mx.org.kaana.keet.nomina.reglas.Egresos;
-import mx.org.kaana.keet.nomina.reglas.Estimados;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetCostosFiltro")
 @ViewScoped
@@ -53,6 +30,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
+  private StringBuilder seguimiento;
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -60,6 +39,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
       this.attrs.put("total", "$0.00");
+      this.seguimiento= new StringBuilder();
       this.toLoadEstatus();
 			this.toLoadEmpresas();
     } // try
@@ -71,34 +51,36 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-//    List<Columna> columns    = new ArrayList<>();
-//		Map<String, Object>params= null;
-//    try {
-//      params= this.toPrepare();	
-//      params.put("sortOrder", "order by tc_keet_contratos.registro desc");
-//      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-//      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-//      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-//      columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
-//      columns.add(new Columna("proyecto", EFormatoDinamicos.MAYUSCULAS));
-//      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-//      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-//      this.lazyModel = new FormatCustomLazy("VistaContratosDto", params, columns);
-//      UIBackingUtilities.resetDataTable();
-//    } // try
-//    catch (Exception e) {
-//      Error.mensaje(e);
-//      JsfBase.addMessageError(e);
-//    } // catch
-//    finally {
-//      Methods.clean(params);
-//      Methods.clean(columns);
-//    } // finally		
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, this.seguimiento.toString());
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("estimaciones", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("iniciadas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("enProceso", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("terminadas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("otros", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyModel = new FormatCustomLazy("VistaCostosDto", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
   } // doLoad
-
-	private Map<String, Object> toPrepare() {
-		return new HashMap<>();		
-	} // toPrepare
 
 	private void toLoadEmpresas() {
 		Map<String, Object>params= new HashMap<>();
@@ -238,7 +220,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "semanas", params, columns);
       this.attrs.put("semanas", semanas);
       this.attrs.put("idSemana", UIBackingUtilities.toFirstKeySelectEntity(semanas));
-      this.doCalcular();
+      if(JsfBase.isPostBack())
+        this.doCalcular();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -282,8 +265,9 @@ public class Filtro extends IBaseFilter implements Serializable {
  		UISelectEntity idEstatus      = (UISelectEntity)this.attrs.get("idEstatus");
  		UISelectEntity idContrato     = (UISelectEntity)this.attrs.get("idContrato");
     List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params    = new HashMap<>();
     try {      
+      seguimiento.delete(0, seguimiento.length());
       if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {
         double sum= 0D;
         for (UISelectEntity item: contratos) {
@@ -292,13 +276,18 @@ public class Filtro extends IBaseFilter implements Serializable {
                (idEstatus.getKey()< 90L && Objects.equals(item.toLong("idContratoEstatus"), idEstatus.getKey())) || 
                Objects.equals(99L, idEstatus.getKey()) || 
                (Objects.equals(98L, idEstatus.getKey()) && Objects.equals(item.toLong("idContrato"), idContrato.getKey()))
-              ) 
+              ) {
               sum+= item.toDouble("valor");
+              seguimiento.append(item.toLong("idContrato")).append(", ");
+            } // if  
         } // for
+        if(seguimiento.length()> 1)
+          seguimiento.delete(seguimiento.length()- 3, seguimiento.length());
         this.attrs.put("total", Numero.formatear(Numero.MONEDA_CON_DECIMALES, sum));
       } // if
       else 
         this.attrs.put("total", "$ 0.00");
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -77,6 +77,9 @@
 		<style type="text/css">
 			.ui-selectcheckboxmenu-token-label {display: block;padding: 0 2.1em 0 .5em;background: #1578c9;color: white;}
 			.janal-tr-orange {background-color: #FFC9CE !important;} 
+      .janal-text-blink {padding:15px;	line-height:50px;}
+	    .janal-font-obs{text-transform:uppercase; font-size:18px !important; font-family: cursive; color:red;	animation:janal-text-blink 1s linear infinite;}
+      @keyframes janal-text-blink{0%{opacity: 0;}50%{opacity: .5;}100%{opacity: 1;}}      
 		</style>			
 	</ui:define>
 	<ui:define name="contenido">
@@ -838,7 +841,7 @@
               </p:panelGrid>  
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt janal-font-obs" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>

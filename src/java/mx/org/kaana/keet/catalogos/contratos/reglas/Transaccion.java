@@ -464,6 +464,7 @@ public class Transaccion extends IBaseTnx {
   private Boolean toEvidencias(Session sesion) throws Exception {
     Boolean regresar= this.evidencia.size()<= 0;
     try {   
+      this.lote.setIdContratoLoteEstatus(4L); // TERMINADO
       regresar= DaoFactory.getInstance().update(sesion, this.lote)> 0L;
       for (Evidencia item: this.evidencia) {
         switch(item.getSql()) {
