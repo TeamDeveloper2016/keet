@@ -57,6 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, this.seguimiento.toString());
+      params.put("agrupar", "group by tc_keet_contratos.id_contrato");
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));

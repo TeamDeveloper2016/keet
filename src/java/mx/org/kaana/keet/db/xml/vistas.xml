@@ -8,6 +8,7 @@
       <select id="lazy">
 select
   tc_keet_contratos.id_contrato as id_key,
+  tc_keet_desarrollos.id_desarrollo,        
   tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_contratos.id_contrato,
   tc_keet_contratos.clave,
@@ -101,9 +102,10 @@ left join (
 ) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato        
 where
   tc_keet_contratos.id_contrato in ({condicion})
-group by
-  tc_keet_contratos.id_contrato                
+group by 
+  tc_keet_contratos.id_contrato
 order by
+  tc_keet_desarrollos.id_desarrollo,
   tc_keet_contratos.clave desc
       </select>
 			<select id="desarrollos">

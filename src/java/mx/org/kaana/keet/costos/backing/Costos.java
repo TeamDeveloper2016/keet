@@ -15,9 +15,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -33,10 +33,21 @@ public class Costos extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 
   private List<Entity> model;
+  private List<Entity> subTotales;
+  private Entity totales;
+  private List<Long> fraccionamientos;
   private StringBuilder seguimiento;
 
   public List<Entity> getModel() {
     return model;
+  }
+
+  public List<Entity> getSubTotales() {
+    return subTotales;
+  }
+
+  public Entity getTotales() {
+    return totales;
   }
   
   @PostConstruct
@@ -46,7 +57,8 @@ public class Costos extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
       this.attrs.put("total", "$0.00");
-      this.seguimiento= new StringBuilder();
+      this.fraccionamientos= new ArrayList<>();
+      this.seguimiento     = new StringBuilder();
       this.toLoadEstatus();
 			this.toLoadEmpresas();
     } // try
@@ -77,12 +89,23 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      if(!Objects.equals(this.subTotales, null)) {
+        Methods.clean(this.subTotales);
+        Methods.clean(this.totales);
+      } // if  
+      this.subTotales= new ArrayList<>();
+      this.totales   = null;
       this.model= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "lazy", params, Constantes.SQL_TODOS_REGISTROS);
       if(!Objects.equals(this.model, null) && !this.model.isEmpty()) {
-        UIBackingUtilities.toFormatEntitySet(model, columns);
+        UIBackingUtilities.toFormatEntitySet(this.model, columns);
+        this.toAcumularDesarrollos();
+        UIBackingUtilities.toFormatEntitySet(this.subTotales, columns);
+        UIBackingUtilities.toFormatEntity(this.totales, columns);
       } // if
-      else
-        this.model= new ArrayList<>();
+      else {
+        this.model  = new ArrayList<>();
+        this.totales= new Entity();
+      }  
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -196,17 +219,22 @@ public class Costos extends IBaseFilter implements Serializable {
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
+      this.fraccionamientos.clear();
       if(Objects.equals(desarrollo.getKey(), -1L)) {
         StringBuilder sb= new StringBuilder();
         for (UISelectEntity item: desarrollos) {
-          if(!Objects.equals(item.getKey(), -1L))
-            sb.append(item.getKey()).append(", ");  
+          if(!Objects.equals(item.getKey(), -1L)) {
+            sb.append(item.getKey()).append(", "); 
+            this.fraccionamientos.add(item.getKey());
+          } // if  
         } // for
         sb.delete(sb.length()- 2, sb.length());
         params.put("idDesarrollo", sb.toString());
       } // if  
-      else
+      else {
         params.put("idDesarrollo", desarrollo.getKey());
+        this.fraccionamientos.add(desarrollo.getKey());        
+      } // if  
       params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey());
       contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaCostosDto", "desarrollos", params, columns, "clave");
       this.attrs.put("contratos", contratos);
@@ -316,6 +344,57 @@ public class Costos extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+ 
+  public int toIndex(Long idDesarrollo) {
+    return this.fraccionamientos.indexOf(idDesarrollo);
+  }
+ 
+  private void toAcumularDesarrollos() {
+    Long idDesarrollo= -1L;
+    Entity row       = null;
+    try {  
+      for (Entity item: this.model) {
+        if(Objects.equals(this.totales, null)) {
+          this.totales= item.clone();
+          this.clean(this.totales);
+        } // if
+        else
+          this.acumular(this.totales, item);
+        if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
+          if(!Objects.equals(idDesarrollo, -1L)) 
+            this.subTotales.add(row);
+          row= item.clone();
+          this.clean(row);
+          idDesarrollo= item.toLong("idDesarrollo");
+        } // if  
+        else
+          this.acumular(row, item);
+      } // for
+      this.subTotales.add(row);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  private void clean(Entity row) {
+		for (String key: row.keySet()) {
+      if(!"|idKey|idDesarrollo|desarrollo|idContrato|clave|nombre|registro|".contains(key)) {
+  			Value value= row.get(key);
+        value.setData(Numero.getDouble(Cadena.eliminar(value.toString(), ','), 0D));
+      } // if
+		} // for
+  }
+  
+  private void acumular(Entity item, Entity value) {
+		for (String key: value.keySet()) {
+      if(!"|idKey|idDesarrollo|desarrollo|idContrato|clave|nombre|registro|".contains(key)) {
+        Double numero= Numero.getDouble(Cadena.eliminar(value.get(key).toString(), ','), 0D);
+        item.get(key).setData(item.get(key).toDouble()+ numero);
+      } // if
+		} // for
   }
   
 }
