@@ -240,7 +240,7 @@ public class Transaccion extends IBaseTnx {
 			this.persona.getEmpresaPersona().setIdEmpresa(this.persona.getIdEmpresa());						
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
-			this.persona.getEmpresaPersona().setObservaciones("ALTA DE EMPLEADO NUEVO");
+			this.persona.getEmpresaPersona().setObservaciones("ALTA DE EMPLEADO");
       if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0)
 			  this.persona.getEmpresaPersona().setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
@@ -276,7 +276,7 @@ public class Transaccion extends IBaseTnx {
 				this.persona.getDeudor().setSaldo(0D);
 				this.persona.getDeudor().setIdEmpresaPersona(idEmpresaPersona);
 				this.persona.getDeudor().setIdUsuario(JsfBase.getIdUsuario());
-				this.persona.getDeudor().setObservaciones("Alta de empleado");
+				this.persona.getDeudor().setObservaciones("ALTA DE EMPLEADO");
 				regresar= DaoFactory.getInstance().insert(sesion, this.persona.getDeudor())>= 1L;
 			} // else			
 		} // try

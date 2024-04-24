@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
@@ -25,14 +26,18 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Numero;
 
-@Named(value = "keetCostosFiltro")
+@Named(value = "keetCostosCostos")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Costos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
   private List<Entity> model;
   private StringBuilder seguimiento;
+
+  public List<Entity> getModel() {
+    return model;
+  }
   
   @PostConstruct
   @Override
@@ -72,7 +77,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaCostosDto", params, columns);
+      this.model= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "lazy", params, Constantes.SQL_TODOS_REGISTROS);
+      if(!Objects.equals(this.model, null) && !this.model.isEmpty()) {
+        UIBackingUtilities.toFormatEntitySet(model, columns);
+      } // if
+      else
+        this.model= new ArrayList<>();
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -160,7 +170,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente= "+ cliente.getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      desarrollos= (List<UISelectEntity>) UIEntity.build("VistaDesarrollosDto", "lazy", params, columns);
+      desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
       this.attrs.put("desarrollos", desarrollos);			
 			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));			
       this.doLoadContratos();
@@ -177,21 +187,28 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doLoadContratos() {
     Map<String, Object> params   = new HashMap<>();
     List<Columna> columns        = new ArrayList<>();
-		UISelectEntity desarrollo    = null;
-		List<UISelectEntity>contratos= null;
+		UISelectEntity desarrollo    = (UISelectEntity)this.attrs.get("idDesarrollo");
+		List<UISelectEntity>desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
+		List<UISelectEntity>contratos  = null;
     try {
-      desarrollo= ((UISelectEntity)this.attrs.get("idDesarrollo"));
 			columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
-      if(Objects.equals(desarrollo.getKey(), -1L))
-        params.put("idDesarrollo", 0L);
+      if(Objects.equals(desarrollo.getKey(), -1L)) {
+        StringBuilder sb= new StringBuilder();
+        for (UISelectEntity item: desarrollos) {
+          if(!Objects.equals(item.getKey(), -1L))
+            sb.append(item.getKey()).append(", ");  
+        } // for
+        sb.delete(sb.length()- 2, sb.length());
+        params.put("idDesarrollo", sb.toString());
+      } // if  
       else
         params.put("idDesarrollo", desarrollo.getKey());
       params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey());
-      contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, columns, "clave");
+      contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaCostosDto", "desarrollos", params, columns, "clave");
       this.attrs.put("contratos", contratos);
       this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {

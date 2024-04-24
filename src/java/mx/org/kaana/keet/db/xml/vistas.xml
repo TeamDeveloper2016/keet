@@ -8,6 +8,7 @@
       <select id="lazy">
 select
   tc_keet_contratos.id_contrato as id_key,
+  tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_contratos.id_contrato,
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre,
@@ -17,7 +18,8 @@ select
   ifnull(sum(tc_keet_estimaciones.importe), 0) as estimado,
   ifnull(tt_keet_estimaciones_detalles.retenciones, 0) as retenciones,
   ifnull(round(ifnull(sum(tc_keet_estimaciones.importe), 0)* 100/ tc_keet_contratos.costo, 2), 0) as porcentaje,
-  ifnull(tt_keet_destajos_realizados.destajos, 0) as egresos,
+  ifnull(tt_mantic_ordenes_compras.materiales, 0)+ ifnull(tt_keet_destajos_realizados.destajos, 0) as egresos,
+  ifnull(round(ifnull(ifnull(sum(tc_keet_estimaciones.importe), 0)* 100/ tc_keet_contratos.costo, 0)- ((ifnull(tt_mantic_ordenes_compras.materiales, 0)+ ifnull(tt_keet_destajos_realizados.destajos, 0))/ tc_keet_contratos.costo* 100), 2), 0) as desviacion,
   tt_keet_contratos_lotes.iniciadas,
   tt_keet_contratos_lotes.en_proceso,
   tt_keet_contratos_lotes.terminadas,
@@ -25,6 +27,10 @@ select
   tc_keet_contratos.registro
 from
   tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 left join
   tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato
 left join (
@@ -82,6 +88,17 @@ left join (
 	group by 
 		tt_keet_contratos_destajos.id_contrato
 ) as tt_keet_destajos_realizados on tc_keet_contratos.id_contrato= tt_keet_destajos_realizados.id_contrato        
+left join (
+	select
+		tc_mantic_ordenes_compras.id_contrato,
+		sum(tc_mantic_ordenes_compras.total) as materiales
+	from
+		tc_mantic_ordenes_compras
+	where
+		tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,6,7)
+	group by  
+		tc_mantic_ordenes_compras.id_contrato
+) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato        
 where
   tc_keet_contratos.id_contrato in ({condicion})
 group by
@@ -89,6 +106,37 @@ group by
 order by
   tc_keet_contratos.clave desc
       </select>
+			<select id="desarrollos">
+select 
+  tc_keet_contratos.id_contrato as id_key,
+  tc_mantic_clientes.id_cliente,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_mantic_clientes.razon_social,
+  (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
+  tc_keet_contratos.costo as valor,
+  tc_keet_contratos_estatus.nombre as estatus,
+  tc_keet_contratos.*
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
+inner join 
+  tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+where
+  tc_keet_desarrollos.id_desarrollo in ({idDesarrollo})
+  and {condicion}
+order by
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_contratos.clave desc 
+			</select>      
     </unit>    
     <unit id="VistaBoletasDto">
       <select id="folio">
@@ -7804,18 +7852,18 @@ from
 inner join
   tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
 inner join
-  tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 inner join
-  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 inner join
-  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
 inner join 
   tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
 where
   (tc_keet_desarrollos.id_desarrollo= {idDesarrollo} or {idDesarrollo}= -1)
   and {condicion}
 order by
-  tc_keet_contratos.registro desc 
+  tc_keet_contratos.clave desc 
 			</select>
 			<select id="findPrototipos">
 				select 
