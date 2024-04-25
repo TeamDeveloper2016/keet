@@ -1,12 +1,12 @@
 package mx.org.kaana.mantic.catalogos.proveedores.precios.backing;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -210,9 +210,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}	// doCompleteArticulo
   
   public void doUpdatePrecios() {
-    if(Objects.equal(this.precio.getPrecioLista(), 0D))
+    if(Objects.equals(this.precio.getPrecioLista(), 0D))
       this.precio.setPrecioLista(this.precio.getPrecioBase());
-    if(Objects.equal(this.precio.getPrecioEspecial(), 0D))
+    if(Objects.equals(this.precio.getPrecioEspecial(), 0D))
       this.precio.setPrecioEspecial(this.precio.getPrecioBase());
   }
 

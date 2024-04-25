@@ -1,11 +1,11 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map; 
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -193,7 +193,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
           if(index>= 0) {
             Codigo concepto= this.model.get(index);
             concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
-            if(!Objects.equal(lote, anterior)) {
+            if(!Objects.equals(lote, anterior)) {
               this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
               anterior= lote;
             } // if  

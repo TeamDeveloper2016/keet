@@ -1,10 +1,10 @@
 package mx.org.kaana.mantic.catalogos.proveedores.reglas;
 
-import com.google.common.base.Objects;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -489,7 +489,7 @@ public class Transaccion extends IBaseTnx {
 							dto.setIdProveedorTipoContacto(-1L);
 							validate = this.registrar(sesion, dto);
               // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
-              if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+              if(Objects.equals(dto.getIdPreferido(), 1L) && (Objects.equals(dto.getIdTipoContacto(), 6L) || Objects.equals(dto.getIdTipoContacto(), 7L) || Objects.equals(dto.getIdTipoContacto(), 8L))) {
                 Cafu cafu= new Cafu(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
                 cafu.doSendMessage(sesion);
               } // if

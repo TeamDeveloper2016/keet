@@ -1,11 +1,11 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.operation.Select;
@@ -145,7 +145,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 					// Verificar si existe alguna devolución de articulo en el ticket asociado y restarlo
 					if(articulo.getCantidad()- devoluciones.toLong()> 0D) {
 						articulo.setCantidad(articulo.getCantidad()- devoluciones.toLong());
-						if(pivote== null || !Objects.equal(pivote.getIdArticulo(), articulo.getIdArticulo())) {
+						if(pivote== null || !Objects.equals(pivote.getIdArticulo(), articulo.getIdArticulo())) {
 							pivote= articulo;
 							this.getArticulos().add(pivote);
 						} // if	

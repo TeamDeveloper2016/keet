@@ -7,11 +7,11 @@ package mx.org.kaana.kajool.reglas;
  * @time 1:53:33 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-import com.google.common.base.Objects;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.hibernate.SessionFactoryFacade;
@@ -101,7 +101,7 @@ public abstract class IBaseTnx {
 				Map<String, Object> old= oldData.toMap();
 				Map<String, Object> tmp= newData.toMap();
 				for(String key: old.keySet()) {
-          if(!Objects.equal(old.get(key),tmp.get(key))) {
+          if(!Objects.equals(old.get(key),tmp.get(key))) {
 						TcKeetBitacorasDto bitacora= new TcKeetBitacorasDto(
 							oldData.getKey(), //Long idKey, 
 							String.valueOf(tmp.get(key)!= null? tmp.get(key): ""), // String despues, 

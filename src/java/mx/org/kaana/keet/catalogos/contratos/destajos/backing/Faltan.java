@@ -444,7 +444,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
             if(index>= 0) {
               Codigo concepto= this.model.get(index);
               concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
-              if(!com.google.common.base.Objects.equal(lote, anterior)) {
+              if(!Objects.equals(lote, anterior)) {
                 this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-col-85"));
                 anterior= lote;
               } // if  
@@ -462,7 +462,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
           while (index< this.model.size()) {
             Codigo concepto= this.model.get(index);
             if(!concepto.getCodigo().startsWith("#"))
-              if(sb.indexOf(Constantes.SEPARADOR.concat(concepto.getCodigo()).concat(Constantes.SEPARADOR))<= 0)
+              if(sb.indexOf(Constantes.SEPARADOR.concat(concepto.getCodigo()).concat(Constantes.SEPARADOR))< 0)
                 this.model.remove(index);
               else
                 index++;

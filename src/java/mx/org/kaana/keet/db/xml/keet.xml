@@ -2356,7 +2356,7 @@ where
           ejercicio 
 				from 
 				  tc_keet_gastos 
-				group by 
+				order by 
 				  ejercicio desc
 			</select>
 			<select id="importe">
