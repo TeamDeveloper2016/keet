@@ -41,27 +41,27 @@ public enum ECorreos {
   
   static {
     empresas= new HashMap<>();
-    empresas.put("cafu.facturacion.email", "facturas@cafuconstrucciones.com");  
+    empresas.put("cafu.facturacion.email", "administracion@cafu.jvmhost.net");  
     empresas.put("cafu.facturacion.backup", "");  
-    empresas.put("cafu.cotizaciones.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.cotizaciones.email", "ventas@cafu.jvmhost.net");  
     empresas.put("cafu.cotizaciones.backup", "compras2@cafuconstrucciones.com");  
-    empresas.put("cafu.ordenes_compra.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_compra.email", "compras@cafu.jvmhost.net");  
     empresas.put("cafu.ordenes_compra.backup", "compras2@cafuconstrucciones.com");  
-    empresas.put("cafu.ordenes_cancel.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_cancel.email", "compras@cafu.jvmhost.net");  
     empresas.put("cafu.ordenes_cancel.backup", "compras2@cafuconstrucciones.com");  
-    empresas.put("cafu.cuentas.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.cuentas.email", "ventas@cafu.jvmhost.net");  
     empresas.put("cafu.cuentas.backup", "");  
-    empresas.put("cafu.ventas.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.ventas.email", "ventas@cafu.jvmhost.net");  
     empresas.put("cafu.ventas.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("cafu.compras.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.compras.email", "compras@cafu.jvmhost.net");  
     empresas.put("cafu.compras.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("cafu.administracion.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.administracion.email", "administracion@cafu.jvmhost.net");  
     empresas.put("cafu.administracion.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("cafu.residentes.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.residentes.email", "administracion@cafu.jvmhost.net");  
     empresas.put("cafu.residentes.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("cafu.destajos.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.destajos.email", "administracion@cafu.jvmhost.net");  
     empresas.put("cafu.destajos.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("cafu.pagos.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.pagos.email", "administracion@cafu.jvmhost.net");  
     empresas.put("cafu.pagos.backup", "imox.soluciones.web@gmail.com");  
     
     empresas.put("gylvi.facturacion.email", "facturas@gylvi.com");  
