@@ -24,6 +24,9 @@ from
 where      
   id_estimacion = {idEstimacion} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
+			<update id="rows">
+update tc_keet_estimaciones_archivos set id_principal= 2 where id_tipo_archivo= {idTipoArchivo} and id_estimacion= {idEstimacion}
+			</update>
       <delete id="rows">
 delete from tc_keet_estimaciones_archivos where id_estimacion= {idEstimacion}
       </delete>

@@ -114,6 +114,14 @@ public class Filtro extends IBaseFilter implements Serializable {
     return "/Paginas/Keet/Estimaciones/accion".concat(Constantes.REDIRECIONAR);
   } // doEstimacion  
 	
+  public String doEvidencia() {
+    Long idEstimacion= ((Entity)this.attrs.get("seleccionado")).getKey();
+    JsfBase.setFlashAttribute("idEstimacion", idEstimacion);
+    JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/filtro");
+    return "/Paginas/Keet/Estimaciones/evidencias".concat(Constantes.REDIRECIONAR);
+  } // doEvidencia  
+	
   public String doAccion(String accion) {
     JsfBase.setFlashAttribute("idEstimacion", ((Entity) this.attrs.get("seleccionado")).toLong("idEstimacion"));
     JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).toLong("idContrato"));

@@ -1375,7 +1375,7 @@
 			var actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
 			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-selectcheckboxmenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
 				if(actionValidate=== 'CONSULTAR') {
-					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor') {
+					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor' && this.id.toLowerCase().indexOf('janalnolock')=== -1 && $(this)[0].innerHTML.toLowerCase().indexOf('janalnolock')=== -1) {
 						if(!(this.tagName=== 'BUTTON' && (this.id=== 'cancelar' || this.id=== 'cancelarIcon')) && !($(this).hasClass('janal-no-lock'))) {
 							if(this.tagName=== 'A') {
 								$(this).attr('iktan', $(this).attr('href'));

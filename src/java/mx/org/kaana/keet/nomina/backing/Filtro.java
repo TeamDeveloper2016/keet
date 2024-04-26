@@ -790,5 +790,22 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;		
 	} 
 
+  public StreamedContent getPonderados() {
+		StreamedContent regresar= null;		
+    Personas personas       = null;
+		try {
+	  	personas   = new Personas(((Entity)this.attrs.get("seleccionado")).getKey());
+      String name= personas.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
+
 }
 	

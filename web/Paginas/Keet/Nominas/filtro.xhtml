@@ -259,6 +259,9 @@
             <p:menuitem icon="fa fa-file-excel-o" value="Nómina personal" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
               <p:fileDownload value="#{keetNominasFiltro.personas}" />
             </p:menuitem>  
+            <p:menuitem icon="fa fa-cloud-download" value="Ponderados" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}" rendered="false">
+              <p:fileDownload value="#{keetNominasFiltro.ponderados}" />
+            </p:menuitem>  
           </p:contextMenu>
         </div>
       </div>
