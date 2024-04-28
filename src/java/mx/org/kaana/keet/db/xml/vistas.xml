@@ -139,6 +139,67 @@ order by
   tc_keet_desarrollos.id_desarrollo,
   tc_keet_contratos.clave desc 
 			</select>      
+			<select id="ponderados">      
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_desarrollos.id_desarrollo,        
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre,
+  tc_keet_contratos.no_viviendas,
+  sum(tt_keet_destajos_realizados.destajos) as costo,
+  tc_keet_contratos.registro
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join (
+	select
+		tt_keet_contratos_destajos.id_contrato,
+		sum(tt_keet_contratos_destajos.destajos) as destajos
+	from (
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_contratistas.costo) as destajos
+		from
+			tc_keet_contratos_destajos_contratistas
+		inner join
+			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		where
+			tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina}
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+		union all   
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_proveedores.costo) as destajos
+		from
+			tc_keet_contratos_destajos_proveedores
+		inner join
+			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		where
+			tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+	) as tt_keet_contratos_destajos
+	group by 
+		tt_keet_contratos_destajos.id_contrato
+) as tt_keet_destajos_realizados on tc_keet_contratos.id_contrato= tt_keet_destajos_realizados.id_contrato        
+where
+  {condicion}
+group by 
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_contratos.clave desc;        
+			</select>      
     </unit>    
     <unit id="VistaBoletasDto">
       <select id="folio">
@@ -1366,7 +1427,9 @@ order by
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         inner join
           tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
         inner join
@@ -1433,7 +1496,9 @@ order by
         inner join
           tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         left join
           tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
         left join
@@ -1506,7 +1571,9 @@ order by
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         inner join
           tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
         inner join (
@@ -1514,8 +1581,6 @@ order by
             max(tc_keet_estimaciones.id_estimacion) as id_estimacion
           from
             tc_keet_estimaciones
-          inner join
-            tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
           where
             tc_keet_estimaciones.id_contrato= {idContrato}
         ) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion
@@ -1539,7 +1604,9 @@ order by
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         left join
           tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
         where  
@@ -1604,7 +1671,9 @@ order by
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         where  
           tc_keet_estimaciones.id_contrato= {idContrato}
         union all  
@@ -1616,7 +1685,9 @@ order by
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         left join
           tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
         where  

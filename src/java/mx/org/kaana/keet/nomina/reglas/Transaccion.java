@@ -33,6 +33,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDesarrollosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasGruposDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
@@ -1391,20 +1392,72 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   }  
   
   private void toMovePersonalDesarrollo(Session sesion) throws Exception {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
+    Map<Long, Double> valores = new HashMap<>();
+    Double total= 0D;
     try {      
 			params.put("idNomina", this.idNomina);
-      List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "TcKeetNominasPersonasDto", "desarrollo", params);
-			if(personal!= null && !personal.isEmpty()) {      
-        for (Entity item : personal) {
+      List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "TcKeetNominasPersonasDto", "desarrollo", params);
+			if(personas!= null && !personas.isEmpty()) {      
+        for (Entity item: personas) {
           Long idDesarrollo= null;
     			params.put("idEmpresaPersona", item.toLong("idEmpresaPersona"));
           Entity existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosPersonalDto", "desarrollo", params);
           if(existe!= null && !existe.isEmpty()) 
             idDesarrollo= existe.toLong("idDesarrollo");
+          else
+            switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+              case "cafu":
+                idDesarrollo= 9L;
+                break;
+              case "gylvi": 
+              case "triana":
+                break;
+            } // swtich
           TcKeetNominasDesarrollosDto persona= new TcKeetNominasDesarrollosDto(idDesarrollo, item.toLong("idEmpresaPersona"), -1L, this.idNomina);
           DaoFactory.getInstance().insert(sesion, persona);
+          
+          // ESTO SOLO APLICA PARA CAFU
+          switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+            case "cafu":
+              // ESTA CONDICION ES PARA QUITAR A LOS CONTRATISTA Y A LOS CHALANES Y SOLO DEJAR PERSONAL POR EL DIA Y A LOS ADMIN
+              if(!Objects.equals(item.toLong("idPuesto"), 6L) && Objects.equals(item.toLong("idContratista"), null)) {
+                if(valores.containsKey(idDesarrollo))
+                  valores.put(idDesarrollo, valores.get(idDesarrollo)+ item.toDouble("neto"));
+                else
+                  valores.put(idDesarrollo, item.toDouble("neto"));
+                total+= item.toDouble("neto");
+                break;
+              } // if  
+          } // swtich
         } // for
+        
+        // ALMACENAR LOS IMPORTES Y POR PORCENTAJES QUE LE CORRESPONDE POR CADA DESARROLLO PARA LA NOMINA SELECCIONADA
+        // SI EL ID_DESARROLLO ES NULL SIGNIFICA QUE ES EL TOTAL DE MANO DE OBRA DE TODOS LOS DESARROLLOS
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            for (Long key: valores.keySet()) {
+              TcKeetNominasGruposDto grupo= new TcKeetNominasGruposDto(
+                valores.get(key), // Double total, 
+                key, // Long idDesarrollo, 
+                Objects.equals(JsfBase.getAutentifica(), null)? 1L: JsfBase.getIdUsuario(), // Long idUsuario, 
+                valores.get(key)*100/ total, // Double porcentaje, 
+                -1L, // Long idNominaGrupo, 
+                this.idNomina // Long idNomina
+              );
+              DaoFactory.getInstance().insert(sesion, grupo);
+            } // for
+            TcKeetNominasGruposDto grupo= new TcKeetNominasGruposDto(
+              total, // Double total, 
+              null, // Long idDesarrollo, 
+              Objects.equals(JsfBase.getAutentifica(), null)? 1L: JsfBase.getIdUsuario(), // Long idUsuario, 
+              100D, // Double porcentaje, 
+              -1L, // Long idNominaGrupo, 
+              this.idNomina // Long idNomina
+            );
+            DaoFactory.getInstance().insert(sesion, grupo);
+          break;
+        } // swtich
       } // for
     } // try
     catch (Exception e) {

@@ -65,7 +65,7 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="fecha" value="Fecha:"/>
-							<p:calendar id="fecha" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetNominasFiltro.fecha}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" showOn="button"/>
+							<p:calendar id="fecha" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetNominasFiltro.fecha}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
 							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
 							<p:selectOneMenu id="ejercicio" value="#{keetNominasFiltro.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetNominasFiltro.doLoadSemanas}" process="@this" onstart="return janal.bloquear()" update="semana" oncomplete="janal.desbloquear()"/>
@@ -259,7 +259,7 @@
             <p:menuitem icon="fa fa-file-excel-o" value="Nómina personal" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
               <p:fileDownload value="#{keetNominasFiltro.personas}" />
             </p:menuitem>  
-            <p:menuitem icon="fa fa-cloud-download" value="Ponderados" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}" rendered="false">
+            <p:menuitem icon="fa fa-cloud-download" value="Ponderados" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
               <p:fileDownload value="#{keetNominasFiltro.ponderados}" />
             </p:menuitem>  
           </p:contextMenu>

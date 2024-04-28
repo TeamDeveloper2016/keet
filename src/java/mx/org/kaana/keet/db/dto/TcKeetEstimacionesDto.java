@@ -58,8 +58,8 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="id_nomina_periodo")
-  private Long idNominaPeriodo;
+  @Column (name="id_nomina")
+  private Long idNomina;
   @Column (name="fecha_pago")
   private LocalDate fechaPago;
   @Column (name="pagado")
@@ -77,7 +77,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetEstimacionesDto(Long idVenta, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa, Long idNominaPeriodo, LocalDate fechaPago, LocalDate pagado, String folio) {
+  public TcKeetEstimacionesDto(Long idVenta, Double facturar, Double saldo, Double importe, Long ejercicio, String consecutivo, Long idEstimacionEstatus, Long idUsuario, Long idContrato, String observaciones, Long idEstimacion, Long orden, Long idEmpresa, Long idNomina, LocalDate fechaPago, LocalDate pagado, String folio) {
     setIdVenta(idVenta);
     setFacturar(facturar);
     setSaldo(saldo);
@@ -92,7 +92,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     setIdEstimacion(idEstimacion);
     setOrden(orden);
     setIdEmpresa(idEmpresa);
-    setIdNominaPeriodo(idNominaPeriodo);
+    setIdNomina(idNomina);
     setFechaPago(fechaPago);
     setPagado(pagado);
     setFolio(folio);
@@ -210,12 +210,12 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
     this.idEmpresa = idEmpresa;
   }
 
-  public Long getIdNominaPeriodo() {
-    return idNominaPeriodo;
+  public Long getIdNomina() {
+    return idNomina;
   }
 
-  public void setIdNominaPeriodo(Long idNominaPeriodo) {
-    this.idNominaPeriodo = idNominaPeriodo;
+  public void setIdNomina(Long idNomina) {
+    this.idNomina = idNomina;
   }
 
   public LocalDate getFechaPago() {
@@ -285,7 +285,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNominaPeriodo());
+		regresar.append(getIdNomina());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaPago());
 		regresar.append(Constantes.SEPARADOR);
@@ -313,7 +313,7 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 		regresar.put("idEstimacion", getIdEstimacion());
 		regresar.put("orden", getOrden());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
+		regresar.put("idNomina", getIdNomina());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("pagado", getPagado());
 		regresar.put("folio", getFolio());
@@ -322,8 +322,8 @@ public class TcKeetEstimacionesDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getIdVenta(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa(), getIdNominaPeriodo(), getFechaPago(), getPagado(), getFolio()
+    Object[] regresar = new Object[] {
+      getIdVenta(), getFacturar(), getSaldo(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdEstimacionEstatus(), getIdUsuario(), getIdContrato(), getObservaciones(), getIdEstimacion(), getOrden(), getIdEmpresa(), getIdNomina(), getFechaPago(), getPagado(), getFolio()
     };
     return regresar;
   }

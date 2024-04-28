@@ -154,10 +154,9 @@ public class Accion extends IBaseImportar implements Serializable {
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -270,14 +269,14 @@ public class Accion extends IBaseImportar implements Serializable {
       if(this.accion.equals(EAccion.AGREGAR)) 
   			params.put("ejercicio", Fecha.getAnioActual()- 1);
       else
-  			params.put("ejercicio", this.estimaciones.getEstimacion().getIkNominaPeriodo().toLong("ejercicio"));
+  			params.put("ejercicio", this.estimaciones.getEstimacion().getIkNomina().toLong("ejercicio"));
 			periodos= UIEntity.build("VistaNominaDto", "nominas", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("periodos", periodos);
       if(!periodos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR)) 
-          this.estimaciones.getEstimacion().setIkNominaPeriodo(periodos.get(0));
+          this.estimaciones.getEstimacion().setIkNomina(periodos.get(0));
         else  
-          this.estimaciones.getEstimacion().setIkNominaPeriodo(periodos.get(periodos.indexOf(this.estimaciones.getEstimacion().getIkNominaPeriodo())));
+          this.estimaciones.getEstimacion().setIkNomina(periodos.get(periodos.indexOf(this.estimaciones.getEstimacion().getIkNomina())));
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

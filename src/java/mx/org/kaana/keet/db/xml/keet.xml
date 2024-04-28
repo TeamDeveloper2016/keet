@@ -7,6 +7,58 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNominasFrentesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_frentes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_frentes
+where      
+  id_contrato = {idContrato} and id_nomina = {idNomina}
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_keet_nominas_frentes
+where      
+  id_nomina = {idNomina} and id_contrato is null
+      </select>
+      <select id="nomina">
+select      
+  *
+from      
+  tc_keet_nominas_frentes
+where      
+  id_nomina = {idNomina} and id_contrato is not null
+      </select>
+    </unit>    
+    <unit id="TcKeetNominasGruposDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_grupos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_grupos
+where      
+  id_desarrollo = {idDesarrollo} and id_nomina = {idNomina}
+      </select>
+    </unit>    
     <unit id="TcKeetEstimacionesArchivosDto">
       <select id="row">
 select      
@@ -3972,6 +4024,17 @@ where
           and id_tipo_nomina = 1
 				  and id_nomina_estatus= 5
       </select>
+      <select id="igual">
+        select      
+          tc_keet_nominas.id_nomina as id_key,
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        where      
+          tc_keet_nominas.id_nomina= {idNomina}
+      </select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
       <select id="row">
@@ -4189,11 +4252,16 @@ where
 			<select id="desarrollo">
 				select 
 				  tc_keet_nominas_personas.id_empresa_persona as id_key,
-          tc_keet_nominas_personas.id_empresa_persona
+          tc_keet_nominas_personas.id_empresa_persona,
+          tr_mantic_empresa_personal.id_puesto,
+          tr_mantic_empresa_personal.id_contratista,
+          tc_keet_nominas_personas.neto
 				from 
 				  tc_keet_nominas_personas
+				inner join
+					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
 				where 
-				  id_nomina= {idNomina}
+				  tc_keet_nominas_personas.id_nomina= {idNomina}
 			</select>
 			<delete id="nomina">
 				delete 

@@ -18,7 +18,7 @@
 				'contenedorGrupos\\:idDesarrollo'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idCliente'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idContrato'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idNominaPeriodo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idNomina'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:folio'          : {validaciones: 'texto', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:facturar'       : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
@@ -151,8 +151,8 @@
                   </p:selectOneMenu>																						
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                  <p:outputLabel for="idNominaPeriodo" value="Semana:"/>
-                  <p:selectOneMenu id="idNominaPeriodo" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNominaPeriodo}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:outputLabel for="idNomina" value="Semana:"/>
+                  <p:selectOneMenu id="idNomina" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNomina}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <f:selectItems value="#{keetEstimacionesAccion.attrs.periodos}" var="one" itemValue="#{one.key}" itemLabel="#{one.nombre} [ #{one.inicio} al #{one.termino} ]"/>
                     <p:column headerText="Semana" styleClass="janal-wid-10">
                       <p:outputLabel value="#{list.nombre}"/>

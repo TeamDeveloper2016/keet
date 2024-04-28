@@ -20,6 +20,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstimacionesArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasFrentesDto;
 import mx.org.kaana.keet.estimacion.beans.EEstatusEstimaciones;
 import mx.org.kaana.keet.estimacion.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
@@ -71,8 +72,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar     = false;
-		Siguiente consecutivo= null;
+		boolean regresar          = false;
+		Siguiente consecutivo     = null;
+    TcKeetEstimacionesDto item= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la esitmación");
 			switch(accion) {
@@ -87,15 +89,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
           this.toFillDocumentos(sesion);
+          this.toUpdateFrentes(sesion, this.orden.getEstimacion().getIdNomina(), this.orden.getEstimacion().getIdContrato(), this.orden.getEstimacion().getImporte());
 					break;
 				case MODIFICAR:
+          item= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.orden.getEstimacion().getIdEstimacion());
+          Double value= this.orden.getEstimacion().getImporte()- item.getImporte();
           DaoFactory.getInstance().update(sesion, this.orden.getEstimacion());
           this.bitacora= new TcKeetEstimacionesBitacoraDto(this.orden.getEstimacion().getIdEstimacionEstatus(), -1L,  this.orden.getEstimacion().getIdEstimacion(), JsfBase.getIdUsuario(),  "");
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
           this.toFillDocumentos(sesion);
+          this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), value);
 					break;				
 				case ELIMINAR:
+          item= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.idEstimacion);
+          this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1);
           regresar= this.toDeleteEstimacion(sesion);
 					break;
 				case DEPURAR:
@@ -296,4 +304,65 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // catch	
     return regresar;
   }
+  
+  private void toUpdateFrentes(Session sesion, Long idNomina, Long idContrato, Double value) throws Exception {
+    List<TcKeetNominasFrentesDto> items= null;
+    Map<String, Object> params= new HashMap<>();
+    Double total              = 0D;
+    try {      
+      params.put("idNomina", idNomina);
+      params.put("idContrato", idContrato);
+      TcKeetNominasFrentesDto frente= (TcKeetNominasFrentesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasFrentesDto.class, "TcKeetNominasFrentesDto", "igual", params);
+      if(Objects.equals(frente, null)) {
+        total= value;
+        frente= new TcKeetNominasFrentesDto(
+          value, // Double total, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          null, // Long idContrato, 
+          -1L, // Long idNominaFrente, 
+          100D, // Double porcentaje, 
+          idNomina // Long idNomina
+        );
+        DaoFactory.getInstance().insert(sesion, frente);
+      } // if
+      else {
+        total= frente.getTotal()+ value;
+        frente.setTotal(total);
+        frente.setIdUsuario(JsfBase.getIdUsuario());
+        DaoFactory.getInstance().update(sesion, frente);
+      } // if
+      
+      Boolean existe= Boolean.FALSE;
+      items= (List<TcKeetNominasFrentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetNominasFrentesDto.class, "TcKeetNominasFrentesDto", "nomina", params);
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+        for (TcKeetNominasFrentesDto item: items) {
+          if(Objects.equals(item.getIdContrato(), idContrato)) {
+            item.setTotal(item.getTotal()+ value);
+            existe= Boolean.TRUE;
+          } // if  
+          item.setIdUsuario(JsfBase.getIdUsuario());
+          item.setPorcentaje(Objects.equals(total, 0D)? 0D: item.getTotal()*100/total); 
+          DaoFactory.getInstance().update(sesion, item);
+        } // for
+      } // if
+      if(!existe || Objects.equals(items, null) || items.isEmpty()) {
+        frente= new TcKeetNominasFrentesDto(
+          value, // Double total, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          idContrato, // Long idContrato, 
+          -1L, // Long idNominaFrente, 
+          Objects.equals(total, 0D)? 0D: value*100/total, // Double porcentaje, 
+          idNomina// Long idNomina
+        );
+        DaoFactory.getInstance().insert(sesion, frente);
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
 } 

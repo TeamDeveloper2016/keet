@@ -25,7 +25,7 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
-	private UISelectEntity ikNominaPeriodo;
+	private UISelectEntity ikNomina;
   private List<Retencion> retenciones;
 
   public Estimacion() {
@@ -84,14 +84,14 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
     this.idCliente = idCliente;
   }
 
-  public UISelectEntity getIkNominaPeriodo() {
-    return ikNominaPeriodo;
+  public UISelectEntity getIkNomina() {
+    return ikNomina;
   }
 
-  public void setIkNominaPeriodo(UISelectEntity ikNominaPeriodo) {
-    this.ikNominaPeriodo = ikNominaPeriodo;
-		if(this.ikNominaPeriodo!= null)
-		  this.setIdNominaPeriodo(this.ikNominaPeriodo.getKey());
+  public void setIkNomina(UISelectEntity ikNomina) {
+    this.ikNomina = ikNomina;
+		if(this.ikNomina!= null)
+		  this.setIdNomina(this.ikNomina.getKey());
   }
 
   public List<Retencion> getRetenciones() {
