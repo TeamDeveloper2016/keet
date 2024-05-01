@@ -177,6 +177,12 @@
               </f:facet>
               <h:outputText value="#{row['retenciones']}"/>
             </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6 view-normal">
+              <f:facet name="header">
+                <h:outputText value="Extras"/>
+              </f:facet>
+              <h:outputText value="#{row['extras']}"/>
+            </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
               <f:facet name="header">
                 <h:outputText value="Egresos"/>
@@ -234,6 +240,9 @@
               <p:column styleClass="janal-column-right MarAuto Responsive janal-display-none">
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].retenciones}" styleClass="janal-text-white"/>
               </p:column>
+              <p:column styleClass="janal-column-right MarAuto Responsive view-normal">
+                <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].extras}" styleClass="janal-text-white"/>
+              </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive">
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].egresos}" styleClass="janal-text-white"/>
               </p:column>
@@ -260,6 +269,7 @@
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.estimado}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold view-normal" footerText="" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-display-none" footerText="#{keetCostosCostos.totales.retenciones}" />
+                <p:column styleClass="MarAuto Responsive janal-font-bold view-normal" footerText="#{keetCostosCostos.totales.extras}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.egresos}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold view-normal" footerText="" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold view-normal" footerText="#{keetCostosCostos.totales.noViviendas}" />

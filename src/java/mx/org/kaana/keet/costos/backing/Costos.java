@@ -95,6 +95,7 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("extras", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       if(!Objects.equals(this.subTotales, null)) {

@@ -65,11 +65,13 @@ select
   tc_keet_contratos.no_viviendas,
   tc_keet_contratos.costo,
   count(distinct(tc_keet_estimaciones.id_estimacion)) as estimaciones,
-  ifnull(sum(tc_keet_estimaciones.importe), 0) as estimado,
+  ifnull(sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.importe, 0)), 0) as estimado,
+  ifnull(sum(if(tc_keet_estimaciones.id_extra= 1, tc_keet_estimaciones.importe, 0)), 0) as extras,
   ifnull(tt_keet_estimaciones_detalles.retenciones, 0) as retenciones,
-  ifnull(round(ifnull(sum(tc_keet_estimaciones.importe), 0)* 100/ tc_keet_contratos.costo, 2), 0) as porcentaje,
+  ifnull(tt_keet_nominas_contratos.por_el_dia, 0) as por_el_dia,
+  ifnull(round(ifnull(sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.importe, 0)), 0)* 100/ tc_keet_contratos.costo, 2), 0) as porcentaje,
   ifnull(tt_mantic_ordenes_compras.materiales, 0)+ ifnull(tt_keet_destajos_realizados.destajos, 0) as egresos,
-  ifnull(round(ifnull(ifnull(sum(tc_keet_estimaciones.importe), 0)* 100/ tc_keet_contratos.costo, 0)- ((ifnull(tt_mantic_ordenes_compras.materiales, 0)+ ifnull(tt_keet_destajos_realizados.destajos, 0))/ tc_keet_contratos.costo* 100), 2), 0) as desviacion,
+  ifnull(round(ifnull(ifnull(sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.importe, 0)), 0)* 100/ tc_keet_contratos.costo, 0)- ((ifnull(tt_mantic_ordenes_compras.materiales, 0)+ ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0))/ tc_keet_contratos.costo* 100), 2),0) as desviacion,
   tt_keet_contratos_lotes.iniciadas,
   tt_keet_contratos_lotes.en_proceso,
   tt_keet_contratos_lotes.terminadas,
@@ -89,6 +91,8 @@ left join (
     sum(tc_keet_estimaciones_detalles.importe) as retenciones
   from  
     tc_keet_estimaciones_detalles 
+  inner join
+    tc_keet_estimaciones on tc_keet_estimaciones_detalles.id_estimacion= tc_keet_estimaciones.id_estimacion
   group by   
     tc_keet_estimaciones_detalles.id_estimacion
 ) as tt_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tt_keet_estimaciones_detalles.id_estimacion     
@@ -149,6 +153,15 @@ left join (
 	group by  
 		tc_mantic_ordenes_compras.id_contrato
 ) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato        
+left join (
+	select
+		tc_keet_nominas_contratos.id_contrato,
+		sum(tc_keet_nominas_contratos.total) as por_el_dia
+	from
+		tc_keet_nominas_contratos
+	group by  
+		tc_keet_nominas_contratos.id_contrato
+) as tt_keet_nominas_contratos on tc_keet_contratos.id_contrato= tt_keet_nominas_contratos.id_contrato        
 where
   tc_keet_contratos.id_contrato in ({condicion})
 group by 
@@ -166,15 +179,13 @@ select
   tc_keet_contratos.nombre,
   tc_keet_contratos.no_viviendas,
   ifnull(tt_mantic_ordenes_compras.materiales, 0) as materiales,
-  ifnull(tt_keet_destajos_realizados.destajos, 0) as destajos
+  ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0) as destajos
 from
   tc_keet_contratos
 inner join
   tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 inner join
   tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-left join
-  tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato
 left join (
 	select
 		tt_keet_contratos_destajos.id_contrato,
@@ -217,7 +228,16 @@ left join (
 		tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,6,7)
 	group by  
 		tc_mantic_ordenes_compras.id_contrato
-) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato        
+) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato
+left join (
+	select
+		tc_keet_nominas_contratos.id_contrato,
+		sum(tc_keet_nominas_contratos.total) as por_el_dia
+	from
+		tc_keet_nominas_contratos
+	group by  
+		tc_keet_nominas_contratos.id_contrato
+) as tt_keet_nominas_contratos on tc_keet_contratos.id_contrato= tt_keet_nominas_contratos.id_contrato
 where
   tc_keet_contratos.id_contrato in ({condicion})
 group by 
@@ -234,7 +254,7 @@ select
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre,
   tc_keet_contratos.no_viviendas,
-  0 as por_el_dia,
+  ifnull(tt_keet_nominas_contratos.por_el_dia, 0) as por_el_dia,
   ifnull(tt_keet_destajos_realizados.destajos, 0) as destajos
 from
   tc_keet_contratos
@@ -242,8 +262,6 @@ inner join
   tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 inner join
   tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-left join
-  tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato
 left join (
 	select
 		tt_keet_contratos_destajos.id_contrato,
@@ -276,6 +294,15 @@ left join (
 	group by 
 		tt_keet_contratos_destajos.id_contrato
 ) as tt_keet_destajos_realizados on tc_keet_contratos.id_contrato= tt_keet_destajos_realizados.id_contrato        
+left join (
+	select
+		tc_keet_nominas_contratos.id_contrato,
+		sum(tc_keet_nominas_contratos.total) as por_el_dia
+	from
+		tc_keet_nominas_contratos
+	group by  
+		tc_keet_nominas_contratos.id_contrato
+) as tt_keet_nominas_contratos on tc_keet_contratos.id_contrato= tt_keet_nominas_contratos.id_contrato        
 where
   tc_keet_contratos.id_contrato in ({condicion})
 group by 
@@ -292,8 +319,8 @@ select
   tc_mantic_empresas.nombre as empresa,  
   tc_keet_desarrollos.nombres as desarrollo,
   tc_mantic_clientes.razon_social,
-  (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
-  tc_keet_contratos.costo as valor,
+  ifnull(tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia, 0) as total,
+  ifnull(tc_keet_contratos.costo, 0) as valor,
   tc_keet_contratos_estatus.nombre as estatus,
   tc_keet_contratos.*
 from
@@ -392,13 +419,15 @@ inner join
 inner join
   tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 left join
-  tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato
+  tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato and tc_keet_estimaciones.id_extra= 2
 left join (
   select
     tc_keet_estimaciones_detalles.id_estimacion,
     sum(tc_keet_estimaciones_detalles.importe) as retenciones
   from  
     tc_keet_estimaciones_detalles 
+  inner join
+    tc_keet_estimaciones on tc_keet_estimaciones_detalles.id_estimacion= tc_keet_estimaciones.id_estimacion and tc_keet_estimaciones.id_extra= 2
   group by   
     tc_keet_estimaciones_detalles.id_estimacion
 ) as tt_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tt_keet_estimaciones_detalles.id_estimacion     

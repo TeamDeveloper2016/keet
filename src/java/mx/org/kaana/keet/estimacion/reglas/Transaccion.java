@@ -91,7 +91,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
           this.toFillDocumentos(sesion);
-          this.toUpdateFrentes(sesion, this.orden.getEstimacion().getIdNomina(), this.orden.getEstimacion().getIdContrato(), this.orden.getEstimacion().getImporte());
+          if(Objects.equals(this.orden.getEstimacion().getIdExtra(), 2L))
+            this.toUpdateFrentes(sesion, this.orden.getEstimacion().getIdNomina(), this.orden.getEstimacion().getIdContrato(), this.orden.getEstimacion().getImporte());
 					break;
 				case MODIFICAR:
           item= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.orden.getEstimacion().getIdEstimacion());
@@ -101,11 +102,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
           this.toFillDetalle(sesion);
           this.toFillDocumentos(sesion);
-          this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), value);
+          if(Objects.equals(this.orden.getEstimacion().getIdExtra(), 2L))
+            this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), value);
 					break;				
 				case ELIMINAR:
           item= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.idEstimacion);
-          this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1);
+          if(Objects.equals(item.getIdExtra(), 2L))
+            this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1);
           regresar= this.toDeleteEstimacion(sesion);
 					break;
 				case DEPURAR:
