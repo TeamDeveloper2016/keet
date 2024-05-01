@@ -15,9 +15,12 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -37,6 +40,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private Entity totales;
   private List<Long> fraccionamientos;
   private StringBuilder seguimiento;
+  private FormatLazyModel lazyManoObra;
 
   public List<Entity> getModel() {
     return model;
@@ -48,6 +52,10 @@ public class Costos extends IBaseFilter implements Serializable {
 
   public Entity getTotales() {
     return totales;
+  }
+
+  public FormatLazyModel getLazyManoObra() {
+    return lazyManoObra;
   }
   
   @PostConstruct
@@ -107,6 +115,10 @@ public class Costos extends IBaseFilter implements Serializable {
         this.totales= new Entity();
       }  
       UIBackingUtilities.resetDataTable();
+      this.lazyModel   = null;
+      this.lazyManoObra= null;
+      this.attrs.put("detalle", Boolean.FALSE);
+      this.attrs.put("manoObra", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -121,8 +133,7 @@ public class Costos extends IBaseFilter implements Serializable {
 	private void toLoadEmpresas() {
 		Map<String, Object>params= new HashMap<>();
 		List<Columna> columns    = new ArrayList<>();
-    List<UISelectEntity> empresas  = null;
-    List<UISelectEntity> ejercicios= null;
+    List<UISelectEntity> empresas= null;
 		try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -131,11 +142,6 @@ public class Costos extends IBaseFilter implements Serializable {
       this.attrs.put("empresas", empresas);
 			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
       this.doLoadClientes();
-      
-		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      ejercicios= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "ejercicios", params);
-      this.attrs.put("ejercicios", ejercicios);
-      this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectEntity(ejercicios));
       this.doLoadSemanas();
 		} // try
 		catch (Exception e) {
@@ -264,7 +270,7 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
-      params.put("ejercicio", this.attrs.get("ejercicio"));
+      params.put("ejercicio", Fecha.getAnioActual());
       semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "semanas", params, columns);
       this.attrs.put("semanas", semanas);
       this.attrs.put("idSemana", UIBackingUtilities.toFirstKeySelectEntity(semanas));
@@ -396,5 +402,78 @@ public class Costos extends IBaseFilter implements Serializable {
       } // if
 		} // for
   }
+ 
+  public void doLoadDetalle(Entity row) {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, row.toLong("idContrato"));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "egresos", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+      this.attrs.put("detalle", Boolean.TRUE);
+      this.attrs.put("manoObra", Boolean.FALSE);
+    }  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void doLoadManoObra(Entity row) {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, row.toLong("idContrato"));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyManoObra= new FormatCustomLazy("VistaCostosDto", "manoObra", params, columns);
+      UIBackingUtilities.resetDataTable("manoObra");
+      this.attrs.put("manoObra", Boolean.TRUE);
+    }  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+ 
+	public String toColor(Entity row) {
+    String regresar           = "";
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, row.toLong("idDesarrollo"));      
+      params.put("idNomina", ((UISelectEntity)this.attrs.get("idSemana")).toLong("idNomina"));
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaCostosDto", "estimaciones", params);
+      if(!Objects.equals(entity, null) && !entity.isEmpty()) 
+        regresar= (Objects.equals(entity.toDouble("estimado"), 0D) && (
+                !Objects.equals(entity.toDouble("destajos"), 0D) || 
+                !Objects.equals(entity.toDouble("materiales"), 0D) || 
+                !Objects.equals(entity.toDouble("porElDia"), 0D)
+                ))? "janal-tr-error": "";
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+		return regresar; 
+	} // toColor
   
 }

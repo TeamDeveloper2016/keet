@@ -24,6 +24,7 @@
 				'contenedorGrupos\\:facturar'       : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:pagado'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
+				'contenedorGrupos\\:idExtra'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'porcentaje': {multiple: '$', validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},
@@ -152,7 +153,7 @@
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="idNomina" value="Semana:"/>
-                  <p:selectOneMenu id="idNomina" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNomina}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:selectOneMenu id="idNomina" value="#{keetEstimacionesAccion.estimaciones.estimacion.ikNomina}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <f:selectItems value="#{keetEstimacionesAccion.attrs.periodos}" var="one" itemValue="#{one.key}" itemLabel="#{one.nombre} [ #{one.inicio} al #{one.termino} ]"/>
                     <p:column headerText="Semana" styleClass="janal-wid-10">
                       <p:outputLabel value="#{list.nombre}"/>
@@ -179,6 +180,8 @@
                   <p:outputLabel for="facturar" value="Por facturar:" styleClass="janal-color-orange janal-font-bold janal-icons-header"/>
                   <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
                 </p:panelGrid>  
+              </p:panelGrid>
+              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100"> 
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="fechaPago" value="Fecha de pago:" styleClass="janal-icons-header"/>
                   <p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.fechaPago}" pattern="dd/MM/yyyy" locale="mx"/>                    
@@ -187,6 +190,13 @@
                   <p:outputLabel for="pagado" value="Cuando fué pagado:" styleClass="janal-icons-header"/>
                   <p:calendar id="pagado" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.pagado}" pattern="dd/MM/yyyy" locale="mx"/>                    
                 </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel for="idExtra" value="Es extra:" styleClass="janal-icons-header janal-color-blue"/>
+                  <p:selectOneMenu id="idExtra" value="#{keetEstimacionesAccion.estimaciones.estimacion.idExtra}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">
+                    <f:selectItem itemLabel="SI" itemValue="1"/>
+                    <f:selectItem itemLabel="NO" itemValue="2"/>
+                  </p:selectOneMenu>								
+                </p:panelGrid>
               </p:panelGrid>
               <p:remoteCommand name="reloadCalculos" process="@this" update="@(.calculos)"/>
               <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idEstimacionDetalle}" style="#{keetEstimacionesAccion.estimaciones.estimacion.retenciones ne null and keetEstimacionesAccion.estimaciones.estimacion.retenciones.size() gt 0}">

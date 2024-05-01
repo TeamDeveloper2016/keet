@@ -16,6 +16,8 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -28,6 +30,7 @@ import mx.org.kaana.libs.reflection.Methods;
 public abstract class IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = -5324353121363296378L;
+  private static final Log LOG = LogFactory.getLog(IBaseAttribute.class);
 
   protected Map<String, Object> attrs;
 
@@ -185,5 +188,9 @@ public abstract class IBaseAttribute implements Serializable {
 		} // if
 		return regresar;
 	}
+
+  public void doGlobalEvent(Boolean isViewException) {
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
+  }
   
 }

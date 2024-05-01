@@ -106,40 +106,28 @@
             </p:selectOneMenu>
           </p:panelGrid>
           
-          <p:panelGrid columns="2" styleClass="janal-wid-100">
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
-							<p:selectOneMenu id="ejercicio" value="#{keetCostosCostos.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetCostosCostos.doLoadSemanas}" process="@this" update="idSemana tabla" oncomplete="reloadSemanas()"/>
-                <f:selectItems value="#{keetCostosCostos.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio}"/>
-                <p:column headerText="Nombre" styleClass="janal-column-center">
-                  <h:outputText value="#{item.ejercicio}"/>
-                </p:column>   
-              </p:selectOneMenu>	
-            </p:panelGrid>
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="idSemana" value="Semana:"/>
-              <p:selectOneMenu id="idSemana" value="#{keetCostosCostos.attrs.idSemana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetCostosCostos.doCalcular}" process="@this" update="tabla @(.contrato)"/>
-                <f:selectItems value="#{keetCostosCostos.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
-                <p:column headerText="Nombre" styleClass="janal-column-center">
-                  <h:outputText value="#{item.semana}"/>
-                </p:column>   
-                <p:column headerText="Inicio" styleClass="janal-column-center">
-                  <h:outputText value="#{item.inicio}"/>
-                </p:column>   
-                <p:column headerText="Termino" styleClass="janal-column-center">
-                  <h:outputText value="#{item.termino}"/>
-                </p:column>   
-              </p:selectOneMenu>	
-            </p:panelGrid>
+          <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+            <p:outputLabel for="idSemana" value="Semana:"/>
+            <p:selectOneMenu id="idSemana" value="#{keetCostosCostos.attrs.idSemana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
+              <p:ajax event="change" listener="#{keetCostosCostos.doCalcular}" process="@this" update="tabla @(.contrato)"/>
+              <f:selectItems value="#{keetCostosCostos.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.nomina}" class="janal-column-center"/>
+              <p:column headerText="Semana" styleClass="janal-column-center">
+                <h:outputText value="#{item.nomina}"/>
+              </p:column>   
+              <p:column headerText="Inicio" styleClass="janal-column-center">
+                <h:outputText value="#{item.inicio}"/>
+              </p:column>   
+              <p:column headerText="Termino" styleClass="janal-column-center">
+                <h:outputText value="#{item.termino}"/>
+              </p:column>   
+            </p:selectOneMenu>	
           </p:panelGrid>
           <p:remoteCommand name="reloadClientes" process="@this" update="idCliente idDesarrollo idContrato @(.contrato)"/>
           <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo idContrato @(.contrato)"/>
           <p:remoteCommand name="reloadContratos" process="@this" update="idContrato @(.contrato)"/>
           <p:remoteCommand name="reloadSemanas" process="@this" update="idSemana"/>
           
-          <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosCostos.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" sortBy="#{row.desarrollo}" expandableRowGroups="true" summary="hola" rowKey="#{row.idKey}">
+          <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosCostos.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" sortBy="#{row.desarrollo}" expandableRowGroups="true" rowKey="#{row.idKey}"  rowStyleClass="#{keetCostosCostos.toColor(row)}">
 						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -225,6 +213,11 @@
               </f:facet>
               <h:outputText value="#{row['terminadas']}"/>
             </p:column>
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
+							<p:commandButton icon="fa fa-search" process="@this" update="detalle manoObra @(.detalle) @(.manoObra)" action="#{keetCostosCostos.doLoadDetalle(row)}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
+								<f:setPropertyActionListener value="#{row}" target="#{keetCostosCostos.attrs.seleccionado}" />
+							</p:commandButton>
+            </p:column>
             <p:summaryRow>
               <p:column colspan="#{kajoolUtilAplicacion.isMobile? 1: 2}" styleClass="janal-column-right MarAuto Responsive">
                 <h:outputText value="Total:" styleClass="janal-text-white"/>
@@ -276,9 +269,120 @@
               </p:row>
             </p:columnGroup>            
             <f:facet name="footer">
+              <div style="float: left">
+                <p:outputLabel value="Las filas en color son desarrollos que no tienen una estimación pero si un egreso"/>
+              </div>  
               <p:outputLabel value="Total [#{keetCostosCostos.model.size()}] registros"/>
             </f:facet>
           </p:dataTable>
+          
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetCostosCostos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCostosCostos.lazyModel.rowCount gt keetCostosCostos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCostosCostos.attrs.detalle? '': 'none'}">
+						<f:facet name="header">
+							<p:outputLabel value="Egresos [#{keetCostosCostos.attrs.seleccionado.nombre}]" styleClass="janal-text-white detalle" style="float: left; text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+						</f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-4 view-normal">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>														
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 view-normal">
+              <f:facet name="header">
+                <h:outputText value="Viv"/>
+              </f:facet>
+              <h:outputText value="#{row['noViviendas']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Materiales"/>
+              </f:facet>
+              <h:outputText value="#{row['materiales']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Mano de obra"/>
+              </f:facet>
+              <h:outputText value="#{row['destajos']}"/>
+            </p:column>						
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
+							<p:commandButton icon="fa fa-search" process="@this" update="manoObra @(.manoObra)" action="#{keetCostosCostos.doLoadManoObra(row)}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
+								<f:setPropertyActionListener value="#{row}" target="#{keetCostosCostos.attrs.renglon}" />
+							</p:commandButton>
+            </p:column>
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{keetCostosCostos.lazyModel== null? 0: keetCostosCostos.lazyModel.rowCount}] registros"/>
+						</f:facet>
+					</p:dataTable>	  
+          <h:commandLink id="datasPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="datasXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>	
+          
+          <p:dataTable lazy="true" id="manoObra" widgetVar="kajoolManoObra" var="row" value="#{keetCostosCostos.lazyManoObra}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCostosCostos.lazyManoObra.rowCount gt keetCostosCostos.lazyManoObra.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCostosCostos.attrs.manoObra? '': 'none'}">
+						<f:facet name="header">
+							<p:outputLabel value="Mano de obra [#{keetCostosCostos.attrs.renglon.nombre}]" styleClass="janal-text-white manoObra" style="float: left; text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasManoPdf', 'manoObra')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasManoXls', 'manoObra')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasManoPdf', 'manoObra')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasManoXls', 'manoObra')" oncomplete="janal.desbloquear()"/>
+						</f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-4 view-normal">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>														
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 view-normal">
+              <f:facet name="header">
+                <h:outputText value="Viv"/>
+              </f:facet>
+              <h:outputText value="#{row['noViviendas']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Por el día"/>
+              </f:facet>
+              <h:outputText value="#{row['porElDia']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Destajos"/>
+              </f:facet>
+              <h:outputText value="#{row['destajos']}"/>
+            </p:column>						
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{keetCostosCostos.lazyManoObra== null? 0: keetCostosCostos.lazyManoObra.rowCount}] registros"/>
+						</f:facet>
+					</p:dataTable>	  
+          <h:commandLink id="datasManoPdf">
+            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="manoObra" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="datasManoXls">
+            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="manoObra" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>	
+          
         </div>
       </div>
       <div class="ui-grid-row janal-grid-row">

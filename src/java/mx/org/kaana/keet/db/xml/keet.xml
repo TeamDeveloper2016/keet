@@ -7,6 +7,40 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNominasContratosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_contratos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_contratos
+where      
+  id_desarrollo = {idDesarrollo} and id_contrato = {idContrato} and id_nomina = {idNomina}
+      </select>
+      <select id="contrato">
+select      
+  *
+from      
+  tc_keet_nominas_contratos
+where      
+  id_desarrollo = {idDesarrollo} and id_nomina = {idNomina} and id_contrato is null 
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_keet_nominas_contratos
+where      
+  id_desarrollo = {idDesarrollo} and id_nomina = {idNomina}
+      </select>
+    </unit>    
     <unit id="TcKeetNominasFrentesDto">
       <select id="row">
 select      
@@ -22,7 +56,7 @@ select
 from      
   tc_keet_nominas_frentes
 where      
-  id_contrato = {idContrato} and id_nomina = {idNomina}
+  id_contrato = {idContrato} and id_nomina = {idNomina} and id_desarrollo = {idDesarrollo}
       </select>
       <select id="igual">
 select      
@@ -30,7 +64,7 @@ select
 from      
   tc_keet_nominas_frentes
 where      
-  id_nomina = {idNomina} and id_contrato is null
+  id_nomina = {idNomina} and id_desarrollo = {idDesarrollo} and id_contrato is null
       </select>
       <select id="nomina">
 select      
@@ -38,7 +72,7 @@ select
 from      
   tc_keet_nominas_frentes
 where      
-  id_nomina = {idNomina} and id_contrato is not null
+  id_nomina = {idNomina} and id_desarrollo = {idDesarrollo} and id_contrato is not null
       </select>
     </unit>    
     <unit id="TcKeetNominasGruposDto">
@@ -4920,6 +4954,26 @@ where
       </select>    
       <update id="rows">
 update tc_keet_contratos set id_contrato_estatus= {idContratoEstatus} where id_contrato= {idContrato}        
+      </update>  
+      <update id="arranque">
+update 
+  tc_keet_contratos 
+inner join
+(select
+   tc_keet_contratos_lotes.id_contrato,
+   min(tc_keet_contratos_lotes.arranque) as arranque
+ from
+   tc_keet_contratos_lotes 
+ where   
+    tc_keet_contratos_lotes.arranque is not null
+    and tc_keet_contratos_lotes.id_contrato= {idContrato}
+group by
+  tc_keet_contratos_lotes.id_contrato    
+) as tt_keet_contratos_lotes on tc_keet_contratos.id_contrato= tt_keet_contratos_lotes.id_contrato
+set 
+  tc_keet_contratos.arranque= tt_keet_contratos_lotes.arranque
+where   
+  tc_keet_contratos.id_contrato= {idContrato}        
       </update>  
     </unit>
 		<unit id="TcKeetContratosArchivosDto">

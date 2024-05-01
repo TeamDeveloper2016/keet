@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -20,6 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstimacionesArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasFrentesDto;
 import mx.org.kaana.keet.estimacion.beans.EEstatusEstimaciones;
 import mx.org.kaana.keet.estimacion.beans.Retencion;
@@ -308,10 +310,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private void toUpdateFrentes(Session sesion, Long idNomina, Long idContrato, Double value) throws Exception {
     List<TcKeetNominasFrentesDto> items= null;
     Map<String, Object> params= new HashMap<>();
+    Long idDesarrollo         = -1L;
     Double total              = 0D;
     try {      
       params.put("idNomina", idNomina);
       params.put("idContrato", idContrato);
+      idDesarrollo= DaoFactory.getInstance().toField(sesion, "VistaCostosDto", "desarrollo", params, "idDesarrollo").toLong();
+      params.put("idDesarrollo", idDesarrollo);
       TcKeetNominasFrentesDto frente= (TcKeetNominasFrentesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasFrentesDto.class, "TcKeetNominasFrentesDto", "igual", params);
       if(Objects.equals(frente, null)) {
         total= value;
@@ -321,7 +326,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
           null, // Long idContrato, 
           -1L, // Long idNominaFrente, 
           100D, // Double porcentaje, 
-          idNomina // Long idNomina
+          idNomina, // Long idNomina
+          idDesarrollo // Long idDesarrollo
         );
         DaoFactory.getInstance().insert(sesion, frente);
       } // if
@@ -329,6 +335,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
         total= frente.getTotal()+ value;
         frente.setTotal(total);
         frente.setIdUsuario(JsfBase.getIdUsuario());
+        frente.setRegistro(LocalDateTime.now());
         DaoFactory.getInstance().update(sesion, frente);
       } // if
       
@@ -352,9 +359,59 @@ public class Transaccion extends IBaseTnx implements Serializable {
           idContrato, // Long idContrato, 
           -1L, // Long idNominaFrente, 
           Objects.equals(total, 0D)? 0D: value*100/total, // Double porcentaje, 
-          idNomina// Long idNomina
+          idNomina, // Long idNomina
+          idDesarrollo // Long idDesarrollo
         );
         DaoFactory.getInstance().insert(sesion, frente);
+      } // if
+      sesion.flush();
+      this.toChekContratoCostos(sesion, idNomina, idDesarrollo);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toChekContratoCostos(Session sesion, Long idNomina, Long idDesarrollo) throws Exception {
+    TcKeetNominasContratosDto existe= null;
+    List<Entity> contratos    = null;
+    Entity nomina             = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idNomina", idNomina);
+      params.put("idDesarrollo", idDesarrollo);
+      nomina= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasGruposDto", "identically", params);
+      if(!Objects.equals(nomina, null) && !nomina.isEmpty()) {
+        contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaCostosDto", "contratos", params);
+        if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {
+          for (Entity item: contratos) {
+            params.put("idContrato", item.toLong("idContrato"));
+            if(Objects.equals(item.toLong("idContrato"), null))
+              existe= (TcKeetNominasContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasContratosDto.class, "TcKeetNominasContratosDto", "contrato", params);
+            else
+              existe= (TcKeetNominasContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasContratosDto.class, "TcKeetNominasContratosDto", "identically", params);
+            if(Objects.equals(existe, null)) {
+              existe= new TcKeetNominasContratosDto(
+                item.toDouble("total"), // Double total, 
+                idDesarrollo, // Long idDesarrollo, 
+                item.toLong("idContrato"), // Long idContrato, 
+                -1L, // Long idNominaContrato, 
+                item.toDouble("porcentaje"), // Double porcentaje, 
+                idNomina // Long idNomina
+              );
+              DaoFactory.getInstance().insert(sesion, existe);
+            } // if
+            else {
+              existe.setPorcentaje(item.toDouble("porcentaje"));
+              existe.setTotal(item.toDouble("total"));
+              existe.setRegistro(LocalDateTime.now());
+              DaoFactory.getInstance().update(sesion, existe);
+            } // else
+          } // for
+        } // if
       } // if
     } // try
     catch (Exception e) {

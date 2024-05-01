@@ -23,46 +23,43 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_nominas_frentes")
-public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_nominas_contratos")
+public class TcKeetNominasContratosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="total")
   private Double total;
-  @Column (name="id_usuario")
-  private Long idUsuario;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
   @Column (name="id_contrato")
   private Long idContrato;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_nomina_frente")
-  private Long idNominaFrente;
+	@Column (name="id_nomina_contrato")
+  private Long idNominaContrato;
   @Column (name="porcentaje")
   private Double porcentaje;
   @Column (name="id_nomina")
   private Long idNomina;
-  @Column (name="id_desarrollo")
-  private Long idDesarrollo;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetNominasFrentesDto() {
+  public TcKeetNominasContratosDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetNominasFrentesDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+  public TcKeetNominasContratosDto(Long key) {
+    this(null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetNominasFrentesDto(Double total, Long idUsuario, Long idContrato, Long idNominaFrente, Double porcentaje, Long idNomina, Long idDesarrollo) {
+  public TcKeetNominasContratosDto(Double total, Long idDesarrollo, Long idContrato, Long idNominaContrato, Double porcentaje, Long idNomina) {
     setTotal(total);
-    setIdUsuario(idUsuario);
+    setIdDesarrollo(idDesarrollo);
     setIdContrato(idContrato);
-    setIdNominaFrente(idNominaFrente);
+    setIdNominaContrato(idNominaContrato);
     setPorcentaje(porcentaje);
     setIdNomina(idNomina);
-    setIdDesarrollo(idDesarrollo);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -74,12 +71,12 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
     return total;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
   }
 
-  public Long getIdUsuario() {
-    return idUsuario;
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
   }
 
   public void setIdContrato(Long idContrato) {
@@ -90,12 +87,12 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
     return idContrato;
   }
 
-  public void setIdNominaFrente(Long idNominaFrente) {
-    this.idNominaFrente = idNominaFrente;
+  public void setIdNominaContrato(Long idNominaContrato) {
+    this.idNominaContrato = idNominaContrato;
   }
 
-  public Long getIdNominaFrente() {
-    return idNominaFrente;
+  public Long getIdNominaContrato() {
+    return idNominaContrato;
   }
 
   public void setPorcentaje(Double porcentaje) {
@@ -114,14 +111,6 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
     return idNomina;
   }
 
-  public Long getIdDesarrollo() {
-    return idDesarrollo;
-  }
-
-  public void setIdDesarrollo(Long idDesarrollo) {
-    this.idDesarrollo = idDesarrollo;
-  }
-
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -133,12 +122,12 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdNominaFrente();
+  	return getIdNominaContrato();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idNominaFrente = key;
+  	this.idNominaContrato = key;
   }
 
   @Override
@@ -147,17 +136,15 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
+		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContrato());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNominaFrente());
+		regresar.append(getIdNominaContrato());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPorcentaje());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNomina());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -168,20 +155,19 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("total", getTotal());
-		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idContrato", getIdContrato());
-		regresar.put("idNominaFrente", getIdNominaFrente());
+		regresar.put("idNominaContrato", getIdNominaContrato());
 		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("idNomina", getIdNomina());
-		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[] {
-      getTotal(), getIdUsuario(), getIdContrato(), getIdNominaFrente(), getPorcentaje(), getIdNomina(), getIdDesarrollo(), getRegistro()
+    Object[] regresar = new Object[]{
+    getTotal(), getIdDesarrollo(), getIdContrato(), getIdNominaContrato(), getPorcentaje(), getIdNomina(), getRegistro()
     };
     return regresar;
   }
@@ -195,8 +181,8 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idNominaFrente~");
-    regresar.append(getIdNominaFrente());
+    regresar.append("idNominaContrato~");
+    regresar.append(getIdNominaContrato());
     regresar.append("|");
     return regresar.toString();
   }
@@ -204,18 +190,18 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdNominaFrente());
+    regresar.append(getIdNominaContrato());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetNominasFrentesDto.class;
+    return TcKeetNominasContratosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdNominaFrente()!= null && getIdNominaFrente()!=-1L;
+  	return getIdNominaContrato()!= null && getIdNominaContrato()!=-1L;
   }
 
   @Override
@@ -226,8 +212,8 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetNominasFrentesDto other = (TcKeetNominasFrentesDto) obj;
-    if (getIdNominaFrente() != other.idNominaFrente && (getIdNominaFrente() == null || !getIdNominaFrente().equals(other.idNominaFrente))) {
+    final TcKeetNominasContratosDto other = (TcKeetNominasContratosDto) obj;
+    if (getIdNominaContrato() != other.idNominaContrato && (getIdNominaContrato() == null || !getIdNominaContrato().equals(other.idNominaContrato))) {
       return false;
     }
     return true;
@@ -236,7 +222,7 @@ public class TcKeetNominasFrentesDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdNominaFrente() != null ? getIdNominaFrente().hashCode() : 0);
+    hash = 67 * hash + (getIdNominaContrato() != null ? getIdNominaContrato().hashCode() : 0);
     return hash;
   }
 

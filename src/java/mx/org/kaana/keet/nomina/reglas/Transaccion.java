@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.nomina.reglas;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetIncidentesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetIncidentesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDesarrollosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
@@ -1446,6 +1448,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
                 this.idNomina // Long idNomina
               );
               DaoFactory.getInstance().insert(sesion, grupo);
+              this.toChekContratoCostos(sesion, this.idNomina, key, grupo.getTotal());
             } // for
             TcKeetNominasGruposDto grupo= new TcKeetNominasGruposDto(
               total, // Double total, 
@@ -1614,5 +1617,49 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       Methods.clean(residentes);
     } // finally
 	} // toNotificarSupervisor
+
+  private void toChekContratoCostos(Session sesion, Long idNomina, Long idDesarrollo, Double total) throws Exception {
+    TcKeetNominasContratosDto existe= null;
+    List<Entity> contratos    = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idNomina", idNomina);
+      params.put("idDesarrollo", idDesarrollo);
+      params.put("total", total);
+      contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaCostosDto", "desglose", params);
+      if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {
+        for (Entity item: contratos) {
+          params.put("idContrato", item.toLong("idContrato"));
+          if(Objects.equals(item.toLong("idContrato"), null))
+            existe= (TcKeetNominasContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasContratosDto.class, "TcKeetNominasContratosDto", "contrato", params);
+          else
+            existe= (TcKeetNominasContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasContratosDto.class, "TcKeetNominasContratosDto", "identically", params);
+          if(Objects.equals(existe, null)) {
+            existe= new TcKeetNominasContratosDto(
+              item.toDouble("total"), // Double total, 
+              idDesarrollo, // Long idDesarrollo, 
+              item.toLong("idContrato"), // Long idContrato, 
+              -1L, // Long idNominaContrato, 
+              item.toDouble("porcentaje"), // Double porcentaje, 
+              idNomina // Long idNomina
+            );
+            DaoFactory.getInstance().insert(sesion, existe);
+          } // if
+          else {
+            existe.setPorcentaje(item.toDouble("porcentaje"));
+            existe.setTotal(item.toDouble("total"));
+            existe.setRegistro(LocalDateTime.now());
+            DaoFactory.getInstance().update(sesion, existe);
+          } // else
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

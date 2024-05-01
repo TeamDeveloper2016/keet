@@ -15,6 +15,7 @@ import mx.org.kaana.keet.controles.beans.ConceptoExtra;
 import mx.org.kaana.keet.controles.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosResidentesDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosResidentesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosResidentesDto;
@@ -106,7 +107,7 @@ public class Seguimiento extends IBaseTnx {
 		Long key        = -1L;
 		TcKeetContratosDestajosResidentesDto dto= null;
 		TcKeetControlesDto control= null;
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		boolean inicioTrabajo     = false;
 		try {
 			control= (TcKeetControlesDto) DaoFactory.getInstance().findById(sesion, TcKeetControlesDto.class, this.revision.getIdControl());
@@ -127,12 +128,10 @@ public class Seguimiento extends IBaseTnx {
 				dto.setCosto((control.getCosto() * this.factorAcumulado) / 100);
 				dto.setIdControlEstatus(this.idEstatus); 
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
-					params= new HashMap<>();
 					params.put("idControlEstatus", dto.getIdControlEstatus());
 					params.put("cargo".concat(dto.getSemana().toString()), (control.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)control.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());										
-					if(inicioTrabajo){
+					if(inicioTrabajo) {
 						actualizaInicioContratoLote(sesion, true);
-						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
 					} // if
 					if(DaoFactory.getInstance().update(sesion, TcKeetControlesDto.class, this.revision.getIdControl(), params)>= 1L)
 						regresar= actualizaEstacionPadre(sesion, control, dto.getCosto(), dto.getSemana().toString(), true);											
@@ -149,13 +148,12 @@ public class Seguimiento extends IBaseTnx {
 		boolean regresar= false;		
 		TcKeetContratosDestajosResidentesDto dto= null;
 		TcKeetControlesDto control= null;
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		Double costo              = 0D;
 		Double porcentaje         = 0D;
 		try {			
 			for(Entity puntoRevision: this.revision.getPuntosRevision()) {
 				this.factorAcumulado= 0D;
-				params= new HashMap<>();
 				params.put("idControl", this.revision.getIdControl());
 				params.put("idContratoLoteResidente", this.revision.getIdFigura());
 				params.put("idControlEstatus", CANCELADO);
@@ -291,15 +289,23 @@ public class Seguimiento extends IBaseTnx {
 	
 	private void actualizaInicioContratoLoteExtra(Session sesion, boolean inicio, Long idContratoLote) throws Exception{
 		TcKeetContratosLotesDto contratoLote= null;
+		Map<String, Object>params           = new HashMap<>();
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
 			contratoLote.setArranque(inicio ? LocalDate.now() : null);			
 			contratoLote.setConcluyo(inicio ? LocalDate.now() : null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
+      if(inicio) {
+  			params.put("idContrato", contratoLote.getIdContrato());
+        DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDto.class, params, "arranque");
+      } // if
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 	} // actualizaInicioContratoLoteExtra
 	
 	private boolean actualizaEstacionPadre(Session sesion, TcKeetControlesDto hijo, Double total, String semana, boolean alta) throws Exception{

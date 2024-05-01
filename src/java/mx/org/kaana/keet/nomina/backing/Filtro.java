@@ -34,6 +34,7 @@ import mx.org.kaana.keet.nomina.reglas.Comparativo;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Empleados;
 import mx.org.kaana.keet.nomina.reglas.Personas;
+import mx.org.kaana.keet.nomina.reglas.Ponderados;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -792,10 +793,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public StreamedContent getPonderados() {
 		StreamedContent regresar= null;		
-    Personas personas       = null;
+    Ponderados ponderados   = null;
 		try {
-	  	personas   = new Personas(((Entity)this.attrs.get("seleccionado")).getKey());
-      String name= personas.execute();
+	  	ponderados = new Ponderados(((Entity)this.attrs.get("seleccionado")).getKey());
+      String name= ponderados.execute();
       String contentType= EFormatos.XLS.getContent();
       InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
       regresar          = new DefaultStreamedContent(stream, contentType, name);				

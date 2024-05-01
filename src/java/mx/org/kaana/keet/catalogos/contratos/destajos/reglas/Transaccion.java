@@ -21,6 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetAnticiposLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosContratistasArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosProveedoresArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
@@ -562,15 +563,23 @@ public class Transaccion extends IBaseTnx {
 	
 	private void actualizaInicioContratoLoteExtra(Session sesion, boolean inicio, Long idContratoLote) throws Exception {
 		TcKeetContratosLotesDto contratoLote= null;
+		Map<String, Object>params           = new HashMap<>();
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
 			contratoLote.setArranque(inicio? LocalDate.now(): null);			
 			contratoLote.setConcluyo(inicio? LocalDate.now(): null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
+      if(inicio) {
+  			params.put("idContrato", contratoLote.getIdContrato());
+        DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDto.class, params, "arranque");
+      } // if
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 	} // actualizaInicioContratoLoteExtra
 	
 	private boolean actualizaEstacionPadre(Session sesion, TcKeetEstacionesDto hijo, Double total, Double anticipo, String semana, boolean alta, Long idContratoLote) throws Exception {
