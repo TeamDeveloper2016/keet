@@ -13,7 +13,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -32,7 +31,9 @@ public class Ponderados extends Empleados implements Serializable {
   private static final Log LOG = LogFactory.getLog(Ponderados.class);
   private static final long serialVersionUID = -3364616917422678893L;
 
-  private static final String TOTAL= "costo";
+  private static final String TOTAL     = "costo";
+  private static final String POR_EL_DIA= "porElDia";
+  private static final String DESTAJOS  = "destajos";
   
   public Ponderados(Long idNomina) throws Exception {
     super(idNomina);
@@ -52,6 +53,8 @@ public class Ponderados extends Empleados implements Serializable {
       this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
       this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
       this.totales.clear();
+      this.totales.put(POR_EL_DIA, 0D);
+      this.totales.put(DESTAJOS, 0D);
       this.totales.put(TOTAL, 0D);
       this.toAddTitulosEmpleado();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -63,7 +66,9 @@ public class Ponderados extends Empleados implements Serializable {
       this.toAddView(0, 5);
       this.toAddView(1, 20);
       this.toAddView(2, 20);
-      this.toAddView(3, 23);
+      this.toAddView(3, 15);
+      this.toAddView(4, 15);
+      this.toAddView(5, 15);
     } // try
     catch (Exception e) {
       throw e;
@@ -86,7 +91,16 @@ public class Ponderados extends Empleados implements Serializable {
     this.addCell(this.posicionColumna, this.posicionFila, "No", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 1, this.posicionFila, "DESARROLLO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 2, this.posicionFila, "FRENTE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 3, this.posicionFila, semana, Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 3, this.posicionFila, "", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 4, this.posicionFila, semana, Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 5, this.posicionFila++, "", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    
+    this.addCell(this.posicionColumna, this.posicionFila, "", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 1, this.posicionFila, "", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 2, this.posicionFila, "", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 3, this.posicionFila, "POR EL DÍA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 4, this.posicionFila, "DESTAJOS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 5, this.posicionFila, "TOTAL", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
   }   
   
   protected void toAddRegistro(Entity row) throws Exception {
@@ -94,18 +108,24 @@ public class Ponderados extends Empleados implements Serializable {
     this.addCell(this.posicionColumna, this.posicionFila, String.valueOf(this.posicionFila- 1));
     this.addCell(this.posicionColumna+ 1, this.posicionFila, row.toString("desarrollo"));
     this.addCell(this.posicionColumna+ 2, this.posicionFila, row.toString("nombre")); 
-    this.addNumber(this.posicionColumna+ 3, this.posicionFila, Numero.toRedondearSat(row.toDouble(TOTAL)), this.value);
+    this.addNumber(this.posicionColumna+ 3, this.posicionFila, Numero.toRedondearSat(row.toDouble(POR_EL_DIA)), this.value);
+    this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(row.toDouble(DESTAJOS)), this.value);
+    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(row.toDouble(TOTAL)), this.value);
+    this.totales.put(POR_EL_DIA, this.totales.get(POR_EL_DIA)+ row.toDouble(POR_EL_DIA));
+    this.totales.put(DESTAJOS, this.totales.get(DESTAJOS)+ row.toDouble(DESTAJOS));
     this.totales.put(TOTAL, this.totales.get(TOTAL)+ row.toDouble(TOTAL));
   }
   
   protected void toAddSubtotales() throws Exception {
     this.posicionFila++;
     this.addCell(this.posicionColumna+ 2, this.posicionFila, "TOTAL:"); 
-    this.addNumber(this.posicionColumna+ 3, this.posicionFila, Numero.toRedondearSat(this.totales.get(TOTAL)), this.value);
+    this.addNumber(this.posicionColumna+ 3, this.posicionFila, Numero.toRedondearSat(this.totales.get(POR_EL_DIA)), this.value);
+    this.addNumber(this.posicionColumna+ 4, this.posicionFila, Numero.toRedondearSat(this.totales.get(DESTAJOS)), this.value);
+    this.addNumber(this.posicionColumna+ 5, this.posicionFila, Numero.toRedondearSat(this.totales.get(TOTAL)), this.value);
   }  
   
   public static void main(String ... args) throws Exception {
-    Ponderados corte= new Ponderados(183L);
+    Ponderados corte= new Ponderados(184L);
     LOG.info(corte.local());
   }
   

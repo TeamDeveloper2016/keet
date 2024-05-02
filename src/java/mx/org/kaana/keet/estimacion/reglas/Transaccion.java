@@ -104,11 +104,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
           this.toFillDocumentos(sesion);
           if(Objects.equals(this.orden.getEstimacion().getIdExtra(), 2L))
             this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), value);
+          else
+            if(Objects.equals(this.orden.getEstimacion().getIdExtra(), 1L) && Objects.equals(item.getIdExtra(), 2L))
+              this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1D);
 					break;				
 				case ELIMINAR:
           item= (TcKeetEstimacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstimacionesDto.class, this.idEstimacion);
           if(Objects.equals(item.getIdExtra(), 2L))
-            this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1);
+            this.toUpdateFrentes(sesion, item.getIdNomina(), item.getIdContrato(), item.getImporte()* -1D);
           regresar= this.toDeleteEstimacion(sesion);
 					break;
 				case DEPURAR:
