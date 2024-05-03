@@ -459,13 +459,17 @@ public class Costos extends IBaseFilter implements Serializable {
     try {      
       params.put(Constantes.SQL_CONDICION, row.toLong("idDesarrollo"));      
       params.put("idNomina", ((UISelectEntity)this.attrs.get("idSemana")).toLong("idNomina"));
-      Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaCostosDto", "estimaciones", params);
-      if(!Objects.equals(entity, null) && !entity.isEmpty()) 
-        regresar= (Objects.equals(entity.toDouble("estimado"), 0D) && (
-                !Objects.equals(entity.toDouble("destajos"), 0D) || 
-                !Objects.equals(entity.toDouble("materiales"), 0D) || 
-                !Objects.equals(entity.toDouble("porElDia"), 0D)
-                ))? "janal-tr-error": "";
+      if(Objects.equals(row.toString("estimado"), "0.00") && !Objects.equals(row.toString("egresos"), "0.00") && !row.toString("nombre").contains("EXTRA"))
+        regresar= "janal-tr-error";
+      else {
+        Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaCostosDto", "estimaciones", params);
+        if(!Objects.equals(entity, null) && !entity.isEmpty()) 
+          regresar= (Objects.equals(entity.toDouble("estimado"), 0D) && (
+                  !Objects.equals(entity.toDouble("destajos"), 0D) || 
+                  !Objects.equals(entity.toDouble("materiales"), 0D) || 
+                  !Objects.equals(entity.toDouble("porElDia"), 0D)
+                  ))? "janal-tr-error": "";
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

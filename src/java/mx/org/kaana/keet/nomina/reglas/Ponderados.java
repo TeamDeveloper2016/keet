@@ -105,7 +105,7 @@ public class Ponderados extends Empleados implements Serializable {
   
   protected void toAddRegistro(Entity row) throws Exception {
     this.posicionFila++;
-    this.addCell(this.posicionColumna, this.posicionFila, String.valueOf(this.posicionFila- 1));
+    this.addCell(this.posicionColumna, this.posicionFila, String.valueOf(this.posicionFila- 2));
     this.addCell(this.posicionColumna+ 1, this.posicionFila, row.toString("desarrollo"));
     this.addCell(this.posicionColumna+ 2, this.posicionFila, row.toString("nombre")); 
     this.addNumber(this.posicionColumna+ 3, this.posicionFila, Numero.toRedondearSat(row.toDouble(POR_EL_DIA)), this.value);
