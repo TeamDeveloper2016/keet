@@ -10,8 +10,10 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+				'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre'},
+				'idContrato'     : {validaciones: 'libre', mascara: 'libre'},
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idRequisicionEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
@@ -59,12 +61,46 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{manticComprasRequisicionesFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{manticComprasRequisicionesFiltro.doLoadContratos}" update="idContrato" process="@this idContrato" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{manticComprasRequisicionesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="idContrato" value="Contrato:"/>
+              <p:selectOneMenu id="idContrato" value="#{manticComprasRequisicionesFiltro.attrs.idContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticComprasRequisicionesFiltro.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                <p:column headerText="Clave">
+                  <p:outputLabel value="#{list.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <p:outputLabel value="#{list.nombre}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-right" headerText="No. viviendas">
+                  <p:outputLabel value="#{list.noViviendas}"/>
+                </p:column>   
+              </p:selectOneMenu>	
               <p:outputLabel for="consecutivo" value="No. requisición:"/>
               <p:inputText id="consecutivo" value="#{manticComprasRequisicionesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
+							<p:outputLabel for="idCliente" value="Cliente:"/>
+							<p:selectOneMenu id="idCliente" value="#{manticComprasRequisicionesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{manticComprasRequisicionesFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Fecha pedido:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
               <p:outputLabel for="fechaTermino" value="Fecha entrega:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" />
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" />
               <p:outputLabel for="idRequisicionEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idRequisicionEstatus" value="#{manticComprasRequisicionesFiltro.attrs.idRequisicionEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticComprasRequisicionesFiltro.attrs.estatusFiltro}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -82,7 +118,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticComprasRequisicionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasRequisicionesFiltro.lazyModel.rowCount gt manticComprasRequisicionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasRequisicionesFiltro.lazyModel.rowCount gt manticComprasRequisicionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
@@ -99,61 +135,68 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Requisición"/>
               </f:facet>
-              <h:outputText value="#{filtro['consecutivo']}"/>
+              <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
+						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Elaboró"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>	
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
-              <h:outputText value="#{filtro['estatus']}"/>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fecha}">
-              <f:facet name="header">
-                <h:outputText value="Fecha"/>
-              </f:facet>
-              <h:outputText value="#{filtro['registro']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaPedido}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.fechaPedido}">
               <f:facet name="header">
                 <h:outputText value="Pedido"/>
               </f:facet>
-              <h:outputText value="#{filtro['fechaPedido']}"/>
+              <h:outputText value="#{row['fechaPedido']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaEntregada}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.fechaEntregada}">
               <f:facet name="header">
                 <h:outputText value="Entrega"/>
               </f:facet>
-              <h:outputText value="#{filtro['fechaEntregada']}"/>
+              <h:outputText value="#{row['fechaEntregada']}"/>
             </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-2 janal-column-center">
+              <f:facet name="header">
+                <i class="fa fa-save"/>
+              </f:facet>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row.eliminados.toLong() ne 0? 'circulo-azul': row.detalle.toLong() eq row.ordenes.toLong()? 'circulo-verde': row.ordenes.toLong() ne 0? 'circulo-amarillo': 'circulo-rojo'}.png" title="#{row.eliminados.toLong() ne 0? 'INCOMPLETA': row.detalle.toLong() eq row.ordenes.toLong()? 'COMPLETA': row.ordenes.toLong() ne 0? 'PARCIAL': 'INICIAL'}"/>
+            </p:column>  
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticComprasRequisicionesFiltro.lazyModel==null?0:manticComprasRequisicionesFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticComprasRequisicionesFiltro.lazyModel== null? 0: manticComprasRequisicionesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{manticComprasRequisicionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:separator rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
+            <p:menuitem id="modificar" action="#{manticComprasRequisicionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
+            <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
+            <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />					
-            <p:menuitem id="reporteProv" icon="fa fa-file-word-o" value="Reportes proveedores" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" />					
+            <p:menuitem id="reporteProv" icon="fa fa-file-word-o" value="Proveedores" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" />
           </p:contextMenu>
         </div>
       </div>

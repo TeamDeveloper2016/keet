@@ -208,7 +208,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			this.registroRequisicion.getRequisicion().setIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
 			this.registroRequisicion.getRequisicion().setIdPrototipo(((UISelectEntity)this.attrs.get("prototipo")).getKey());
 			transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
-			toAdjustArticulos();
+			this.toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  

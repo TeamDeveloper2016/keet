@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.requisiciones.beans.TicketRequisicion;
@@ -38,7 +40,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 		}	// if
 		else	{
 		  this.setArticulos(new ArrayList<>());
-			this.orden.setConsecutivo("1");
+			this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar("1", 6, '0', Boolean.TRUE));
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 		} // else	
@@ -68,27 +70,27 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 
 	@Override
 	public Double getTipoDeCambio() {
-		return -1D;
+		return 1D;
 	}
 	
 	@Override
 	public String getDescuento() {
-		return null;
+		return "0";
 	}
 	
 	@Override
 	public String getExtras() {
-		return null;
+		return "0";
 	}
 	
 	@Override
 	public Long getIdSinIva() {
-		return -1L;
+		return 1L;
 	}
 	
 	@Override
 	public void setIdSinIva(Long idSinIva) {
-		//this.orden.setIdSinIva(idSinIva);
+		
 	}
 
 	@Override
@@ -98,6 +100,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 
 	@Override
 	public void setDescuento(String descuento){
-		//this.orden.setDescuento(descuento);
+		
 	}
+  
 }

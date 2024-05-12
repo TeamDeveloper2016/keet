@@ -8232,6 +8232,36 @@ where
 order by
   tc_keet_contratos.clave desc 
 			</select>
+			<select id="desarrollos">
+select 
+  tc_keet_contratos.id_contrato as id_key,
+  tc_mantic_clientes.id_cliente,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_mantic_clientes.razon_social,
+  (tc_keet_contratos.costo- tc_keet_contratos.fondo_garantia) as total,
+  tc_keet_contratos.costo as valor,
+  tc_keet_contratos_estatus.nombre as estatus,
+  tc_keet_contratos.*
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
+inner join 
+  tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+where
+  tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+  and {condicion}
+order by
+  tc_keet_contratos.clave desc 
+			</select>
 			<select id="findPrototipos">
 				select 
 					distinct(tc_keet_prototipos.id_prototipo) as id_key,
@@ -10833,34 +10863,36 @@ order by
           id_contrato_lote= {idContratoLote}        
       </select>
 			<select id="lotesDisponibles">
-				select 
-					tc_keet_contratos_lotes.id_contrato_lote id_key,
-          tc_keet_proyectos.id_empresa,
-					tc_keet_contratos_lotes.*,
-					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
-					tc_keet_contratos.clave clave_contrato,
-          tc_keet_contratos.nombre nombre_contrato,
-					tc_keet_contratos.etapa etapa_contrato,
-					tc_keet_proyectos.clave clave_proyecto,
-					tc_keet_proyectos.etapa etapa_proyecto,
-					tc_keet_contratos.orden orden_contrato,
-          tc_keet_prototipos.nombre as prototipo,
-          if(tc_keet_contratos_lotes.entrega is null, 2, 1) as entregada,
-          tc_keet_contratos.ejercicio
-				from 
-					tc_keet_proyectos
-				inner join 
-					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
-				inner join 
-					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
-        inner join
-          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
-				where 
-					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
-				  and {condicion}
-        order by
-          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
-          convert(tc_keet_contratos_lotes.lote, unsigned integer)
+select 
+  tc_keet_contratos_lotes.id_contrato_lote id_key,
+  tc_keet_proyectos.id_empresa,
+  tc_keet_contratos_lotes.*,
+  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+  tc_keet_contratos.clave clave_contrato,
+  tc_keet_contratos.nombre nombre_contrato,
+  tc_keet_contratos.etapa etapa_contrato,
+  tc_keet_proyectos.clave clave_proyecto,
+  tc_keet_proyectos.etapa etapa_proyecto,
+  tc_keet_contratos.orden orden_contrato,
+  tc_keet_prototipos.nombre as prototipo,
+  if(tc_keet_contratos_lotes.entrega is null, 2, 1) as entregada,
+  tc_keet_contratos.ejercicio
+from 
+  tc_keet_proyectos
+inner join 
+  tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+inner join 
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+where 
+  tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+  and {condicion}
+group by
+  tc_keet_contratos_lotes.id_contrato_lote    
+order by
+  convert(tc_keet_contratos_lotes.manzana, unsigned integer),
+  convert(tc_keet_contratos_lotes.lote, unsigned integer)
 			</select>
 			<select id="lotesSubContratistas">
 				select 

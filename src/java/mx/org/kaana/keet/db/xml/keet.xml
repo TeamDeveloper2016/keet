@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetRequisicionesOrdenesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_requisiciones_ordenes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_requisiciones_ordenes
+where      
+  id_requisicion_detalle = {idRequisicionDetalle} and id_orden_detalle = {idOrdenDetalle} 
+      </select>
+    </unit>    
     <unit id="TcKeetNominasContratosDto">
       <select id="row">
 select      

@@ -42,7 +42,7 @@ public class RegistroRequisicion implements Serializable {
 		this.countIndice  = 0L;
 		this.deleteList   = new ArrayList<>();
 		this.deleteList   = new ArrayList<>();
-		init();		
+		this.init();		
 	}
 	
 	public Requisicion getRequisicion() {

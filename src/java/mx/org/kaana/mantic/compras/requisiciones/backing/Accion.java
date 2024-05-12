@@ -3,9 +3,11 @@ package mx.org.kaana.mantic.compras.requisiciones.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -41,9 +43,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private RegistroRequisicion registroRequisicion;	
+  private EAccion accion;
 	
 	public Accion() {
 		super("menudeo");
+    this.attrs.put("paginator", Boolean.FALSE);
 	}
 
 	public RegistroRequisicion getRegistroRequisicion() {
@@ -58,9 +62,9 @@ public class Accion extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {		
     try {
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion")== null? -1L: JsfBase.getFlashAttribute("idRequisicion"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -69,7 +73,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			this.attrs.put("solicita", JsfBase.getAutentifica().getPersona().getNombreCompleto());
 			this.doLoad();
-			this.loadProveedores();
+			this.toLoadProveedores();
+      this.toLoadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,12 +82,11 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch		
   } // init
 
+  @Override
   public void doLoad() {
-    EAccion eaccion= null;
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
         case AGREGAR:		
 					this.registroRequisicion= new RegistroRequisicion();
 					this.registroRequisicion.getRequisicion().setPedido(LocalDate.now());
@@ -91,11 +95,11 @@ public class Accion extends IBaseArticulos implements Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:	
-					this.registroRequisicion= new RegistroRequisicion(Long.valueOf(this.attrs.get("idRequisicion").toString()));					
+					this.registroRequisicion= new RegistroRequisicion((Long)this.attrs.get("idRequisicion"));					
           this.setAdminOrden(new AdminTickets((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
           break;
       } // switch
-			this.attrs.put("consecutivo", "");
+			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -106,22 +110,27 @@ public class Accion extends IBaseArticulos implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;		
     try {			
-			if(this.registroRequisicion.validateDuplicateProveedor()){
-				eaccion= (EAccion) this.attrs.get("accion");						
+			if(this.registroRequisicion.validateDuplicateProveedor()) {
+				this.toAdjustArticulos();
+        this.registroRequisicion.getRequisicion().setDescuento(this.getAdminOrden().getDescuento());
+        this.registroRequisicion.getRequisicion().setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+        this.registroRequisicion.getRequisicion().setImpuestos(this.getAdminOrden().getTotales().getIva());
+        this.registroRequisicion.getRequisicion().setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+        this.registroRequisicion.getRequisicion().setTotal(this.getAdminOrden().getTotales().getTotal());
+        if(Objects.equals(this.registroRequisicion.getRequisicion().getIdContrato(), -1L))
+          this.registroRequisicion.getRequisicion().setIdContrato(null);
 				transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
-				toAdjustArticulos();
-				if (transaccion.ejecutar(eaccion)) {
-					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-					if(eaccion.equals(EAccion.AGREGAR)) { 				  
+				if (transaccion.ejecutar(this.accion)) {
+					regresar= this.doCancelar();
+					if(Objects.equals(this.accion, EAccion.AGREGAR)) 
 						UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
-					} // if	
-					JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
-					JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
+					JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la requisición", ETipoMensaje.ERROR);      			
+        if(Objects.equals(this.registroRequisicion.getRequisicion().getIdContrato(), null))
+          this.registroRequisicion.getRequisicion().setIdContrato(-1L);
 			} // if
 			else
 				JsfBase.addMessage("Se agregaron proveedores duplicados, favor de verificarlo", ETipoMensaje.ERROR);      						
@@ -135,43 +144,44 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	public void toAdjustArticulos() {
 		int count= 0;
-		while(count< getAdminOrden().getArticulos().size()) {
-			if(!getAdminOrden().getArticulos().get(count).isValid())
-				getAdminOrden().getArticulos().remove(count);
+		while(count< this.getAdminOrden().getArticulos().size()) {
+			if(!this.getAdminOrden().getArticulos().get(count).isValid())
+				this.getAdminOrden().getArticulos().remove(count);
 			else
-				if(count> 0 && getAdminOrden().getArticulos().get(count- 1).getKey().equals(getAdminOrden().getArticulos().get(count).getKey())) {
-					getAdminOrden().getArticulos().get(count- 1).setCantidad(getAdminOrden().getArticulos().get(count- 1).getCantidad()+ getAdminOrden().getArticulos().get(count).getCantidad());
-					getAdminOrden().getArticulos().remove(count);
+				if(count> 0 && this.getAdminOrden().getArticulos().get(count- 1).getKey().equals(this.getAdminOrden().getArticulos().get(count).getKey())) {
+					this.getAdminOrden().getArticulos().get(count- 1).setCantidad(this.getAdminOrden().getArticulos().get(count- 1).getCantidad()+ this.getAdminOrden().getArticulos().get(count).getCantidad());
+					this.getAdminOrden().getArticulos().remove(count);
 				} // if
 				else
 				  count++;
 		} // while
+    this.doReCalculatePreciosArticulos(Boolean.TRUE, -1L);
 	}
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());
-    return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar			
 	
 	public void doReCalculatePreciosArticulos(Long idCliente){
-		doReCalculatePreciosArticulos(true, idCliente);
+		this.doReCalculatePreciosArticulos(true, idCliente);
 	} // doReCalculatePreciosArticulos
 	
-	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente){
+	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente) {
 		MotorBusqueda motor          = null;
 		TcManticArticulosDto articulo= null;
 		String descuento             = null;
 		String sinDescuento          = "0";
 		try {
-			if(!getAdminOrden().getArticulos().isEmpty()){
-				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
-					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
+			if(!this.getAdminOrden().getArticulos().isEmpty()){
+				for(Articulo beanArticulo: this.getAdminOrden().getArticulos()){
+					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)) {
 						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
 						articulo= motor.toArticulo();
-						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
-						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
+						beanArticulo.setValor((Double) articulo.toValue(this.getPrecio()));
+						beanArticulo.setCosto((Double) articulo.toValue(this.getPrecio()));
 						if(descuentoVigente){
-							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
+							descuento= this.toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
 							if(descuento!= null)
 								beanArticulo.setDescuento(descuento);							
 						} // if
@@ -179,8 +189,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 							beanArticulo.setDescuento(sinDescuento);
 					} // if
 				} // for					
-				if(getAdminOrden().getArticulos().size()>1){					
-					getAdminOrden().toCalculate();
+				if(this.getAdminOrden().getArticulos().size()> 0) {					
+					this.getAdminOrden().toCalculate();
 					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
@@ -261,16 +271,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	@Override
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= new String((String)this.attrs.get("codigo")); 
+			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -297,11 +306,10 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	} // doUpdateArticulos
 	
-	private void loadProveedores() {
+	private void toLoadProveedores() {
     List<UISelectItem> proveedores= null;
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
@@ -320,4 +328,90 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doDeleteArticulo(Integer index) {
 		this.doDeleteArticulo(index, Boolean.TRUE);
 	}		
+
+ 	protected void toLoadEmpresas() {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
+		try {
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
+      if(Objects.equals(this.accion, EAccion.AGREGAR))
+	      this.attrs.put("idEmpresa", this.toDefaultSucursal(empresas));
+      else {
+        int index= empresas.indexOf(this.registroRequisicion.getRequisicion().getIkEmpresa());
+        if(index>= 0)
+  	      this.attrs.put("idEmpresa", empresas.get(index));
+        else
+  	      this.attrs.put("idEmpresa", this.toDefaultSucursal(empresas));
+      } // if  
+      this.doLoadDesarrollos();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally				
+	} 
+
+  public void doLoadDesarrollos() {
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = new HashMap<>();
+    try {
+      params.put("idEmpresa", this.registroRequisicion.getRequisicion().getIkEmpresa().getKey());
+  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("desarrollos", desarrollos);
+      if(Objects.equals(this.accion, EAccion.AGREGAR))
+	      this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+      else {
+        int index= desarrollos.indexOf(this.registroRequisicion.getRequisicion().getIkDesarrollo());
+        if(index>= 0)
+  	      this.attrs.put("idDesarrollo", desarrollos.get(index));
+        else
+  	      this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+      } // if  
+      this.doLoadContratos();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+  }
+
+  public void doLoadContratos() {
+		List<UISelectEntity>contratos= null;
+    Map<String, Object> params   = new HashMap<>();
+    try {
+      params.put("idDesarrollo", this.registroRequisicion.getRequisicion().getIkDesarrollo().getKey());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		contratos= UIEntity.seleccione("VistaContratosDto", "desarrollos", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("contratos", contratos);
+      if(Objects.equals(this.accion, EAccion.AGREGAR))
+	      this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      else {
+        int index= contratos.indexOf(this.registroRequisicion.getRequisicion().getIkContrato());
+        if(index>= 0)
+  	      this.attrs.put("idContrato", contratos.get(index));
+        else
+  	      this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally    
+  }
+  
 } 

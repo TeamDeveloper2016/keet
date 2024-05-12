@@ -9158,6 +9158,27 @@ where
 			</select>		
     </unit>
 		<unit id="VistaRequisicionesDto">
+			<select id="clientes">
+        select
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.id_cliente,
+					tc_mantic_clientes.clave,  
+					tc_mantic_clientes.razon_social as nombre
+				from 
+					tc_mantic_requisiciones
+				inner join
+					tc_keet_desarrollos on tc_mantic_requisiciones.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
+				where 		
+				  tc_mantic_requisiciones.id_empresa in ({sucursales})
+				group by
+          tc_mantic_clientes.id_cliente,
+					tc_mantic_clientes.clave,  
+					tc_mantic_clientes.razon_social
+				order by
+				  tc_mantic_clientes.clave
+			</select>		      
 			<select id="lazy">
         select
 					tc_mantic_requisiciones.id_requisicion as id_key,
@@ -9171,13 +9192,20 @@ where
 					tc_mantic_requisiciones.observaciones,
 					tc_mantic_requisiciones.fecha_pedido,
 					tc_mantic_requisiciones.fecha_entregada,
-					tc_mantic_requisiciones_estatus.estatus_asociados, 					
+					tc_mantic_requisiciones_estatus.estatus_asociados,
 					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					          
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					count(distinct(tc_mantic_requisiciones_detalles.id_requisicion_detalle)) as detalle,
+					count(distinct(tc_keet_requisiciones_ordenes.id_requisicion_detalle)) as ordenes,
+					sum(if(tc_keet_requisiciones_ordenes.id_eliminado= 1, 1, 0)) as eliminados
 				from 
 					tc_mantic_requisiciones				
 				inner join 
 					tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+				left join 
+					tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
 				inner join 
 					tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus=tc_mantic_requisiciones_estatus.id_requisicion_estatus				
 				inner join				
@@ -9185,6 +9213,8 @@ where
 				where
 					tc_mantic_requisiciones.id_empresa in ({idEmpresa})
 					and {condicion}
+        group by
+          tc_mantic_requisiciones.id_requisicion
 				{sortOrder}
 			</select>
 		</unit>

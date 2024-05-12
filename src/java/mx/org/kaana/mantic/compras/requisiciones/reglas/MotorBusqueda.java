@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.compras.requisiciones.beans.RequisicionProveedor;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 
-public class MotorBusqueda implements Serializable{
+public class MotorBusqueda implements Serializable {
 
 	private static final long serialVersionUID = 7005819281384345041L;
 	private Long idRequisicion;
@@ -30,12 +31,17 @@ public class MotorBusqueda implements Serializable{
 		try {
 			dto= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, this.idRequisicion);
 			regresar= new Requisicion();
+			regresar.setIdRequisicion(this.idRequisicion);
+			regresar.setIdEmpresa(dto.getIdEmpresa());
+			regresar.setIkEmpresa(new UISelectEntity(dto.getIdEmpresa()));			
+			regresar.setIdDesarrollo(dto.getIdDesarrollo());
+			regresar.setIkDesarrollo(new UISelectEntity(dto.getIdDesarrollo()));			
+			regresar.setIdContrato(dto.getIdContrato());			
+			regresar.setIkContrato(new UISelectEntity(dto.getIdContrato()));			
 			regresar.setDescuentos(dto.getDescuentos());
 			regresar.setIdProveedor(dto.getIdProveedor());
-			regresar.setIdDesarrollo(dto.getIdDesarrollo());
 			regresar.setDescuento(dto.getDescuento());
 			regresar.setIdRequisicionEstatus(dto.getIdRequisicionEstatus());
-			regresar.setIdRequisicion(this.idRequisicion);
 			regresar.setIdSolicita(dto.getIdSolicita());
 			regresar.setEjercicio(dto.getEjercicio());
 			regresar.setRegistro(dto.getRegistro());
@@ -46,12 +52,10 @@ public class MotorBusqueda implements Serializable{
 			regresar.setImpuestos(dto.getImpuestos());
 			regresar.setSubTotal(dto.getSubTotal());
 			regresar.setObservaciones(dto.getObservaciones());
-			regresar.setIdEmpresa(dto.getIdEmpresa());
 			regresar.setFechaEntregada(dto.getFechaEntregada());
 			regresar.setOrden(dto.getOrden());
 			regresar.setEntrega(dto.getFechaEntregada());
 			regresar.setPedido(dto.getFechaPedido());			
-			regresar.setIdContrato(dto.getIdContrato());			
 			regresar.setIdPrototipo(dto.getIdPrototipo());			
 		} // try
 		catch (Exception e) {			
@@ -76,4 +80,5 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toArticulosProveedor
+  
 }

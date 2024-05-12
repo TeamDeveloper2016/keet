@@ -139,12 +139,10 @@ public class Contrato extends Filtro implements Serializable {
 	
 	@Override
 	protected void loadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			params= new HashMap<>();
-			columns= new ArrayList<>();		
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -236,9 +234,8 @@ public class Contrato extends Filtro implements Serializable {
 	}
 
   public String doUploadContrato(TcKeetEstacionesDto row) {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idContrato", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 3)));
       params.put("orden", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 4)));
       Entity contrato = (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "contrato", params);
@@ -256,9 +253,8 @@ public class Contrato extends Filtro implements Serializable {
 
   public void doLoadDesarrollos() {
 		List<UISelectEntity>desarrollos= null;
-    Map<String, Object> params     = null;
+    Map<String, Object> params     = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idEmpresa", ((UISelectEntity)attrs.get("idEmpresa")).getKey());
   		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       this.attrs.put("desarrollos", desarrollos);
@@ -277,9 +273,8 @@ public class Contrato extends Filtro implements Serializable {
 
   public void doLoadContratos() {
 		List<UISelectEntity>contratos= null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");

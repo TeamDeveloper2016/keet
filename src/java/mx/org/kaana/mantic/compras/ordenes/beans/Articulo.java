@@ -734,22 +734,22 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		if(Cadena.isVacio(this.getPropio()))
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la requisicion");
 		return new TcManticRequisicionesDetallesDto(			
-			-1L, /*idRequisicionDertalle */
-			this.getDescuentos(),
-			this.getCodigo(),
-			this.getUnidadMedida(),
-			this.getCosto(),
-			this.getDescuento(),
-			-1L,
-			-1L,
-			this.getNombre(),
-			this.getImporte(),
-			this.getPropio(),
-			this.getIva(),
-			this.getImpuestos(),
-			this.getSubTotal(),			
-			this.getCantidad(),
-			this.getIdArticulo()						
+			-1L, //*idRequisicionDertalle */
+			this.getDescuentos(), // Double descuentos, 
+			this.getCodigo(), // String codigo,
+			this.getUnidadMedida(), // String unidadMedida, 
+			this.getCosto(), // Double costo, 
+			this.getDescuento(), // String descuento, 
+			6L, // Long idTipoPrecio, // PRECIO ESTABLECIDO POR CAFU
+			-1L, // Long idRequisicion, 
+			this.getNombre(), // String nombre, 
+			this.getImporte(), // Double importe, 
+			this.getPropio(), // String propio, 
+			this.getIva(), // Double iva, 
+			this.getImpuestos(), // Double impuestos, 
+			this.getSubTotal(), // Double subTotal, 
+			this.getCantidad(), // Double cantidad, 
+			this.getIdArticulo() // Long idArticulo 			
 		);
 	}
 	

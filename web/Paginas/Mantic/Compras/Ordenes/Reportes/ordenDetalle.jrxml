@@ -699,14 +699,14 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="89" y="37" width="74" height="15" uuid="1b8bfa7c-40e9-4905-acc3-1bb9a0f01492"/>
+				<reportElement stretchType="RelativeToTallestObject" x="89" y="34" width="74" height="12" uuid="1b8bfa7c-40e9-4905-acc3-1bb9a0f01492"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Arial Narrow" size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIONES:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement x="163" y="36" width="452" height="35" isPrintWhenDetailOverflows="true" uuid="3d6bedf7-f251-4b84-963b-f5acafc7348a"/>
+				<reportElement x="89" y="46" width="526" height="25" isPrintWhenDetailOverflows="true" uuid="3d6bedf7-f251-4b84-963b-f5acafc7348a"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -714,13 +714,13 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="false"/>
+					<font fontName="Arial Narrow" size="9" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OBSERVACIONES}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="89" y="21" width="74" height="15" uuid="e43f55dc-01a3-47d5-acaf-a1f62e71dc2f"/>
+				<reportElement stretchType="RelativeToTallestObject" x="89" y="21" width="74" height="13" uuid="e43f55dc-01a3-47d5-acaf-a1f62e71dc2f"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Arial Narrow" size="7" isBold="true"/>
 				</textElement>

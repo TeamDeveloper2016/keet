@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.pagina;
 
+import java.util.Objects;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
@@ -106,6 +107,17 @@ public class JsfBase extends JsfUtilities {
     return regresar;
   } // isAdminEncuestaOrAdmin
 
+  public static boolean isEncargado() throws Exception {
+    boolean regresar = false;
+    try {
+      regresar= isAdmin() || Objects.equals(getAutentifica().getPersona().getIdAutoriza(), 1L);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  } 
+  
   public static boolean isDirectivo() {
     return getAutentifica().getPersona().getDescripcionPerfil().toUpperCase().equals("DIRECTOR");
   } // idDirectivo

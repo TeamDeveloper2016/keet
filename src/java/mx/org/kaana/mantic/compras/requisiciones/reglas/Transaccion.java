@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -85,23 +86,25 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                       = false;
-		Map<String, Object> params             = null;
+		Map<String, Object> params             = new HashMap<>();
 		Long idRequisicionEstatus              = null;
 		TcManticRequisicionesDto bitRequisicion= null;
 		try {
 			idRequisicionEstatus= EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion();
-			params= new HashMap<>();
 			if(this.requisicion!= null)
 				params.put("idRequisicion", this.requisicion.getRequisicion().getIdRequisicion());
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la requisición.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la requisición");
 			switch(accion) {
 				case AGREGAR:
 				case REGISTRAR:			
-					idRequisicionEstatus= accion.equals(EAccion.AGREGAR) ? EEstatusRequisiciones.SOLICITADA.getIdEstatusRequisicion() : idRequisicionEstatus;
-					regresar= this.requisicion.getRequisicion().getIdRequisicion()!= null && !this.requisicion.getRequisicion().getIdRequisicion().equals(-1L) ? actualizarRequisicion(sesion, idRequisicionEstatus) : registrarRequisicion(sesion, idRequisicionEstatus);					
+					idRequisicionEstatus= Objects.equals(accion, EAccion.AGREGAR)? EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion(): idRequisicionEstatus;
+					regresar= !Objects.equals(this.requisicion.getRequisicion().getIdRequisicion(), null) && 
+                    !Objects.equals(this.requisicion.getRequisicion().getIdRequisicion(), -1L) ? 
+                  this.actualizarRequisicion(sesion, idRequisicionEstatus): 
+                  this.registrarRequisicion(sesion, idRequisicionEstatus);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion());					
+					regresar= this.actualizarRequisicion(sesion, EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion());					
 					break;				
 				case ELIMINAR:
 					idRequisicionEstatus= EEstatusRequisiciones.ELIMINADA.getIdEstatusRequisicion();
@@ -119,7 +122,7 @@ public class Transaccion extends IBaseTnx {
 					break;												
 				case REPROCESAR:
 				case COPIAR:
-					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion());				
+					regresar= this.actualizarRequisicion(sesion, EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion());				
 					break;				
 			} // switch
 			if(!regresar)
@@ -145,14 +148,13 @@ public class Transaccion extends IBaseTnx {
 			this.requisicion.getRequisicion().setEjercicio(new Long(Fecha.getAnioActual()));
 			this.requisicion.getRequisicion().setIdSolicita(JsfBase.getAutentifica().getPersona().getIdPersona());
 			this.requisicion.getRequisicion().setIdUsuario(JsfBase.getIdUsuario());
-			this.requisicion.getRequisicion().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.requisicion.getRequisicion().setDescuento("0");
 			this.requisicion.getRequisicion().setDescuentos(0D);
 			regresar= DaoFactory.getInstance().insert(sesion, this.requisicion.getRequisicion())>= 1L;
-			if(regresar){
-				registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());
-				regresar= registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, "");
-				toFillArticulos(sesion);
+			if(regresar) {
+				this.registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());
+				regresar= this.registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, "");
+				this.toFillArticulos(sesion);
 			} // if
 		} // try
 		catch (Exception e) {			

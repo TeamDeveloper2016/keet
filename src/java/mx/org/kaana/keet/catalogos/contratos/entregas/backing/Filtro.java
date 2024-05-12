@@ -72,6 +72,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
       this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
 			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
+			this.attrs.put("idEntrega", -1L);	
 			this.toLoadCatalogos();			
     } // try 
     catch (Exception e) {
@@ -124,7 +125,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         this.attrs.put("casa", new UISelectEntity(-1L));
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-			manzanas= UIEntity.seleccione("VistaTableroDto", "unicas", params, "nombre");
+			manzanas= UIEntity.seleccione("VistaTableroDto", "unicas", params, "manzana");
 			this.attrs.put("manzanas", manzanas);
       if(Cadena.isVacio(this.attrs.get("manzana"))) 
   			this.attrs.put("manzana", UIBackingUtilities.toFirstKeySelectEntity(manzanas));
@@ -178,18 +179,24 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
 		UISelectEntity manzana = (UISelectEntity)this.attrs.get("manzana");
 		UISelectEntity lote    = (UISelectEntity)this.attrs.get("casa");
+		Long idEntrega         = (Long)this.attrs.get("idEntrega");
     if(contrato!= null && contrato.getKey()> 0L)
-		  regresar.append("tc_keet_contratos.id_contrato= ").append(contrato.getKey()).append(" and ");
-    if(manzana!= null && manzana.getKey()> 0L && this.attrs.get("manzanas")!= null) {
+		  regresar.append("(tc_keet_contratos.id_contrato= ").append(contrato.getKey()).append(") and ");
+    if(!Objects.equals(manzana, null) && manzana.getKey()> 0L && this.attrs.get("manzanas")!= null) {
 			List<UISelectEntity> manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");
       int index= manzanas.indexOf(manzana);
       if(index>= 0)
          manzana= manzanas.get(index);
       this.attrs.put("manzana", manzanas.get(index));
-      regresar.append("tc_keet_contratos_lotes.manzana= '").append(manzana.toString("manzana")).append("' and ");
+      regresar.append("(tc_keet_contratos_lotes.manzana= '").append(manzana.toString("manzana")).append("') and ");
     } // if  
-    if(lote!= null && lote.getKey()> 0L)
-      regresar.append("tc_keet_contratos_lotes.id_contrato_lote=").append(lote.getKey()).append( " and ");
+    if(!Objects.equals(lote, null) && lote.getKey()> 0L)
+      regresar.append("(tc_keet_contratos_lotes.id_contrato_lote=").append(lote.getKey()).append(") and ");
+    if(!Objects.equals(idEntrega, null) && idEntrega> 0L)
+      if(!Objects.equals(idEntrega, 1L))
+        regresar.append("(tc_keet_contratos_lotes.entrega is null) and ");
+      else
+        regresar.append("(tc_keet_contratos_lotes.entrega is not null) and ");
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
   
@@ -199,7 +206,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {   
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesDisponibles", params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
+      casas= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesDisponibles", params, Constantes.SQL_TODOS_REGISTROS, "nombreContrato");
       this.attrs.put("casas", casas);
       this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
       this.doLoad();
