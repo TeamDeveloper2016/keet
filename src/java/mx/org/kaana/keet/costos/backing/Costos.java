@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -22,12 +23,16 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetCostosCostos")
 @ViewScoped
@@ -35,6 +40,7 @@ public class Costos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
+	private Reporte reporte;
   private List<Entity> model;
   private List<Entity> subTotales;
   private Entity totales;
@@ -62,7 +68,6 @@ public class Costos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
       this.attrs.put("total", "$0.00");
       this.fraccionamientos= new ArrayList<>();
@@ -217,6 +222,7 @@ public class Costos extends IBaseFilter implements Serializable {
   public void doLoadContratos() {
     Map<String, Object> params   = new HashMap<>();
     List<Columna> columns        = new ArrayList<>();
+		UISelectEntity empresa       = (UISelectEntity)this.attrs.get("idEmpresa");
 		UISelectEntity desarrollo    = (UISelectEntity)this.attrs.get("idDesarrollo");
 		List<UISelectEntity>desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
 		List<UISelectEntity>contratos  = null;
@@ -242,7 +248,7 @@ public class Costos extends IBaseFilter implements Serializable {
         params.put("idDesarrollo", desarrollo.getKey());
         this.fraccionamientos.add(desarrollo.getKey());        
       } // if  
-      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey());
+      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey()+ " and tc_keet_contratos.id_empresa= "+ empresa.getKey());
       contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaCostosDto", "desarrollos", params, columns, "clave");
       this.attrs.put("contratos", contratos);
       this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
@@ -480,5 +486,39 @@ public class Costos extends IBaseFilter implements Serializable {
     } // finally
 		return regresar; 
 	} // toColor
+ 
+	public void doReporte() throws Exception {
+		Parametros comunes           = null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = EReportes.ANALISIS_COSTOS;
+		try{		
+      params.put(Constantes.SQL_CONDICION, this.seguimiento.toString());
+      comunes     = new Parametros(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+      parametros  = comunes.getComunes();
+      this.reporte= JsfBase.toReporte();	
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("/resources/janal/img/sistema/"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
+      this.doVerificarReporte();
+      this.attrs.put("reporteName", this.reporte.getArchivo());
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } 
+  
+	public void doVerificarReporte() {
+		if(this.reporte.getTotal()> 0L)
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
+    else {
+			UIBackingUtilities.execute("generalHide()");		
+			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+		} // else
+	} 
   
 }

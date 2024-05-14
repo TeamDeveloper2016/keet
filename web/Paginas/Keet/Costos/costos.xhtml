@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Seguimiento a contratos" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -19,7 +19,14 @@
         'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
         'idSemana'    : {validaciones: 'libre', mascara: 'libre'}
       };
-      //<![CDATA[
+      //<![CDATA[      
+			function start() {
+        janal.bloquear();
+      }
+ 
+      function stop() {
+        janal.desbloquear();
+      }
       //]]>
     </script>		
   </ui:define>
@@ -121,6 +128,8 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCostosCostos.doReporte()}" oncomplete="janal.desbloquear();" update="descargar"/>
   						</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -140,7 +149,7 @@
               <f:facet name="header">
                 <h:outputText value="Contrato"/>
               </f:facet>
-              <h:outputText value="#{row['nombre']}"/>
+              <h:outputText value="#{row['contrato']}"/>
             </p:column>														
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
               <f:facet name="header">
@@ -277,7 +286,7 @@
           
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetCostosCostos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCostosCostos.lazyModel.rowCount gt keetCostosCostos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCostosCostos.attrs.detalle? '': 'none'}">
 						<f:facet name="header">
-							<p:outputLabel value="Egresos [#{keetCostosCostos.attrs.seleccionado.nombre}]" styleClass="janal-text-white detalle" style="float: left; text-align: left;"/>
+							<p:outputLabel value="Egresos [#{keetCostosCostos.attrs.seleccionado.contrato}]" styleClass="janal-text-white detalle" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasXls', 'detalle')" oncomplete="janal.desbloquear()"/>

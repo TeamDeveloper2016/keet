@@ -438,7 +438,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       if(sendMail)
         this.reporte.doAceptarSimple();			
-			else{
+      else {
 				if(this.doVerificarReporte())
 					this.reporte.doAceptar();			
 			} // else

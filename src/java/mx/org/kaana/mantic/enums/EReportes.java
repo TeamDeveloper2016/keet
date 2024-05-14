@@ -84,7 +84,8 @@ public enum EReportes implements IReportAttribute {
   CAJA_CHICA                ("VistaReportesCajaChicaDto", "detalle", "Listado de gastos de caja chica", "/Paginas/Keet/CajaChica/Reportes/detalleCajaChica", EFormatos.PDF, "CCH", "/Paginas/Keet/CajaChica/filtro"),
   ESTIMACION_SALDOS         ("VistaEstimacionesDto", "saldos", "Estado de cuenta", "/Paginas/Keet/Estimaciones/Reportes/estimacion", EFormatos.PDF, "EC", "/Paginas/Keet/Estimaciones/saldos"),
   CONTRATO_RESUMEN          ("VistaContratosDto", "findDesarrollo", "Resumen de estimación de obra", "/Paginas/Contenedor/Reportes/resumen", EFormatos.PDF, "RS", "/Paginas/Contenedor/resumen"),
-  VALE_ALMACEN              ("VistaBoletasDto", "folio", "Vale de almacen", "/Paginas/Keet/Vales/Reportes/vale", EFormatos.PDF, "VA", "/Paginas/Keet/Vales/filtro");
+  VALE_ALMACEN              ("VistaBoletasDto", "folio", "Vale de almacen", "/Paginas/Keet/Vales/Reportes/vale", EFormatos.PDF, "VA", "/Paginas/Keet/Vales/filtro"),
+  ANALISIS_COSTOS           ("VistaCostosDto", "lazy", "Análsis de costos de los contratos", "/Paginas/Keet/Costos/Reportes/costos", EFormatos.PDF, "AC", "/Paginas/Keet/Costos/costos");
 			
 	private final String proceso;
   private final String idXml;

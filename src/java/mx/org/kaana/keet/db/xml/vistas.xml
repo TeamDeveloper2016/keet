@@ -57,11 +57,12 @@ where
       <select id="lazy">
 select
   tc_keet_contratos.id_contrato as id_key,
+  tc_mantic_empresas.nombre as empresa, 
   tc_keet_desarrollos.id_desarrollo,        
   tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_contratos.id_contrato,
   tc_keet_contratos.clave,
-  tc_keet_contratos.nombre,
+  tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.no_viviendas,
   tc_keet_contratos.costo,
   count(distinct(tc_keet_estimaciones.id_estimacion)) as estimaciones,
@@ -79,6 +80,8 @@ select
   tc_keet_contratos.registro
 from
   tc_keet_contratos
+inner join
+  tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
 inner join
   tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 inner join
