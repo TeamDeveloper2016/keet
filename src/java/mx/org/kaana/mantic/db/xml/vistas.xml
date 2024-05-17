@@ -6073,8 +6073,7 @@ order by
           tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
         where      
           tc_mantic_notas_detalles.id_nota_entrada = {idNotaEntrada}
-				and 
-					tc_mantic_articulos.id_imagen is null
+  				and tc_mantic_articulos.id_imagen is null
 				order by
 				  tc_mantic_notas_detalles.registro
       </select>
@@ -6740,7 +6739,8 @@ group by
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
 				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
+          1 as cantidad
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -6757,12 +6757,8 @@ group by
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 				  and tc_mantic_articulos.id_vigente= 1
-				  and 
-				  (
-				    upper(tc_mantic_articulos.nombre) regexp '{codigo}.*'
-				  or
-				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  )) principal 			
+				  and (upper(tc_mantic_articulos.nombre) regexp '{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})
+        ) principal 			
 				order by 
 				  nombre				
 			</select>
@@ -9158,64 +9154,146 @@ where
 			</select>		
     </unit>
 		<unit id="VistaRequisicionesDto">
+			<select id="residentes">
+select
+  distinct(tc_mantic_personas.id_persona) as id_key,
+  tc_mantic_personas.cuenta,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
+from 
+  tc_mantic_requisiciones				
+inner join				
+  tc_mantic_personas on tc_mantic_requisiciones.id_solicita= tc_mantic_personas.id_persona
+where
+  tc_mantic_requisiciones.id_empresa in ({sucursales})
+  and tc_mantic_requisiciones.id_desarrollo= {idDesarrollo}
+group by
+  tc_mantic_personas.id_persona
+      </select>  
+			<select id="detalle">
+select
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle as id,
+  tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_mantic_requisiciones.consecutivo,		
+  tc_mantic_requisiciones.fecha_pedido,
+  date_format(tc_mantic_requisiciones.fecha_entregada, '%d/%m/%Y') as entrega,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as residente,
+  tc_mantic_requisiciones_detalles.propio,
+  tc_mantic_requisiciones_detalles.nombre,
+  round(tc_mantic_requisiciones_detalles.cantidad, 2) as cantidad,
+  tc_keet_requisiciones_ordenes.id_requisicion_orden,
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle,
+  tc_keet_requisiciones_ordenes.id_orden_detalle,
+  tc_mantic_requisiciones_detalles.id_articulo,
+  ifnull(tc_keet_requisiciones_ordenes.id_eliminado, 2) as id_eliminado,
+  tc_keet_requisiciones_ordenes.observaciones,
+  tc_keet_requisiciones_ordenes.id_usuario,
+  tc_keet_requisiciones_ordenes.registro,
+  ifnull(tc_mantic_ordenes_compras.consecutivo, '') as folio,
+  tc_mantic_ordenes_estatus.nombre estatus
+from 
+  tc_mantic_requisiciones				
+inner join 
+  tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
+left join 
+  tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+left join 
+  tc_mantic_ordenes_detalles on tc_keet_requisiciones_ordenes.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
+left join 
+  tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+left join 
+  tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus        
+where
+  tc_mantic_requisiciones.id_empresa in ({sucursales})
+  and tc_mantic_requisiciones.id_desarrollo= {idDesarrollo}
+  and (tc_mantic_requisiciones.id_contrato= {idContrato} or {idContrato}= -1)
+  and {condicion}
+group by
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle        
+      </select>  
+			<select id="igual">
+select
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle as id,
+  tc_mantic_requisiciones_detalles.id_articulo,
+  tc_keet_requisiciones_ordenes.*
+from 
+  tc_mantic_requisiciones				
+inner join 
+  tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+left join 
+  tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+left join 
+  tc_mantic_ordenes_detalles on tc_keet_requisiciones_ordenes.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
+left join 
+  tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+where
+  tc_mantic_ordenes_detalles.id_orden_compra= {idOrdenCompra}
+group by
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle        
+      </select>  
 			<select id="clientes">
-        select
-					tc_mantic_clientes.id_cliente as id_key,
-          tc_mantic_clientes.id_cliente,
-					tc_mantic_clientes.clave,  
-					tc_mantic_clientes.razon_social as nombre
-				from 
-					tc_mantic_requisiciones
-				inner join
-					tc_keet_desarrollos on tc_mantic_requisiciones.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-				inner join
-					tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
-				where 		
-				  tc_mantic_requisiciones.id_empresa in ({sucursales})
-				group by
-          tc_mantic_clientes.id_cliente,
-					tc_mantic_clientes.clave,  
-					tc_mantic_clientes.razon_social
-				order by
-				  tc_mantic_clientes.clave
+select
+  tc_mantic_clientes.id_cliente as id_key,
+  tc_mantic_clientes.id_cliente,
+  tc_mantic_clientes.clave,  
+  tc_mantic_clientes.razon_social as nombre
+from 
+  tc_mantic_requisiciones
+inner join
+  tc_keet_desarrollos on tc_mantic_requisiciones.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
+where 		
+  tc_mantic_requisiciones.id_empresa in ({sucursales})
+group by
+  tc_mantic_clientes.id_cliente,
+  tc_mantic_clientes.clave,  
+  tc_mantic_clientes.razon_social
+order by
+  tc_mantic_clientes.clave
 			</select>		      
 			<select id="lazy">
-        select
-					tc_mantic_requisiciones.id_requisicion as id_key,
-					tc_mantic_requisiciones.id_empresa,  
-				  tc_mantic_empresas.clave as empresa,  
-				  tc_mantic_empresas.nombre as nombre_empresa,  
-					tc_mantic_requisiciones.consecutivo,  															
-				  tc_mantic_requisiciones_estatus.nombre as estatus,
-					tc_mantic_requisiciones.id_requisicion_estatus,
-					tc_mantic_requisiciones.registro,
-					tc_mantic_requisiciones.observaciones,
-					tc_mantic_requisiciones.fecha_pedido,
-					tc_mantic_requisiciones.fecha_entregada,
-					tc_mantic_requisiciones_estatus.estatus_asociados,
-					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
-					count(distinct(tc_mantic_requisiciones_detalles.id_requisicion_detalle)) as detalle,
-					count(distinct(tc_keet_requisiciones_ordenes.id_requisicion_detalle)) as ordenes,
-					sum(if(tc_keet_requisiciones_ordenes.id_eliminado= 1, 1, 0)) as eliminados
-				from 
-					tc_mantic_requisiciones				
-				inner join 
-					tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
-				inner join 
-					tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
-				left join 
-					tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
-				inner join 
-					tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus=tc_mantic_requisiciones_estatus.id_requisicion_estatus				
-				inner join				
-					tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
-				where
-					tc_mantic_requisiciones.id_empresa in ({idEmpresa})
-					and {condicion}
-        group by
-          tc_mantic_requisiciones.id_requisicion
-				{sortOrder}
+select
+  tc_mantic_requisiciones.id_requisicion as id_key,
+  tc_mantic_requisiciones.id_empresa,  
+  tc_mantic_empresas.clave as empresa,  
+  tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_mantic_requisiciones.consecutivo,  															
+  tc_mantic_requisiciones_estatus.nombre as estatus,
+  tc_mantic_requisiciones.id_requisicion_estatus,
+  tc_mantic_requisiciones.registro,
+  tc_mantic_requisiciones.observaciones,
+  tc_mantic_requisiciones.fecha_pedido,
+  tc_mantic_requisiciones.fecha_entregada,
+  tc_mantic_requisiciones_estatus.estatus_asociados,
+  tc_mantic_personas.cuenta,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  count(distinct(tc_mantic_requisiciones_detalles.id_requisicion_detalle)) as detalle,
+  count(distinct(tc_keet_requisiciones_ordenes.id_requisicion_detalle)) as ordenes,
+  sum(if(tc_keet_requisiciones_ordenes.id_eliminado= 1, 1, 0)) as eliminados
+from 
+  tc_mantic_requisiciones				
+inner join 
+  tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+left join 
+  tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+inner join 
+  tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus=tc_mantic_requisiciones_estatus.id_requisicion_estatus				
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
+where
+  tc_mantic_requisiciones.id_empresa in ({idEmpresa})
+  and {condicion}
+group by
+  tc_mantic_requisiciones.id_requisicion
+{sortOrder}
 			</select>
 		</unit>
 		<unit id="VistaListasArchivosDto">

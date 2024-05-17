@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
@@ -41,6 +42,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Detalle;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
@@ -59,6 +61,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
 	private EOrdenes tipoOrden;
+  private List<Detalle> detalles;
 
 	public String getTitulo() {
 		return "(".concat(tipoOrden.name()).concat(")");
@@ -71,6 +74,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
+
+  public List<Detalle> getDetalles() {
+    return detalles;
+  }
 	
 	@PostConstruct
   @Override
@@ -92,8 +99,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("isBanco", Boolean.FALSE);
 			this.attrs.put("textGlobal", "");
 			this.attrs.put("textIndividual", "");
+			this.attrs.put("idTodos", 2L);
 			this.doLoad();
 			this.attrs.put("procesado", Boolean.TRUE);
+      this.detalles= new ArrayList<>();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -437,17 +446,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 
 	public void doTabChange(TabChangeEvent event) {
+    Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
+    Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
     switch (event.getTab().getTitle()) {
       case "Articulos":
-        Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
-        Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
         if(familias.length> 0) {
           this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
           UIBackingUtilities.update("contenedorGrupos:sinIva");
           UIBackingUtilities.update("contenedorGrupos:paginator");
         } // if
         else {
-          getAdminOrden().getArticulos().clear();
+          this.getAdminOrden().getArticulos().clear();
           UIBackingUtilities.execute("janal.show([{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
           // UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote'},{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
         } // else			
@@ -460,6 +469,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         break;
       case "Historial":
         this.doLoadHistorico();
+        break;
+      case "Requisiciones":
+        UIBackingUtilities.update(familias.length> 0? "PF('idResidente').enable()": "PF('idResidente').disable()");
+        UIBackingUtilities.update(familias.length> 0? "PF('idTodos').enable()": "PF('idTodos').disable()");
+        if(familias.length> 0) {
+          this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
+          this.toLoadResidentes();
+          this.toLoadDetalle(Boolean.FALSE);
+        }  // if
+        else {
+          this.detalles= new ArrayList<>();
+          UIBackingUtilities.execute("janal.show([{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
+        } // if  
         break;
       default:
         break;
@@ -1218,5 +1240,211 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       ((OrdenCompra)this.getAdminOrden().getOrden()).toEraseArticulos(this.getAdminOrden().getArticulos().get(index));
     super.doDeleteArticulo(index);
   }
+ 
+  private void toLoadDetalle(Boolean todos) {
+		Map<String, Object> params= new HashMap<>();
+    UISelectEntity residente  = (UISelectEntity)this.attrs.get("idResidente");
+    StringBuilder sb          = new StringBuilder();
+    try {
+      params.put("sortOrder", "order by tc_mantic_requisiciones.registro");
+      params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
+      params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
+      params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
+      if(!Objects.equals(residente.getKey(), -1L))
+        sb.append("(tc_mantic_requisiciones.id_solicita= ").append(residente.getKey()).append(") and ");
+      if(todos)
+        sb.append(Constantes.SQL_VERDADERO).append(" and ");
+      else  
+        sb.append("(tc_keet_requisiciones_ordenes.id_requisicion_orden is null or tc_keet_requisiciones_ordenes.id_eliminado= 1) and ");
+      sb.delete(sb.length()- 4, sb.length());
+      if(((OrdenCompra)this.getAdminOrden().getOrden()).isValid())
+        sb.append(" or (tc_mantic_ordenes_detalles.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
+      params.put(Constantes.SQL_CONDICION, sb.toString());
+      this.detalles= (List<Detalle>)DaoFactory.getInstance().toEntitySet(Detalle.class, "VistaRequisicionesDto", "detalle", params);
+      if(Objects.equals(this.detalles, null))
+        this.detalles= new ArrayList<>();
+      UIBackingUtilities.resetDataTable("detalle");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally		
+  }
+
+  public void doLoadTodos() {
+    this.toLoadDetalle(Objects.equals((Long)this.attrs.get("idTodos"), 1L));
+  }
+  
+  public void doLoadResidentes() {
+    this.toLoadDetalle(Boolean.TRUE);
+  }
+ 
+	private void toLoadResidentes() {
+		List<UISelectEntity> residentes= null;
+		Map<String, Object>params       = new HashMap<>();
+		try {
+      params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
+			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
+  	  residentes= UIEntity.seleccione("VistaRequisicionesDto", "residentes", params, "cuenta");
+			this.attrs.put("residentes", residentes);
+			this.attrs.put("idResidente", UIBackingUtilities.toFirstKeySelectEntity(residentes));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+	} 
+  
+  public void doQuitar(Detalle row) {
+    try {      
+      int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(row.getIdArticulo()));
+      if(position>= 0) {
+        // DECREMENTAR EL VALOR DE CANTIDAD
+        Double value= this.getAdminOrden().getArticulos().get(position).getCantidad()- row.getCantidad();
+        this.getAdminOrden().getArticulos().get(position).setCantidad(value);
+        
+        int index= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+        if(index>= 0) {
+          Detalle item= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
+          if(Objects.equals(item.getSql(), ESql.SELECT))
+            item.setSql(ESql.DELETE);
+          else  
+            ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().remove(index);
+        } // if  
+        // SE DEBE DE ELIMINAR DE LA LISTA DE PARTIDAS
+        if(value<= 0) 
+          this.doDeleteArticulo(position);
+      } // if	
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doAgregar(Detalle row) {
+  	List<UISelectEntity> articulos= null;
+    UISelectEntity articulo       = null;
+    Integer index                 = this.getAdminOrden().getArticulos().size()- 1;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? -1L: ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+  		params.put("idArticulo", row.getIdArticulo());
+  		params.put("codigo", "WXYZ");	
+  		params.put("idArticuloTipo", Cadena.isVacio(this.attrs.get("idArticuloTipo"))? "1": this.attrs.get("idArticuloTipo"));	
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
+      this.attrs.put("articulos", articulos);
+      if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
+        articulo= articulos.get(0);
+        int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
+        if(articulo.size()> 1 && position>= 0) {
+          if(index!= position) {
+            // INCREMENTAR EL VALOR DE CANTIDAD
+            Double value= this.getAdminOrden().getArticulos().get(position).getCantidad()+ row.getCantidad();
+            this.getAdminOrden().getArticulos().get(position).setCantidad(value);
+          } // if	
+        } // if	
+        else {
+          articulo.getValue("cantidad").setData(row.getCantidad());
+          this.toMoveData(articulo, index);
+        } // else  
+        
+        // AGREGAR ESTA REQUISICION DETALLE A LA LISTA
+        position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+        if(position>= 0) {
+          Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
+          if(Objects.equals(value.getSql(), ESql.DELETE))
+            value.setSql(ESql.SELECT);
+        } // if
+        else {
+          Detalle item= new Detalle();
+          item.setSql(ESql.INSERT);
+          item.setId(row.getIdRequisicionDetalle());
+          item.setIdRequisicionDetalle(row.getIdRequisicionDetalle());
+          item.setIdOrdenCompra(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          item.setIdArticulo(articulo.toLong("idArticulo"));
+          item.setIdEliminado(2L);
+          item.setIdUsuario(JsfBase.getIdUsuario());
+          ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().add(item);
+          this.attrs.put("articulo", null);
+        } // if  
+      } // if  
+      else 
+        this.attrs.put("articulo", null);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void doEliminar(Detalle row) {
+    try {
+      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  }
+  
+  public void doRecuperar(Detalle row) {
+    try {
+      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  }
+  
+  public Boolean doView(Detalle row, Integer boton) {
+    Boolean regresar= Objects.equals((Long)this.attrs.get("idTodos"), 2L);
+    if(regresar) {
+      Boolean existe  = this.toFindPartida(row);
+      switch(boton) {
+        case 1: // eliminar
+          regresar= Objects.equals(row.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "");
+          break;
+        case 2: // recuperar
+          regresar= Objects.equals(row.getIdEliminado(), 1L);
+          break;
+        case 3: // agregar
+          regresar= Objects.equals(row.getFolio(), "") && !existe;
+          break;
+        case 4: // quitar
+          regresar= Objects.equals(row.getFolio(), "") && existe;
+          break;
+      } // switch
+    } // if  
+    return regresar; 
+  }
+  
+  private Boolean toFindPartida(Detalle row) {
+    Boolean regresar= Boolean.FALSE;
+    for (Detalle item: ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles()) {
+      regresar= Objects.equals(item.getIdRequisicionDetalle(), row.getIdRequisicionDetalle());
+      if(regresar)
+        break;
+    } // for
+    return regresar;
+  } 
+	public String toColor(Detalle row) {
+		return !Objects.equals(row.getIdOrdenCompra(), -1L) && Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())? "janal-tr-diferencias": "";
+	} 
   
 }

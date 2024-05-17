@@ -35,6 +35,7 @@ import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Detalle;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenFamilia;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLote;
@@ -163,6 +164,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // else	
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
+          this.toUpdateRequisicion(sesion);
           regresar= this.registrarLotes(sesion);
 					break;
 				case AGREGAR:
@@ -175,6 +177,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.bitacora= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L)
 							regresar= this.registrarLotes(sesion);
+            this.toUpdateRequisicion(sesion);
 					} // if
 					break;
 				case MODIFICAR:
@@ -191,6 +194,7 @@ public class Transaccion extends Inventarios implements Serializable {
   					this.bitacora= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
   					DaoFactory.getInstance().insert(sesion, this.bitacora);
 					} // if
+          this.toUpdateRequisicion(sesion);
 					regresar= this.registrarLotes(sesion);
 					break;				
 				case ELIMINAR:
@@ -653,4 +657,30 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // finally    
   }
   
+  private void toUpdateRequisicion(Session sesion) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      for (Detalle item: this.ordenProcess.getOrdenCompra().getDetalles()) {
+        switch(item.getSql()) {
+          case INSERT:
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            DaoFactory.getInstance().insert(sesion, item);
+            break;
+          case UPDATE:
+            item.setRegistro(LocalDateTime.now());
+            DaoFactory.getInstance().update(sesion, item);
+            break;
+          case SELECT:
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
 } 

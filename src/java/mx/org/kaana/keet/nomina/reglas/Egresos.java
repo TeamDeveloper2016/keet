@@ -197,28 +197,26 @@ public class Egresos extends XlsBase implements Serializable {
       params.put("semana", this.nomina.toString("semana"));
       params.put("clave", this.toTokenClave(contrato));
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", this.idXml, params, Constantes.SQL_TODOS_REGISTROS);
-      if(lotes!= null && !lotes.isEmpty()) {
-        this.toOrderConceptos(model, lotes, 1L, 2L, model.size());
-        this.toOrderConceptos(model, lotes, 2L, 2L, model.size());
-        this.toOrderConceptos(model, lotes, 1L, 1L, model.size());
-        this.toOrderConceptos(model, lotes, 2L, 1L, model.size());
-        for (Entity item: lotes) {
-          String lote= item.toString("lote").replaceAll("-", "");
-          int index= model.indexOf(new Concepto(item.toString("codigo")));
-          if(index>= 0) {
-            Concepto concepto= model.get(index);
-            concepto.put(lote, new Criterio(lote, item.toLong("idTipo"), item.toLong("idExtra"), item.toDouble("porcentaje"), item.toDouble("costo"), item.toDouble("anticipo"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
-            if(!Objects.equals(lote, anterior)) {
-              fields.add(new Lote(lote, lote, "", ""));
-              anterior= lote;
-            } // if 
-            if(this.nominas.indexOf(item.toLong("idNomina"))< 0)
-              this.nominas.add(item.toLong("idNomina"));
-          } // if
-          else
-            throw new RuntimeException("El concepto ["+ item.toString("codigo")+ "] no existe en la consulta !");
-        } // for
-      } // if
+      this.toOrderConceptos(model, lotes, 1L, 2L, model.size());
+      this.toOrderConceptos(model, lotes, 2L, 2L, model.size());
+      this.toOrderConceptos(model, lotes, 1L, 1L, model.size());
+      this.toOrderConceptos(model, lotes, 2L, 1L, model.size());
+      for (Entity item: lotes) {
+        String lote= item.toString("lote").replaceAll("-", "");
+        int index= model.indexOf(new Concepto(item.toString("codigo")));
+        if(index>= 0) {
+          Concepto concepto= model.get(index);
+          concepto.put(lote, new Criterio(lote, item.toLong("idTipo"), item.toLong("idExtra"), item.toDouble("porcentaje"), item.toDouble("costo"), item.toDouble("anticipo"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
+          if(!Objects.equals(lote, anterior)) {
+            fields.add(new Lote(lote, lote, "", ""));
+            anterior= lote;
+          } // if 
+          if(this.nominas.indexOf(item.toLong("idNomina"))< 0)
+            this.nominas.add(item.toLong("idNomina"));
+        } // if
+        else
+          throw new RuntimeException("El concepto ["+ item.toString("codigo")+ "] no existe en la consulta !");
+      } // for
       if(!model.isEmpty()) {
         this.posicionFila++;
         this.posicionFila++;

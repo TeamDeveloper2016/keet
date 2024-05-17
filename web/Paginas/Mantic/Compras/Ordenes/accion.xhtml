@@ -143,9 +143,9 @@
 						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticComprasOrdendesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) global individual sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent();"/>
+            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) global individual sinIva datosArticulos registros detalle idResidente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent(); reloadResidentes()"/>
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-7, janal-wid-93">		
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticComprasOrdendesAccion.agregar}"/>
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
@@ -840,6 +840,109 @@
                 </p:dataTable>  
               </p:panelGrid>  
 						</p:tab>
+						<p:tab title="Requisiciones">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">		
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+                  <p:outputLabel for="idResidente" value="Residente(s):"/>
+                  <p:selectOneMenu id="idResidente" widgetVar="idResidente" value="#{manticComprasOrdendesAccion.attrs.idResidente}" var="item" converter="janal.convertidor.Entity" styleClass="recalculo janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticComprasOrdendesAccion.doLoadResidentes()}" update="detalle" oncomplete="janal.desbloquear()"/>
+                    <f:selectItems value="#{manticComprasOrdendesAccion.attrs.residentes}" var="element" itemValue="#{element}" itemLabel="#{element.cuenta} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                    <p:column headerText="Cuenta">
+                      <h:outputText value="#{item.cuenta}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+                  <p:outputLabel for="idTodos" value="Ver todo:"/>
+                  <p:selectOneMenu id="idTodos" widgetVar="idTodos" value="#{manticComprasOrdendesAccion.attrs.idTodos}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticComprasOrdendesAccion.doLoadTodos()}" update="detalle" oncomplete="janal.desbloquear()"/>
+                    <f:selectItem itemLabel="SI" itemValue="1"/>
+                    <f:selectItem itemLabel="NO" itemValue="2"/>								
+                  </p:selectOneMenu>
+                </p:panelGrid>
+              </p:panelGrid>
+              <p:dataTable lazy="false" id="detalle" widgetVar="kajoolDetalle" styleClass="recalculo" var="row" value="#{manticComprasOrdendesAccion.detalles}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasOrdendesAccion.attrs.detalle}" selectionMode="single" paginator="false" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{manticComprasOrdendesAccion.toColor(row)}">
+								<p:column styleClass="MarAuto Responsive janal-fix-3 view-normal">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>		
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center view-normal">
+									<f:facet name="header">
+										<h:outputText value="Requisición"/>
+									</f:facet>
+									<p:outputLabel value="#{row['consecutivo']}"/>
+								</p:column>											
+								<p:column styleClass="MarAuto Responsive janal-wid-15 view-normal">
+									<f:facet name="header">
+										<h:outputText value="Residente"/>
+									</f:facet>
+									<p:outputLabel value="#{row['residente']}"/>
+								</p:column>											
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 view-normal">
+									<f:facet name="header">
+										<h:outputText value="Entrega"/>
+									</f:facet>
+									<p:outputLabel value="#{row['entrega']}"/>
+								</p:column>											
+								<p:column styleClass="MarAuto Responsive janal-wid-8 view-normal">
+									<f:facet name="header">
+										<h:outputText value="Código"/>
+									</f:facet>
+									<p:outputLabel value="#{row['propio']}"/>
+								</p:column>											
+								<p:column styleClass="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Articulo"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}"/>
+								</p:column>		
+								<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8">
+									<f:facet name="header">
+										<p:outputLabel value="Cantidad"/>
+									</f:facet>
+									<p:outputLabel value="#{row['cantidad']}"/>
+								</p:column>																				
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8">
+									<f:facet name="header">
+										<p:outputLabel value="Orden"/>
+									</f:facet>
+									<p:outputLabel value="#{row['folio']}"/>
+								</p:column>																				
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8">
+									<f:facet name="header">
+										<p:outputLabel value="Estatus"/>
+									</f:facet>
+									<p:outputLabel value="#{row['estatus']}"/>
+								</p:column>																				
+                <p:column class="janal-wid-col-80 janal-column-center" exportable="false" rendered="#{manticComprasOrdendesAccion.attrs.idTodos eq 2}">	
+                  <f:facet name="header">
+                    <p:outputLabel value="..." styleClass="xs-pantalla"/>
+                  </f:facet>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doEliminar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{false and manticComprasOrdendesAccion.doView(row, 1)}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
+                  </p:commandButton>  
+                  <p:commandButton icon="fa fa-refresh" title="Recuperar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doRecuperar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{false and manticComprasOrdendesAccion.doView(row, 2)}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
+                  </p:commandButton>  
+                  <p:commandButton icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doAgregar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 3)}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
+                  </p:commandButton>  
+                  <p:commandButton icon="fa fa-minus" title="Quitar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doQuitar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 4)}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
+                  </p:commandButton>  
+                </p:column>
+								<f:facet name="footer">
+    							<p:outputLabel value="Las filas en color estan asociadas a la orden de compra activa" styleClass="janal-float-left"/>
+                  <p:outputLabel value="Total [#{manticComprasOrdendesAccion.detalles== null? 0: manticComprasOrdendesAccion.detalles.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>	
+              <p:remoteCommand name="reloadResidentes" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:idResidente" oncomplete="janal.desbloquear();"/>
+            </p:tab>  
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
@@ -865,7 +968,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticComprasOrdendesAccion.attrs.lazyModel}" selection="#{manticComprasOrdendesAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticComprasOrdendesAccion.lazyModel}" selection="#{manticComprasOrdendesAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" listener="#{manticComprasOrdendesAccion.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>	
 						<p:column headerText="No" styleClass="janal-wid-col-30">
 							<h:outputText value="#{index+ 1}.-"/>
@@ -883,14 +986,14 @@
 							<h:outputText value="#{manticComprasOrdendesAccion.doMiles(item.stock)}"/>
 						</p:column>   
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticComprasOrdendesAccion.attrs.lazyModel==null? 0: manticComprasOrdendesAccion.attrs.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticComprasOrdendesAccion.lazyModel==null? 0: manticComprasOrdendesAccion.lazyModel.rowCount}] registros"/>
             </f:facet>
 					</p:dataTable>
 				</div>
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasOrdendesAccion.doChangeBuscado}" onstart="return jsArticulos.parche();" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasOrdendesAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasOrdendesAccion.doChangeBuscado}" onstart="return jsArticulos.parche();" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasOrdendesAccion.lazyModel.rowCount lt 1}"/>
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>

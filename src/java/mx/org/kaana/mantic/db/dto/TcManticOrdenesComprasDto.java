@@ -580,7 +580,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
 
   @Override
   public boolean isValid() {
-  	return getIdOrdenCompra()!= null && getIdOrdenCompra()!=-1L;
+  	return getIdOrdenCompra()!= null && getIdOrdenCompra()> 0L;
   }
 
   @Override

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -52,6 +53,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   private List<General> general;
   private List<Individual> individual;
   private List<Individual> temporal;
+  private List<Detalle> detalles;
   private Long itEmpresa;
 
 	public OrdenCompra() {
@@ -59,7 +61,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long key) {
-		this(-1L, 0D, -1L, -1L, "0.00", -1L, "0.00", new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 2L, 0D, 1L, LocalDate.now(), 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D);
+		this(-1L, 0D, -1L, -1L, "0.00", Math.abs(new Random().nextLong())* -1L, "0.00", new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 2L, 0D, 1L, LocalDate.now(), 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D);
 	}
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
@@ -67,6 +69,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     this.general   = new ArrayList<>();
     this.individual= new ArrayList<>();
     this.temporal  = new ArrayList<>();
+    this.detalles  = new ArrayList<>();
     this.itEmpresa = idEmpresa;
 	}
 
@@ -547,6 +550,14 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   
   public Boolean isChangeEmpresa() {
     return !Objects.equals(this.itEmpresa, this.getIdEmpresa()) && !Objects.equals(this.itEmpresa, -1L) && !Objects.equals(this.getIdEmpresa(), -1L);
+  }
+
+  public List<Detalle> getDetalles() {
+    return detalles;
+  }
+
+  public void setDetalles(List<Detalle> detalles) {
+    this.detalles = detalles;
   }
   
 }

@@ -3,13 +3,17 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Detalle;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +36,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 	public AdminOrdenes(OrdenCompra orden) throws Exception {
 		this.orden  = orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "detalle", orden.toMap(), -1L));
+  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "detalle", orden.toMap(), Constantes.SQL_TODOS_REGISTROS));
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
@@ -48,6 +52,10 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkTipoOrden(new UISelectEntity(new Entity(this.orden.getIdTipoOrden())));
       this.orden.setItEmpresa(this.orden.getIdEmpresa());
       this.orden.toLoadTemporal();
+      this.orden.setDetalles((List<Detalle>)DaoFactory.getInstance().toEntitySet(Detalle.class, "VistaRequisicionesDto", "detalle", orden.toMap(), Constantes.SQL_TODOS_REGISTROS));
+      for (Detalle item: this.orden.getDetalles()) {
+        item.setSql(ESql.SELECT);
+      } // for
 		}	// if
 		else {
 		  this.setArticulos(new ArrayList<>());

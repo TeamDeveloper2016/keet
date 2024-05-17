@@ -61,6 +61,9 @@
                     <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosEntregasFiltro.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
                       <p:ajax event="change" onstart="return janal.bloquear();" process="@this idEntrega" listener="#{keetCatalogosContratosEntregasFiltro.doLoad}" update="destajo" oncomplete="janal.desbloquear(); reload();"/>
                       <f:selectItems value="#{keetCatalogosContratosEntregasFiltro.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.nombreContrato}#{empty element.descripcionLote or element.descripcionLote eq ''? '': '|'}#{element.descripcionLote}"/>																		
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
                       <p:column headerText="Contrato">
                         <h:outputText value="#{item.nombreContrato}"/>
                       </p:column>   

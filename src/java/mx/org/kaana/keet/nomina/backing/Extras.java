@@ -70,7 +70,14 @@ public class Extras extends IBaseFilter implements Serializable {
   public void doLoad() {
     List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
+  	List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
+  	UISelectEntity item         = (UISelectEntity)this.attrs.get("idNomina");
     try {
+      int index= nominas.indexOf(item);
+      if(index> 0)
+        this.attrs.put("idNomina", nominas.get(index));
+      else
+        this.attrs.put("idNomina", nominas.get(0));
       params= this.toPrepare();	
       Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
       if(Objects.equals(idNomina, -1L)) {
@@ -258,7 +265,7 @@ public class Extras extends IBaseFilter implements Serializable {
 	} 
 
   public Boolean toHabilitar(Entity row) {
-    return !(Objects.equals(row.toLong("idNomina"), null) || (Objects.equals(row.toLong("idNomina"), this.nomina.toLong("idNomina")) && (Objects.equals(this.nomina.toLong("idEstatusNomina"), 1L) || Objects.equals(this.nomina.toLong("idEstatusNomina"), 2L)|| Objects.equals(this.nomina.toLong("idEstatusNomina"), 3L))));
+    return !(Objects.equals(row.toLong("idNomina"), null) || (Objects.equals(row.toLong("idNomina"), this.nomina.toLong("idNomina")) && (Objects.equals(this.nomina.toLong("idNominaEstatus"), 1L) || Objects.equals(this.nomina.toLong("idNominaEstatus"), 2L)|| Objects.equals(this.nomina.toLong("idNominaEstatus"), 3L))));
   }
 
 }
