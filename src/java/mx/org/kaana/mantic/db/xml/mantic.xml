@@ -1994,8 +1994,32 @@ where
         where 
           id_requisicion = {idRequisicion}
       </select>
+			<insert id="row">
+insert into tc_mantic_requisiciones_detalles(id_requisicion, id_articulo, codigo, propio, unidad_medida, nombre, cantidad, costo, descuento, descuentos, iva, impuestos, sub_total, importe, id_tipo_precio, registro)
+select
+  {idClon} as id_requisicion,
+	tc_mantic_requisiciones_detalles.id_articulo, 
+	tc_mantic_requisiciones_detalles.codigo, 
+	tc_mantic_requisiciones_detalles.propio, 
+	tc_mantic_requisiciones_detalles.unidad_medida, 
+	tc_mantic_requisiciones_detalles.nombre, 
+	tc_mantic_requisiciones_detalles.cantidad, 
+	tc_mantic_requisiciones_detalles.costo, 
+	tc_mantic_requisiciones_detalles.descuento, 
+	tc_mantic_requisiciones_detalles.descuentos, 
+	tc_mantic_requisiciones_detalles.iva, 
+	tc_mantic_requisiciones_detalles.impuestos, 
+	tc_mantic_requisiciones_detalles.sub_total, 
+	tc_mantic_requisiciones_detalles.importe, 
+	tc_mantic_requisiciones_detalles.id_tipo_precio, 
+	current_timestamp() as registro
+from
+  tc_mantic_requisiciones_detalles
+where
+  tc_mantic_requisiciones_detalles.id_requisicion= {idRequisicion}        
+      </insert>  
 			<delete id="rows">
-				delete from tc_mantic_requisiciones_detalles where id_requisicion= {idRequisicion}
+delete from tc_mantic_requisiciones_detalles where id_requisicion= {idRequisicion}
 			</delete>
     </unit>
 		<unit id="TcManticRequisicionesDto">

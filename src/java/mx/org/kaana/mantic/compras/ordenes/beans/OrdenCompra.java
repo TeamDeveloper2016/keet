@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.compras.beans.General;
 import mx.org.kaana.keet.compras.beans.Individual;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
@@ -497,19 +499,25 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   
   public void toEraseArticulos(Articulo articulo) {
     int index= 0;
-    while (index< this.general.size()) {
-      if(Objects.equals(articulo.getIdArticulo(), this.general.get(index).getIdArticulo())) 
-        this.general.remove(index);
-      else
-        index++;
-    } // while
-    index= 0;
-    while (index< this.individual.size()) {
-      if(Objects.equals(articulo.getIdArticulo(), this.individual.get(index).getIdArticulo())) 
-        this.individual.remove(index);
-      else
-        index++;
-    } // while
+    try {  
+      while (index< this.general.size()) {
+        if(Objects.equals(articulo.getIdArticulo(), this.general.get(index).getIdArticulo())) 
+          this.general.remove(index);
+        else
+          index++;
+      } // while
+      index= 0;
+      while (index< this.individual.size()) {
+        if(Objects.equals(articulo.getIdArticulo(), this.individual.get(index).getIdArticulo())) 
+          this.individual.remove(index);
+        else
+          index++;
+      } // while
+      this.toDelete(articulo);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);   
+    } // catch	
   }
 
   private void toValuesGeneral() {
@@ -559,5 +567,29 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   public void setDetalles(List<Detalle> detalles) {
     this.detalles = detalles;
   }
-  
+
+  private void toDelete(Articulo articulo) throws Exception {
+    try { 
+      int index= 0;
+      while(index< this.getDetalles().size()) {
+        Detalle item= this.getDetalles().get(index);
+        if(Objects.equals(articulo.getIdArticulo(), item.getIdArticulo())) 
+          if(Objects.equals(item.getSql(), ESql.INSERT))
+            this.getDetalles().remove(index);
+          else {
+            item.setSql(ESql.DELETE);
+            item.setIdOrdenDetalle(null);
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            item.setObservaciones("SE ELIMINO DE FORMA AUTOMATICA");
+            index++;
+          } // else
+        else
+          index++;        
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
 }

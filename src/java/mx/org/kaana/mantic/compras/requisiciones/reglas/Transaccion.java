@@ -44,8 +44,12 @@ public class Transaccion extends IBaseTnx {
 	private List<Articulo> articulos;
 	private String messageError;	
 	private String justificacion;
-	private Long idClienteNuevo;
+	private Long idRequisicion;
 
+	public Transaccion(Long idRequisicion) {
+    this.idRequisicion= idRequisicion;
+  }
+  
 	public Transaccion(TcManticRequisicionesBitacoraDto bitacora) {
 		this.bitacora= bitacora;
 	} // Transaccion
@@ -75,8 +79,8 @@ public class Transaccion extends IBaseTnx {
 		this.messageError = messageError;
 	}	
 
-	public Long getIdClienteNuevo() {
-		return idClienteNuevo;
+	public Long getIdRequisicion() {
+		return idRequisicion;
 	}
 
 	public RegistroRequisicion getRequisicion() {
@@ -124,6 +128,9 @@ public class Transaccion extends IBaseTnx {
 				case COPIAR:
 					regresar= this.actualizarRequisicion(sesion, EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion());				
 					break;				
+				case GENERAR:
+          regresar= this.toClonar(sesion);
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -214,9 +221,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -235,7 +241,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private boolean registraRequisicionProveedor(Session sesion, Long idRequisicion) throws Exception{
+	private boolean registraRequisicionProveedor(Session sesion, Long idRequisicion) throws Exception {
 		TcManticRequisicionesProveedoresDto dto= null;
 		ESql sqlAccion  = null;		
 		int count       = 0;
@@ -269,13 +275,59 @@ public class Transaccion extends IBaseTnx {
 			this.messageError= "Error al registrar articulos de proveedor, verifique que no haya duplicados";
 		} // finally
 		return regresar;
-	} // registraRequisicionProveedor
+	} 
 	
-	private boolean registrar(Session sesion, IBaseDto dto) throws Exception{
+	private Boolean registrar(Session sesion, IBaseDto dto) throws Exception {
 		return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
 	} // registrar
 	
-	private boolean actualizar(Session sesion, IBaseDto dto) throws Exception{
+	private Boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
 		return DaoFactory.getInstance().update(sesion, dto) >= 1L;
 	} // actualizar
+
+	private Boolean toClonar(Session sesion) throws Exception {
+		Boolean regresar= Boolean.FALSE;
+		Siguiente consecutivo= null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			consecutivo= this.toSiguiente(sesion);
+      TcManticRequisicionesDto item= (TcManticRequisicionesDto)DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.idRequisicion);
+      TcManticRequisicionesDto clon= new TcManticRequisicionesDto(
+        item.getDescuentos(), //  Double descuentos, 
+        item.getIdProveedor(), // Long idProveedor, 
+        item.getIdDesarrollo(), // Long idDesarrollo, 
+        item.getDescuento(), // String descuento, 
+        1L, // Long idRequisicionEstatus, 
+        -1L, // Long idRequisicion, 
+        item.getIdSolicita(), // Long idSolicita, 
+        new Long(this.getCurrentYear()), // Long ejercicio, 
+        consecutivo.getConsecutivo(), // String consecutivo, 
+        item.getFechaPedido(), // LocalDate fechaPedido, 
+        item.getTotal(), // Double total, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        item.getImpuestos(), // Double impuestos, 
+        item.getSubTotal(), // Double subTotal, 
+        item.getObservaciones(), // String observaciones, 
+        item.getIdEmpresa(), // Long idEmpresa, 
+        item.getFechaEntregada(), // LocalDate fechaEntregada, 
+        consecutivo.getOrden(), // Long orden, 
+        item.getIdContrato(), // Long idContrato, 
+        item.getIdPrototipo(), // Long idPrototipo, 
+        item.getIdEnviar() //  Long idEnviar      
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, clon)> 0L;
+			params.put("idRequisicion", this.idRequisicion);
+			params.put("idClon", clon.getIdRequisicion());
+      DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesDetallesDto", "row", params);
+      this.idRequisicion= clon.getIdRequisicion();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} 
+  
 } 

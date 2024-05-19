@@ -353,6 +353,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+        this.attrs.put("idRequisicion", seleccionado.getKey());
         this.doLoad();
       } // if  
 			else
@@ -366,5 +367,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	
+
+	public void doClonar(Entity row) {
+    this.attrs.put("seleccionado", row);
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(row.toLong("idRequisicion"));
+			if(transaccion.ejecutar(EAccion.GENERAR)) {
+				JsfBase.addMessage("Clonar", "Se realizó la copia correctamente", ETipoMensaje.INFORMACION);
+        this.attrs.put("idRequisicion", transaccion.getIdRequisicion());
+        this.doLoad();
+      } // if  
+			else
+				JsfBase.addMessage("Clonar", "Ocurrio un error al copiar la requisición", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+  }
   
 }

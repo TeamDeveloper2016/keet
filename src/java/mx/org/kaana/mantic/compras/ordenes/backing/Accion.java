@@ -1420,6 +1420,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
         if(!Objects.equals(value.getSql(), ESql.INSERT)) {
           value.setSql(ESql.UPDATE);
+          value.setIdOrdenDetalle(null);
           value.setIdUsuario(JsfBase.getIdUsuario());
           value.setRegistro(LocalDateTime.now());
         } // if  

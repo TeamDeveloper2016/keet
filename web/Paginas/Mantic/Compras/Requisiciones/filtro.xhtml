@@ -133,9 +133,9 @@
 							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>	            
-            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -147,7 +147,7 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-						<p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.nombre}">
+						<p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Elaboró"/>
               </f:facet>
@@ -165,7 +165,7 @@
               </f:facet>
               <h:outputText value="#{row['detalle']}"/>
             </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-view-normal" sortBy="#{row.fecha}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-view-normal" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
@@ -177,14 +177,17 @@
               </f:facet>
               <h:graphicImage library="janal" name="icon/semaforos/#{row.eliminados.toLong() ne 0? 'circulo-azul': row.detalle.toLong() eq row.ordenes.toLong()? 'circulo-verde': row.ordenes.toLong() ne 0? 'circulo-amarillo': 'circulo-rojo'}.png" title="#{row.eliminados.toLong() ne 0? 'INCOMPLETA': row.detalle.toLong() eq row.ordenes.toLong()? 'COMPLETA': row.ordenes.toLong() ne 0? 'PARCIAL': 'INICIAL'}"/>
             </p:column>  
-            <p:column styleClass="MarAuto Responsive janal-wid-col-80 janal-column-center" exportable="false">
+            <p:column styleClass="MarAuto Responsive janal-wid-col-120 janal-column-center" exportable="false">
               <f:facet name="header">
                 <p:outputLabel value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-soundcloud" title="Solicitar" actionListener="#{manticComprasRequisicionesFiltro.doSolicitar(row)}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="@(.detalle)" rendered="#{row.idRequisicionEstatus eq '1'}">
+              <p:commandButton icon="fa fa-soundcloud" title="Solicitar" actionListener="#{manticComprasRequisicionesFiltro.doSolicitar(row)}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla" rendered="#{row.idRequisicionEstatus eq '1'}">
                 <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
               </p:commandButton>  
-              <p:commandButton icon="fa fa-search" title="Consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="@(.detalle)">
+              <p:commandButton icon="fa fa-copy" title="Clonar" action="#{manticComprasRequisicionesFiltro.doClonar(row)}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla">
+                <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
+              </p:commandButton>  
+              <p:commandButton icon="fa fa-search" title="Consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla">
                 <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
               </p:commandButton>  
             </p:column>  

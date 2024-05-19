@@ -687,7 +687,7 @@ public class Transaccion extends Inventarios implements Serializable {
   private void toUpdateDetalle(TcManticOrdenesDetallesDto value) throws Exception {
     try {      
       for (Detalle item: this.ordenProcess.getOrdenCompra().getDetalles()) {
-        if(Objects.equals(item.getIdArticulo(), value.getIdArticulo()) && Objects.equals(item.getIdOrdenDetalle(), null))
+        if(Objects.equals(item.getIdArticulo(), value.getIdArticulo()) && Objects.equals(item.getIdOrdenDetalle(), null) && Objects.equals(item.getIdEliminado(), 2L))
           item.setIdOrdenDetalle(value.getIdOrdenDetalle());
       } // for
     } // try

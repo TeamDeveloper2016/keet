@@ -143,9 +143,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetAnticiposDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
