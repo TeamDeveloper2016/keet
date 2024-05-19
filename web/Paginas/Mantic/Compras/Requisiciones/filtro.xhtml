@@ -135,53 +135,58 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Requisición"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombre}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Elaboró"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>	
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-view-normal" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.fechaPedido}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.detalle}">
               <f:facet name="header">
-                <h:outputText value="Pedido"/>
+                <h:outputText value="Partidas"/>
               </f:facet>
-              <h:outputText value="#{row['fechaPedido']}"/>
+              <h:outputText value="#{row['detalle']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.fechaEntregada}">
-              <f:facet name="header">
-                <h:outputText value="Entrega"/>
-              </f:facet>
-              <h:outputText value="#{row['fechaEntregada']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-view-normal" sortBy="#{row.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-2 janal-column-center">
+            <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">
                 <i class="fa fa-save"/>
               </f:facet>
               <h:graphicImage library="janal" name="icon/semaforos/#{row.eliminados.toLong() ne 0? 'circulo-azul': row.detalle.toLong() eq row.ordenes.toLong()? 'circulo-verde': row.ordenes.toLong() ne 0? 'circulo-amarillo': 'circulo-rojo'}.png" title="#{row.eliminados.toLong() ne 0? 'INCOMPLETA': row.detalle.toLong() eq row.ordenes.toLong()? 'COMPLETA': row.ordenes.toLong() ne 0? 'PARCIAL': 'INICIAL'}"/>
+            </p:column>  
+            <p:column styleClass="MarAuto Responsive janal-wid-col-80 janal-column-center" exportable="false">
+              <f:facet name="header">
+                <p:outputLabel value="..."/>
+              </f:facet>
+              <p:commandButton icon="fa fa-soundcloud" title="Solicitar" actionListener="#{manticComprasRequisicionesFiltro.doSolicitar(row)}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="@(.detalle)" rendered="#{row.idRequisicionEstatus eq '1'}">
+                <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
+              </p:commandButton>  
+              <p:commandButton icon="fa fa-search" title="Consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="@(.detalle)">
+                <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
+              </p:commandButton>  
             </p:column>  
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticComprasRequisicionesFiltro.lazyModel== null? 0: manticComprasRequisicionesFiltro.lazyModel.rowCount}] registros"/>

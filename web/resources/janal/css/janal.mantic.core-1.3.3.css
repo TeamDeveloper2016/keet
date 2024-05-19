@@ -459,7 +459,8 @@ div.ui-panelgrid-content {
 .margin-fecha {padding-left: 28px;}
 .xs-pantalla{display:none;}
 .lg-pantalla{display:contents;}
-.view-normal{}
+.janal-view-normal{}
+.janal-view-small{display: none}
 .fecha {
    font-size: 14px;
    font-weight: 100 !important;
@@ -507,7 +508,8 @@ div.ui-panelgrid-content {
   .janal-grid-row {}
   .xs-pantalla{display:inline;}
   .lg-pantalla{display: none;}
-  .view-normal{display: none;}
+  .janal-view-normal{display: none;}
+  .janal-view-small{}
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
   .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
   .margin-fecha {padding-left: 0px;}
@@ -640,7 +642,8 @@ div.ui-panelgrid-content {
   .janal-grid-row {}
   .xs-pantalla{display:inline;}
   .lg-pantalla{display: none;}
-  .view-normal{display: none;}
+  .janal-view-normal{display: none;}
+  .janal-view-small{}
   .janal-header-acronym {font-size: 22px;letter-spacing:.3em}
   .margin-fecha {padding-left: 0px;}
   .margin-desarrollo {margin-top: 0px !important;}

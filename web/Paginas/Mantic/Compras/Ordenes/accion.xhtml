@@ -34,9 +34,10 @@
 				'contenedorGrupos\\:tipoDeCambio'     : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},			
 				'contenedorGrupos\\:descuento'        : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:extra'            : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
-				'contenedorGrupos\\:observaciones'    : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'precios'                             : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
-				'cantidades'                          : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'precios'                             : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},				
+				'cantidades'                          : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}				
 			};	
 			
     	$(document).ready(function() {
@@ -865,31 +866,31 @@
                 </p:panelGrid>
               </p:panelGrid>
               <p:dataTable lazy="false" id="detalle" widgetVar="kajoolDetalle" styleClass="recalculo" var="row" value="#{manticComprasOrdendesAccion.detalles}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasOrdendesAccion.attrs.detalle}" selectionMode="single" paginator="false" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{manticComprasOrdendesAccion.toColor(row)}">
-								<p:column styleClass="MarAuto Responsive janal-fix-3 view-normal">
+								<p:column styleClass="MarAuto Responsive janal-fix-3 janal-view-normal">
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>		
-								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center view-normal">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center janal-view-normal">
 									<f:facet name="header">
 										<h:outputText value="Requisición"/>
 									</f:facet>
 									<p:outputLabel value="#{row['consecutivo']}"/>
 								</p:column>											
-								<p:column styleClass="MarAuto Responsive janal-wid-15 view-normal">
+								<p:column styleClass="MarAuto Responsive janal-wid-15 janal-view-normal">
 									<f:facet name="header">
 										<h:outputText value="Residente"/>
 									</f:facet>
 									<p:outputLabel value="#{row['residente']}"/>
 								</p:column>											
-								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 view-normal">
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 janal-view-normal">
 									<f:facet name="header">
 										<h:outputText value="Entrega"/>
 									</f:facet>
 									<p:outputLabel value="#{row['entrega']}"/>
 								</p:column>											
-								<p:column styleClass="MarAuto Responsive janal-wid-8 view-normal">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-view-normal">
 									<f:facet name="header">
 										<h:outputText value="Código"/>
 									</f:facet>
@@ -919,14 +920,14 @@
 									</f:facet>
 									<p:outputLabel value="#{row['estatus']}"/>
 								</p:column>																				
-                <p:column class="janal-wid-col-80 janal-column-center" exportable="false" rendered="#{manticComprasOrdendesAccion.attrs.idTodos eq 2}">	
+                <p:column styleClass="janal-wid-col-80 janal-column-center" exportable="false" rendered="#{manticComprasOrdendesAccion.attrs.idTodos eq 2}">	
                   <f:facet name="header">
                     <p:outputLabel value="..." styleClass="xs-pantalla"/>
                   </f:facet>
-                  <p:commandButton icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doEliminar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{false and manticComprasOrdendesAccion.doView(row, 1)}">
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doEliminar(row)}" process="@this tabla contenedorGrupos:comentarios" oncomplete="janal.refresh(); janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 1)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
-                  <p:commandButton icon="fa fa-refresh" title="Recuperar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doRecuperar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{false and manticComprasOrdendesAccion.doView(row, 2)}">
+                  <p:commandButton icon="fa fa-refresh" title="Recuperar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doRecuperar(row)}" process="@this tabla contenedorGrupos:comentarios" oncomplete="janal.refresh(); janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 2)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
                   <p:commandButton icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doAgregar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 3)}">
@@ -935,12 +936,18 @@
                   <p:commandButton icon="fa fa-minus" title="Quitar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doQuitar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 4)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
+                  <p:commandLink actionListener="#{manticComprasOrdendesAccion.doMessage(row)}" process="@this contenedorGrupos:comentarios" update="contenedorGrupos:detalle" rendered="#{manticComprasOrdendesAccion.doView(row, 2)}" oncomplete="janal.refresh()"> 
+                    <i class="fa fa-comments-o janal-float-right" style="display:#{manticComprasOrdendesAccion.doView(row, 2)? '': 'none'}" title="#{row['observaciones']}"></i>
+                  </p:commandLink>
                 </p:column>
 								<f:facet name="footer">
     							<p:outputLabel value="Las filas en color estan asociadas a la orden de compra activa" styleClass="janal-float-left"/>
                   <p:outputLabel value="Total [#{manticComprasOrdendesAccion.detalles== null? 0: manticComprasOrdendesAccion.detalles.size()}] registros"/>
 								</f:facet>
-							</p:dataTable>	
+							</p:dataTable>
+              <br/>
+    					<p:outputLabel for="comentarios" value="Porque se elimina la partida:"/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="recalculo janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.comentarios}"/>
               <p:remoteCommand name="reloadResidentes" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:idResidente" oncomplete="janal.desbloquear();"/>
             </p:tab>  
 						<p:tab title="Observaciones">

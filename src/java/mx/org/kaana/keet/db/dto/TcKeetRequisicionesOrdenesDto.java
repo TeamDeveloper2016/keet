@@ -49,7 +49,7 @@ public class TcKeetRequisicionesOrdenesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetRequisicionesOrdenesDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null);
+    this(null, 2L, null, null, new Long(-1L), null);
     setKey(key);
   }
 

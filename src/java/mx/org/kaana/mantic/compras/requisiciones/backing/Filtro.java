@@ -100,7 +100,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Requisiciones/filtro");		
-			JsfBase.setFlashAttribute("idRequisicion", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idRequisicion", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -111,10 +111,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public void doEliminar() {
 		Transaccion transaccion        = null;
-		Entity seleccionado            = null;
+		Entity seleccionado            = (Entity) this.attrs.get("seleccionado");
 		RegistroRequisicion requisicion= null;
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()), new ArrayList<>());
 			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
@@ -242,10 +241,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>parametros= null;
     Map<String, Object>params    = null;
 		EReportes reporteSeleccion   = null;
-    Entity seleccionado          = null;
+    Entity seleccionado          = ((Entity)this.attrs.get("seleccionado"));
 		try{		
       params= this.toPrepare();	
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
       if(seleccionado != null)
         params.put("idRequisicion", seleccionado.getKey());
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
@@ -273,12 +271,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>parametros       = new HashMap<>();
     Map<String, Object>params           = null;
 		EReportes reporteSeleccion          = null;
-    Entity seleccionado                 = null;   
+    Entity seleccionado                 = ((Entity)this.attrs.get("seleccionado"));   
     List<Definicion> definiciones       = new ArrayList<Definicion>();
     List<Entity> proveedores            = new ArrayList<>();
 		try {
       params= this.toPrepare();	
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
       if(seleccionado != null)
         params.put("idRequisicion", seleccionado.getKey());
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
@@ -322,11 +319,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} 
 	
 	public void doLoadEstatus(){
-		Entity seleccionado          = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
 		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params.put(Constantes.SQL_CONDICION, "id_requisicion_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticRequisicionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -341,16 +337,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} 
 	
+	public void doSolicitar(Entity row) {
+    this.attrs.put("seleccionado", row);
+    this.attrs.put("justificacion", "CAMBIO AUTOMATICO");
+    this.attrs.put("estatus", "2");
+    this.doActualizarEstatus();
+  }
+  
 	public void doActualizarEstatus() {
 		Transaccion transaccion                  = null;
 		TcManticRequisicionesBitacoraDto bitacora= null;
-		Entity seleccionado                      = null;
+		Entity seleccionado                      = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora= new TcManticRequisicionesBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey());
 			transaccion= new Transaccion(bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+        this.doLoad();
+      } // if  
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try

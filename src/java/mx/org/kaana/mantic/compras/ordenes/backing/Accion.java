@@ -33,6 +33,7 @@ import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -382,6 +383,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
 				this.getAdminOrden().getArticulos().clear();
+        this.toCleanDetalles();
   			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.getAdminOrden().toCalculate();
 			} // if	
@@ -440,6 +442,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
   		this.getAdminOrden().getArticulos().clear();
+      this.toCleanDetalles();
 			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 			this.getAdminOrden().toCalculate();
 		} // if	
@@ -457,6 +460,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         } // if
         else {
           this.getAdminOrden().getArticulos().clear();
+          this.toCleanDetalles();
           UIBackingUtilities.execute("janal.show([{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
           // UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote'},{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
         } // else			
@@ -544,6 +548,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
           if(articulos!= null && !articulos.isEmpty()){
             this.getAdminOrden().getArticulos().clear();
+            this.toCleanDetalles();
             for (Entity articulo : articulos) {
               this.getAdminOrden().getArticulos().add(count, new Articulo(articulo.getKey()));
               this.toMoveDataArticulo(new UISelectEntity(articulo), count++);
@@ -980,6 +985,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  
   public void doEraseArticulos() {
     this.getAdminOrden().getArticulos().clear();
+    this.toCleanDetalles();
     if(this.getAdminOrden().getArticulos().size()> 0)
       this.getAdminOrden().toCalculate();
     ((OrdenCompra)this.getAdminOrden().getOrden()).toCleanPartidas();
@@ -1250,12 +1256,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-6);
+      sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(periodo.toString()).append("') and ");
       if(!Objects.equals(residente.getKey(), -1L))
         sb.append("(tc_mantic_requisiciones.id_solicita= ").append(residente.getKey()).append(") and ");
       if(todos)
         sb.append(Constantes.SQL_VERDADERO).append(" and ");
       else  
-        sb.append("(tc_keet_requisiciones_ordenes.id_requisicion_orden is null or tc_keet_requisiciones_ordenes.id_eliminado= 1) and ");
+        sb.append("(tc_keet_requisiciones_ordenes.id_requisicion_orden is null) and ");
       sb.delete(sb.length()- 4, sb.length());
       if(((OrdenCompra)this.getAdminOrden().getOrden()).isValid())
         sb.append(" or (tc_mantic_ordenes_detalles.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
@@ -1263,6 +1272,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.detalles= (List<Detalle>)DaoFactory.getInstance().toEntitySet(Detalle.class, "VistaRequisicionesDto", "detalle", params);
       if(Objects.equals(this.detalles, null))
         this.detalles= new ArrayList<>();
+      else {
+        for (Detalle item: this.detalles) {
+          int index= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(item);
+          if(index>= 0) {
+            Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
+            if(Objects.equals(value.getIdEliminado(), 1L)) {
+              item.setIdEliminado(value.getIdEliminado());
+              item.setObservaciones(value.getObservaciones());
+            } // if  
+          } // if
+        } // for
+      } // else 
       UIBackingUtilities.resetDataTable("detalle");
     } // try
     catch (Exception e) {
@@ -1362,7 +1383,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         // AGREGAR ESTA REQUISICION DETALLE A LA LISTA
         position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
         if(position>= 0) {
-          Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
+          Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
           if(Objects.equals(value.getSql(), ESql.DELETE))
             value.setSql(ESql.SELECT);
         } // if
@@ -1394,7 +1415,30 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
   public void doEliminar(Detalle row) {
     try {
-      
+      int position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+      if(position>= 0) {
+        Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
+        if(!Objects.equals(value.getSql(), ESql.INSERT)) {
+          value.setSql(ESql.UPDATE);
+          value.setIdUsuario(JsfBase.getIdUsuario());
+          value.setRegistro(LocalDateTime.now());
+        } // if  
+      } // if
+      else {
+        Detalle item= new Detalle();
+        item.setSql(ESql.INSERT);
+        item.setId(row.getIdRequisicionDetalle());
+        item.setIdRequisicionDetalle(row.getIdRequisicionDetalle());
+        item.setIdOrdenCompra(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+        item.setIdArticulo(row.getIdArticulo());
+        item.setIdEliminado(1L);
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setObservaciones((String)this.attrs.get("comentarios"));
+        ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().add(item);
+      } // else 
+      row.setIdEliminado(1L);
+      row.setObservaciones((String)this.attrs.get("comentarios"));
+      this.attrs.put("comentarios", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1404,7 +1448,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   
   public void doRecuperar(Detalle row) {
     try {
-      
+      int position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+      if(position>= 0) {
+        Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
+        if(Objects.equals(value.getSql(), ESql.INSERT))
+          ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().remove(position);
+        else {
+          value.setSql(ESql.UPDATE);
+          value.setIdEliminado(2L);
+          value.setIdUsuario(JsfBase.getIdUsuario());
+          value.setRegistro(LocalDateTime.now());
+        } // else 
+        row.setIdEliminado(2L);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1415,36 +1471,56 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public Boolean doView(Detalle row, Integer boton) {
     Boolean regresar= Objects.equals((Long)this.attrs.get("idTodos"), 2L);
     if(regresar) {
-      Boolean existe  = this.toFindPartida(row);
+      Detalle existe= this.toFindPartida(row);
       switch(boton) {
         case 1: // eliminar
-          regresar= Objects.equals(row.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "");
+          regresar= Objects.equals(existe.getId(), -1L) && Objects.equals(row.getIdEliminado(), 2L);
           break;
         case 2: // recuperar
           regresar= Objects.equals(row.getIdEliminado(), 1L);
           break;
         case 3: // agregar
-          regresar= Objects.equals(row.getFolio(), "") && !existe;
+          regresar= Objects.equals(existe.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "") && Objects.equals(existe.getId(), -1L);
           break;
         case 4: // quitar
-          regresar= Objects.equals(row.getFolio(), "") && existe;
+          regresar= Objects.equals(existe.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "") && !Objects.equals(existe.getId(), -1L);
           break;
       } // switch
     } // if  
     return regresar; 
   }
   
-  private Boolean toFindPartida(Detalle row) {
-    Boolean regresar= Boolean.FALSE;
-    for (Detalle item: ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles()) {
-      regresar= Objects.equals(item.getIdRequisicionDetalle(), row.getIdRequisicionDetalle());
-      if(regresar)
-        break;
-    } // for
+  private Detalle toFindPartida(Detalle row) {
+    Detalle regresar= new Detalle();
+    int index= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+    if(index>= 0)
+      regresar= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
     return regresar;
   } 
 	public String toColor(Detalle row) {
 		return !Objects.equals(row.getIdOrdenCompra(), -1L) && Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())? "janal-tr-diferencias": "";
 	} 
+ 
+  private void toCleanDetalles() {
+    int index= 0;
+    while(index< ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().size()) {
+      Detalle item= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
+      if(Objects.equals(item.getSql(), ESql.INSERT))
+        ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().remove(index);
+      else {
+        item.setSql(ESql.DELETE);
+        index++;
+      } // else
+    } // while
+  } 
+  
+  public void doMessage(Detalle row) {
+    row.setObservaciones((String)this.attrs.get("comentarios"));
+    int position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
+    if(position>= 0) {
+      Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
+      value.setObservaciones((String)this.attrs.get("comentarios"));
+    } // if 
+  }
   
 }

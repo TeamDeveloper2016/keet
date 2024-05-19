@@ -275,7 +275,7 @@ public class Transaccion extends Inventarios implements Serializable {
 
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaOrdenesComprasDto", "detalle", this.orden.toMap());
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
       for (Articulo item: todos) 
         if(this.articulos.indexOf(item)< 0)
@@ -289,6 +289,7 @@ public class Transaccion extends Inventarios implements Serializable {
           else
             if(articulo.isModificado())
               DaoFactory.getInstance().update(sesion, item);
+          this.toUpdateDetalle(item);
           params.put("idArticulo", articulo.getIdArticulo());      
           params.put("idEmpresa", this.orden.getIdEmpresa());      
           params.put("precio", articulo.getCosto());      
@@ -683,4 +684,16 @@ public class Transaccion extends Inventarios implements Serializable {
     } // finally
   }
 
+  private void toUpdateDetalle(TcManticOrdenesDetallesDto value) throws Exception {
+    try {      
+      for (Detalle item: this.ordenProcess.getOrdenCompra().getDetalles()) {
+        if(Objects.equals(item.getIdArticulo(), value.getIdArticulo()) && Objects.equals(item.getIdOrdenDetalle(), null))
+          item.setIdOrdenDetalle(value.getIdOrdenDetalle());
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
 } 

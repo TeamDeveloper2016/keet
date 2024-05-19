@@ -96,7 +96,11 @@ public class Accion extends IBaseArticulos implements Serializable {
         case MODIFICAR:			
         case CONSULTAR:	
 					this.registroRequisicion= new RegistroRequisicion((Long)this.attrs.get("idRequisicion"));					
-          this.setAdminOrden(new AdminTickets((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
+          this.setAdminOrden(new AdminTickets((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));
+          if(Objects.equals(this.accion, EAccion.CONSULTAR)) {
+            this.getAdminOrden().getArticulos().remove(this.getAdminOrden().getArticulos().size()- 1);
+            this.getAdminOrden().getTotales().setArticulos(this.getAdminOrden().getTotales().getArticulos()- 1);
+          } // this  
           break;
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -203,7 +207,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
-		Articulo temporal= getAdminOrden().getArticulos().get(index);
+		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
 		try {
 			if(articulo.size()> 1) {
