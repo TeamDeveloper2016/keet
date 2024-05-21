@@ -2024,39 +2024,83 @@ delete from tc_mantic_requisiciones_detalles where id_requisicion= {idRequisicio
     </unit>
 		<unit id="TcManticRequisicionesDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_requisiciones
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_mantic_requisiciones
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_requisiciones
-        where      
-          consecutivo = '{consecutivo}' and id_requisicion = {idRequisicion}
+select      
+  *
+from      
+  tc_mantic_requisiciones
+where      
+  consecutivo = '{consecutivo}'
       </select>    
 			<select id="siguiente">
-        select
-					max(orden)+ 1 as siguiente
-				from 
-					tc_mantic_requisiciones
-				where
-				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}	
-				  and orden{operador} 900000			
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_mantic_requisiciones
+where
+  ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}	
+  and orden{operador} 900000			
 			</select>	
 			<select id="detalle">
-        select      
-				  *
-        from      
-          tc_mantic_requisiciones
-        where 
-          id_requisicion = {idRequisicion}
+select      
+  *
+from      
+  tc_mantic_requisiciones
+where 
+  id_requisicion = {idRequisicion}
       </select>
+      <update id="completa">
+update
+  tc_mantic_requisiciones
+inner join ( 
+	select
+		tc_mantic_requisiciones.id_requisicion
+	from
+		tc_mantic_requisiciones
+	inner join  
+		tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+	left join 
+		tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+	where
+		tc_mantic_requisiciones.id_requisicion_estatus= 2
+	group by
+		tc_mantic_requisiciones.id_requisicion
+	having 
+		count(distinct(tc_mantic_requisiciones_detalles.id_requisicion_detalle))= count(distinct(tc_keet_requisiciones_ordenes.id_requisicion_detalle))
+) as tt_mantic_requisiciones on tt_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones.id_requisicion
+set
+	tc_mantic_requisiciones.id_requisicion_estatus= 5        
+      </update>
+      <update id="solicitada">
+update
+  tc_mantic_requisiciones
+inner join ( 
+	select
+		tc_mantic_requisiciones.id_requisicion
+	from
+		tc_mantic_requisiciones
+	inner join  
+		tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+	left join 
+		tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+	where
+		tc_mantic_requisiciones.id_requisicion_estatus= 5
+	group by
+		tc_mantic_requisiciones.id_requisicion
+	having 
+		count(distinct(tc_mantic_requisiciones_detalles.id_requisicion_detalle))!= count(distinct(tc_keet_requisiciones_ordenes.id_requisicion_detalle))
+) as tt_mantic_requisiciones on tt_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones.id_requisicion
+set
+	tc_mantic_requisiciones.id_requisicion_estatus= 2        
+      </update>
     </unit>
 		<unit id="TcManticRespaldosDto">
       <select id="row">

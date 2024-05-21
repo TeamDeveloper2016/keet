@@ -957,15 +957,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			transaccion= new Transaccion(orden);
 	  		this.getAdminOrden().toAdjustArticulos();
         if (transaccion.ejecutar(this.accion)) {
+          this.attrs.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
           if(this.accion.equals(EAccion.AGREGAR)) {
-            regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+            regresar = this.doCancelar();
             UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
           } // if	
           else
             this.getAdminOrden().toStartCalculate();
           if(!this.accion.equals(EAccion.CONSULTAR)) 
             JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
-          JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          // VERIFICAR SI YA ESTAN COMPLETA LAS REQUISICIONES Y CAMBIARLES EL ESTATUS A COTIZADAS
+          transaccion.ejecutar(EAccion.MOVIMIENTOS);
         } // if
         else 
           JsfBase.addMessage("Ocurrió un error al registrar la orden de compra", ETipoMensaje.ALERTA);      			
@@ -979,7 +981,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } 
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+  	JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
  
@@ -1258,7 +1260,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
       Periodo periodo= new Periodo();
       periodo.addMeses(-6);
-      sb.append("(tc_mantic_requisiciones.id_requisicion_estatus= 2) and ");
+      sb.append("(tc_mantic_requisiciones.id_requisicion_estatus in (2, 5)) and ");
       sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(periodo.toString()).append("') and ");
       if(!Objects.equals(residente.getKey(), -1L))
         sb.append("(tc_mantic_requisiciones.id_solicita= ").append(residente.getKey()).append(") and ");
