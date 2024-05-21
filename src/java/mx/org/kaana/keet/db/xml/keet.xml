@@ -22,7 +22,7 @@ select
 from      
   tc_keet_requisiciones_ordenes
 where      
-  id_requisicion_detalle = {idRequisicionDetalle} and id_orden_detalle = {idOrdenDetalle} 
+  id_requisicion_detalle = {idRequisicionDetalle} and id_orden_compra = {idOrdenCompra} 
       </select>
     </unit>    
     <unit id="TcKeetNominasContratosDto">

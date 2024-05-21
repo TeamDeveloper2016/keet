@@ -265,7 +265,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     Map<String, Object> params= new HashMap<>();
     try {      
       Methods.clean(this.general);
-      if(!Objects.equals(idContrato, -1L)) {
+      if(!Objects.equals(idContrato, -1L) && articulos.length()> 0) {
         params.put("idContrato", idContrato);      
         params.put("articulos", articulos);      
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
@@ -289,7 +289,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     Map<String, Object> params= new HashMap<>();
     try {    
       Methods.clean(this.individual);
-      if(!Objects.equals(idContrato, -1L)) {
+      if(!Objects.equals(idContrato, -1L) && articulos.length()> 0) {
         params.put("idContrato", idContrato);      
         params.put("articulos", articulos);      
         params.put(Constantes.SQL_CONDICION, "(tt_keet_contratos_lotes.id_contrato_lote in (".concat(lotes).concat("))"));      
@@ -310,7 +310,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 
   public void toLoadTemporal() {
     Map<String, Object> params= new HashMap<>();
-    StringBuilder articulos   = new StringBuilder(",");
+    StringBuilder articulos   = new StringBuilder("");
     StringBuilder lotes       = new StringBuilder(",");
     try {
       if(this.isValid()) {
@@ -320,16 +320,16 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
           this.temporal= new ArrayList<>();
         else {
           for (Individual item: this.temporal) {
-            if(articulos.indexOf(","+ item.getIdArticulo()+",")< 0)
+            if(articulos.indexOf(","+ item.getIdArticulo()+ ",")< 0)
               articulos.append(item.getIdArticulo()).append(",");
             if(!Objects.equals(item.getIdContratoLote(), null) && !Objects.equals(item.getIdContratoLote(), -1L))
-              if(lotes.indexOf(","+ item.getIdContratoLote()+",")< 0)
+              if(lotes.indexOf(","+ item.getIdContratoLote()+ ",")< 0)
                 lotes.append(item.getIdContratoLote()).append(",");
           } // for
           if(lotes.length()> 1)
-            this.toLoadArticulos(articulos.substring(1, articulos.length()- 1), lotes.substring(1, lotes.length()- 1));
+            this.toLoadArticulos(articulos.length()> 0? articulos.substring(0, articulos.length()- 1): "", lotes.substring(1, lotes.length()- 1));
           else
-            this.toLoadArticulos(articulos.substring(1, articulos.length()- 1));
+            this.toLoadArticulos(articulos.length()> 0? articulos.substring(0, articulos.length()- 1): "");
         } // if
       } // if  
     } // try
@@ -578,7 +578,6 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
             this.getDetalles().remove(index);
           else {
             item.setSql(ESql.DELETE);
-            item.setIdOrdenDetalle(null);
             item.setIdUsuario(JsfBase.getIdUsuario());
             item.setObservaciones("SE ELIMINO DE FORMA AUTOMATICA");
             index++;

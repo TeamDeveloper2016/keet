@@ -33,12 +33,11 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
       0D, // Double cantidad, 
       null, // String estatus, 
       -1L, // Long idArticulo
-      -1L, // Long idOrdenCompra
       ESql.SELECT // ESql sql
     );
   }
 
-  public Detalle(Long id, String consecutivo, String residente, String entrega, String propio, String nombre, Double cantidad, String estatus, Long idArticulo, Long idOrdenCompra, ESql sql) {
+  public Detalle(Long id, String consecutivo, String residente, String entrega, String propio, String nombre, Double cantidad, String estatus, Long idArticulo, ESql sql) {
     super(id);
     this.id = id;
     this.consecutivo = consecutivo;
@@ -49,7 +48,6 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
     this.cantidad = cantidad;
     this.estatus = estatus;
     this.idArticulo= idArticulo; 
-    this.idOrdenCompra= idOrdenCompra; 
     this.sql = sql;
   }
 
@@ -133,14 +131,6 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
     this.idArticulo = idArticulo;
   }
 
-  public Long getIdOrdenCompra() {
-    return idOrdenCompra;
-  }
-
-  public void setIdOrdenCompra(Long idOrdenCompra) {
-    this.idOrdenCompra = idOrdenCompra;
-  }
-
   public ESql getSql() {
     return sql;
   }
@@ -176,7 +166,7 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
 
   @Override
   public String toString() {
-    return "Detalle{" + "id=" + id + ", consecutivo=" + consecutivo + ", residente=" + residente + ", entrega=" + entrega + ", propio=" + propio + ", nombre=" + nombre + ", cantidad=" + cantidad + ", folio=" + folio + ", estatus=" + estatus + ", idArticulo=" + idArticulo + ", idOrdenCompra=" + idOrdenCompra + ", sql=" + sql + '}';
+    return "Detalle{" + "id=" + id + ", consecutivo=" + consecutivo + ", residente=" + residente + ", entrega=" + entrega + ", propio=" + propio + ", nombre=" + nombre + ", cantidad=" + cantidad + ", folio=" + folio + ", estatus=" + estatus + ", idArticulo=" + idArticulo + ", sql=" + sql + '}';
   }
 
   @Override

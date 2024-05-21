@@ -9183,7 +9183,7 @@ select
   round(tc_mantic_requisiciones_detalles.cantidad, 2) as cantidad,
   tc_keet_requisiciones_ordenes.id_requisicion_orden,
   tc_mantic_requisiciones_detalles.id_requisicion_detalle,
-  tc_keet_requisiciones_ordenes.id_orden_detalle,
+  tc_keet_requisiciones_ordenes.id_orden_compra,
   tc_mantic_requisiciones_detalles.id_articulo,
   ifnull(tc_keet_requisiciones_ordenes.id_eliminado, 2) as id_eliminado,
   tc_keet_requisiciones_ordenes.observaciones,
@@ -9202,9 +9202,7 @@ inner join
 left join 
   tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
 left join 
-  tc_mantic_ordenes_detalles on tc_keet_requisiciones_ordenes.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
-left join 
-  tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+  tc_mantic_ordenes_compras on tc_keet_requisiciones_ordenes.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
 left join 
   tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus        
 where
@@ -9213,7 +9211,8 @@ where
   and (tc_mantic_requisiciones.id_contrato= {idContrato} or {idContrato}= -1)
   and {condicion}
 group by
-  tc_mantic_requisiciones_detalles.id_requisicion_detalle        
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle 
+{sortOrder}               
       </select>  
 			<select id="igual">
 select
@@ -9228,11 +9227,9 @@ inner join
 left join 
   tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
 left join 
-  tc_mantic_ordenes_detalles on tc_keet_requisiciones_ordenes.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
-left join 
-  tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+  tc_mantic_ordenes_compras on tc_keet_requisiciones_ordenes.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
 where
-  tc_mantic_ordenes_detalles.id_orden_compra= {idOrdenCompra}
+  tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
 group by
   tc_mantic_requisiciones_detalles.id_requisicion_detalle        
       </select>  
@@ -9264,6 +9261,8 @@ select
   tc_mantic_requisiciones.id_empresa,  
   tc_mantic_empresas.clave as empresa,  
   tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.nombre as contrato,
   tc_mantic_requisiciones.consecutivo,  															
   tc_mantic_requisiciones_estatus.nombre as estatus,
   tc_mantic_requisiciones.id_requisicion_estatus,
@@ -9281,6 +9280,10 @@ from
   tc_mantic_requisiciones				
 inner join 
   tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_desarrollos on tc_mantic_requisiciones.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join 
+  tc_keet_contratos on tc_mantic_requisiciones.id_contrato= tc_keet_contratos.id_contrato
 inner join 
   tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
 left join 

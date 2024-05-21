@@ -1252,7 +1252,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     UISelectEntity residente  = (UISelectEntity)this.attrs.get("idResidente");
     StringBuilder sb          = new StringBuilder();
     try {
-      params.put("sortOrder", "order by tc_mantic_requisiciones.registro");
+      params.put("sortOrder", "order by tc_mantic_requisiciones_detalles.id_requisicion_detalle");
       params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
@@ -1267,7 +1267,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         sb.append("(tc_keet_requisiciones_ordenes.id_requisicion_orden is null) and ");
       sb.delete(sb.length()- 4, sb.length());
       if(((OrdenCompra)this.getAdminOrden().getOrden()).isValid())
-        sb.append(" or (tc_mantic_ordenes_detalles.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
+        sb.append(" or (tc_mantic_ordenes_compras.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
       params.put(Constantes.SQL_CONDICION, sb.toString());
       this.detalles= (List<Detalle>)DaoFactory.getInstance().toEntitySet(Detalle.class, "VistaRequisicionesDto", "detalle", params);
       if(Objects.equals(this.detalles, null))
@@ -1328,12 +1328,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         // DECREMENTAR EL VALOR DE CANTIDAD
         Double value= this.getAdminOrden().getArticulos().get(position).getCantidad()- row.getCantidad();
         this.getAdminOrden().getArticulos().get(position).setCantidad(value);
-        
         int index= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
         if(index>= 0) {
           Detalle item= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
-          if(Objects.equals(item.getSql(), ESql.SELECT))
+          if(Objects.equals(item.getSql(), ESql.SELECT) || Objects.equals(item.getSql(), ESql.UPDATE)) {
             item.setSql(ESql.DELETE);
+            item.setIdRequisicionDetalle(-1L);
+          } // if  
           else  
             ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().remove(index);
         } // if  
@@ -1384,8 +1385,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         position= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(row);
         if(position>= 0) {
           Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
-          if(Objects.equals(value.getSql(), ESql.DELETE))
-            value.setSql(ESql.SELECT);
+          if(Objects.equals(value.getSql(), ESql.DELETE)) {
+            value.setSql(ESql.UPDATE);
+            value.setIdRequisicionDetalle(row.getIdRequisicionDetalle());
+          } // if  
         } // if
         else {
           Detalle item= new Detalle();
@@ -1420,9 +1423,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(position);
         if(!Objects.equals(value.getSql(), ESql.INSERT)) {
           value.setSql(ESql.UPDATE);
-          value.setIdOrdenDetalle(null);
-          value.setIdUsuario(JsfBase.getIdUsuario());
-          value.setRegistro(LocalDateTime.now());
+          value.setIdRequisicionDetalle(row.getIdRequisicionDetalle());
+          value.setIdEliminado(1L);
         } // if  
       } // if
       else {
@@ -1439,7 +1441,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // else 
       row.setIdEliminado(1L);
       row.setObservaciones((String)this.attrs.get("comentarios"));
-      this.attrs.put("comentarios", null);
+      // this.attrs.put("comentarios", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1455,10 +1457,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         if(Objects.equals(value.getSql(), ESql.INSERT))
           ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().remove(position);
         else {
-          value.setSql(ESql.UPDATE);
+          value.setSql(ESql.DELETE);
+          value.setIdRequisicionDetalle(-1L);
           value.setIdEliminado(2L);
-          value.setIdUsuario(JsfBase.getIdUsuario());
-          value.setRegistro(LocalDateTime.now());
         } // else 
         row.setIdEliminado(2L);
       } // if  
@@ -1475,16 +1476,25 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Detalle existe= this.toFindPartida(row);
       switch(boton) {
         case 1: // eliminar
-          regresar= Objects.equals(existe.getId(), -1L) && Objects.equals(row.getIdEliminado(), 2L);
+          regresar= Objects.equals(existe.getIdRequisicionDetalle(), -1L) && Objects.equals(row.getIdEliminado(), 2L);
           break;
         case 2: // recuperar
           regresar= Objects.equals(row.getIdEliminado(), 1L);
           break;
         case 3: // agregar
-          regresar= Objects.equals(existe.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "") && Objects.equals(existe.getId(), -1L);
+          regresar= Objects.equals(existe.getIdEliminado(), 2L) && 
+                  (
+                    (Objects.equals(row.getFolio(), "") || Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())) &&
+                    (Objects.equals(existe.getIdRequisicionDetalle(), -1L))
+                  );
+          
           break;
         case 4: // quitar
-          regresar= Objects.equals(existe.getIdEliminado(), 2L) && Objects.equals(row.getFolio(), "") && !Objects.equals(existe.getId(), -1L);
+          regresar= Objects.equals(existe.getIdEliminado(), 2L) && 
+                  (
+                   (Objects.equals(row.getFolio(), "") || Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())) &&
+                   (!Objects.equals(existe.getIdRequisicionDetalle(), -1L))
+                  );
           break;
       } // switch
     } // if  
@@ -1498,6 +1508,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       regresar= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
     return regresar;
   } 
+  
 	public String toColor(Detalle row) {
 		return !Objects.equals(row.getIdOrdenCompra(), -1L) && Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())? "janal-tr-diferencias": "";
 	} 

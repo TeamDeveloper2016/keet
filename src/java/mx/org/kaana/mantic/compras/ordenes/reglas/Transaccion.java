@@ -289,7 +289,6 @@ public class Transaccion extends Inventarios implements Serializable {
           else
             if(articulo.isModificado())
               DaoFactory.getInstance().update(sesion, item);
-          this.toUpdateDetalle(item);
           params.put("idArticulo", articulo.getIdArticulo());      
           params.put("idEmpresa", this.orden.getIdEmpresa());      
           params.put("precio", articulo.getCosto());      
@@ -665,9 +664,11 @@ public class Transaccion extends Inventarios implements Serializable {
         switch(item.getSql()) {
           case INSERT:
             item.setIdUsuario(JsfBase.getIdUsuario());
+            item.setIdOrdenCompra(this.ordenProcess.getOrdenCompra().getIdOrdenCompra());
             DaoFactory.getInstance().insert(sesion, item);
             break;
           case UPDATE:
+            item.setIdUsuario(JsfBase.getIdUsuario());
             item.setRegistro(LocalDateTime.now());
             DaoFactory.getInstance().update(sesion, item);
             break;
@@ -682,18 +683,6 @@ public class Transaccion extends Inventarios implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-  }
-
-  private void toUpdateDetalle(TcManticOrdenesDetallesDto value) throws Exception {
-    try {      
-      for (Detalle item: this.ordenProcess.getOrdenCompra().getDetalles()) {
-        if(Objects.equals(item.getIdArticulo(), value.getIdArticulo()) && Objects.equals(item.getIdOrdenDetalle(), null) && Objects.equals(item.getIdEliminado(), 2L))
-          item.setIdOrdenDetalle(value.getIdOrdenDetalle());
-      } // for
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch	
   }
   
 } 

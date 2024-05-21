@@ -147,6 +147,18 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['contrato']}"/>
+            </p:column>		
 						<p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Elaboró"/>
@@ -159,7 +171,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.detalle}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.detalle}">
               <f:facet name="header">
                 <h:outputText value="Partidas"/>
               </f:facet>
@@ -204,7 +216,7 @@
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
             <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />					
-            <p:menuitem id="reporteProv" icon="fa fa-file-word-o" value="Proveedores" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" />
+            <p:menuitem id="reporteProv" icon="fa fa-file-word-o" value="Proveedores" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
           </p:contextMenu>
         </div>
       </div>

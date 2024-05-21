@@ -841,7 +841,7 @@
                 </p:dataTable>  
               </p:panelGrid>  
 						</p:tab>
-            <p:tab title="Requisiciones" titleStyle="display:none">
+            <p:tab title="Requisiciones">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">		
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
                   <p:outputLabel for="idResidente" value="Residente(s):"/>
@@ -927,13 +927,13 @@
                   <p:commandButton icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doEliminar(row)}" process="@this tabla contenedorGrupos:comentarios" oncomplete="janal.refresh(); janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 1)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
-                  <p:commandButton icon="fa fa-refresh" title="Recuperar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doRecuperar(row)}" process="@this tabla contenedorGrupos:comentarios" oncomplete="janal.refresh(); janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 2)}">
+                  <p:commandButton icon="fa fa-refresh" title="Recuperar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doRecuperar(row)}" process="@this tabla contenedorGrupos:comentarios" oncomplete="janal.desbloquear();janal.refresh()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 2)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
-                  <p:commandButton icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doAgregar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 3)}">
+                  <p:commandButton icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doAgregar(row)}" process="@this tabla" oncomplete="janal.desbloquear();janal.refresh()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 3)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
-                  <p:commandButton icon="fa fa-minus" title="Quitar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doQuitar(row)}" process="@this tabla" oncomplete="janal.desbloquear()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 4)}">
+                  <p:commandButton icon="fa fa-minus" title="Quitar" onstart="return janal.bloquear()" actionListener="#{manticComprasOrdendesAccion.doQuitar(row)}" process="@this tabla" oncomplete="janal.desbloquear();janal.refresh()" update="@(.detalle) @(.recalculo) contenedorGrupos:datosArticulos contenedorGrupos:registros" rendered="#{manticComprasOrdendesAccion.doView(row, 4)}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
                   </p:commandButton>  
                   <p:commandLink actionListener="#{manticComprasOrdendesAccion.doMessage(row)}" process="@this contenedorGrupos:comentarios" update="contenedorGrupos:detalle" rendered="#{manticComprasOrdendesAccion.doView(row, 2)}" oncomplete="janal.refresh()"> 

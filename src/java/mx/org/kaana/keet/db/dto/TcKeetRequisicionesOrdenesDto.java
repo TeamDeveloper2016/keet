@@ -39,27 +39,27 @@ public class TcKeetRequisicionesOrdenesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_requisicion_orden")
   private Long idRequisicionOrden;
-  @Column (name="id_orden_detalle")
-  private Long idOrdenDetalle;
+  @Column (name="id_orden_compra")
+  private Long idOrdenCompra;
   @Column (name="registro")
   private LocalDateTime registro;
 
   public TcKeetRequisicionesOrdenesDto() {
-    this(new Long(-1L));
+    this(-1L);
   }
 
   public TcKeetRequisicionesOrdenesDto(Long key) {
-    this(null, 2L, null, null, new Long(-1L), null);
+    this(-1L, 2L, -1L, null, -1L, -1L);
     setKey(key);
   }
 
-  public TcKeetRequisicionesOrdenesDto(Long idRequisicionDetalle, Long idEliminado, Long idUsuario, String observaciones, Long idRequisicionOrden, Long idOrdenDetalle) {
+  public TcKeetRequisicionesOrdenesDto(Long idRequisicionDetalle, Long idEliminado, Long idUsuario, String observaciones, Long idRequisicionOrden, Long idOrdenCompra) {
     setIdRequisicionDetalle(idRequisicionDetalle);
     setIdEliminado(idEliminado);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdRequisicionOrden(idRequisicionOrden);
-    setIdOrdenDetalle(idOrdenDetalle);
+    setIdOrdenCompra(idOrdenCompra);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -103,12 +103,12 @@ public class TcKeetRequisicionesOrdenesDto implements IBaseDto, Serializable {
     return idRequisicionOrden;
   }
 
-  public void setIdOrdenDetalle(Long idOrdenDetalle) {
-    this.idOrdenDetalle = idOrdenDetalle;
+  public void setIdOrdenCompra(Long idOrdenCompra) {
+    this.idOrdenCompra = idOrdenCompra;
   }
 
-  public Long getIdOrdenDetalle() {
-    return idOrdenDetalle;
+  public Long getIdOrdenCompra() {
+    return idOrdenCompra;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -144,7 +144,7 @@ public class TcKeetRequisicionesOrdenesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRequisicionOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdOrdenDetalle());
+		regresar.append(getIdOrdenCompra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -159,15 +159,15 @@ public class TcKeetRequisicionesOrdenesDto implements IBaseDto, Serializable {
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idRequisicionOrden", getIdRequisicionOrden());
-		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
+		regresar.put("idOrdenCompra", getIdOrdenCompra());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdRequisicionDetalle(), getIdEliminado(), getIdUsuario(), getObservaciones(), getIdRequisicionOrden(), getIdOrdenDetalle(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdRequisicionDetalle(), getIdEliminado(), getIdUsuario(), getObservaciones(), getIdRequisicionOrden(), getIdOrdenCompra(), getRegistro()
     };
     return regresar;
   }
