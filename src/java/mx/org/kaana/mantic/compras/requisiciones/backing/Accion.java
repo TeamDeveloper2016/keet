@@ -126,6 +126,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.registroRequisicion.getRequisicion().setIdContrato(null);
 				transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
 				if (transaccion.ejecutar(this.accion)) {
+          this.attrs.put("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());
 					regresar= this.doCancelar();
 					if(Objects.equals(this.accion, EAccion.AGREGAR)) 
 						UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
@@ -163,7 +164,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());
+  	JsfBase.setFlashAttribute("idRequisicion", this.attrs.get("idRequisicion"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar			
 	

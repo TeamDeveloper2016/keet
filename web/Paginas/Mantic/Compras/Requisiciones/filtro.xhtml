@@ -183,6 +183,18 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Pedido"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaPedido']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Entrega"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaEntregada']}"/>
+            </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">
                 <i class="fa fa-save"/>

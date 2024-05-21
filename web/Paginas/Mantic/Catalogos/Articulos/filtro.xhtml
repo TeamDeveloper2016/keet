@@ -19,6 +19,7 @@
         fechaInicio: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaFin   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};
+      
 			function reload() {
 				$('.janal-control-imagen').each(function(index, item) {
 					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
@@ -26,6 +27,7 @@
 					$(this).attr('href', $('#'+ name).attr('src'));
  			  });
 			};					
+      
 			Janal.Control.Validations.prototype.onLoadCallBack= function() {
 				$janal.console('janal.onLoadCallBack.reload()');
 				setTimeout('reload();', 1000);

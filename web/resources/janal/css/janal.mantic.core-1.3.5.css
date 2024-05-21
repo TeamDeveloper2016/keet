@@ -481,9 +481,13 @@ div.ui-panelgrid-content {
 }
 .janal-logo-mini {width: 97px;}
 .manzana-lote-font {font-size: 2.5vw !important;}
+
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
+  .janal-display-none {
+    display: none !important;
+  }  
 	.janal-column-icon {
     text-align: left;
     width: 100%;
@@ -616,6 +620,9 @@ div.ui-panelgrid-content {
 }
 /* long-Smartphones (portrait) ----------- */
 @media  (min-width : 481px) and (max-width : 767px) {
+  .janal-display-none {
+    display: none !important;
+  }  
 	.janal-column-icon {
     text-align: left;
     width: 100%;

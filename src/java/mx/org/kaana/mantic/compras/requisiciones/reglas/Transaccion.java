@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -213,6 +214,8 @@ public class Transaccion extends IBaseTnx {
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
 			TcManticRequisicionesDetallesDto item= articulo.toRequisicionDetalle();
+      if(Cadena.isVacio(item.getCodigo()))
+        item.setCodigo(item.getPropio());
 			item.setIdRequisicion(this.requisicion.getRequisicion().getIdRequisicion());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticRequisicionesDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);

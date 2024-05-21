@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Requisiciones de materiales" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'idDesarrollo'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'idContrato'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+ 				'codigo'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+ 				'nombre'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'idFaltante'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idRequisicionEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };
+    </script>		
+		<style>
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
+				width:225% !important;
+			}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasRequisicionesFaltantes.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticComprasRequisicionesFaltantes.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticComprasRequisicionesFaltantes.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{manticComprasRequisicionesFaltantes.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{manticComprasRequisicionesFaltantes.doLoadContratos}" update="idContrato" process="@this idContrato" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{manticComprasRequisicionesFaltantes.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="idContrato" value="Contrato:"/>
+              <p:selectOneMenu id="idContrato" value="#{manticComprasRequisicionesFaltantes.attrs.idContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticComprasRequisicionesFaltantes.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                <p:column headerText="Clave">
+                  <p:outputLabel value="#{list.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <p:outputLabel value="#{list.nombre}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-right" headerText="No. viviendas">
+                  <p:outputLabel value="#{list.noViviendas}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+              <p:outputLabel for="consecutivo" value="No. requisición:"/>
+              <p:inputText id="consecutivo" value="#{manticComprasRequisicionesFaltantes.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
+							<p:outputLabel for="idCliente" value="Cliente:"/>
+							<p:selectOneMenu id="idCliente" value="#{manticComprasRequisicionesFaltantes.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{manticComprasRequisicionesFaltantes.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+              <p:outputLabel for="codigo" value="Código:"/>
+              <p:autoComplete id="codigo" placeholder="Ej. CT123" var="codigos" itemLabel="#{codigos.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{codigos}" value="#{manticComprasRequisicionesFaltantes.attrs.codigo}" completeMethod="#{manticComprasRequisicionesFaltantes.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Código:" />
+										<h:outputText value="#{codigos.propio}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{codigos.nombre}"/>
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="nombre" value="Nombre:"/>							
+							<p:autoComplete id="nombre" var="nombres" placeholder="Ej. CLAVOS CONCRETOS 1" itemLabel="#{nombres.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{nombres}" value="#{manticComprasRequisicionesFaltantes.attrs.nombre}" completeMethod="#{manticComprasRequisicionesFaltantes.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{nombres.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{nombres.nombre}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="idFaltante" value="Faltantes:"/>
+							<p:selectOneMenu id="idFaltante" value="#{manticComprasRequisicionesFaltantes.attrs.idFaltante}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItem itemValue="-1" itemLabel="TODOS"/>
+								<f:selectItem itemValue="1" itemLabel="SI"/>
+								<f:selectItem itemValue="2" itemLabel="NO"/>
+							</p:selectOneMenu>	
+              <p:outputLabel for="fechaInicio" value="Fecha pedido:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFaltantes.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
+              <p:outputLabel for="fechaTermino" value="Fecha entrega:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticComprasRequisicionesFaltantes.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" />
+              <p:outputLabel for="idRequisicionEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idRequisicionEstatus" value="#{manticComprasRequisicionesFaltantes.attrs.idRequisicionEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticComprasRequisicionesFaltantes.attrs.estatusFiltro}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticComprasRequisicionesFaltantes.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticComprasRequisicionesFaltantes.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+				<p:spacer/>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesFaltantes.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFaltantes.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasRequisicionesFaltantes.lazyModel.rowCount gt manticComprasRequisicionesFaltantes.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header">
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem value="Agregar" action="#{manticComprasRequisicionesFaltantes.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticComprasRequisicionesFaltantes.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </f:facet>	            
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Residente"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Requisición"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <h:outputText value="#{row['contrato']}"/>
+            </p:column>		
+						<p:column styleClass="MarAuto Responsive" sortBy="#{row.articulo}">
+              <f:facet name="header">
+                <h:outputText value="Material"/>
+              </f:facet>
+              <h:outputText value="#{row['articulo']}"/>
+            </p:column>	
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-view-normal" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.orden}">
+              <f:facet name="header">
+                <h:outputText value="Orden"/>
+              </f:facet>
+              <h:outputText value="#{row['orden']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-view-normal" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Pedido"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaPedido']}"/>
+            </p:column>		
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Entrega"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaEntregada']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
+              <f:facet name="header">
+                <i class="fa fa-save"/>
+              </f:facet>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row.idEliminado.toLong() eq 1? 'circulo-azul': empty(row.orden.toString())? 'circulo-rojo': 'circulo-verde'}.png" title="#{row.idEliminado.toLong() eq 1? 'ELIMINADO': empty(row.orden.toString())? 'SOLICITADO': 'NO SOLICITADO'}"/>
+            </p:column>  
+            <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
+              <f:facet name="header">
+                <p:outputLabel value="..."/>
+              </f:facet>
+              <p:commandButton icon="fa fa-search" title="Consultar" action="#{manticComprasRequisicionesFaltantes.doAccion('CONSULTAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla">
+                <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFaltantes.attrs.seleccionado}"/>
+              </p:commandButton>  
+            </p:column>  
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticComprasRequisicionesFaltantes.lazyModel== null? 0: manticComprasRequisicionesFaltantes.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="consultar" action="#{manticComprasRequisicionesFaltantes.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="lineaSeparacion" value="false"/>	
+</ui:composition>
