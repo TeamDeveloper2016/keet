@@ -195,6 +195,12 @@
               </f:facet>
               <h:outputText value="#{row['fechaEntregada']}"/>
             </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-41 janal-display-none">
+              <f:facet name="header">
+                <i class="fa fa-save"/>
+              </f:facet>
+              <h:outputText value="#{row.eliminados.toLong() ne 0? 'INCOMPLETA': row.detalle.toLong() eq row.ordenes.toLong()? 'COMPLETA': row.ordenes.toLong() ne 0? 'PARCIAL': 'INICIAL'}"/>
+            </p:column>  
             <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">
                 <i class="fa fa-save"/>

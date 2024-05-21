@@ -9248,9 +9248,7 @@ inner join
 where 		
   tc_mantic_requisiciones.id_empresa in ({sucursales})
 group by
-  tc_mantic_clientes.id_cliente,
-  tc_mantic_clientes.clave,  
-  tc_mantic_clientes.razon_social
+  tc_mantic_clientes.id_cliente
 order by
   tc_mantic_clientes.clave
 			</select>		      

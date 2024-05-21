@@ -1258,6 +1258,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
       Periodo periodo= new Periodo();
       periodo.addMeses(-6);
+      sb.append("(tc_mantic_requisiciones.id_requisicion_estatus= 2) and ");
       sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(periodo.toString()).append("') and ");
       if(!Objects.equals(residente.getKey(), -1L))
         sb.append("(tc_mantic_requisiciones.id_solicita= ").append(residente.getKey()).append(") and ");
