@@ -1283,10 +1283,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           int index= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().indexOf(item);
           if(index>= 0) {
             Detalle value= ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().get(index);
-            if(Objects.equals(value.getIdEliminado(), 1L)) {
-              item.setIdEliminado(value.getIdEliminado());
-              item.setObservaciones(value.getObservaciones());
-            } // if  
+            item.setIdEliminado(value.getIdEliminado());
+            item.setObservaciones(value.getObservaciones());
           } // if
         } // for
       } // else 
@@ -1492,7 +1490,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           regresar= Objects.equals(row.getIdEliminado(), 1L);
           break;
         case 3: // agregar
-          regresar= Objects.equals(existe.getIdEliminado(), 2L) && 
+          regresar= Objects.equals(row.getIdEliminado(), 2L) && 
                   (
                     (Objects.equals(row.getFolio(), "") || Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())) &&
                     (Objects.equals(existe.getIdRequisicionDetalle(), -1L))
@@ -1500,7 +1498,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           
           break;
         case 4: // quitar
-          regresar= Objects.equals(existe.getIdEliminado(), 2L) && 
+          regresar= Objects.equals(row.getIdEliminado(), 2L) && 
                   (
                    (Objects.equals(row.getFolio(), "") || Objects.equals(row.getIdOrdenCompra(), ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra())) &&
                    (!Objects.equals(existe.getIdRequisicionDetalle(), -1L))
