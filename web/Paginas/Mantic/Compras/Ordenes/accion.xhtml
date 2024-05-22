@@ -269,7 +269,7 @@
 		  						<f:selectItem itemLabel="SI" itemValue="1" />
                   <f:selectItem itemLabel="NO" itemValue="2" />								
   							</p:selectOneMenu>								
-								<p:outputLabel for="familia" value="Familia de materiales:"/>							
+								<p:outputLabel for="familia" value="Familia:"/>
 								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" converter="janal.convertidor.Entity" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-100-txt" multiple="true" onchange="loadArts();" panelStyle="janal-wid-100-txt">
                   <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.familias}" var="three" itemValue="#{three.key}" itemLabel="#{three.nombre}"/>
@@ -1007,11 +1007,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" update="contenedorGrupos:detalle" action="#{manticComprasOrdendesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="contenedorGrupos:detalle" action="#{manticComprasOrdendesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

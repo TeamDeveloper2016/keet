@@ -132,9 +132,6 @@ public class Transaccion extends IBaseTnx {
 				case GENERAR:
           regresar= this.toClonar(sesion);
           break;
-				case MOVIMIENTOS:
-          regresar= this.toCloseRequisicion(sesion);
-          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -336,20 +333,5 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} 
 
-	private Boolean toCloseRequisicion(Session sesion) throws Exception {
-		Boolean regresar          = Boolean.TRUE;
-		Map<String, Object> params= new HashMap<>();
-		try {
-      DaoFactory.getInstance().updateAll(sesion, TcManticRequisicionesDto.class, params, "completa");
-      DaoFactory.getInstance().updateAll(sesion, TcManticRequisicionesDto.class, params, "solicitada");
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-  }  
   
 } 

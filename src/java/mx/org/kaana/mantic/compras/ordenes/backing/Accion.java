@@ -775,19 +775,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void toSaveRecord() {
     Transaccion transaccion= null;
     try {			
-			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-   			UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				this.accion= EAccion.MODIFICAR;
-				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
-				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
-			} // if	
+      if(!Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo(), -1L)) {
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+        transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+        this.getAdminOrden().toAdjustArticulos();
+        if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
+          UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+          this.accion= EAccion.MODIFICAR;
+          this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+          this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
+        } // if	
+      } // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -967,7 +969,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           if(!this.accion.equals(EAccion.CONSULTAR)) 
             JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
           // VERIFICAR SI YA ESTAN COMPLETA LAS REQUISICIONES Y CAMBIARLES EL ESTATUS A COTIZADAS
-          transaccion.ejecutar(EAccion.MOVIMIENTOS);
+          transaccion.ejecutar(EAccion.RESTAURAR);
+          this.toLoadDetalle(Boolean.FALSE);
         } // if
         else 
           JsfBase.addMessage("Ocurrió un error al registrar la orden de compra", ETipoMensaje.ALERTA);      			
@@ -1344,6 +1347,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         // SE DEBE DE ELIMINAR DE LA LISTA DE PARTIDAS
         if(value<= 0) 
           this.doDeleteArticulo(position);
+        this.getAdminOrden().toCalculate();
       } // if	
     } // try
     catch (Exception e) {
@@ -1405,6 +1409,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().add(item);
           this.attrs.put("articulo", null);
         } // if  
+        this.getAdminOrden().toCalculate();
       } // if  
       else 
         this.attrs.put("articulo", null);
@@ -1445,6 +1450,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       row.setIdEliminado(1L);
       row.setObservaciones((String)this.attrs.get("comentarios"));
       // this.attrs.put("comentarios", null);
+      this.getAdminOrden().toCalculate();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1465,6 +1471,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           value.setIdEliminado(2L);
         } // else 
         row.setIdEliminado(2L);
+        this.getAdminOrden().toCalculate();
       } // if  
     } // try
     catch (Exception e) {

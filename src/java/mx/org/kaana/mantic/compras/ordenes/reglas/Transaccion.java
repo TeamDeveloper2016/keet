@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.compras.beans.General;
 import mx.org.kaana.keet.compras.beans.Individual;
@@ -48,6 +49,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -252,6 +254,9 @@ public class Transaccion extends Inventarios implements Serializable {
 				case COMPLETO: 
 					regresar= this.agregarContacto(sesion, ETiposContactos.CELULAR);
 					break;
+				case RESTAURAR:
+          regresar= this.toCloseRequisicion(sesion);
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -672,10 +677,31 @@ public class Transaccion extends Inventarios implements Serializable {
             item.setRegistro(LocalDateTime.now());
             DaoFactory.getInstance().update(sesion, item);
             break;
+          case DELETE:
+            DaoFactory.getInstance().delete(sesion, item);
+            break;
           case SELECT:
             break;
         } // switch
       } // for
+      int index= 0;
+      while(index< this.ordenProcess.getOrdenCompra().getDetalles().size()) {
+        Detalle item= this.ordenProcess.getOrdenCompra().getDetalles().get(index);
+        switch(item.getSql()) {
+          case SELECT:
+          case INSERT:
+          case UPDATE:
+            item.setSql(ESql.SELECT);
+            index++;
+            break;
+          case DELETE:
+            this.ordenProcess.getOrdenCompra().getDetalles().remove(index);
+            break;
+          default:
+            index++;
+            break;
+        } // switch
+      } // while 
     } // try
     catch (Exception e) {
       throw e;
@@ -684,5 +710,21 @@ public class Transaccion extends Inventarios implements Serializable {
       Methods.clean(params);
     } // finally
   }
+  
+	private Boolean toCloseRequisicion(Session sesion) throws Exception {
+		Boolean regresar          = Boolean.TRUE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+      DaoFactory.getInstance().updateAll(sesion, TcManticRequisicionesDto.class, params, "completa");
+      DaoFactory.getInstance().updateAll(sesion, TcManticRequisicionesDto.class, params, "solicitada");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }  
   
 } 

@@ -202,7 +202,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doReCalculatePreciosArticulos	
+	} 
 	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
