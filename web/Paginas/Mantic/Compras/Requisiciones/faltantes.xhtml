@@ -221,9 +221,9 @@
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">
-                <i class="fa fa-save"/>
+                <i class="fa fa-bell-o"/>
               </f:facet>
-              <h:graphicImage library="janal" name="icon/semaforos/#{row.idEliminado.toLong() eq 1? 'circulo-azul': empty(row.orden.toString())? 'circulo-rojo': 'circulo-verde'}.png" title="#{row.idEliminado.toLong() eq 1? 'ELIMINADO': empty(row.orden.toString())? 'SOLICITADO': 'NO SOLICITADO'}"/>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row.idEliminado.toLong() eq 1? 'circulo-azul': row.orden.toString() eq ' '? 'circulo-rojo': 'circulo-verde'}.png" title="#{row.idEliminado.toLong() eq 1? 'ELIMINADO': row.orden.toString() eq ' '? 'SOLICITADO': 'NO SOLICITADO'}"/>
             </p:column>  
             <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">

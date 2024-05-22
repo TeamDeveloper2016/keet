@@ -127,13 +127,13 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:separator/>
-								<p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:separator rendered="false"/>
+								<p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
             </f:facet>	            
             <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
@@ -203,7 +203,7 @@
             </p:column>  
             <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
               <f:facet name="header">
-                <i class="fa fa-save"/>
+                <i class="fa fa-bell-o"/>
               </f:facet>
               <h:graphicImage library="janal" name="icon/semaforos/#{row.eliminados.toLong() ne 0? 'circulo-azul': row.detalle.toLong() eq row.ordenes.toLong()? 'circulo-verde': row.ordenes.toLong() ne 0? 'circulo-amarillo': 'circulo-rojo'}.png" title="#{row.eliminados.toLong() ne 0? 'INCOMPLETA': row.detalle.toLong() eq row.ordenes.toLong()? 'COMPLETA': row.ordenes.toLong() ne 0? 'PARCIAL': 'INICIAL'}"/>
             </p:column>  

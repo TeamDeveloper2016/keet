@@ -3,6 +3,8 @@ package mx.org.kaana.mantic.compras.requisiciones.beans;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 
@@ -32,8 +34,10 @@ public class Requisicion extends TcManticRequisicionesDto implements Serializabl
     this.setIkEmpresa(new UISelectEntity(-1L));
     this.setIkDesarrollo(new UISelectEntity(-1L));
     this.setIkContrato(new UISelectEntity(-1L));
-		this.pedido = pedido;
-		this.entrega= entrega;
+		this.setPedido(pedido);
+    Periodo periodo= new Periodo();
+    periodo.addDiasHabiles(3);
+		this.setEntrega(periodo.toFecha());
 	}
 
   public UISelectEntity getIkEmpresa() {

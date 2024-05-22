@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.compras.requisiciones.backing;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -89,8 +89,6 @@ public class Accion extends IBaseArticulos implements Serializable {
       switch (this.accion) {
         case AGREGAR:		
 					this.registroRequisicion= new RegistroRequisicion();
-					this.registroRequisicion.getRequisicion().setPedido(LocalDate.now());
-					this.registroRequisicion.getRequisicion().setEntrega(LocalDate.now());
           this.setAdminOrden(new AdminTickets(new TicketRequisicion(-1L)));					
           break;
         case MODIFICAR:			
@@ -369,17 +367,21 @@ public class Accion extends IBaseArticulos implements Serializable {
 		List<UISelectEntity>desarrollos= null;
     Map<String, Object> params     = new HashMap<>();
     try {
-      params.put("idEmpresa", this.registroRequisicion.getRequisicion().getIkEmpresa().getKey());
-  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      // params.put("idEmpresa", this.registroRequisicion.getRequisicion().getIkEmpresa().getKey());
+  		// desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      params.put("operador", "<=");
+      params.put("idContratoEstatus", EContratosEstatus.LIQUIDADO.ordinal());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin()? "lazy": "residentes", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("desarrollos", desarrollos);
       if(Objects.equals(this.accion, EAccion.AGREGAR))
-	      this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+	      this.registroRequisicion.getRequisicion().setIkDesarrollo(UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
       else {
         int index= desarrollos.indexOf(this.registroRequisicion.getRequisicion().getIkDesarrollo());
         if(index>= 0)
-  	      this.attrs.put("idDesarrollo", desarrollos.get(index));
+  	      this.registroRequisicion.getRequisicion().setIkDesarrollo(desarrollos.get(index));
         else
-  	      this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+  	      this.registroRequisicion.getRequisicion().setIkDesarrollo(UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
       } // if  
       this.doLoadContratos();
 		} // try
@@ -392,22 +394,41 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
   }
 
+  private void toLoadDesarrollos() {
+		List<UISelectEntity>desarrollos= null;
+    try {      
+      desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
+      if(!Objects.equals(desarrollos, null)) {
+        int index= desarrollos.indexOf(new UISelectEntity(this.registroRequisicion.getRequisicion().getIkDesarrollo().getKey()));
+        if(index>= 0) {
+          this.registroRequisicion.getRequisicion().setIkDesarrollo(desarrollos.get(index));
+          this.registroRequisicion.getRequisicion().setIkEmpresa(new UISelectEntity(desarrollos.get(index).toLong("idEmpresa")));
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   public void doLoadContratos() {
 		List<UISelectEntity>contratos= null;
     Map<String, Object> params   = new HashMap<>();
     try {
+      this.toLoadDesarrollos();
       params.put("idDesarrollo", this.registroRequisicion.getRequisicion().getIkDesarrollo().getKey());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		contratos= UIEntity.seleccione("VistaContratosDto", "desarrollos", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       this.attrs.put("contratos", contratos);
       if(Objects.equals(this.accion, EAccion.AGREGAR))
-	      this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+	      this.registroRequisicion.getRequisicion().setIkContrato(UIBackingUtilities.toFirstKeySelectEntity(contratos));
       else {
         int index= contratos.indexOf(this.registroRequisicion.getRequisicion().getIkContrato());
         if(index>= 0)
-  	      this.attrs.put("idContrato", contratos.get(index));
+  	      this.registroRequisicion.getRequisicion().setIkContrato(contratos.get(index));
         else
-  	      this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+  	      this.registroRequisicion.getRequisicion().setIkContrato(UIBackingUtilities.toFirstKeySelectEntity(contratos));
       } // if  
 		} // try
 		catch (Exception e) {

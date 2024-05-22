@@ -1,7 +1,9 @@
 package mx.org.kaana.libs.formato;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 public class Periodo {
 
@@ -221,6 +223,19 @@ public class Periodo {
     this.dia = calendario.get(GregorianCalendar.DATE);
   }
 
+  public void addDiasHabiles(int dias) {
+    GregorianCalendar calendario= new GregorianCalendar(getAnio(), getMes()- 1, getDia());
+    calendario.add(GregorianCalendar.DATE, dias);
+    if(Objects.equals(calendario.get(GregorianCalendar.DAY_OF_WEEK), GregorianCalendar.SUNDAY))
+      calendario.add(GregorianCalendar.DATE, 1);
+    else
+      if(Objects.equals(calendario.get(GregorianCalendar.DAY_OF_WEEK), GregorianCalendar.SATURDAY))
+        calendario.add(GregorianCalendar.DATE, 2);
+    this.anio= calendario.get(GregorianCalendar.YEAR);
+    this.mes = calendario.get(GregorianCalendar.MONTH)+ 1;
+    this.dia = calendario.get(GregorianCalendar.DATE);
+  }
+
 
   public Periodo getPeriodoEspecial(int meses) {
     GregorianCalendar calendario= new GregorianCalendar(getAnio(), getMes()- 1, getDia());
@@ -236,4 +251,8 @@ public class Periodo {
     return equals(fecha.toString());
   }
 
+  public LocalDate toFecha() {
+    return LocalDate.of(this.anio, this.mes, this.dia);
+  }
+  
 }
