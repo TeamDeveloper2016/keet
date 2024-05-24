@@ -206,7 +206,7 @@
 									</f:facet>
                   <p:outputLabel value="#{row.morado ne ' ' and row.idAutomatico eq 9? '[': ''}#{row.morado ne ' ' and row.idAutomatico eq 9? row['morado']: ''}#{row.morado ne ' ' and row.idAutomatico eq 9? '] ': ''}#{row.idAutomatico eq 9? row['observacion']: row.morado ne ' '? row['morado']: ''}"/>
 								</p:column>	
-                <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false">
+                <p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" exportable="false" rendered="#{manticComprasRequisicionesAccion.attrs.nombreAccion eq 'Consultar'}">
                   <f:facet name="header">
                     <i class="fa fa-bell-o"/>
                   </f:facet>

@@ -145,9 +145,8 @@ public class Contratos extends Respaldos implements Serializable {
   } // doLoad
   
   private void toLoadResidentes() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
 			params.put("idContratoLote", -1L);			
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_activo= 1");
@@ -165,10 +164,9 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadNombres() {
-    List<Columna> columns     = null;		
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();		
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       if(JsfBase.isResidente())
         params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo in ("+ this.toLoadDesarrollosResidentes()+ ")");     
       else
@@ -179,7 +177,6 @@ public class Contratos extends Respaldos implements Serializable {
       params.put("idTipoNomina", "1");
       this.nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 12L);
       if(this.nominas!= null && !this.nominas.isEmpty()) {
-        columns= new ArrayList<>();      
         columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
         columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));  
         UIBackingUtilities.toFormatEntitySet(this.nominas, columns);
@@ -196,11 +193,10 @@ public class Contratos extends Respaldos implements Serializable {
     } // finally
   }
     
-  private void toLoadContratos() {
-    Map<String, Object> params = null;
+  protected void toLoadContratos() {
+    Map<String, Object> params = new HashMap<>();
     try {      
       this.attrs.put("nombreDesarrollo", this.desarrollo!= null && this.desarrollo.containsKey("nombre")? (String)this.desarrollo.toString("nombre"): "xyz");
-      params = new HashMap<>();      
       params.put("desarrollo", this.attrs.get("nombreDesarrollo"));      
 			Stacked multiple = new Stacked(this.toLoadLotesContratos(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "contratados", params)));
       if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
@@ -235,11 +231,10 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadContratistas() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       this.attrs.put("nombreNomina", this.nomina!= null && this.nomina.containsKey("nomina")? (String)this.nomina.toString("nomina"): "0000-0");
       if(this.nomina!= null && !this.nomina.isEmpty()) {
-        params = new HashMap<>();      
    		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
@@ -284,10 +279,9 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadNominaContratistas() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.nomina!= null && !this.nomina.isEmpty()) {
-        params = new HashMap<>();      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
         params.put("contrato", this.attrs.get("nombreContrato")); 
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoContratoPersona", params));
@@ -327,9 +321,8 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadNominaContratoContratistas() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
       params.put("idNomina", this.nomina.toLong("idNomina"));      
       params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
@@ -372,10 +365,9 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadProveedores() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.nomina!= null && !this.nomina.isEmpty()) {
-        params = new HashMap<>();      
    		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
@@ -420,10 +412,9 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadNominaProveedores() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.nomina!= null && !this.nomina.isEmpty()) {
-        params = new HashMap<>();      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
         params.put("contrato", this.attrs.get("nombreContrato")); 
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoContratoProveedor", params));
@@ -462,9 +453,8 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadNominaContratoProveedores() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
       params.put("idNomina", this.nomina.toLong("idNomina"));      
       params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
@@ -505,7 +495,7 @@ public class Contratos extends Respaldos implements Serializable {
     } // finally
   }
   
-  private void toLoadGlobal() {
+  protected void toLoadGlobal() {
     try {      
 			Stacked multiple = new Stacked(this.totales);
       if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
@@ -533,7 +523,7 @@ public class Contratos extends Respaldos implements Serializable {
     } // catch	
   }
   
-  private void toLoadLotes() {
+  protected void toLoadLotes() {
     Map<String, Object> params = null;
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
@@ -574,10 +564,9 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   private void toLoadHorarios() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
-        params = new HashMap<>();      
 //        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaPivote));   
 //        if(JsfBase.isResidente())
 //          params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
@@ -667,11 +656,9 @@ public class Contratos extends Respaldos implements Serializable {
 
 	public void doRefreshEChartWith(ItemSelected itemSelected) {
 		LOG.info(itemSelected);
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {  
-      columns = new ArrayList<>();
-      params = new HashMap<>();
       switch(itemSelected.getChart()) {
         case "contratos": 
           params.put("desarrollo", this.contrato.toString("desarrollo"));
@@ -740,15 +727,13 @@ public class Contratos extends Respaldos implements Serializable {
 		List<Entity> lotes        = null;
 		Marker marker             = null;
 		String icon               = null;
-		Map<String, Object> params= null;
-		List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.model= new DefaultMapModel();
 			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
-			params= new HashMap<>();
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
         params.put("contrato", this.contrato.toString("serie"));
@@ -779,12 +764,11 @@ public class Contratos extends Respaldos implements Serializable {
 		String regresar          = null;
 		String imagen            = null;
 		String color             = "red";
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity estatus           = null;
     Integer porcentaje       = 0;
 		try {
 			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
-			params= new HashMap<>();			
 			params.put("clave", this.toClaveEstacion(mzaLote));
 			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
 			if(estatus.toString("total")!= null) {
@@ -838,16 +822,14 @@ public class Contratos extends Respaldos implements Serializable {
   } // onMarkerSelect
   
 	private void loadEvidencias(Entity seleccionado) {
-		List<Columna> columns    = null;
-		Map<String, Object>params= null;
+		List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
 		try {
 			this.attrs.put("loteSeleccionado", seleccionado);
-			columns= new ArrayList<>();
       columns.add(new Columna("nombrePersona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));						
-			params= new HashMap<>();
 			params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 			params.put("idContratoLote", seleccionado.getKey());
 		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", "allImportadosContratoLote", params, columns));
@@ -871,7 +853,10 @@ public class Contratos extends Respaldos implements Serializable {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
 			for(Entity importado: importados) {
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("nombre").startsWith("sin-foto")? importado.toString("nombre"): importado.toString("archivo"));
+        if(dns.contains(JsfBase.getContext()))
+				  url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("nombre").startsWith("sin-foto")? importado.toString("nombre"): importado.toString("archivo"));
+        else
+				  url= dns.concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("nombre").startsWith("sin-foto")? importado.toString("nombre"): importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
@@ -887,10 +872,9 @@ public class Contratos extends Respaldos implements Serializable {
 	
 	private void loadAvances(Entity seleccionado) {
 		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
 			params = this.toPrepare(seleccionado);
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
@@ -908,9 +892,8 @@ public class Contratos extends Respaldos implements Serializable {
 	} // loadAvances
 
 	private Map<String, Object> toPrepare(Entity seleccionado) {
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();			
 			regresar.put("clave", this.toClaveEstacion(seleccionado));
 			regresar.put("estatus", EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());						
 		} // try
@@ -960,11 +943,10 @@ public class Contratos extends Respaldos implements Serializable {
     return regresar;
 	} // doCapturaAvances
 
-  private String toLoadDesarrollosResidentes() {
-    StringBuilder regresar= new StringBuilder();
-    Map<String, Object> params = null;
+  protected String toLoadDesarrollosResidentes() {
+    StringBuilder regresar    = new StringBuilder();
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());      
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "residenteDesarrollo", params);
       if(items!= null && !items.isEmpty())
@@ -1167,9 +1149,8 @@ public class Contratos extends Respaldos implements Serializable {
     String icon  = null;
     Entity marker= null;
 		String imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
-    Map<String, Object> params = null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       for (Marker item: this.model.getMarkers()) {
         marker= (Entity)item.getData();
   			params.put("color", marker.toString("color"));
@@ -1192,6 +1173,38 @@ public class Contratos extends Respaldos implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+ 
+  protected void doLoadDetalle(Long idDesarrollo, String manzana, String lote) {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      String casa  = "M".concat(manzana).concat("L").concat(lote);
+      params.put("idDesarrollo", idDesarrollo);
+      params.put("manzana", manzana);
+      params.put("lote", lote);
+      this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaSeguimientoDto", "unico", params);
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      UIBackingUtilities.toFormatEntity(this.contrato, columns);
+      String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("secuencia").toString(), 3, '0', true);
+      params.put("clave", clave);      
+      columns.clear();
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "detalleLotes", params);
+      if(items!= null)
+        UIBackingUtilities.toFormatEntitySet(items, columns);
+      this.attrs.put("tablaDetalleLotes", items);  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+    
   }
   
 }

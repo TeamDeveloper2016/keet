@@ -62,7 +62,7 @@
       .keet-chart-footer { font-weight: normal !important; font-size: 12px; }
 			.panel-pencil-position { vertical-align: bottom !important }			
       .dashboard .keet-map-panel { width:100%; height: 390px; display:block; padding-top: 20px;}
-      .dashboard .overview-map-box { height: 423px; padding: 0px !important; border: transparent; }  
+      .dashboard .overview-map-box { height: 438px; padding: 0px !important; border: transparent; }  
       .dashboard .keet-gauge-panel { width:100%; height: 40px; display:block; padding-top: 20px;}
       .dashboard .overview-gauge-box { height: 53px; padding: 0px !important; border: transparent; }  
       .ui-carousel .ui-carousel-header .ui-carousel-header-title {width: 70% !important;}
@@ -228,7 +228,7 @@
                   </f:facet>
                   <h:outputText value="#{row.codigo}" styleClass="janal-color-black"/>
                 </p:column>
-                <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center">
+                <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center" rendered="false">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
                 </p:column>
                 <p:column styleClass="Responsive" >
@@ -243,19 +243,19 @@
                   </f:facet>
                   <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-black': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
                 </p:column>            
-                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}" sortBy="#{row.porcentaje}">
+                <p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}">
                   <f:facet name="header">
                     <h:outputText value="( % )"/>
                   </f:facet>
                   <h:outputText value="#{row['porcentaje']}"/>
                 </p:column>	
-                <p:column class="janal-column-right MarAuto Responsive janal-fix-10" rendered="#{not kajoolUtilAplicacion.isMobile}">
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-fix-10" rendered="#{not kajoolUtilAplicacion.isMobile}">
                   <f:facet name="header">
                     <h:outputText value="Costo"/>
                   </f:facet>
                   <h:outputText value="#{row['costo']}"/>
                 </p:column>	
-                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}">
+                <p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}">
                   <f:facet name="header">
                     <h:outputText value="Pagado"/>
                   </f:facet>

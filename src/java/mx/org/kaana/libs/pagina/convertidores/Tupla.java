@@ -5,8 +5,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.formato.Numero;
 
 /**
  * @company KAANA
@@ -16,15 +17,15 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@FacesConverter(value="janal.convertidor.Entity")
-public class Entidad implements Converter {
+@FacesConverter(value="janal.convertidor.Tupla")
+public class Tupla implements Converter {
 
   @Override
   public Object getAsObject(FacesContext context, UIComponent component, String value) {
-    UISelectEntity regresar= new UISelectEntity(-1L);
+    Entity regresar= new Entity(-1L);
     if(value!= null)
       try {
-        regresar= new UISelectEntity(value);
+        regresar= new Entity(Numero.getLong(value, -1L));
       } // try
       catch(Exception e) {
         Error.mensaje(e);

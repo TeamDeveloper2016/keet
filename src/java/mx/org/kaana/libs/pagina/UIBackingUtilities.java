@@ -57,6 +57,13 @@ public class UIBackingUtilities {
 		return regresar;
 	} 	
 
+  public static Entity toFirstKeyEntity(List<Entity> items) {
+		Entity regresar= new Entity(-1L);
+		if(items!= null && items.size()> 0)
+  	  regresar= items.get(0);
+		return regresar;
+	} 	
+
   public static Boolean isEmptyList(List<UISelectItem> list) {
     return list== null || list.size()<= 0;
   }

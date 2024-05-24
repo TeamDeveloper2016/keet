@@ -3090,8 +3090,8 @@ order by
           tc_keet_estaciones.nombre,
           tc_keet_estaciones.descripcion,
           tc_keet_estaciones.nivel,
-          round(tc_keet_estaciones.costo, 2) costo,
-          round(tc_keet_estaciones.cargo, 2) cargo,
+          round(tc_keet_estaciones.costo, 2) as costo,
+          round(tc_keet_estaciones.cargo, 2) as cargo,
           round(ifnull(tc_keet_estaciones.cargo* 100/ tc_keet_estaciones.costo, 0), 2) as porcentaje,
           tc_keet_estaciones_estatus.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus,
@@ -3171,66 +3171,155 @@ order by
           tc_keet_contratos_lotes.manzana
       </select>  
       <select id="contratados">
-        select
-          tc_keet_contratos_lotes_estatus.nombre as category,
-          tc_keet_contratos.nombre as serie,
-          count(*) as value,
-          tc_keet_contratos.id_empresa,
-          tc_keet_contratos.ejercicio,
-          tc_keet_contratos.orden,
-          tc_keet_contratos.clave,
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_contratos.id_contrato as id_key
-        from
-          tc_keet_contratos
-        inner join
-          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        inner join
-          tc_keet_contratos_lotes_estatus on tc_keet_contratos_lotes.id_contrato_lote_estatus= tc_keet_contratos_lotes_estatus.id_contrato_lote_estatus
-        where
-          tc_keet_desarrollos.nombres= '{desarrollo}'
-          and tc_keet_contratos.nombre not like '%MUESTRA%'
-          and tc_keet_contratos.id_contrato_estatus&lt; 10
-        group by
-          category, serie with rollup         
+select
+  tc_keet_contratos_lotes_estatus.nombre as category,
+  tc_keet_contratos.nombre as serie,
+  count(*) as value,
+  tc_keet_contratos.id_empresa,
+  tc_keet_contratos.ejercicio,
+  tc_keet_contratos.orden,
+  tc_keet_contratos.clave,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.id_contrato as id_key
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_keet_contratos_lotes_estatus on tc_keet_contratos_lotes.id_contrato_lote_estatus= tc_keet_contratos_lotes_estatus.id_contrato_lote_estatus
+where
+  tc_keet_desarrollos.nombres= '{desarrollo}'
+  and tc_keet_contratos.nombre not like '%MUESTRA%'
+  and tc_keet_contratos.id_contrato_estatus&lt; 10
+group by
+  category, serie with rollup         
       </select>
       <select id="avance">
-        select
-          tt_keet_estaciones.*,
-          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as serie,
-          tc_keet_contratos.nombre
-        from 
-         (select
-           tc_keet_estaciones_estatus.nombre as category,
-           count(*) as value,
-           convert(substring(tc_keet_estaciones.clave, 1, 3), signed) as id_empresa,
-           convert(substring(tc_keet_estaciones.clave, 4, 4), signed) as ejercicio,
-           convert(substring(tc_keet_estaciones.clave, 8, 3), signed) as contrato,
-           convert(substring(tc_keet_estaciones.clave, 11, 3), signed) as lote
-          from 
-            tc_keet_estaciones
-          inner join
-            tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
-          where
-            tc_keet_estaciones.clave like '{clave}%'    
-            and tc_keet_estaciones.nivel= 6
-          group by
-            substring(tc_keet_estaciones.clave, 1, 13), 
-            tc_keet_estaciones_estatus.nombre
-          ) as tt_keet_estaciones
-        inner join
-          tc_keet_contratos on tt_keet_estaciones.id_empresa= tc_keet_contratos.id_empresa and tt_keet_estaciones.ejercicio= tc_keet_contratos.ejercicio and tt_keet_estaciones.contrato= tc_keet_contratos.orden
-        inner join
-          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tt_keet_estaciones.lote= tc_keet_contratos_lotes.orden
-        order by
-          tt_keet_estaciones.category, serie
+select
+  tt_keet_estaciones.*,
+  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as serie,
+  tc_keet_contratos.nombre
+from 
+ (select
+   tc_keet_estaciones_estatus.nombre as category,
+   count(*) as value,
+   convert(substring(tc_keet_estaciones.clave, 1, 3), signed) as id_empresa,
+   convert(substring(tc_keet_estaciones.clave, 4, 4), signed) as ejercicio,
+   convert(substring(tc_keet_estaciones.clave, 8, 3), signed) as contrato,
+   convert(substring(tc_keet_estaciones.clave, 11, 3), signed) as lote
+  from 
+    tc_keet_estaciones
+  inner join
+    tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
+  where
+    tc_keet_estaciones.clave like '{clave}%'    
+    and tc_keet_estaciones.nivel= 6
+  group by
+    substring(tc_keet_estaciones.clave, 1, 13), 
+    tc_keet_estaciones_estatus.nombre
+  ) as tt_keet_estaciones
+inner join
+  tc_keet_contratos on tt_keet_estaciones.id_empresa= tc_keet_contratos.id_empresa and tt_keet_estaciones.ejercicio= tc_keet_contratos.ejercicio and tt_keet_estaciones.contrato= tc_keet_contratos.orden
+inner join
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tt_keet_estaciones.lote= tc_keet_contratos_lotes.orden
+order by
+  tt_keet_estaciones.category, serie
       </select> 
     </unit>  
 		<unit id="VistaSeguimientoDto">
+      <select id="unico">
+select
+  tc_keet_contratos_lotes.id_contrato_lote as id_key,
+  tc_keet_contratos_lotes.id_contrato_lote,
+  tc_keet_contratos_lotes.inicio,
+  tc_keet_contratos_lotes.termino,
+  tc_keet_contratos_lotes.dias_construccion,
+  tc_keet_contratos.id_empresa,
+  tc_keet_contratos.ejercicio,
+  tc_keet_contratos.orden,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre,
+  tc_keet_contratos.orden as contrato,
+  tc_keet_contratos.nombre as serie,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos_lotes.manzana,
+  tc_keet_contratos_lotes.lote,
+  tc_keet_contratos_lotes.latitud,
+  tc_keet_contratos_lotes.longitud,
+  tc_keet_contratos_lotes.orden as secuencia,
+  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as codigo,
+  tc_keet_prototipos.nombre as prototipo
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join 
+  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo = tc_keet_prototipos.id_prototipo
+where
+  tc_keet_desarrollos.id_desarrollo= '{idDesarrollo}'
+  and tc_keet_contratos_lotes.manzana= '{manzana}'
+  and tc_keet_contratos_lotes.lote= '{lote}'
+group by 
+  tc_keet_contratos.id_contrato
+      </select>
+      <select id="cuadras">
+select
+  (cast(rand()* 60 as unsigned) + 1) as id_key,
+  manzana
+from (
+  select
+    distinct(tc_keet_contratos_lotes.manzana) as manzana
+  from
+    tc_keet_contratos
+  inner join
+    tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+  inner join
+    tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+  inner join
+    tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+  where
+    tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+    and tc_keet_contratos.id_contrato_estatus&lt; 10
+  group by
+    tc_keet_contratos_lotes.manzana
+  order by   
+    tc_keet_contratos_lotes.manzana
+) as tt_keet_manzanas             
+      </select>
+      <select id="casas">
+select
+  (cast(rand()* 60 as unsigned) + 1) as id_key,
+  lote
+from (
+  select
+    distinct(tc_keet_contratos_lotes.lote) as lote
+  from
+    tc_keet_contratos
+  inner join
+    tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+  inner join
+    tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+  inner join
+    tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+  where
+    tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+    and tc_keet_contratos_lotes.manzana= {manzana}
+    and tc_keet_contratos.id_contrato_estatus&lt; 10
+  group by
+    tc_keet_contratos_lotes.lote
+  order by   
+    tc_keet_contratos_lotes.lote
+) as tt_keet_lotes    
+      </select>
 			<select id="pagado">
 				select
 				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
@@ -3365,7 +3454,8 @@ order by
         select
           ifnull(tc_keet_desarrollos.id_desarrollo, 0) as id_key,
           if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as nombre, 
-          count(*) as empleados
+          count(*) as empleados,
+          tc_keet_desarrollos.clave
         from
           tr_mantic_empresa_personal
         left join

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 23/05/2024
+ time 11:30:04 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Seguimiento por lote" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+       $(document).ready(function () {
+       });  
+    </script>		
+    <style type="text/css">
+			.panel-pencil-position { vertical-align: bottom !important }			
+      .dashboard .keet-map-panel { width:100%; height: 390px; display:block; padding-top: 20px;}
+      .dashboard .overview-map-box { height: 1020px; padding: 0px !important; border: transparent; }  
+      .dashboard .keet-gauge-panel { width:100%; height: 40px; display:block; padding-top: 20px;}
+      .dashboard .overview-inner-box { height: 190px; padding: 0px !important; border: transparent; }  
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+   <div class="Container100 dashboard">
+      <div class="ContainerIndent">        					
+        <div class="Container100 Responsive overview-box">
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <div class="Container100 Responsive Fs18 janal-box-header-blue">
+                <p:spacer width="8px" height="1px"/>Destajos pagados por lote
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>  
+      <div class="ContainerIndent">        					
+        <div class="Container100 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:remoteCommand name="reloadManzanas" onstart="return janal.bloquear();" process="@this" update="idManzana" oncomplete="janal.desbloquear()"/>
+              <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="idLote" oncomplete="janal.desbloquear()"/>
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Datos generales
+                </div>
+                <p:outputLabel for="idDesarrollo" value="Desarrollo(s):"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{kajoolAuditorias.idColonia}" var="one" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kajoolAuditorias.doLoadManzanas}" update="idManzana idLote" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{kajoolAuditorias.colonias}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{one.clave}"/>
+                  </p:column> 
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{one.nombre}"/>
+                  </p:column> 
+                  <p:column headerText="Personal" styleClass="janal-column-right">
+                    <h:outputText value="#{one.empleados}"/>
+                  </p:column> 
+                </p:selectOneMenu>
+                <p:outputLabel for="idManzana" value="Manzana(s):"/>
+                <p:selectOneMenu id="idManzana" value="#{kajoolAuditorias.idManzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kajoolAuditorias.doLoadLotes}" update="idLote" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{kajoolAuditorias.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.manzana}"/>
+                  <p:column headerText="Manzana" styleClass="janal-column-center">
+                    <h:outputText value="#{item.manzana}"/>
+                  </p:column> 
+                </p:selectOneMenu>
+                <p:outputLabel for="idLote" value="Lote(s):"/>
+                <p:selectOneMenu id="idLote" value="#{kajoolAuditorias.idLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" listener="#{kajoolAuditorias.doLoadConceptos}" update="tablaDetalleLotes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{kajoolAuditorias.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.lote}"/>
+                  <p:column headerText="Lote" styleClass="janal-column-center">
+                    <h:outputText value="#{item.lote}"/>
+                  </p:column> 
+                </p:selectOneMenu>
+              </p:panel>  
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="">.</span>
+              </div>   
+            </div>
+          </div>  
+        </div>  
+      </div>  
+      <div class="ContainerIndent">
+        <div class="Container100 Responsive overview-box">
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-map-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
+                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle por estación
+              </div>
+              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolAuditorias.attrs.tablaDetalleLotes}" paginator="true" rowsPerPageTemplate="30" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="30" styleClass="janal-content-table" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolAuditorias.doColor(row)}">
+                <p:column styleClass="janal-wid-10 janal-column-left MarAuto Responsive janal-view-normal">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row.codigo}" styleClass="janal-color-black"/>
+                </p:column>
+                <p:column styleClass="Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Concepto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.descripcion}" title="#{row.descripcion}" styleClass="janal-color-black" style="white-space: nowrap;"/>
+                </p:column>
+                <p:column styleClass="janal-wid-15 Responsive janal-view-normal">
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
+                  <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-black': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                </p:column>            
+                <p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-40': 'janal-wid-10'}">
+                  <f:facet name="header">
+                    <h:outputText value="( % )"/>
+                  </f:facet>
+                  <h:outputText value="#{row['porcentaje'].toDouble() gt 100? 100.00: row['porcentaje']}"/>
+                </p:column>	
+                <p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-60': 'janal-wid-10'}">
+                  <f:facet name="header">
+                    <h:outputText value="Costo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['costo']}"/>
+                </p:column>	
+                <p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-60': 'janal-wid-10'}">
+                  <f:facet name="header">
+                    <h:outputText value="Pagado"/>
+                  </f:facet>
+                  <h:outputText value="#{(row['costo'].toDouble() gt row['cargo'].toDouble()) and (row['porcentaje'].toDouble() gt 99.99)? row['costo']: row['cargo']}"/>
+                </p:column>	
+                <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center janal-view-normal">
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '3' ? 'circulo-verde': row.idEstacionEstatus eq '2'? 'circulo-amarillo': row.idEstacionEstatus eq '4'? 'circulo-cafe': 'circulo-rojo'}.png" title="#{row.estatus}"/>
+                </p:column>  
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{kajoolAuditorias.attrs.tablaDetalleLotes.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>                
+            </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreLotes"/>
+            </div>   
+          </div>
+        </div>  
+      </div>
+    </div>		
+  </ui:define>
+</ui:composition>
