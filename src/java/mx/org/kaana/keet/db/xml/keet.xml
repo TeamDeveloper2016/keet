@@ -3740,14 +3740,25 @@ where
           and nivel= 4
 			</update>
 			<update id="fechas">
-				update
-				  tc_keet_estaciones
-				set
-				  inicio= date_format('{inicio}', '%Y%m%d'),
-          termino= date_format('{termino}', '%Y%m%d')
-				where
-	        clave like '{clave}%'
-          and (nivel= 5 or nivel= 6)
+update
+  tc_keet_estaciones
+set
+  inicio= date_format('{inicio}', '%Y%m%d'),
+  termino= date_format('{termino}', '%Y%m%d')
+where
+  clave like '{clave}%'
+  and (nivel= 5 or nivel= 6)
+			</update>
+			<update id="cargos">
+update
+  tc_keet_estaciones
+set
+  cargo= costo,
+  id_estacion_estatus= 3
+where
+  id_estacion_estatus in (1, 2)
+  and cargo&gt;= costo
+  and costo&gt; 0
 			</update>
     </unit>		
     <unit id="TcKeetEspecialidadesDto">

@@ -3105,6 +3105,7 @@ order by
           tc_keet_estaciones.clave like '{clave}%'
           and tc_keet_estaciones.nivel>= 5
           and tc_keet_estaciones.costo> 0
+          and {condicion}
         order by
           tc_keet_estaciones.clave
       </select>  
@@ -3289,6 +3290,7 @@ from (
   where
     tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
     and tc_keet_contratos.id_contrato_estatus&lt; 10
+    and tc_keet_contratos_lotes.manzana!= '0'
   group by
     tc_keet_contratos_lotes.manzana
   order by   
@@ -3314,6 +3316,7 @@ from (
     tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
     and tc_keet_contratos_lotes.manzana= {manzana}
     and tc_keet_contratos.id_contrato_estatus&lt; 10
+    and tc_keet_contratos_lotes.lote!= '0'
   group by
     tc_keet_contratos_lotes.lote
   order by   
@@ -11781,48 +11784,48 @@ where
 					)		
 			</select>
 			<select id="estatusManzanaLote">
-				select
-					sum(iniciado) as iniciado,
-					sum(en_proceso) as en_proceso,
-					sum(terminado) as terminado,
-					(sum(iniciado)+ sum(en_proceso)+ sum(terminado)) as total
-				from(
-				select 
-					case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
-					case when tc_keet_estaciones.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
-					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
-				from(  
-				select
-					tc_keet_puntos_paquetes.id_punto_grupo,  
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-					tc_keet_rubros.orden
-				from 
-					tc_keet_puntos_paquetes
-				inner join
-					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
-				inner join
-					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
-				inner join
-					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
-				where
-					tc_keet_puntos_grupos.id_departamento={idDepartamento}
-				group by
-          tc_keet_puntos_paquetes.id_punto_grupo,
-          tc_keet_rubros_grupos.id_rubro_grupo,
-          tc_keet_rubros_grupos.id_rubro        
-				) as principal
-				inner join
-					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
-				where
-					tc_keet_estaciones.clave like '{clave}%'
-          and tc_keet_estaciones.costo&gt; 0
-				) as final
+select
+  sum(iniciado) as iniciado,
+  sum(en_proceso) as en_proceso,
+  sum(terminado) as terminado,
+  (sum(iniciado)+ sum(en_proceso)+ sum(terminado)) as total
+from (
+  select 
+    case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
+    case when tc_keet_estaciones.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
+    case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
+  from (  
+    select
+      tc_keet_puntos_paquetes.id_punto_grupo,  
+      tc_keet_puntos_grupos.id_departamento,
+      tc_keet_puntos_grupos.grupo,
+      tc_keet_puntos_grupos.descripcion,
+      tc_keet_rubros_grupos.id_rubro_grupo,
+      tc_keet_rubros_grupos.id_rubro,
+      tc_keet_rubros.codigo,
+      tc_keet_rubros.nombre,
+      tc_keet_rubros.orden
+    from 
+      tc_keet_puntos_paquetes
+    inner join
+      tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+    inner join
+      tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+    inner join
+      tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+    where
+      tc_keet_puntos_grupos.id_departamento={idDepartamento}
+    group by
+      tc_keet_puntos_paquetes.id_punto_grupo,
+      tc_keet_rubros_grupos.id_rubro_grupo,
+      tc_keet_rubros_grupos.id_rubro        
+  ) as principal
+inner join
+  tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+where
+  tc_keet_estaciones.clave like '{clave}%'
+  and tc_keet_estaciones.costo&gt; 0
+) as final
 			</select>
 			<select id="estatusLote">
 				select

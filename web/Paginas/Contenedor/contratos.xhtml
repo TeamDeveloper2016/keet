@@ -247,7 +247,7 @@
                   <f:facet name="header">
                     <h:outputText value="( % )"/>
                   </f:facet>
-                  <h:outputText value="#{row['porcentaje']}"/>
+                  <h:outputText value="#{row['porcentaje'].toDouble() gt 100? 100.00: row['porcentaje']}"/>
                 </p:column>	
                 <p:column styleClass="janal-column-right MarAuto Responsive janal-fix-10" rendered="#{not kajoolUtilAplicacion.isMobile}">
                   <f:facet name="header">
@@ -259,10 +259,10 @@
                   <f:facet name="header">
                     <h:outputText value="Pagado"/>
                   </f:facet>
-                  <h:outputText value="#{row['cargo']}"/>
+                  <h:outputText value="#{(row['costo'].toDouble() gt row['cargo'].toDouble()) and (row['porcentaje'].toDouble() gt 99.99)? row['costo']: row['cargo']}"/>
                 </p:column>	
                 <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center">
-                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '3' ? 'circulo-verde': row.idEstacionEstatus eq '2'? 'circulo-amarillo': row.idEstacionEstatus eq '4'? 'circulo-cafe': 'circulo-rojo'}.png" title="#{row.estatus}"/>
+                  <h:graphicImage library="janal" name="icon/semaforos/#{(row.idEstacionEstatus eq '3') or (row['porcentaje'].toDouble() gt 99.99)? 'circulo-verde': row.idEstacionEstatus eq '2'? 'circulo-amarillo': row.idEstacionEstatus eq '4'? 'circulo-cafe': 'circulo-rojo'}.png" title="#{row.estatus}"/>
                 </p:column>  
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>

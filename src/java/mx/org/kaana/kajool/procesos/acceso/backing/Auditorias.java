@@ -1,24 +1,19 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.test.contrato.Colecciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -85,7 +80,9 @@ public class Auditorias extends Contratos implements Serializable {
   @Override
   protected void init() {
     try {      
-      super.init();
+      this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
+      this.attrs.put("idEstado", -1L);
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -170,11 +167,12 @@ public class Auditorias extends Contratos implements Serializable {
       int index= this.lotes.indexOf(this.idLote);
       if(index>= 0)
         this.idLote= this.lotes.get(index);
-      this.doLoadDetalle(this.idColonia.getKey(), this.idManzana.toString("manzana"), this.idLote.toString("lote"));
+      this.doLoadDetalle(this.idColonia.getKey(), this.idManzana.toString("manzana"), this.idLote.toString("lote"), (Long)this.attrs.get("idEstado"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   }  
+  
 }

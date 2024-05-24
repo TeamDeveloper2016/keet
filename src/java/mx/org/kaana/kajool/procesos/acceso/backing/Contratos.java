@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -119,6 +121,7 @@ public class Contratos extends Respaldos implements Serializable {
       this.doLoad();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 			  this.checkDownloadBackup();
+      DaoFactory.getInstance().updateAll(TcKeetEstacionesDto.class, Collections.EMPTY_MAP, "cargos");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -693,6 +696,7 @@ public class Contratos extends Respaldos implements Serializable {
           UIBackingUtilities.toFormatEntity(this.contrato, columns);
           String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("secuencia").toString(), 3, '0', true);
           params.put("clave", clave);      
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);                
           columns.clear();
           columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "detalle".concat(Cadena.letraCapital(itemSelected.getChart())), params);
@@ -1175,11 +1179,10 @@ public class Contratos extends Respaldos implements Serializable {
     } // finally
   }
  
-  protected void doLoadDetalle(Long idDesarrollo, String manzana, String lote) {
+  protected void doLoadDetalle(Long idDesarrollo, String manzana, String lote, Long idEstado) {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      String casa  = "M".concat(manzana).concat("L").concat(lote);
       params.put("idDesarrollo", idDesarrollo);
       params.put("manzana", manzana);
       params.put("lote", lote);
@@ -1189,12 +1192,26 @@ public class Contratos extends Respaldos implements Serializable {
       UIBackingUtilities.toFormatEntity(this.contrato, columns);
       String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("secuencia").toString(), 3, '0', true);
       params.put("clave", clave);      
+      switch(idEstado.intValue()) {
+        case 1:
+          params.put(Constantes.SQL_CONDICION, "tc_keet_estaciones.id_estacion_estatus in (2, 3)");
+          break;
+        case 2:
+          params.put(Constantes.SQL_CONDICION, "tc_keet_estaciones.id_estacion_estatus in (1, 2)");
+          break;
+        default:
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+          break;
+      } // switch
       columns.clear();
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "detalleLotes", params);
       if(items!= null)
         UIBackingUtilities.toFormatEntitySet(items, columns);
       this.attrs.put("tablaDetalleLotes", items);  
+      this.toLoadPorcentaje(this.contrato);
+      this.loadEvidencias(this.contrato);
+      this.attrs.put("nombreLotes", "M".concat(manzana).concat("L").concat(lote));  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1204,7 +1221,42 @@ public class Contratos extends Respaldos implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-    
+  }
+  
+  private void toLoadPorcentaje(Entity lote) {
+    Map<String, Object> params= new HashMap<>();
+		Entity estatus            = null;
+    String color              = "red";
+    Integer porcentaje        = 0;
+    try {      
+			params.put("clave", this.toClaveEstacion(lote));
+			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
+			if(estatus.toString("total")!= null) {
+        porcentaje= new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total")));
+        if(porcentaje== 0)
+     			color= "red";
+        else  
+          if(porcentaje> 0 && porcentaje<= 20)
+            color= "cyan";
+          else
+            if(porcentaje>= 21 && porcentaje<= 80)
+              color= "orange";
+            else
+              if(porcentaje>= 81 && porcentaje<= 99)
+                color= "yellow";
+              else
+                color= "green"; 
+      } // if       
+			this.attrs.put("porcentaje", porcentaje);
+			this.attrs.put("color", color);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

@@ -364,7 +364,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doCancelar		
 	
 	public void doDestajos(Entity seleccionado) {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
     try {
       this.attrs.put("seleccionado", seleccionado);
@@ -372,7 +372,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       String clave= Cadena.rellenar(seleccionado.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(seleccionado.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(seleccionado.toLong("ordenContrato").toString(), 3, '0', true)+ Cadena.rellenar(seleccionado.toLong("orden").toString(), 3, '0', true);
       params.put("clave", clave);      
       params.put("lote", seleccionado.toString("codigo"));      
-      columns= new ArrayList<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("cargo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
