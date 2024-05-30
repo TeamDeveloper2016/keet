@@ -29,6 +29,16 @@
 				$janal.console('janal.onLoadCallBack.reload()');
 				setTimeout('reload();', 1000);
 			};
+      
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -80,9 +90,9 @@
                 <f:selectItems value="#{keetCajaChicaFiltro.attrs.semanas}"/>                
               </p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCajaChicaFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCajaChicaFiltro.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCajaChicaFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCajaChicaFiltro.fechaFin}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
               <p:outputLabel for="estatus" value="Estatus:"/>
               <p:selectOneMenu id="estatus" value="#{keetCajaChicaFiltro.attrs.estatus}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetCajaChicaFiltro.attrs.allEstatus}"/>                
@@ -106,10 +116,17 @@
                 <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>								
+                <p:separator/>
+                <p:menuitem icon="fa fa-cloud-download" value="Exportar" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{keetCajaChicaFiltro.gastos}" />  
+                </p:menuitem>  
 							</p:menuButton>							
    						<p:commandButton styleClass="xs-pantalla" icon="fa fa-lock" title="Cierre de caja" process="@this tabla" action="#{keetCajaChicaFiltro.doCierreGlobal}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa fa-cloud-download" title="Exportar XLS" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                <p:fileDownload value="#{keetCajaChicaFiltro.gastos}" />  
+              </p:commandButton>  
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">

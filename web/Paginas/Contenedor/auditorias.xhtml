@@ -84,7 +84,7 @@
                   </p:column> 
                 </p:selectOneMenu>
                 <br/>
-                <p:outputLabel for="idEstado" value="Estado destajos:"/>
+                <p:outputLabel for="idEstado" value="Destajos:"/>
 								<p:selectOneMenu id="idEstado" value="#{kajoolAuditorias.attrs.idEstado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kajoolAuditorias.doLoadConceptos}" update="nombreLotes avanceLote tablaDetalleLotes" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItem itemValue="-1" itemLabel="TODOS"/>
@@ -195,6 +195,8 @@
                   <p:separator/>
                   <p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.nombreUsuario}, [#{item.registro}]" class="pad-description" escape="false"/>
                   <p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.registro}" class="pad-description" escape="false" rendered="false"/>
+                  <p:separator/>
+                  <p:outputLabel value="&lt;b&gt;Justificación:&lt;/b&gt; #{item.observaciones}" class="pad-description janal-color-blue" escape="false"/>
                 </p:panelGrid>									
               </p:carousel>
             </div>  

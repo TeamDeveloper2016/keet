@@ -527,12 +527,11 @@ public class Contratos extends Respaldos implements Serializable {
   }
   
   protected void toLoadLotes() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         this.attrs.put("nombreContrato", (String)this.contrato.toString("serie"));
         String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true);
-        params = new HashMap<>();      
         params.put("clave", clave);     
         Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "avance", params)));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
@@ -914,13 +913,13 @@ public class Contratos extends Respaldos implements Serializable {
 			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
 			regresar.append(lote.toLong("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("contrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
+			regresar.append(Cadena.rellenar(lote.toString("secuencia"), 3, '0', true));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toClaveEstacion
+	} 
 
 	public String doCapturaAvances(Entity visitado) {
 		String regresar          = null;    

@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.cajachica.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,13 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -36,16 +41,21 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetCajaChicaFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;	
-  
+	private static final String DATA_FILE     = "DESARROLLO,CONSECUTIVO,RESIDENTE,NOMBRE,IMPORTE,REGISTRO";
+
 	private FormatLazyModel lazyModelGastos;
 	private FormatLazyModel lazyModelMateriales;
 	private LocalDate fechaInicio;
@@ -80,6 +90,27 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.fechaFin = fechaFin;
 	}
 	
+  public StreamedContent getGastos() {
+		StreamedContent regresar= null;		
+		Xls xls                 = null;
+    String template         = "GS";
+		try {
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.attrs, "VistaCierresCajasChicasDto", "exportar", template), DATA_FILE);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
+  
   @PostConstruct
   @Override
   protected void init() {

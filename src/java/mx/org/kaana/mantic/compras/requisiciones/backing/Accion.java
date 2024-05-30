@@ -367,8 +367,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		List<UISelectEntity>desarrollos= null;
     Map<String, Object> params     = new HashMap<>();
     try {
-      // params.put("idEmpresa", this.registroRequisicion.getRequisicion().getIkEmpresa().getKey());
-  		// desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "empresa", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+  		params.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
       params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.LIQUIDADO.ordinal());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

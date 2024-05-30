@@ -219,7 +219,7 @@ public class Seguimiento extends Respaldos implements Serializable {
   
   private void toLoadContratistas() {
     try {      
-			Stacked stacked = new Stacked(DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "contratistas", Collections.EMPTY_MAP));
+			Stacked stacked = new Stacked(DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "empleadores", Collections.EMPTY_MAP));
   		StackModel stack= new StackModel(new Title(), stacked);
       stack.remove();
       stack.toCustomFontSize(14);
