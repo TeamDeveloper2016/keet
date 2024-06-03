@@ -368,8 +368,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	}	
 
-	public void doClonar(Entity row) {
-    this.attrs.put("seleccionado", row);
+	public void doClonar() {
+    Entity row= (Entity)this.attrs.get("seleccionado");
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(row.toLong("idRequisicion"));

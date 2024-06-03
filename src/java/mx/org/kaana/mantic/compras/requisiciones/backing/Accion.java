@@ -126,9 +126,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if (transaccion.ejecutar(this.accion)) {
           this.attrs.put("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());
 					regresar= this.doCancelar();
-					if(Objects.equals(this.accion, EAccion.AGREGAR)) 
-						UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
-					JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
+//					if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+//						UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
+					JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion"), ETipoMensaje.INFORMACION);
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar la requisición", ETipoMensaje.ERROR);      			
