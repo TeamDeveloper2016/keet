@@ -7674,37 +7674,84 @@ where
 				  and tc_mantic_tipos_empresas.id_tipo_empresa in ({tipoEmpresa}) 					
 				{sortOrder}
 			</select>
+			<select id="flujos">
+select
+	tc_mantic_empresas.nombre as empresa,
+	tc_keet_desarrollos.nombres as desarrollo,
+	tc_keet_contratos.nombre as contrato,
+	tc_mantic_ordenes_compras.consecutivo as 'orden compra',
+	tc_mantic_proveedores.razon_social as proveedor,
+	tc_mantic_notas_entradas.factura,
+	tc_mantic_notas_entradas.fecha_factura as 'fecha factura',
+	tc_mantic_notas_entradas.fecha_recepcion as 'fecha recepcion',
+	tc_mantic_empresas_deudas.limite as 'fecha vencimiento',
+	tc_mantic_empresas_deudas.importe as 'neto a pagar',
+	tc_mantic_empresas_deudas.importe- tc_mantic_empresas_deudas.saldo as abonado,
+	(datediff(tc_mantic_empresas_deudas.limite, now())* -1) as dias,
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt; 0, tc_mantic_empresas_deudas.saldo, 0) as 'saldo vencido',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 1 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 30, tc_mantic_empresas_deudas.saldo, 0) as '1 a 30',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 31 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 60, tc_mantic_empresas_deudas.saldo, 0) as '31 a 60',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 61 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 90, tc_mantic_empresas_deudas.saldo, 0) as '61 a 90',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 91 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 120, tc_mantic_empresas_deudas.saldo, 0) as '91 a 120',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 121, tc_mantic_empresas_deudas.saldo, 0) as 'mas 120',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 0, tc_mantic_empresas_deudas.saldo, 0) as 'no vencido'
+from
+	tc_mantic_empresas_deudas
+inner join
+	tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
+inner join 
+	tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus= tc_mantic_empresas_estatus.id_empresa_estatus
+inner join 
+	tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join 
+	tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa= tc_mantic_empresas.id_empresa
+left join
+	tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+left join
+  tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
+left join 
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+left join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo				  
+where
+	tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
+  and {condicion}
+group by	
+	tc_mantic_notas_entradas.id_nota_entrada
+order by
+	tc_mantic_notas_entradas.registro desc
+			</select>
 			<select id="proveedores">
-				select
-					tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
-					tc_mantic_empresas.clave,
-					tc_mantic_empresas.nombre,
-					tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.clave as clave_proveedor,
-					tc_mantic_proveedores.razon_social,
-					count(*) as cuentas,
-					sum(tc_mantic_empresas_deudas.importe) as importe,
-					sum(tc_mantic_empresas_deudas.pagar) as pagar,
-					abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
-					sum(tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado
-				from
-					tc_mantic_empresas_deudas
-				inner join
-					tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
-				inner join 
-					tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
-				inner join 
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
-  			inner join 
-	  			tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
-				inner join 
-					tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa = tc_mantic_empresas.id_empresa
-				where
-					tc_mantic_empresas_deudas.id_empresa in (1, 2)
-          and {condicion}
-				group by	
-          tc_mantic_proveedores.id_proveedor
-        {sortOrder}					        
+select
+  tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+  tc_mantic_empresas.clave,
+  tc_mantic_empresas.nombre,
+  tc_mantic_proveedores.id_proveedor,
+  tc_mantic_proveedores.clave as clave_proveedor,
+  tc_mantic_proveedores.razon_social,
+  count(*) as cuentas,
+  sum(tc_mantic_empresas_deudas.importe) as importe,
+  sum(tc_mantic_empresas_deudas.pagar) as pagar,
+  abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
+  sum(tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado
+from
+  tc_mantic_empresas_deudas
+inner join
+  tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
+inner join 
+  tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
+inner join 
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+inner join 
+  tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
+inner join 
+  tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa = tc_mantic_empresas.id_empresa
+where
+  tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
+  and {condicion}
+group by	
+  tc_mantic_proveedores.id_proveedor
+{sortOrder}					        
       </select>  
 			<select id="detalle">
 				select 

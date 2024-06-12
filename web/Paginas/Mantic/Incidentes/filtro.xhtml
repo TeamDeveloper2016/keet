@@ -69,9 +69,9 @@
 								</p:column> 
 							</p:selectOneMenu>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.inicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.inicio}" pattern="dd/MM/yyyy" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Vigencia termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.termino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" />														
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.termino}" pattern="dd/MM/yyyy" locale="mx"/>
 							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:"/>
 							<p:selectOneMenu id="idTipoIncidente" value="#{manticIncidentesFiltro.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt">
 								<f:selectItems value="#{manticIncidentesFiltro.attrs.incidentes}"/>
@@ -167,7 +167,7 @@
 								<h:outputText value="#{row['registro']}"/>
 							</p:column>												
 							<p:column class="janal-wid-col-30 janal-column-center">
-								<h:graphicImage library="janal" name="icon/semaforos/#{row.idIncidenteEstatus eq '1' ? 'circulo-verde': (row.idIncidenteEstatus eq '2' ? 'circulo-amarillo' : (row.idIncidenteEstatus eq '3' ? 'circulo-rojo' : 'circulo-gris'))}.png" title="#{row.idIncidenteEstatus eq '1' ? 'POR APLICAR': (row.idIncidenteEstatus eq '2' ? 'EN PROCESO' : (row.idIncidenteEstatus eq '3' ? 'APLICADA' : 'CANCELADO'))}"/>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idIncidenteEstatus eq '1' ? 'circulo-verde': (row.idIncidenteEstatus eq '2' ? 'circulo-amarillo' : (row.idIncidenteEstatus eq '3' ? 'circulo-rojo': 'circulo-gris'))}.png" title="#{row.idIncidenteEstatus eq '1' ? 'POR APLICAR': (row.idIncidenteEstatus eq '2' ? 'EN PROCESO' : (row.idIncidenteEstatus eq '3' ? 'APLICADA' : 'CANCELADO'))}"/>
 							</p:column>
 							<f:facet name="footer">
 								Total [#{manticIncidentesFiltro.lazyModel== null ? 0: manticIncidentesFiltro.lazyModel.rowCount}] registros

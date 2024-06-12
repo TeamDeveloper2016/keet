@@ -13,7 +13,7 @@
         'contenedorGrupos\\:comentarios': {validaciones: 'libre', mascara: 'texto', formatos: 'cambiar-mayusculas'}
       };
 			
-			fieldsDialog ={
+			fieldsDialog = {
 				'pago'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
 				'fechaPago'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogo'},
 				'referencia'   : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogo'},
@@ -21,7 +21,7 @@
         'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogo'}
 			};
 			
-			fieldsDialogGeneral ={
+			fieldsDialogGeneral = {
 				'pagoGeneral'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'fechaPagoGeneral'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogoGeneral'},
@@ -29,7 +29,7 @@
         'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogoGeneral'}
 			};
 			
-			fieldsDialogSegmento ={
+			fieldsDialogSegmento = {
 				'pagoSegmento'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'fechaPagoSegmento'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'referenciaSegmento'   : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogoSegmento'},
@@ -37,7 +37,7 @@
         'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogoSegmento'}
 			};
       
-			fieldsDialogCuenta ={
+			fieldsDialogCuenta = {
 				'pagoCuenta'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoCuenta'},
 				'fechaPagoCuenta'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoCuenta'},
 				'referenciaCuenta'   : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogoCuenta'},
@@ -95,7 +95,7 @@
                   <p:commandButton icon="fa fa-money" process="@this" actionListener="#{manticCatalogosClientesCuentasDeuda.doLoadBeanCuentas}" title="Referenciar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoCuenta').show();"/>
                 </p:panelGrid>   
 							  <p:commandLink value="PDF importado: #{manticCatalogosClientesCuentasDeuda.pdf.ruta}#{manticCatalogosClientesCuentasDeuda.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}"/>
-                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{manticCatalogosClientesCuentasDeuda.doDeletePdf}" title="Eliminar PDF" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}"/>
+                <p:commandButton title="Eliminar PDF" icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{manticCatalogosClientesCuentasDeuda.doDeletePdf}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}"/>
               </p:panelGrid>  
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt importado">
                 <p:panel header="Datos de la nota de crédito" styleClass="janal-wid-100-txt" toggleable="true" toggleSpeed="500">

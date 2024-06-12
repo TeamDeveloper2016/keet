@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -8,20 +9,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
@@ -40,14 +47,18 @@ import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.Visibility;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
 @ViewScoped
 public class Saldos extends IBaseFilter implements Serializable {
 
-private static final long serialVersionUID = 8793667741599428879L;	
+  private static final long serialVersionUID = 8793667741599428879L;	
   private static final Log LOG = LogFactory.getLog(Saldos.class);
+	private static final String DATA_FILE      = "EMPRESA,DESARROLLO,CONTRATO,ORDEN COMPRA,PROVEEDOR,FACTURA,FECHA FACTURA,FECHA RECEPCION,FECHA VENCIMIENTO,NETO A PAGAR,ABONADO,DIAS,SALDO VENCIDO,1 A 30,31 A 60,61 A 90,91 A 120,MAS 120,NO VENCIDO";
+
   
   private Reporte reporte;
   protected FormatLazyModel lazyModelDetalle;
@@ -108,6 +119,27 @@ private static final long serialVersionUID = 8793667741599428879L;
   public FormatLazyModel getLazyPagosRealizados() {
     return lazyPagosRealizados;
   }
+
+  public StreamedContent getFlujos() {
+		StreamedContent regresar= null;		
+		Xls xls                 = null;
+    String template         = "FL";
+		try {
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.toPrepare(), "VistaEmpresasDto", "flujos", template), DATA_FILE);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    return regresar;		
+	} 
   
   @PostConstruct
   @Override

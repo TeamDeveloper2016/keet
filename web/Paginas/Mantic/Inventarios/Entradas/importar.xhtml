@@ -58,10 +58,10 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticInventariosEntradasImportar.doTabChange}" process="@this" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.consecutivo}" readonly="true"/>
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator/>
 								<p:outputLabel for="idOrdenCompra" value="No. orden:"/>
 								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosEntradasImportar.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
@@ -80,16 +80,26 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="factura" value="No factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.factura}" readonly="true"/>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"   disabled="true"/>
-								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"  disabled="true"/>
-								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.diasPlazo}" readonly="true"/>
-								<p:outputLabel for="deuda" value="Deuda:"/>
-								<p:inputText id="deuda" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.deuda}" readonly="true"/>
+  							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">		
+  							  <p:panelGrid columns="1" styleClass="janal-wid-100">		
+								    <p:outputLabel for="fechaFactura" value="Fecha factura:"/>
+								    <p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaFactura}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" disabled="true"/>
+                  </p:panelGrid>  
+  							  <p:panelGrid columns="1" styleClass="janal-wid-100">		
+    								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
+		    						<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaRecepcion}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" disabled="true"/>
+                  </p:panelGrid>  
+  							  <p:panelGrid columns="1" styleClass="janal-wid-100">		
+                    <p:outputLabel for="diasPlazo" value="Dias plazo:"/>
+                    <p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.diasPlazo}" readonly="true"/>
+                  </p:panelGrid>  
+  							  <p:panelGrid columns="1" styleClass="janal-wid-100">		
+                    <p:outputLabel for="deuda" value="Deuda:"/>
+                    <p:inputText id="deuda" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.deuda}" readonly="true"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
 								<p:outputLabel for="fechaPago" value="Fecha pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"  disabled="true"/>
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"  disabled="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">

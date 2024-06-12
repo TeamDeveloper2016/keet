@@ -46,6 +46,16 @@
 			fieldsPlazo = {
 				'plazo': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
 			};
+
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
 		<style>
 			.janal-tr-orange {
@@ -135,9 +145,9 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoTermino"/>
@@ -237,11 +247,11 @@
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">   
-                    <p:commandButton action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()" rendered="false"/>						
-                    <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                    <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
-                    <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
-                    <p:commandButton id="enviar" icon="fa fa-mail-forward" title="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                    <p:commandButton icon="fa fa-file-text-o" title="Generar ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" onstart="return janal.bloquear()" rendered="false"/>						
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                    <p:commandButton icon="fa fa-mail-forward" title="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                   </div>  
                 </f:facet>												
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.ticket}">

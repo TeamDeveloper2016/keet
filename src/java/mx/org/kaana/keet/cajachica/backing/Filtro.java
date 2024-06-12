@@ -53,7 +53,7 @@ import org.primefaces.model.StreamedContent;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428332L;	
+  private static final long serialVersionUID= 8793667741599428332L;	
 	private static final String DATA_FILE     = "DESARROLLO,CONSECUTIVO,RESIDENTE,NOMBRE,IMPORTE,REGISTRO";
 
 	private FormatLazyModel lazyModelGastos;
