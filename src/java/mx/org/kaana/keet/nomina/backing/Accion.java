@@ -99,7 +99,7 @@ public class Accion extends IBaseFilter implements Serializable {
 					0D, // Double neto, 
 					1L, // Long idNominaEstatus, 
 					0D, // Double deducciones, 
-					2L, // Long idTipoNomina, 
+					1L, // Long idTipoNomina, 
 					0L, // Long personas, 
 					0D, // Double aportaciones, 
 					-1L, // Long idNomina, 

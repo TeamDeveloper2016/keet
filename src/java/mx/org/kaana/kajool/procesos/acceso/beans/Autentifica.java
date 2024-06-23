@@ -192,13 +192,12 @@ public class Autentifica implements Serializable {
   } // loadEscuelas
 
   public boolean tieneAccesoBD(String cuenta, String contrasenia, String ip) throws Exception {
-    boolean regresar = false;
-    Map<String, Object> params = null;
+    boolean regresar          = false;
+    Map<String, Object> params= new HashMap<>();
     try {
       this.credenciales.setIp(ip);
       this.credenciales.setCuenta(cuenta);
       this.credenciales.setContrasenia(contrasenia);
-      params = new HashMap<>();
       LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
       params.put("cuenta", cuenta);
       this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
@@ -214,9 +213,8 @@ public class Autentifica implements Serializable {
       else {
         regresar = this.isDelegaActivo();
       } // else
-      if (regresar) {
+      if (regresar) 
         this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona!= null && this.persona.getUltimoAcceso()== null? LocalDateTime.now(): this.persona.getUltimoAcceso());        
-      } // else
     } // try
     catch (Exception e) {
       throw e;
@@ -229,13 +227,12 @@ public class Autentifica implements Serializable {
 	  
   public boolean validaCambioUsuario(String cuenta, String contrasenia) throws Exception {
     boolean regresar          = false;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		List<Persona> personas    = null;
 		this.persona              = null;
     try {
       this.credenciales.setCuenta(cuenta);
       this.credenciales.setContrasenia(contrasenia);
-      params = new HashMap<>();
       LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
       params.put("cuenta", cuenta);
 			personas= DaoFactory.getInstance().toEntitySet(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
@@ -293,12 +290,11 @@ public class Autentifica implements Serializable {
 	} // toSeleccionPersona
 	
   private boolean isDelegaActivo() throws Exception {
-    boolean regresar = false;
-    Privilegios privilegios = null;
-    List<Entity> delegas = null;
-    Entity delega = null;
+    boolean regresar       = false;
+    Privilegios privilegios= new Privilegios();
+    List<Entity> delegas   = null;
+    Entity delega          = null;
     try {
-      privilegios = new Privilegios();
       delegas = privilegios.toUsersDelegaActivo(this.credenciales.getCuenta());
       if (delegas != null && !delegas.isEmpty()) {
         delega = delegas.get(0);
@@ -400,9 +396,8 @@ public class Autentifica implements Serializable {
 
 	private String toLoadSucursales() throws Exception {
 		String regresar           = "";
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idEmpresa", this.getEmpresa().getIdEmpresaDepende());
 			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
 			if(items.isEmpty())
@@ -423,11 +418,9 @@ public class Autentifica implements Serializable {
 	}
 	
 	private String toLoadDependencias() throws Exception {
-		StringBuilder regresar    = null;
-		Map<String, Object> params= null;
+		StringBuilder regresar    = new StringBuilder("");
+		Map<String, Object> params= new HashMap<>();
 		try {
-			regresar= new StringBuilder("");
-			params=new HashMap<>();
 			params.put("idEmpresa", this.getEmpresa().getIdEmpresaDepende());
 			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
 			if(items.isEmpty())
@@ -446,4 +439,5 @@ public class Autentifica implements Serializable {
 		} // finally
 		return regresar.substring(0, regresar.length()- 2);
 	} // toLoadDependencias
+  
 }

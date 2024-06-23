@@ -9,7 +9,7 @@ package mx.org.kaana.jobs;
  */
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.formato.BouncyEncryption;
@@ -30,49 +31,46 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Cierre implements Job, Serializable {
+public class Apertura implements Job, Serializable {
 
-	private static final Log LOG              =LogFactory.getLog(Cierre.class);
+	private static final Log LOG              =LogFactory.getLog(Apertura.class);
 	private static final long serialVersionUID=7505746848602636876L;
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
+		Transaccion transaccion   = null;
     Map<String, Object> params= new HashMap<>();    
 		try {
       Boolean process= Boolean.FALSE;      
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":
-          process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.THURSDAY);
+          // process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.THURSDAY);
+          process= Boolean.TRUE;
           break;
         case "gylvi":
-          process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.SATURDAY);
           break;
         case "triana":
           break;
       } // swtich
-      LOG.error("ENTRO A CERRAR LA NOMINA DE FORMA AUTOMATICA ["+ process+ "]");
+      LOG.error("ENTRO A CORRER LA NOMINA DE FORMA AUTOMATICA ["+ process+ "]");
       if(process) {
         params.put("idTipoNomina", 1L);      
-        Entity nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
-        if(nomina!= null && !nomina.isEmpty() && Objects.equals(nomina.toLong("idNominaEstatus"), ENominaEstatus.CALCULADA.getIdKey())) {
-          Autentifica autentifica          = this.toLoadUser();
-          TcKeetNominasBitacoraDto bitacora= new TcKeetNominasBitacoraDto(
-            "PROCESO DE CIERRE AUTOMATICO DE NÓMINA", // String justificacion, 
-            ENominaEstatus.TERMINADA.getIdKey(), // Long idNominaEstatus, 
-            autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
-            -1L, // Long idNominaBitacora, 
-            nomina.toLong("idNomina") // Long idNomina
-          );
+        Entity ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+        if(ultima!= null && !ultima.isEmpty() && Objects.equals(ultima.toLong("idNominaEstatus"), ENominaEstatus.INICIADA.getIdKey())) {
+          Autentifica autentifica= this.toLoadUser();
+          TcKeetNominasDto nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, ultima.toLong("idNomina"));
+          nomina.setIdCompleta(1L);
+          nomina.setObservaciones("PROCESO DE APERTURA AUTOMATICO DE NÓMINA");
           String path= this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().substring(0, this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().indexOf("/WEB-INF/"));
-          Transaccion transaccion= new Transaccion(nomina.toLong("idNomina"), autentifica, bitacora, path, Boolean.TRUE);
-          if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 
-            LOG.error("La nómina se cerró de forma correcta [".concat(nomina.toString("nomina")).concat("] !"));
+          transaccion= new Transaccion(nomina, autentifica, new String[] {"1", "2", "4"}, path);
+          if(transaccion.ejecutar(EAccion.AGREGAR)) 
+            LOG.error("La nómina se corrio de forma correcta [".concat(ultima.toString("nomina")).concat("] !"));
         } // if  
         else
-          LOG.error("La nomina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
+          LOG.error("La nomina no tiene el estatus para correrse [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
-        LOG.error("Entro a cerrar la nomina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
+        LOG.error("Entro a correr la nomina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -93,8 +91,8 @@ public class Cierre implements Job, Serializable {
   } // toLoadUser
   
   public static void main(String ... args) throws JobExecutionException {
-    Cierre cierre= new Cierre();
-    cierre.execute(null);
+    Apertura apertura= new Apertura();
+    apertura.execute(null);
   }
   
 }

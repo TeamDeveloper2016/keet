@@ -127,14 +127,20 @@
             <f:facet name="header">
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Flujos" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:menuitem value="Flujos créditos" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
                     <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.flujos}" />  
+                  </p:menuitem>
+                  <p:menuitem value="Flujo semanal" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.semanal}" />  
                   </p:menuitem>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">   
-                <p:commandButton title="Flujos" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                <p:commandButton title="Flujos créditos" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
                   <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.flujos}" />  
+                </p:commandButton>
+                <p:commandButton title="Flujo semanal" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.semanal}" />  
                 </p:commandButton>
               </div>  
             </f:facet>												

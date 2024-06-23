@@ -137,12 +137,10 @@ public class Deuda extends IBaseImportar implements Serializable {
 
 	private void loadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> campos       = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
@@ -159,11 +157,9 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -179,11 +175,9 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -198,11 +192,9 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	public void doLoadCajasGeneral() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresaGeneral"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -217,11 +209,9 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	public void doLoadCajasSegmento() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresaSegmento"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -236,13 +226,11 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	private void loadClienteDeuda() throws Exception {
 		Entity deuda             = null;
-    List<Columna> columns    = null;
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "deuda", params);
-      columns= new ArrayList<>();  
 			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("deuda", EFormatoDinamicos.MILES_CON_DECIMALES));
       if(deuda!= null) {
@@ -266,16 +254,14 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();
 		List<Entity> cuentas      = null;
     try {  	  
-			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");			
 			// params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_deuda_estatus in (1, 2)");			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
@@ -314,9 +300,8 @@ public class Deuda extends IBaseImportar implements Serializable {
 	} // validaPagogeneral
 	
 	public void doLoadCuentas() {
-	  Map<String, Object> params= null;	
+	  Map<String, Object> params= new HashMap<>();	
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			
@@ -398,12 +383,10 @@ public class Deuda extends IBaseImportar implements Serializable {
 	} // onRowToggle
 	
 	private void loadHistorialPagos() throws Exception{
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {  	  
-			params= new HashMap<>();
 			params.put("idClienteDeuda", ((Entity)this.attrs.get("registroSeleccionado")).getKey());			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -464,7 +447,7 @@ public class Deuda extends IBaseImportar implements Serializable {
     List<Entity> cuentas            = new ArrayList<>();
 		try {
 			if(this.validaPagoSegmento()) { 
-				saldar= Long.valueOf(this.attrs.get("saldarSegmento").toString()).equals(1L);
+				saldar= Objects.equals(Long.valueOf(this.attrs.get("saldarSegmento").toString()), 1L);
 				importe= new TcManticClientesPagosDto();
 				importe.setIdUsuario(JsfBase.getIdUsuario());
 				importe.setObservaciones(this.pago.getObservaciones());
@@ -496,13 +479,11 @@ public class Deuda extends IBaseImportar implements Serializable {
 	} // doRegistrarPagoSegmento
 	
 	private boolean validaPago() {
-		boolean regresar= false;
-		Double importe  = 0D;
+		boolean regresar= Boolean.FALSE;
+		Double importe  = (Double)this.attrs.get("pago");
+		Entity deuda    = (Entity)this.attrs.get("seleccionado");
 		Double saldo    = 0D;
-		Entity deuda    = null;
 		try {
-			importe= (Double)this.attrs.get("pago");
-			deuda  = (Entity)this.attrs.get("seleccionado");
 			if(importe> 0D && !deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) {
 				saldo   = Numero.toRedondearSat(deuda.toDouble("saldo"));
 				regresar= importe<= saldo;
@@ -516,11 +497,10 @@ public class Deuda extends IBaseImportar implements Serializable {
   
 	private boolean validaPagoGeneral() {
 		boolean regresar= false;
-		Double importe  = 0D;
+		Double importe  = (Double)this.attrs.get("pagoGeneral");
 		Double saldo    = 0D;
 		Entity deuda    = null;
 		try {
-			importe= (Double)this.attrs.get("pagoGeneral");
 			if(importe> 0D) {
 				deuda= (Entity) this.attrs.get("deuda");
 				saldo= Numero.toRedondearSat(deuda.toDouble("saldo"));
@@ -548,9 +528,8 @@ public class Deuda extends IBaseImportar implements Serializable {
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -668,10 +647,9 @@ public class Deuda extends IBaseImportar implements Serializable {
   }
  
 	public void doCheckFolio() {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
 			this.attrs.put("folio", "");
-			params=new HashMap<>();
 			params.put("folio", this.getFactura().getFolio());
 			params.put("idCliente", this.attrs.get("idCliente"));
 			int month= Calendar.getInstance().get(Calendar.MONTH);
@@ -699,10 +677,9 @@ public class Deuda extends IBaseImportar implements Serializable {
   }  
   
   private Long toClaveCatalogo(EClaveCatalogo tipo, String clave) {
-    Long regresar= null;
-    Map<String, Object> params = null;
+    Long regresar             = null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("clave", clave);      
       Value value= null;
       switch(tipo) {
@@ -736,9 +713,8 @@ public class Deuda extends IBaseImportar implements Serializable {
   }  
  
 	public void doLoadBeanCuentas() {
-	  Map<String, Object> params= null;	
+	  Map<String, Object> params= new HashMap<>();	
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			

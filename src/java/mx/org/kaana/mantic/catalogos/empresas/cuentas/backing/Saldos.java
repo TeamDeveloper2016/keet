@@ -124,10 +124,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 		StreamedContent regresar= null;		
 		Xls xls                 = null;
     String template         = "FL";
+    Map<String, Object> params= null;
 		try {
+      params= this.toPrepare();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(this.toPrepare(), "VistaEmpresasDto", "flujos", template), DATA_FILE);	
+      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
 			if(xls.procesar()) { 
 		    String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -138,6 +140,38 @@ public class Saldos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
       JsfBase.addMessageError(e);
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally		
+    return regresar;		
+	} 
+  
+  public StreamedContent getSemanal() {
+		StreamedContent regresar= null;		
+		Xls xls                 = null;
+    String template         = "SM";
+    Map<String, Object> params= null;
+		try {
+      params= this.toPrepare();
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      Entity idNomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+      if(idNomina!= null && !idNomina.isEmpty()) 
+        params.put(Constantes.SQL_CONDICION, "");
+      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally		
     return regresar;		
 	} 
   

@@ -28,6 +28,7 @@ public class JsfBase extends JsfUtilities {
   private static final String DIRECTOR = "TECNICOS";
   private static final String CAJERO   = "CAJERO";
   private static final String AGENTE   = "AGENTE";
+  private static final String CHOFER   = "CHOFER";
   private static final String RESIDENTE= "RESIDENTEDEOBRA";
 
   public static Autentifica getAutentifica() {
@@ -66,7 +67,7 @@ public class JsfBase extends JsfUtilities {
     boolean regresar= false;
     try {
       String perfil = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
-      regresar = perfil.equals(AGENTE);
+      regresar = perfil.equals(AGENTE) || perfil.equals(CHOFER);
     } // try
     catch (Exception e) {
       throw e;

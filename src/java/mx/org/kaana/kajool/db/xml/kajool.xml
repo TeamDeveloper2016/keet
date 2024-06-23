@@ -543,7 +543,7 @@
         where
           id_empleado = {idEmpleado} and id_usuario = {idUsuario}
       </select>
-      <select  id="vigente">
+      <select id="vigente">
         select
            *
         from
@@ -551,7 +551,7 @@
         where
           activo = 1
         and
-          id_empleado={idEmpleado}
+          id_empleado={idPersona}
         and
           (now() &gt;=tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
       </select>  						

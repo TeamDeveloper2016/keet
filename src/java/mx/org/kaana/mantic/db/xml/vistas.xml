@@ -7688,13 +7688,13 @@ select
 	tc_mantic_empresas_deudas.importe as 'neto a pagar',
 	tc_mantic_empresas_deudas.importe- tc_mantic_empresas_deudas.saldo as abonado,
 	(datediff(tc_mantic_empresas_deudas.limite, now())* -1) as dias,
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt; 0, tc_mantic_empresas_deudas.saldo, 0) as 'saldo vencido',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 1 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 30, tc_mantic_empresas_deudas.saldo, 0) as '1 a 30',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 31 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 60, tc_mantic_empresas_deudas.saldo, 0) as '31 a 60',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 61 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 90, tc_mantic_empresas_deudas.saldo, 0) as '61 a 90',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 91 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 120, tc_mantic_empresas_deudas.saldo, 0) as '91 a 120',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 121, tc_mantic_empresas_deudas.saldo, 0) as 'mas 120',
-	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 0, tc_mantic_empresas_deudas.saldo, 0) as 'no vencido'
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt; 0, round(tc_mantic_empresas_deudas.saldo, 2), 0) as 'saldo vencido',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 1 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 30, round(tc_mantic_empresas_deudas.saldo, 2), 0) as '1 a 30',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 31 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 60, round(tc_mantic_empresas_deudas.saldo, 2), 0) as '31 a 60',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 61 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 90, round(tc_mantic_empresas_deudas.saldo, 2), 0) as '61 a 90',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 91 and datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 120, round(tc_mantic_empresas_deudas.saldo, 2), 0) as '91 a 120',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&gt;= 121, round(tc_mantic_empresas_deudas.saldo, 2), 0) as 'mas 120',
+	if(datediff(tc_mantic_empresas_deudas.limite, now())* -1&lt;= 0, round(tc_mantic_empresas_deudas.saldo, 2), 0) as 'no vencido'
 from
 	tc_mantic_empresas_deudas
 inner join

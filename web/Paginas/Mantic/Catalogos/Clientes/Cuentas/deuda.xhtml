@@ -659,7 +659,7 @@
 		</p:dialog>
 		<p:dialog id="dialogoPagoCuenta" widgetVar="dlgPagoCuenta" header="Referenciar pago sobre facturas" dynamic="true" resizable="false" closable="true" responsive="true" width="80%" onHide="janal.restore();janal.refresh();janal.desbloquear();" onShow="janal.change('formDialogoPagoCuenta', fieldsDialogCuenta);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPagoCuenta" prependId="false">
-        <p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-fix-10 janal-column-left, janal-fix-40 janal-column-left, janal-fix-10 janal-column-left, janal-fix-40 janal-column-left">
+        <p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-fix-15 janal-column-left, janal-fix-35 janal-column-left, janal-fix-35 janal-column-right, janal-fix-15 janal-column-right">
           <p:outputLabel value="Importe nota crédito:"/>
           <p:outputLabel value="$ #{manticCatalogosClientesCuentasDeuda.doMiles(manticCatalogosClientesCuentasDeuda.pago.total)}" styleClass="janal-wid-100-txt janal-color-orange"/>
           <p:outputLabel value="Importe acumulado:"/>

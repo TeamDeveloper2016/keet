@@ -108,31 +108,36 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 
 	public Transaccion(Long idNomina, Autentifica autentifica) {
-		this(idNomina, autentifica, -1L, -1L, new String[] {"1", "4"});
+		this(idNomina, autentifica, -1L, -1L, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE);
 	}
 
 	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar) {
-		this(nomina.getIdNomina(), autentifica, -1L, -1L, idNotificar);
+		this(nomina.getIdNomina(), autentifica, -1L, -1L, idNotificar, JsfBase.getRealPath(), Boolean.FALSE);
+		this.nomina= nomina;
+	}
+
+	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar, String realPath) {
+		this(nomina.getIdNomina(), autentifica, -1L, -1L, idNotificar, realPath, Boolean.TRUE);
 		this.nomina= nomina;
 	}
 
 	public Transaccion(Long idNomina, Long idEmpresaPersona, Autentifica autentifica) {
-		this(idNomina, autentifica, idEmpresaPersona, -1L, new String[] {"1", "4"});
+		this(idNomina, autentifica, idEmpresaPersona, -1L, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE);
 	}
 	
 	public Transaccion(Long idNomina, Autentifica autentifica, Long idProveedor) {
-		this(idNomina, autentifica, -1L, idProveedor, new String[] {"1", "4"});
+		this(idNomina, autentifica, -1L, idProveedor, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE);
 	}
 	
-	private Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor, String[] idNotificar) {
+	private Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor, String[] idNotificar, String realPath, Boolean automatico) {
     super(new TcKeetPrestamosPagosDto());
 		this.idNomina        = idNomina;
 		this.autentifica     = autentifica;
 		this.idEmpresaPersona= idEmpresaPersona;
 		this.idProveedor     = idProveedor;
     this.notificar       = idNotificar;
-    this.realPath        = JsfBase.getRealPath();
-    this.automatico      = Boolean.FALSE;
+    this.realPath        = realPath;
+    this.automatico      = automatico;
 	}
 
 	public Transaccion(Long idFigura, Long idTipoFigura, Correo correo) {
@@ -1027,12 +1032,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Parametros comunes           = null;
     try {
       seleccion = EReportes.LISTADO_NOMINA_CALCULADA;  
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      comunes= new Parametros(this.autentifica.getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));	
+      parametros.put("REPORTE_ICON", this.realPath.concat("resources/iktan/icon/acciones/"));	
       parametros.put("REPORTE_ICON", this.realPath.concat("/resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");

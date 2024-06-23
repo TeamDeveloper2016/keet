@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.procesos.acceso.beans.GrupoPerfiles;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.procesos.acceso.beans.UsuarioMenu;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
-import mx.org.kaana.mantic.enums.ETipoEmpresa;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,11 +44,10 @@ public class Privilegios implements Serializable {
   } // Privilegios
 
   public List<Sucursal> toSucursales() throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     List<Sucursal> regresar   = null;
     try {
       LOG.info(" Verificar acceso a sucursales ");
-      params = new HashMap<>();
       params.put("idPersona", this.persona.getIdPersona());
       regresar = (List<Sucursal>) DaoFactory.getInstance().toEntitySet(Sucursal.class, "VistaTcJanalUsuariosDto", "sucursales", params);
 			if(regresar!= null && !regresar.isEmpty()) 
@@ -72,7 +70,6 @@ public class Privilegios implements Serializable {
   public Long verificarPerfiles() throws Exception {
     Long regresar = -1L;
     Map<String, Object> params = null;
-    TcManticPersonasDto persona = null;
     try {
       LOG.info("verificara perfiles ajenos al actual");
       params = new HashMap<>();
@@ -89,10 +86,9 @@ public class Privilegios implements Serializable {
   } // verificarPerfiles
 
   public Long verificarDelega() throws Exception {
-    Long regresar = -1L;
-    Map<String, Object> params = null;
+    Long regresar             = -1L;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idPersona", this.persona.getIdPersona());
       regresar = DaoFactory.getInstance().toSize("TrJanalUsuariosDelegaDto", "vigente", params);
     } // try
@@ -106,10 +102,9 @@ public class Privilegios implements Serializable {
   } // verificarDelega		
 
   public List<UsuarioMenu> procesarModulosPerfil() throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     List<UsuarioMenu> regresar = null;
     try {
-      params = new HashMap<>();
       params.put("idPerfil", this.persona.getIdPerfil());
       regresar = DaoFactory.getInstance().toEntitySet(UsuarioMenu.class, "VistaPerfilesMenusDto", "menuPerfil", params, Constantes.SQL_TODOS_REGISTROS);
     } // try
@@ -123,10 +118,9 @@ public class Privilegios implements Serializable {
   } // procesarModulosPerfil
 
   public List<UsuarioMenu> procesarTopModulos() throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     List<UsuarioMenu> regresar = null;
     try {
-      params = new HashMap<>();
       params.put("publicar", "1");
       params.put("idPerfil", this.persona.getIdPerfil());
       regresar = DaoFactory.getInstance().toEntitySet(UsuarioMenu.class, "VistaPerfilesMenusDto", "menuEncabezado", params, Constantes.SQL_TODOS_REGISTROS);
@@ -142,10 +136,9 @@ public class Privilegios implements Serializable {
 
   public Long getIdPersona(String cuenta) throws Exception {
     Long regresar = -1L;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     Entity persona = null;
     try {
-      params = new HashMap<>();
       params.put("cuenta", cuenta);
       persona = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
       if (persona == null) {
@@ -170,9 +163,8 @@ public class Privilegios implements Serializable {
 
   public Persona toPersona(Long idUsuario, Long idPerfil, String cuenta) throws Exception {
     Persona regresar = null;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idUsuario", idUsuario);
       params.put("idPerfil", idPerfil);
       params.put("cuenta", cuenta);
@@ -188,10 +180,9 @@ public class Privilegios implements Serializable {
   } // toEmpleado
 
   public Persona toPersonaDelega(GrupoPerfiles grupoPerfil) throws Exception {
-    Persona regresar = null;
-    Map<String, Object> params = null;
+    Persona regresar          = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idUsuario", grupoPerfil.getIdUsuario());
       params.put("idPerfil", grupoPerfil.getIdPerfil());
       params.put("cuenta", grupoPerfil.getCuenta());
@@ -207,10 +198,9 @@ public class Privilegios implements Serializable {
   } // toEmpleadoDelega
 
   private List<Entity> getUsuariosDelega() throws Exception {
-    List<Entity> regresar = null;
-    Map<String, Object> params = null;
+    List<Entity> regresar     = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idUsuario", this.persona.getIdUsuario());
       regresar = DaoFactory.getInstance().toEntitySet("VistaDelegaPrivilegiosDto", "usuariosDelega", params);
     } // try
@@ -245,12 +235,10 @@ public class Privilegios implements Serializable {
   } // consultaUsuariosDelega
 
   public List<GrupoPerfiles> toGruposDelega(String cuenta) throws Exception {
-    List<GrupoPerfiles> regresar = null;
-    List<Entity> grupos = null;
-    Map<String, Object> params = null;
+    List<GrupoPerfiles> regresar= new ArrayList<>();
+    List<Entity> grupos       = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
-      regresar = new ArrayList<>();
       params.put("cuenta", cuenta);
       params.put("idUsuario", this.persona.getIdUsuario());
       grupos = DaoFactory.getInstance().toEntitySet("VistaDelegaPrivilegiosDto", "gruposDelegados", params);
@@ -271,11 +259,10 @@ public class Privilegios implements Serializable {
   } // getProyectosDelega
 
   public List<GrupoPerfiles> toPerfilesDelega(Long idGrupo, String cuenta, Long idUsuario) throws Exception {
-    List<GrupoPerfiles> regresar = null;
-    Map<String, Object> params = null;
-    List<Entity> perfiles = null;
+    List<GrupoPerfiles> regresar= null;
+    Map<String, Object> params  = new HashMap<>();
+    List<Entity> perfiles       = null;
     try {
-      params = new HashMap<>();
       params.put("idGrupo", idGrupo);
       params.put("cuenta", cuenta);
       params.put("idUsuario", idUsuario);
@@ -296,11 +283,10 @@ public class Privilegios implements Serializable {
   } // getPerfilesDelega
 
   public List<GrupoPerfiles> toGrupos() throws Exception {
-    List<GrupoPerfiles> regresar = null;
+    List<GrupoPerfiles> regresar= null;
     List<Entity> gruposUsuarios = null;
-    Map<String, Object> params = null;
+    Map<String, Object> params  = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idUsuario", this.persona.getIdUsuario());
       gruposUsuarios = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", params);
       regresar = new ArrayList<>();
@@ -319,11 +305,10 @@ public class Privilegios implements Serializable {
   } // recuperarEncuestas
 
   public List<GrupoPerfiles> toPerfiles(Long idGrupo, Long idEmpleado) throws Exception {
-    List<GrupoPerfiles> regresar = null;
-    Map<String, Object> params = null;
-    List<Entity> perfiles = null;
+    List<GrupoPerfiles> regresar= null;
+    Map<String, Object> params  = new HashMap<>();
+    List<Entity> perfiles       = null;
     try {
-      params = new HashMap<>();
       params.put("idGrupo", idGrupo);
       params.put("idPersona", idEmpleado);
       perfiles = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfiles", params, Constantes.SQL_TODOS_REGISTROS);
@@ -343,10 +328,9 @@ public class Privilegios implements Serializable {
   } // recuperarPerfiles	
 
   public List<Entity> toUsersDelegaActivo(String cuenta) throws Exception {
-    List<Entity> regresar = null;
-    Map<String, Object> params = null;
+    List<Entity> regresar     = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("cuenta", cuenta);
       regresar = DaoFactory.getInstance().toEntitySet("VistaDelegaPrivilegiosDto", "delegaActivo", params);
     } // try
@@ -373,4 +357,5 @@ public class Privilegios implements Serializable {
     } // catch		
     return regresar;
   } // toPaginaMenu
+  
 }
