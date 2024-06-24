@@ -64,8 +64,6 @@ public class Costos extends IBaseFilter implements Serializable {
   protected void init() {		
     if(JsfBase.getFlashAttribute("idNomina")!= null)
 		  this.attrs.put("idNomina", new UISelectEntity((Long)JsfBase.getFlashAttribute("idNomina")));
-//    if(JsfBase.getFlashAttribute("idNomina")== null)
-//      UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 		this.attrs.put("idContrato", -1L);
     this.attrs.put("activar", Boolean.TRUE);
@@ -78,12 +76,11 @@ public class Costos extends IBaseFilter implements Serializable {
   
 	@Override
 	public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.id_contrato");
-      columns= new ArrayList<>();
       columns.add(new Columna("porcentajeDia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porcentajeObra", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porDia", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -222,7 +219,7 @@ public class Costos extends IBaseFilter implements Serializable {
     try {
 			params.put("idTipoNomina", "1");
       this.attrs.put("nominas", UIEntity.build("VistaNominaDto", "ultima", params));
-      if(this.attrs.get("idNomina")== null)
+      if(Objects.equals(this.attrs.get("idNomina"), null))
   		  this.attrs.put("idNomina", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("nominas")));
       this.doLoadDesarrollos();
     } // try
@@ -242,13 +239,12 @@ public class Costos extends IBaseFilter implements Serializable {
       if(this.toCheckTotales()) {
         transaccion= new Almacenar(this.contratos);
         if (transaccion.ejecutar(EAccion.GENERAR)) {
-          // regresar= this.doCancelar();
           JsfBase.addMessage("Se registraron los costos de mano de obra", ETipoMensaje.INFORMACION);
           this.doLoadDesarrollos();
           this.doLoad();
         } // if
         else 
-          JsfBase.addMessage("Ocurrió un error al registrar los costos de mano de obra", ETipoMensaje.ERROR);      			
+          JsfBase.addMessage("Ocurrió un error en los costos de mano de obra", ETipoMensaje.ERROR);      			
       } // if  
     } // try
     catch (Exception e) {
@@ -308,8 +304,6 @@ public class Costos extends IBaseFilter implements Serializable {
     Boolean regresar= this.contratos!= null && this.contratos.size()> 0;
     if(regresar) {
       for (Entity item: this.desarrollos) {
-//        Double costo= this.totales.get(item.toLong("idDesarrollo"));
-//        if(!Objects.equals(Numero.redondea(item.toDouble("totalCosto"), 1), Numero.redondea(costo, 1))) {
         if(this.totales.containsKey(item.toLong("idDesarrollo"))) {
           Double porcentajeDia = this.totalesDia.get(item.toLong("idDesarrollo"));
           Double porcentajeObra= this.totalesObra.get(item.toLong("idDesarrollo"));
