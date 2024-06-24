@@ -147,17 +147,22 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} 
   
   public StreamedContent getSemanal() {
-		StreamedContent regresar= null;		
-		Xls xls                 = null;
-    String template         = "SM";
+		StreamedContent regresar  = null;		
+		Xls xls                   = null;
+    String template           = "SM";
     Map<String, Object> params= null;
+    StringBuilder sb          = new StringBuilder();
 		try {
       params= this.toPrepare();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      Entity idNomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
-      if(idNomina!= null && !idNomina.isEmpty()) 
-        params.put(Constantes.SQL_CONDICION, "");
+      Periodo periodo = new Periodo();
+      periodo.addDias(-7);
+      sb.append("and (tc_mantic_empresas_deudas.limite>= str_to_date('").append(periodo.toString()).append("','%Y%m%d')");
+      periodo.addDias(14);
+      sb.append("and tc_mantic_empresas_deudas.limite<= str_to_date('").append(periodo.toString()).append("','%Y%m%d'))");
+      sb.append("and (tc_mantic_proveedores.id_credito= 2)");
+      params.put(Constantes.SQL_CONDICION,(String)params.get(Constantes.SQL_CONDICION)+ sb.toString());
       xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
 			if(xls.procesar()) { 
 		    String contentType= EFormatos.XLS.getContent();

@@ -1841,7 +1841,8 @@ public class Transaccion extends IBaseTnx {
                     2L, // Long idSubcontratita
                     0D, // Double porcentajeFondo
                     0D, // Double saldo
-                    null // String comentarios
+                    null, // String comentarios
+                    1L // Long idCredito
 									);
 									DaoFactory.getInstance().insert(sesion, proveedor);
 

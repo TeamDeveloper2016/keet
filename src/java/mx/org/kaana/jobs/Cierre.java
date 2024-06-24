@@ -46,9 +46,6 @@ public class Cierre implements Job, Serializable {
   
 	private List<Entity> desarrollos;
   private List<Contrato> contratos;
-  private Map<Long, Double> totales;
-  private Map<Long, Double> totalesDia;
-  private Map<Long, Double> totalesObra;  
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -85,11 +82,6 @@ public class Cierre implements Job, Serializable {
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
                 this.toLoadContratos();
-                Almacenar almacenar= new Almacenar(this.contratos);
-                if(almacenar.ejecutar(EAccion.GENERAR)) 
-                  LOG.error("Se registraron los costos de mano de obra");
-                else
-                  LOG.error("Ocurrió un error en los costos de mano de obra");
                 break;
             } // switch    
           } // if  
@@ -119,28 +111,40 @@ public class Cierre implements Job, Serializable {
   } // toLoadUser
 
 	private void toLoadContratos() throws Exception {
+    List<Entity> nominas     = null;
 		Map<String, Object>params= new HashMap<>();
     try {
-      Entity nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
-      if(!Objects.equals(nomina, null) && !nomina.isEmpty() && !Objects.equals(nomina.toLong("idNominaEstatus"), 4L)) {
-        this.toLoadDesarrollos(nomina);
-        params.put("semana", nomina.toString("semana"));
+      LOG.error("ENTRO A CALCULAR LOS COSTOS POR CONTRATO");
+      params.put("idTipoNomina", 1L);
+      nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 3L);
+      if(nominas!= null && nominas.size()> 0) {
+        Entity nomina= nominas.get(1);
         params.put("idNomina", nomina.toLong("idNomina"));
-        this.contratos= (List<Contrato>)DaoFactory.getInstance().toEntitySet(Contrato.class, "VistaCostosContratosDto", "contratos", params);
-        int count= 0;
-        if(this.contratos!= null) {
-          for (Contrato item: this.contratos) {
-            if(item.isValid()) 
-              item.setSql(ESql.SELECT);
-            else {
-              item.setSql(ESql.INSERT);
-              item.setIdNomina(nomina.toLong("idNomina"));
-              count++;
-            } // if  
-          } // for  
-          if(Objects.equals(count, this.contratos.size()))
-            this.toDivideCostos();
-          this.toTotales();
+        Entity existe= (Entity)DaoFactory.getInstance().toEntity("TcKeetNominasContratosCostosDto", "existe", params);
+        if(Objects.equals(existe, null) || Objects.equals(existe.toLong("total"), 0L)) {
+          this.toLoadDesarrollos(nomina);
+          params.put("semana", nomina.toString("semana"));
+          params.put("idNomina", nomina.toLong("idNomina"));
+          this.contratos= (List<Contrato>)DaoFactory.getInstance().toEntitySet(Contrato.class, "VistaCostosContratosDto", "contratos", params);
+          int count= 0;
+          if(this.contratos!= null) {
+            for (Contrato item: this.contratos) {
+              if(item.isValid()) 
+                item.setSql(ESql.SELECT);
+              else {
+                item.setSql(ESql.INSERT);
+                item.setIdNomina(nomina.toLong("idNomina"));
+                count++;
+              } // if  
+            } // for  
+            if(Objects.equals(count, this.contratos.size()))
+              this.toDivideCostos();
+            Almacenar almacenar= new Almacenar(this.contratos);
+            if(almacenar.ejecutar(EAccion.GENERAR)) 
+              LOG.error("Se registraron los costos de mano de obra");
+            else
+              LOG.error("Ocurrió un error en los costos de mano de obra");
+          } // if    
         } // if    
       } // if    
     } // try // try
@@ -184,26 +188,6 @@ public class Cierre implements Job, Serializable {
       Methods.clean(params);
     } // finally		
 	}
-  
-  private void toTotales() throws Exception {
-    if(this.contratos!= null && this.contratos.size()> 0) {
-      this.totales.clear();
-      this.totalesDia.clear();
-      this.totalesObra.clear();
-      for (Contrato item: this.contratos) {
-        if(this.totales.containsKey(item.getIdDesarrollo())) {
-          this.totales.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totales.get(item.getIdDesarrollo())+ item.getTotal()));
-          this.totalesDia.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totalesDia.get(item.getIdDesarrollo())+ item.getPorcentajeDia()));
-          this.totalesObra.put(item.getIdDesarrollo(), Numero.toRedondearSat(this.totalesObra.get(item.getIdDesarrollo())+ item.getPorcentajeObra()));
-        } // if  
-        else {
-          this.totales.put(item.getIdDesarrollo(), item.getTotal());
-          this.totalesDia.put(item.getIdDesarrollo(), item.getPorcentajeDia());
-          this.totalesObra.put(item.getIdDesarrollo(), item.getPorcentajeObra());
-        } // else  
-      } // for
-    } // if
-  }
   
   private void toDivideCostos() throws Exception {
     Map<Long, Integer> partes= new HashMap<>();
@@ -260,7 +244,7 @@ public class Cierre implements Job, Serializable {
     } // finally
   } 
   
-  public static void main(String ... args) throws JobExecutionException {
+  public static void main(String ... args) throws JobExecutionException, Exception {
     Cierre cierre= new Cierre();
     cierre.execute(null);
   }
