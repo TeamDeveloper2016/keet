@@ -51,7 +51,7 @@ public class Estimados extends Egresos implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    Estimados corte= new Estimados(5L);
+    Estimados corte= new Estimados(25L);
     LOG.info(corte.local());
   }
   

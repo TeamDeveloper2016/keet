@@ -6379,7 +6379,7 @@ inner join
 inner join
   tc_keet_contratos on tc_keet_contratos.id_empresa= convert(substring(tc_keet_estaciones.clave, 1, 3), unsigned integer) and substring(tc_keet_estaciones.clave, 4, 4)= tc_keet_contratos.ejercicio and substring(tc_keet_estaciones.clave, 8, 3)= tc_keet_contratos.orden
 inner join
-  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tc_keet_contratos_lotes.orden= substring(tc_keet_estaciones.clave,11,3)
 left join
 (select
   tt_estacion_nomina.id_estacion,
@@ -6428,8 +6428,6 @@ from
     tc_keet_contratos_lotes_proveedores.id_contrato_lote,
     id_tipo
 ) tt_estacion_nomina           
-where
-  tt_estacion_nomina.id_nomina is not null
 group by
   id_estacion,
   id_tipo,
@@ -6443,8 +6441,9 @@ where
   and tc_keet_estaciones.nivel&gt;= 5            
   and tc_keet_estaciones.nivel&lt;= 6         
   and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
-  and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+  and (tc_keet_contratos.id_contrato= {idContrato} or {idContrato}= -1)
 group by
+  tc_keet_estaciones.id_estacion,
   tc_keet_contratos_lotes.manzana,
   tc_keet_contratos_lotes.lote,
   tc_keet_estaciones.codigo         
@@ -6473,7 +6472,7 @@ inner join
 inner join
   tc_keet_contratos on tc_keet_contratos.id_empresa= convert(substring(tc_keet_estaciones.clave, 1, 3), unsigned integer) and tc_keet_contratos.ejercicio= convert(substring(tc_keet_estaciones.clave, 4, 4), unsigned integer) and tc_keet_contratos.orden= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer)         
 inner join
-  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tc_keet_contratos_lotes.orden= substring(tc_keet_estaciones.clave,11,3)
 left join (
   select 
     tt_estacion_nomina.id_estacion,
@@ -6537,8 +6536,9 @@ where
   and tc_keet_estaciones.nivel&lt;= 6         
   and (tc_keet_nominas.id_nomina= {idNomina} or {idNomina}= -1 or tc_keet_nominas.id_nomina is not null)
   and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
-  and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+  and (tc_keet_contratos.id_contrato= {idContrato} or {idContrato}= -1)
 group by
+  tc_keet_estaciones.id_estacion,
   tc_keet_contratos_lotes.manzana,
   tc_keet_contratos_lotes.lote,
   tc_keet_estaciones.codigo         
