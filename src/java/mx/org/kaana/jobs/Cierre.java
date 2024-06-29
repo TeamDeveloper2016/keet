@@ -90,7 +90,7 @@ public class Cierre implements Job, Serializable {
           LOG.error("La nomina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
-        LOG.error("Entro a cerrar la nomina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
+        LOG.error("No aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);

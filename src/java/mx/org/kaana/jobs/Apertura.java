@@ -9,7 +9,7 @@ package mx.org.kaana.jobs;
  */
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -17,7 +17,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
-import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
@@ -44,8 +43,8 @@ public class Apertura implements Job, Serializable {
       Boolean process= Boolean.FALSE;      
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":
-          // process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.THURSDAY);
-          process= Boolean.TRUE;
+          process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.THURSDAY);
+          //process= Boolean.TRUE;
           break;
         case "gylvi":
           break;
@@ -70,7 +69,7 @@ public class Apertura implements Job, Serializable {
           LOG.error("La nomina no tiene el estatus para correrse [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
-        LOG.error("Entro a correr la nomina de forma automatica, pero no aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
+        LOG.error("No aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);

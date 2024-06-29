@@ -311,8 +311,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(list== null)
         list= new Object[] {};
       this.attrs.put("lotesSeleccion", list);
-      if((Boolean)this.attrs.get("procesado"))
-        this.doEraseArticulos();
+      // if((Boolean)this.attrs.get("procesado"))
+      //  this.doEraseArticulos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1275,6 +1275,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(((OrdenCompra)this.getAdminOrden().getOrden()).isValid())
         sb.append(" or (tc_mantic_ordenes_compras.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
       params.put(Constantes.SQL_CONDICION, sb.toString());
+      // and (tc_mantic_requisiciones.id_contrato= {idContrato} or {idContrato}= -1)
+      // SE SOLICITO QUE NO SE VERIFIQUE POR CONTRATO LA BUSQUEDA DE LAS PARTIDAS 28/07/2024
       this.detalles= (List<Detalle>)DaoFactory.getInstance().toEntitySet(Detalle.class, "VistaRequisicionesDto", "detalle", params);
       if(Objects.equals(this.detalles, null))
         this.detalles= new ArrayList<>();

@@ -53,7 +53,7 @@ public class Factura implements Serializable {
 					suma+= lote.getCosto();
 					anticipo+= lote.getAnticipo();
 					DaoFactory.getInstance().update(this.sesion, lote);
-          params.put("idContratoDestajoContratista", lote.getIdContratoDestajoProveedor());
+          params.put("idContratoDestajoProveedor", lote.getIdContratoDestajoProveedor());
     			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "marcar");
 				} // for
 				proveedor.setDestajo(Numero.toRedondearSat(suma));

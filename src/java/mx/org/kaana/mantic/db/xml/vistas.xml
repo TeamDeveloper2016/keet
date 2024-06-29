@@ -9221,7 +9221,8 @@ select
   tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,
   tc_mantic_requisiciones_detalles.id_requisicion_detalle as id,
   tc_mantic_empresas.nombre as nombre_empresa,  
-  tc_mantic_requisiciones.consecutivo,		
+  tc_mantic_requisiciones.consecutivo,
+  tc_keet_contratos.nombre as contrato,
   tc_mantic_requisiciones.fecha_pedido,
   date_format(tc_mantic_requisiciones.fecha_entregada, '%d/%m/%Y') as entrega,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as residente,
@@ -9241,6 +9242,8 @@ select
 from 
   tc_mantic_requisiciones				
 inner join 
+  tc_keet_contratos on tc_mantic_requisiciones.id_contrato= tc_keet_contratos.id_contrato
+inner join 
   tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
 inner join 
   tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
@@ -9255,7 +9258,6 @@ left join
 where
   tc_mantic_requisiciones.id_empresa in ({sucursales})
   and tc_mantic_requisiciones.id_desarrollo= {idDesarrollo}
-  and (tc_mantic_requisiciones.id_contrato= {idContrato} or {idContrato}= -1)
   and {condicion}
 group by
   tc_mantic_requisiciones_detalles.id_requisicion_detalle 
