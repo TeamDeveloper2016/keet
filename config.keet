@@ -11,13 +11,13 @@ contraseña admin_keet
 las paginas son *.jsf
 
 correo
-cuenta: cuenta administracion@cafu.jvmhost.net
+cuenta: cuenta administracion@cafu.com.mx
 contraseña: 20administracion20
 
-cuenta: compras@cafu.jvmhost.net
+cuenta: compras@cafu.com.mx
 contraseña: 20compras20
 
-cuenta: ventas@cafu.jvmhost.net
+cuenta: ventas@cafu.com.mx
 contraseña: 20ventas20
 
 tc_janal_configuraciones
@@ -29,15 +29,15 @@ correo.ventas.user.produccion
 correo.ventas.pass.produccion
 
 Secure SSL/TLS Settings (Recommended)
-Incoming Server:	mail.cafu.jvmhost.net
+Incoming Server:	mail.cafu.com.mx
 IMAP Port: 993 POP3 Port: 995
-Outgoing Server:	mail.cafu.jvmhost.net
+Outgoing Server:	mail.cafu.com.mx
 SMTP Port: 465
 
 Non-SSL Settings (NOT Recommended)
-ncoming Server:	mail.cafu.jvmhost.net
+ncoming Server:	mail.cafu.com.mx
 IMAP Port: 143 POP3 Port: 110
-Outgoing Server:	mail.cafu.jvmhost.net
+Outgoing Server:	mail.cafu.com.mx
 SMTP Port: 26
 
 IMAP, POP3, and SMTP require authentication.

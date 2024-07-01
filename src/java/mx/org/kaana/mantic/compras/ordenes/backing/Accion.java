@@ -477,15 +477,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       case "Requisiciones":
         UIBackingUtilities.update(familias.length> 0? "PF('idResidente').enable()": "PF('idResidente').disable()");
         UIBackingUtilities.update(familias.length> 0? "PF('idTodos').enable()": "PF('idTodos').disable()");
-        if(familias.length> 0) {
+        if(familias.length> 0) 
           this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
-          this.toLoadResidentes();
-          this.toLoadDetalle(Boolean.FALSE);
-        }  // if
-        else {
-          this.detalles= new ArrayList<>();
-          UIBackingUtilities.execute("janal.show([{summary: 'Proveedor:', detail: 'No tiene definido una familia'}]);"); 
-        } // if  
+        this.toLoadResidentes();
+        this.toLoadDetalle(Boolean.FALSE);
         break;
       default:
         break;

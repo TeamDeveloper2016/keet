@@ -136,7 +136,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
 		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
 		//final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
-		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".com.mx/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 693;
@@ -198,7 +198,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	}	
 	
 	public static void main(String ... args) throws MalformedURLException, IOException, IOException {
-		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".com.mx/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 895;

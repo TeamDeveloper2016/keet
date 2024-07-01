@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 public class Transaccion extends IBaseTnx {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
-  private static final String RUTA= "ftp://upload%40kaana.jvmhost.net:kajool2016@ftp.kaana.jvmhost.net/"; 
+  private static final String RUTA= "ftp://upload%40kaana.com.mx:kajool2016@ftp.kaana.com.mx/"; 
   private TcJanalInsumosDto dto;
 
 	public Transaccion (TcJanalInsumosDto dto) {

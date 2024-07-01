@@ -27,7 +27,7 @@ public class OrdenesDetalles  extends BarraProgreso implements Serializable{
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
         hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
         setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_ORDEN").toString(), Boolean.FALSE));
-        matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).toString().concat("-").concat("http://cafu.jvmhost.net/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+        matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).toString().concat("-").concat("http://cafu.com.mx/"), BarcodeFormat.QR_CODE, 400, 400, hints);
         setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix) );
       } // try
       catch (Exception e) {
