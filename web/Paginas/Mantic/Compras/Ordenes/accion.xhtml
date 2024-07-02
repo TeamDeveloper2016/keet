@@ -144,7 +144,7 @@
 						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticComprasOrdendesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) global individual sinIva datosArticulos registros detalle idResidente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent(); reloadResidentes()"/>
+            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) global individual sinIva datosArticulos registros detalle idResidente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent(); reloadResidentes(); janal.refresh();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
@@ -377,7 +377,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
-								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
      						<p:outputLabel value="#{manticComprasOrdendesAccion.attrs.pendientes}" escape="false" styleClass="devoluciones"/>																	
 								<p:outputLabel for="idGasto" value="Es un gasto:"/>
 								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-100-txt">  

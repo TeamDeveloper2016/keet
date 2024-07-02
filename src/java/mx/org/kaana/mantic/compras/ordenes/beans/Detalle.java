@@ -20,7 +20,6 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
   private String folio;
   private String estatus;
   private Long idArticulo;
-  private Long idOrdenCompra;
   private ESql sql;
 
   public Detalle() {
@@ -140,14 +139,6 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
     this.contrato = contrato;
   }
 
-  public Long getIdOrdenCompra() {
-    return idOrdenCompra;
-  }
-
-  public void setIdOrdenCompra(Long idOrdenCompra) {
-    this.idOrdenCompra = idOrdenCompra;
-  }
-
   public ESql getSql() {
     return sql;
   }
@@ -183,12 +174,12 @@ public class Detalle extends TcKeetRequisicionesOrdenesDto implements Serializab
 
   @Override
   public String toString() {
-    return "Detalle{" + "id=" + id + ", consecutivo=" + consecutivo + ", contrato=" + contrato + ", residente=" + residente + ", entrega=" + entrega + ", propio=" + propio + ", nombre=" + nombre + ", cantidad=" + cantidad + ", folio=" + folio + ", estatus=" + estatus + ", idArticulo=" + idArticulo + ", idOrdenCompra=" + idOrdenCompra + ", sql=" + sql + '}';
+    return "Detalle{" + "id=" + id + ", consecutivo=" + consecutivo + ", contrato=" + contrato + ", residente=" + residente + ", entrega=" + entrega + ", propio=" + propio + ", nombre=" + nombre + ", cantidad=" + cantidad + ", folio=" + folio + ", estatus=" + estatus + ", idArticulo=" + idArticulo + ", sql=" + sql + '}';
   }
 
   @Override
   public Class toHbmClass() {
-    return super.toHbmClass(); 
+    return TcKeetRequisicionesOrdenesDto.class; 
   }
 
 }

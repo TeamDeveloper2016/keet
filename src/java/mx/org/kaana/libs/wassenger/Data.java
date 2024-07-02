@@ -16,7 +16,7 @@ public final class Data implements Serializable {
  /* [
      {
        "id":"60d4ba052739feb85874b575",
-       "url":"https://cafu.com.mx/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf",
+       "url":"https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf",
        "format":"native",
        "filename":"CAFU_2021062410492325_orden_de_compra_detalle.pdf",
        "size":258187,

@@ -984,11 +984,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } // doCancelar
  
   public void doEraseArticulos() {
-    this.getAdminOrden().getArticulos().clear();
-    this.toCleanDetalles();
-    if(this.getAdminOrden().getArticulos().size()> 0)
-      this.getAdminOrden().toCalculate();
-    ((OrdenCompra)this.getAdminOrden().getOrden()).toCleanPartidas();
+//    this.getAdminOrden().getArticulos().clear();
+//    this.toCleanDetalles();
+//    if(this.getAdminOrden().getArticulos().size()> 0)
+//      this.getAdminOrden().toCalculate();
+//    ((OrdenCompra)this.getAdminOrden().getOrden()).toCleanPartidas();
   }
 
 	private void toLoadTiposMediosPagos() {
