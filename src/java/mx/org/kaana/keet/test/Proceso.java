@@ -101,10 +101,9 @@ public class Proceso extends IBaseTnx {
   
   private void conceptos(Session sesion, Estaciones estaciones, TcKeetEstacionesDto padre) throws Exception  {
     Long idEstacionEstatus   = 1L;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
       String clave= estaciones.toOnlyKey(padre.getClave(), padre.getNivel().intValue()+ 1);
-			params= new HashMap<>();
 			params.put("clave", clave);
 			params.put("longitud", clave.length());
 			params.put("nivel", padre.getNivel()+ 1L);

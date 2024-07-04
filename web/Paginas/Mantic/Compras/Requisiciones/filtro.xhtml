@@ -230,7 +230,6 @@
 						<p:separator/>
             <p:menuitem icon="fa fa-edit" action="#{manticComprasRequisicionesFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
             <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
-            <p:menuitem icon="fa fa-copy" action="#{manticComprasRequisicionesFiltro.doClonar()}" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
             <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					

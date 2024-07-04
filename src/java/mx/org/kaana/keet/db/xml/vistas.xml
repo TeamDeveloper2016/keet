@@ -8704,205 +8704,186 @@ order by
 					tc_keet_contratos.id_contrato= {idContrato}
 			</select>
 			<select id="contratistasAsignado">
-				select contratistas.* 
-          from (
-				select      
-					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
-					(select 
-						group_concat(tc_keet_departamentos.nombre separator ', ')
-					from
-						tc_keet_contratistas_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
-            and {condicion}
-					group by
-						tr_mantic_empresa_personal.id_empresa_persona				  
-					 ) as departamento,
-          (select 
-						group_concat(tc_keet_departamentos.id_departamento separator ',')
-					from
-						tc_keet_contratistas_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
-					group by
-						tr_mantic_empresa_personal.id_empresa_persona				  
-					) as ids_departamento,        
-					tr_mantic_empresa_personal.id_activo,
-					tr_mantic_empresa_personal.id_nomina,
-					tr_mantic_empresa_personal.id_seguro,
-					tr_mantic_empresa_personal.nss,
-					tc_mantic_personas.nombres,
-					tc_mantic_personas.paterno,
-					tc_mantic_personas.materno,					
-					tc_mantic_personas.rfc,					
-					tc_mantic_personas.curp,					          
-					1 as tipo,
-					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
-					tc_keet_contratos_lotes_contratistas.id_contrato_lote,
-					tc_keet_contratos_lotes_contratistas.id_empresa_persona,
-					tc_keet_contratos_lotes_contratistas.observaciones,
-					tc_keet_contratos_lotes_contratistas.id_trabajo,
-					tc_keet_contratos_lotes_contratistas.id_usuario,
-					tc_keet_contratos_lotes_contratistas.registro 
-        from      
-          tc_keet_contratos_lotes_contratistas
-				inner join 
-					tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
-        where 
-          tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_contratistas.id_trabajo=2
-				  and tr_mantic_empresa_personal.id_activo= 1
-				order by 
-					tc_mantic_puestos.nombre,
-					tc_mantic_personas.nombres) contratistas
-				union
-				select 
-          subcontratistas.* 
-        from (
-				select      
-					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
-					(select 
-						group_concat(tc_keet_departamentos.nombre separator ', ')
-					from
-						tc_keet_proveedores_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
-					group by
-						tc_keet_proveedores_departamentos.id_proveedor				  
-					 ) as departamento,
-          (select 
-						group_concat(tc_keet_departamentos.id_departamento separator ',')
-					from
-						tc_keet_proveedores_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
-					group by
-						tc_keet_proveedores_departamentos.id_proveedor				  
-					 ) as ids_departamento,        
-					tc_mantic_proveedores.id_activo,
-					1 as id_nomina,
-          1 as id_seguro,
-					tc_mantic_proveedores.rfc as nss,
-					tc_mantic_proveedores.razon_social as nombres,
-					'' as paterno,
-					'' as materno,					
-					tc_mantic_proveedores.rfc,					
-					tc_mantic_proveedores.rfc as curp,					
-					2 as tipo,					
-					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor as id_contrato_lote_contratista,
-					tc_keet_contratos_lotes_proveedores.id_contrato_lote,
-					tc_keet_contratos_lotes_proveedores.id_proveedor id_empresa_persona,
-					tc_keet_contratos_lotes_proveedores.observaciones,
-					tc_keet_contratos_lotes_proveedores.id_trabajo,
-					tc_keet_contratos_lotes_proveedores.id_usuario,
-					tc_keet_contratos_lotes_proveedores.registro 
-        from     
-					tc_keet_contratos_lotes_proveedores
-				inner join
-					tc_mantic_proveedores	on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
-        where 
-          tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_proveedores.id_trabajo=2
-				and 					
-					tc_mantic_proveedores.id_empresa= {idEmpresa}
-				  and tc_mantic_proveedores.id_activo= 1
-				  and {condicionProveedor}
-					and tc_mantic_proveedores.id_subcontratista= 1
-				order by
-					tc_mantic_proveedores.razon_social
-				) subcontratistas
+select      
+  convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
+  (select 
+    group_concat(tc_keet_departamentos.nombre separator ', ')
+  from
+    tc_keet_contratistas_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+    and {condicion}
+  group by
+    tr_mantic_empresa_personal.id_empresa_persona				  
+   ) as departamento,
+  (select 
+    group_concat(tc_keet_departamentos.id_departamento separator ',')
+  from
+    tc_keet_contratistas_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+  group by
+    tr_mantic_empresa_personal.id_empresa_persona				  
+  ) as ids_departamento,        
+  tr_mantic_empresa_personal.id_activo,
+  tr_mantic_empresa_personal.id_nomina,
+  tr_mantic_empresa_personal.id_seguro,
+  tr_mantic_empresa_personal.nss,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,					
+  tc_mantic_personas.rfc,					
+  tc_mantic_personas.curp,					          
+  1 as tipo,
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote,
+  tc_keet_contratos_lotes_contratistas.id_empresa_persona,
+  tc_keet_contratos_lotes_contratistas.observaciones,
+  tc_keet_contratos_lotes_contratistas.id_trabajo,
+  tc_keet_contratos_lotes_contratistas.id_usuario,
+  tc_keet_contratos_lotes_contratistas.registro 
+from      
+  tc_keet_contratos_lotes_contratistas
+inner join 
+  tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+inner join	
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+where 
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_contratistas.id_trabajo=2
+  and tr_mantic_empresa_personal.id_activo= 1
+union
+select      
+  convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
+  (select 
+    group_concat(tc_keet_departamentos.nombre separator ', ')
+  from
+    tc_keet_proveedores_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+  group by
+    tc_keet_proveedores_departamentos.id_proveedor				  
+   ) as departamento,
+  (select 
+    group_concat(tc_keet_departamentos.id_departamento separator ',')
+  from
+    tc_keet_proveedores_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+  group by
+    tc_keet_proveedores_departamentos.id_proveedor				  
+   ) as ids_departamento,        
+  tc_mantic_proveedores.id_activo,
+  1 as id_nomina,
+  1 as id_seguro,
+  tc_mantic_proveedores.rfc as nss,
+  tc_mantic_proveedores.razon_social as nombres,
+  '' as paterno,
+  '' as materno,					
+  tc_mantic_proveedores.rfc,					
+  tc_mantic_proveedores.rfc as curp,					
+  2 as tipo,					
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor as id_contrato_lote_contratista,
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote,
+  tc_keet_contratos_lotes_proveedores.id_proveedor id_empresa_persona,
+  tc_keet_contratos_lotes_proveedores.observaciones,
+  tc_keet_contratos_lotes_proveedores.id_trabajo,
+  tc_keet_contratos_lotes_proveedores.id_usuario,
+  tc_keet_contratos_lotes_proveedores.registro 
+from     
+  tc_keet_contratos_lotes_proveedores
+inner join
+  tc_mantic_proveedores	on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+where 
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_proveedores.id_trabajo=2
+and 					
+  tc_mantic_proveedores.id_empresa= {idEmpresa}
+  and tc_mantic_proveedores.id_activo= 1
+  and {condicionProveedor}
+  and tc_mantic_proveedores.id_subcontratista= 1
 			</select>
 			<select id="contratistasDisponible">
-				select contratistas.* from (
-				select      					
-					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,					
-					tr_mantic_empresa_personal.id_empresa_persona,
-					(select 
-							group_concat(tc_keet_departamentos.nombre separator ', ')
-						from
-							tc_keet_contratistas_departamentos
-						inner join
-							tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-						where 
-							tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
-              and {condicion}
-						group by
-							tc_keet_contratistas_departamentos.id_empresa_persona				  
-  				) as departamento,
-					tc_mantic_puestos.nombre as puesto,
-					tr_mantic_empresa_personal.id_activo,
-					tr_mantic_empresa_personal.id_nomina,
-					tr_mantic_empresa_personal.id_seguro,
-					tr_mantic_empresa_personal.nss,
-					tc_mantic_personas.nombres,
-					tc_mantic_personas.paterno,
-					tc_mantic_personas.materno,					
-					tc_mantic_personas.rfc,					
-					tc_mantic_personas.curp,
-					1 as tipo
-        from                				
-					tr_mantic_empresa_personal
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
-        where 
-          tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_contratistas where tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote})
-				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}		
-          and tr_mantic_empresa_personal.id_activo= 1  		  
-					and tc_mantic_puestos.nombre= 'CONTRATISTA'
-				order by 
-					tc_mantic_puestos.nombre,
-					tc_mantic_personas.nombres) as contratistas
-				union
-				select subcontratistas.* from (
-				select      
-					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,			
-					tc_mantic_proveedores.id_proveedor as id_empresa_persona,	
-					(select 
-							group_concat(tc_keet_departamentos.nombre separator ', ')
-						from
-							tc_keet_proveedores_departamentos
-						inner join
-							tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-						where 
-							tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
-						group by
-							tc_keet_proveedores_departamentos.id_proveedor				  
-						 ) as departamento,
-					'SUBCONTRATISTA' puesto,
-					tc_mantic_proveedores.id_activo,
-					1 as id_nomina,
-          2 as id_seguro,
-					tc_mantic_proveedores.rfc as nss,
-					tc_mantic_proveedores.razon_social as nombres,
-					'' as paterno,
-					'' as materno,					
-					tc_mantic_proveedores.rfc,					
-					tc_mantic_proveedores.rfc as curp,					
-					2 as tipo
-        from                				
-					tc_mantic_proveedores				
-        where 
-          tc_mantic_proveedores.id_proveedor not in (select id_proveedor from tc_keet_contratos_lotes_proveedores where tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote})            
-				  and tc_mantic_proveedores.id_empresa= {idEmpresa}		
-          and tc_mantic_proveedores.id_activo= 1		  
-				  and tc_mantic_proveedores.id_subcontratista= 1
-				  and {condicionProveedor}
-				order by
-					tc_mantic_proveedores.razon_social
-				) subcontratistas
+select      					
+  convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,					
+  tr_mantic_empresa_personal.id_empresa_persona,
+  (select 
+     group_concat(tc_keet_departamentos.nombre separator ', ')
+   from
+      tc_keet_contratistas_departamentos
+    inner join
+      tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+    where 
+      tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+      and {condicion}
+    group by
+      tc_keet_contratistas_departamentos.id_empresa_persona				  
+  ) as departamento,
+  tc_mantic_puestos.nombre as puesto,
+  tr_mantic_empresa_personal.id_activo,
+  tr_mantic_empresa_personal.id_nomina,
+  tr_mantic_empresa_personal.id_seguro,
+  tr_mantic_empresa_personal.nss,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,					
+  tc_mantic_personas.rfc,					
+  tc_mantic_personas.curp,
+  1 as tipo
+from                				
+  tr_mantic_empresa_personal
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+inner join	
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+where 
+  tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_contratistas where tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote})
+and 
+  tr_mantic_empresa_personal.id_empresa= {idEmpresa}		
+  and tr_mantic_empresa_personal.id_activo= 1  		  
+  and tc_mantic_puestos.nombre= 'CONTRATISTA'
+union
+select      
+  convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,			
+  tc_mantic_proveedores.id_proveedor as id_empresa_persona,	
+  (select 
+      group_concat(tc_keet_departamentos.nombre separator ', ')
+    from
+      tc_keet_proveedores_departamentos
+    inner join
+      tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+    where 
+      tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+    group by
+      tc_keet_proveedores_departamentos.id_proveedor				  
+     ) as departamento,
+  'SUBCONTRATISTA' puesto,
+  tc_mantic_proveedores.id_activo,
+  1 as id_nomina,
+  2 as id_seguro,
+  tc_mantic_proveedores.rfc as nss,
+  tc_mantic_proveedores.razon_social as nombres,
+  '' as paterno,
+  '' as materno,					
+  tc_mantic_proveedores.rfc,					
+  tc_mantic_proveedores.rfc as curp,					
+  2 as tipo
+from                				
+  tc_mantic_proveedores				
+where 
+  tc_mantic_proveedores.id_proveedor not in (select id_proveedor from tc_keet_contratos_lotes_proveedores where tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote})            
+  and tc_mantic_proveedores.id_empresa= {idEmpresa}		
+  and tc_mantic_proveedores.id_activo= 1		  
+  and tc_mantic_proveedores.id_subcontratista= 1
+  and {condicionProveedor}
 			</select>
 			<select id="residentesDisponible">
 				select      					
@@ -9498,7 +9479,7 @@ order by
 			<select id="lazy">
 				select
           tc_keet_desarrollos.id_desarrollo as id_key,
-					tc_keet_contratos.id_empresa,
+					tc_mantic_clientes.id_empresa,
           tc_keet_desarrollos.clave,
           tc_keet_desarrollos.nombres,
           tc_keet_desarrollos.registro,
@@ -9527,7 +9508,7 @@ order by
 			<select id="residentes">
 				select
 					tc_keet_desarrollos.id_desarrollo as id_key,
-          tc_keet_contratos.id_empresa,
+          tc_mantic_clientes.id_empresa,
 					tc_keet_desarrollos.clave,
 					tc_keet_desarrollos.nombres,
 					tc_keet_desarrollos.registro,
@@ -12301,140 +12282,131 @@ where
           tr_mantic_empresa_personal.id_empresa_persona	
 			</select>
 			<select id="contactosNotificar">				
-				select      
-					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,				
-          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 					
-          tr_mantic_persona_tipo_contacto.*
-        from      
-          tc_keet_contratos_personal
-				inner join 
-					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join 
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
-				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
-        where 
-          (tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
-				  and tr_mantic_empresa_personal.id_activo= 1
-				  and tc_mantic_puestos.nombre like 'RESIDENTE%') 
-          or (tc_mantic_personas.id_persona = {idPersona})
+select      
+  tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,				
+  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 					
+  tr_mantic_persona_tipo_contacto.*
+from      
+  tc_keet_contratos_personal
+inner join 
+  tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+inner join 
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
+inner join	
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+where 
+  (tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
+  and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_puestos.nombre like 'RESIDENTE%') 
+  or (tc_mantic_personas.id_persona = {idPersona})
 			</select>
 			<select id="contratistasAsignado">
-				select contratistas.* 
-        from (
-				select      
-					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
-					(select 
-						group_concat(tc_keet_departamentos.nombre separator ', ')
-					from
-						tc_keet_contratistas_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
-					group by
-						tc_keet_contratistas_departamentos.id_empresa_persona				  
-					 ) as departamento,
-          (select 
-						group_concat(tc_keet_departamentos.id_departamento separator ',')
-					from
-						tc_keet_contratistas_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
-					group by
-						tc_keet_contratistas_departamentos.id_empresa_persona				  
-					) as ids_departamento,        
-					tc_mantic_puestos.nombre as puesto,
-					tr_mantic_empresa_personal.id_activo,
-					tr_mantic_empresa_personal.id_nomina,
-					tr_mantic_empresa_personal.nss,
-					tc_mantic_personas.nombres,
-					tc_mantic_personas.paterno,
-					tc_mantic_personas.materno,					
-					tc_mantic_personas.rfc,					
-					tc_mantic_personas.curp,					          
-					1 as tipo,
-					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
-					tc_keet_contratos_lotes_contratistas.id_contrato_lote,
-					tc_keet_contratos_lotes_contratistas.id_empresa_persona,
-					tc_keet_contratos_lotes_contratistas.observaciones,
-					tc_keet_contratos_lotes_contratistas.id_trabajo,
-					tc_keet_contratos_lotes_contratistas.id_usuario,
-					tc_keet_contratos_lotes_contratistas.registro 
-        from      
-          tc_keet_contratos_lotes_contratistas
-				inner join 
-					tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
-        where 
-          tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} 
-   				and tc_keet_contratos_lotes_contratistas.id_trabajo=2
-	  			and tr_mantic_empresa_personal.id_activo= 1				  
-				order by 
-					tc_mantic_puestos.nombre,
-					tc_mantic_personas.nombres) contratistas
-				union
-				select subcontratistas.* from (
-				select      
-					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
-					(select 
-						group_concat(tc_keet_departamentos.nombre separator ', ')
-					from
-						tc_keet_proveedores_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
-					group by
-						tc_keet_proveedores_departamentos.id_proveedor				  
-					 ) as departamento,
-					(select 
-						group_concat(tc_keet_departamentos.id_departamento separator ',')
-					from
-						tc_keet_proveedores_departamentos
-					inner join
-						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-					where 
-						tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
-					group by
-						tc_keet_proveedores_departamentos.id_proveedor				  
-					 ) as ids_departamento,
-					'SUBCONTRATISTA' as puesto,
-					tc_mantic_proveedores.id_activo,
-					1 as id_nomina,
-					tc_mantic_proveedores.rfc as nss,
-					tc_mantic_proveedores.razon_social as nombres,
-					'' as paterno,
-					'' as materno,					
-					tc_mantic_proveedores.rfc,					
-					tc_mantic_proveedores.rfc as curp,					
-					2 as tipo,					
-					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor id_contrato_lote_contratista,
-					tc_keet_contratos_lotes_proveedores.id_contrato_lote,
-					tc_keet_contratos_lotes_proveedores.id_proveedor as id_empresa_persona,
-					tc_keet_contratos_lotes_proveedores.observaciones,
-					tc_keet_contratos_lotes_proveedores.id_trabajo,
-					tc_keet_contratos_lotes_proveedores.id_usuario,
-					tc_keet_contratos_lotes_proveedores.registro 
-        from     
-					tc_keet_contratos_lotes_proveedores
-				inner join
-					tc_mantic_proveedores	on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
-        where 
-          tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote} 
-				and tc_keet_contratos_lotes_proveedores.id_trabajo=2				
-				and tc_mantic_proveedores.id_activo= 1				  
-				and tc_mantic_proveedores.id_subcontratista= 1
-				order by
-					tc_mantic_proveedores.razon_social
-				) subcontratistas
+select      
+  convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
+  (select 
+    group_concat(tc_keet_departamentos.nombre separator ', ')
+  from
+    tc_keet_contratistas_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+  group by
+    tc_keet_contratistas_departamentos.id_empresa_persona				  
+   ) as departamento,
+  (select 
+    group_concat(tc_keet_departamentos.id_departamento separator ',')
+  from
+    tc_keet_contratistas_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+  group by
+    tc_keet_contratistas_departamentos.id_empresa_persona				  
+  ) as ids_departamento,        
+  tc_mantic_puestos.nombre as puesto,
+  tr_mantic_empresa_personal.id_activo,
+  tr_mantic_empresa_personal.id_nomina,
+  tr_mantic_empresa_personal.nss,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,					
+  tc_mantic_personas.rfc,					
+  tc_mantic_personas.curp,					          
+  1 as tipo,
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote,
+  tc_keet_contratos_lotes_contratistas.id_empresa_persona,
+  tc_keet_contratos_lotes_contratistas.observaciones,
+  tc_keet_contratos_lotes_contratistas.id_trabajo,
+  tc_keet_contratos_lotes_contratistas.id_usuario,
+  tc_keet_contratos_lotes_contratistas.registro 
+from      
+  tc_keet_contratos_lotes_contratistas
+inner join 
+  tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+inner join	
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+where 
+  tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} 
+  and tc_keet_contratos_lotes_contratistas.id_trabajo=2
+  and tr_mantic_empresa_personal.id_activo= 1				  
+union
+select      
+  convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
+  (select 
+    group_concat(tc_keet_departamentos.nombre separator ', ')
+  from
+    tc_keet_proveedores_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+  group by
+    tc_keet_proveedores_departamentos.id_proveedor				  
+   ) as departamento,
+  (select 
+    group_concat(tc_keet_departamentos.id_departamento separator ',')
+  from
+    tc_keet_proveedores_departamentos
+  inner join
+    tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+  where 
+    tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+  group by
+    tc_keet_proveedores_departamentos.id_proveedor				  
+   ) as ids_departamento,
+  'SUBCONTRATISTA' as puesto,
+  tc_mantic_proveedores.id_activo,
+  1 as id_nomina,
+  tc_mantic_proveedores.rfc as nss,
+  tc_mantic_proveedores.razon_social as nombres,
+  '' as paterno,
+  '' as materno,					
+  tc_mantic_proveedores.rfc,					
+  tc_mantic_proveedores.rfc as curp,					
+  2 as tipo,					
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor id_contrato_lote_contratista,
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote,
+  tc_keet_contratos_lotes_proveedores.id_proveedor as id_empresa_persona,
+  tc_keet_contratos_lotes_proveedores.observaciones,
+  tc_keet_contratos_lotes_proveedores.id_trabajo,
+  tc_keet_contratos_lotes_proveedores.id_usuario,
+  tc_keet_contratos_lotes_proveedores.registro 
+from     
+  tc_keet_contratos_lotes_proveedores
+inner join
+  tc_mantic_proveedores	on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+where 
+  tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote} 
+  and tc_keet_contratos_lotes_proveedores.id_trabajo=2				
+  and tc_mantic_proveedores.id_activo= 1				  
+  and tc_mantic_proveedores.id_subcontratista= 1
 			</select>
 			<select id="avances">
 				select

@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.nomina.beans.Contrato;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -24,11 +24,13 @@ public class Almacenar extends IBaseTnx {
 
 	private static final Log LOG= LogFactory.getLog(Almacenar.class);
 
+  private Autentifica autentifica;
   private List<Contrato> contratos;
 	private String messageError;
 	
-	public Almacenar(List<Contrato> contratos) {
-    this.contratos= contratos;
+	public Almacenar(Autentifica autentifica, List<Contrato> contratos) {
+    this.autentifica= autentifica;
+    this.contratos  = contratos;
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class Almacenar extends IBaseTnx {
       for (Contrato item: this.contratos) {
         switch(item.getSql()) {
           case INSERT:
-            item.setIdUsuario(JsfBase.getIdUsuario());
+            item.setIdUsuario(this.autentifica.getPersona().getIdUsuario());
             DaoFactory.getInstance().insert(sesion, item);
             break;
           case UPDATE:

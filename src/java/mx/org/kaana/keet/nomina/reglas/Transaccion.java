@@ -250,6 +250,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				case RESTAURAR:
           this.notificarResumenDestajos(sesion);
 					break;
+				case ACTIVAR:
+  				// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
+          this.closeIncidentes(sesion);	
+          // QUITAR LOS SOBRE SUELDOS DE LOS EMPLEADOS
+          this.toCleanSobreSueldos(sesion);
+          // MOVER EL PERSONAL POR DESARROLLO A UNA TABLA HISTORICA
+          this.toMovePersonalDesarrollo(sesion);
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
@@ -800,7 +808,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						-1L, // Long idNominaBitacora, 
 						open.getIdNomina()// Long idNomina
 					);		
-					DaoFactory.getInstance().insert(sesion, bitacora);
+					DaoFactory.getInstance().insert(sesion, this.bitacora);
           LOG.error("SE REALIZO LA APERTURA DE NOMINA AUTOMATICO");
 				} // if			
 			} // if			
@@ -1447,7 +1455,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               TcKeetNominasGruposDto grupo= new TcKeetNominasGruposDto(
                 valores.get(key), // Double total, 
                 key, // Long idDesarrollo, 
-                Objects.equals(JsfBase.getAutentifica(), null)? 1L: JsfBase.getIdUsuario(), // Long idUsuario, 
+                this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
                 valores.get(key)*100/ total, // Double porcentaje, 
                 -1L, // Long idNominaGrupo, 
                 this.idNomina // Long idNomina
@@ -1458,7 +1466,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             TcKeetNominasGruposDto grupo= new TcKeetNominasGruposDto(
               total, // Double total, 
               null, // Long idDesarrollo, 
-              Objects.equals(JsfBase.getAutentifica(), null)? 1L: JsfBase.getIdUsuario(), // Long idUsuario, 
+              this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
               100D, // Double porcentaje, 
               -1L, // Long idNominaGrupo, 
               this.idNomina // Long idNomina

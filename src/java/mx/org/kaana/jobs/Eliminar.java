@@ -39,9 +39,9 @@ import static mx.org.kaana.keet.nomina.reglas.Egresos.CAFU_PERSONAL_OBRA;
 import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_DIA;
 import static mx.org.kaana.keet.nomina.reglas.Egresos.GYLVI_PERSONAL_OBRA;
 
-public class Cierre implements Job, Serializable {
+public class Eliminar implements Job, Serializable {
 
-	private static final Log LOG              =LogFactory.getLog(Cierre.class);
+	private static final Log LOG              =LogFactory.getLog(Eliminar.class);
 	private static final long serialVersionUID=7505746848602636876L;
   
 	private List<Entity> desarrollos;
@@ -50,47 +50,10 @@ public class Cierre implements Job, Serializable {
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
     Map<String, Object> params= new HashMap<>();    
+    Long idNomina             = 194L; 
 		try {
-      Boolean process= Boolean.FALSE;      
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "cafu":
-          process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.THURSDAY);
-          break;
-        case "gylvi":
-          process= Objects.equals(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), Calendar.SATURDAY);
-          break;
-        case "triana":
-          break;
-      } // swtich
-      LOG.error("ENTRO A CERRAR LA NOMINA DE FORMA AUTOMATICA ["+ process+ "]");
-      if(process) {
-        params.put("idTipoNomina", 1L);      
-        Entity nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
-        if(!Objects.equals(nomina, null) && !nomina.isEmpty() && Objects.equals(nomina.toLong("idNominaEstatus"), ENominaEstatus.CALCULADA.getIdKey())) {
-          Autentifica autentifica          = this.toLoadUser();
-          TcKeetNominasBitacoraDto bitacora= new TcKeetNominasBitacoraDto(
-            "PROCESO DE CIERRE AUTOMATICO DE NÓMINA", // String justificacion, 
-            ENominaEstatus.TERMINADA.getIdKey(), // Long idNominaEstatus, 
-            autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
-            -1L, // Long idNominaBitacora, 
-            nomina.toLong("idNomina") // Long idNomina
-          );
-          String path= this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().substring(0, this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().indexOf("/WEB-INF/"));
-          Transaccion transaccion= new Transaccion(nomina.toLong("idNomina"), autentifica, bitacora, path, Boolean.TRUE);
-          if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
-            LOG.error("La nómina se cerró de forma correcta [".concat(nomina.toString("nomina")).concat("] !"));
-            switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-              case "cafu":
-                this.toLoadContratos(nomina, autentifica);
-                break;
-            } // switch    
-          } // if  
-        } // if  
-        else
-          LOG.error("La nomina no tiene el estatus para cerrarse [".concat(nomina!= null && !nomina.isEmpty()? nomina.toString("nomina"): "1900-00").concat("] !"));
-      } // if  
-      else
-        LOG.error("No aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));
+      Autentifica autentifica= this.toLoadUser();
+      this.toLoadContratos(idNomina, autentifica);
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -110,11 +73,19 @@ public class Cierre implements Job, Serializable {
     return regresar;
   } // toLoadUser
 
-	private void toLoadContratos(Entity nomina, Autentifica autentifica) throws Exception {
+	private void toLoadContratos(Long idNomina, Autentifica autentifica) throws Exception {
+    List<Entity> nominas     = null;
 		Map<String, Object>params= new HashMap<>();
     try {
       LOG.error("ENTRO A CALCULAR LOS COSTOS POR CONTRATO");
-      if(nomina!= null && !nomina.isEmpty()) {
+      params.put("idTipoNomina", 1L);
+      nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 10L);
+      if(nominas!= null && nominas.size()> 0) {
+        Entity nomina= nominas.get(1);
+        for (Entity item: nominas) {
+          if(Objects.equals(idNomina, item.toLong("idNomina")))
+            nomina= item;
+        } // for
         params.put("idNomina", nomina.toLong("idNomina"));
         Entity existe= (Entity)DaoFactory.getInstance().toEntity("TcKeetNominasContratosCostosDto", "existe", params);
         if(Objects.equals(existe, null) || Objects.equals(existe.toLong("total"), 0L)) {
@@ -241,7 +212,7 @@ public class Cierre implements Job, Serializable {
   } 
   
   public static void main(String ... args) throws JobExecutionException, Exception {
-    Cierre cierre= new Cierre();
+    Eliminar cierre= new Eliminar();
     cierre.execute(null);
   }
   

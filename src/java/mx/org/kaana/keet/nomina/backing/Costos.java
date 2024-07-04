@@ -237,7 +237,7 @@ public class Costos extends IBaseFilter implements Serializable {
     String regresar      = null;
     try {			
       if(this.toCheckTotales()) {
-        transaccion= new Almacenar(this.contratos);
+        transaccion= new Almacenar(JsfBase.getAutentifica(), this.contratos);
         if (transaccion.ejecutar(EAccion.GENERAR)) {
           JsfBase.addMessage("Se registraron los costos de mano de obra", ETipoMensaje.INFORMACION);
           this.doLoadDesarrollos();

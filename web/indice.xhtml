@@ -51,7 +51,7 @@
 					<p:password placeholder="contraseña" id="contrasenia" tabindex="2" value="#{kajoolAccesoControl.cliente.contrasenia}" styleClass="Container80 Fnone MarAuto Fs18" autocomplete="new-password"/>
 					<p:spacer width="3%"/>
 					<p:commandButton id="aceptar" tabindex="3" value="Iniciar sesión" onstart="return janal.partial('ingresar');" action="#{kajoolAccesoControl.doIngresar()}" update="@this cuenta contrasenia gridCuenta"/>					
-          <p:commandButton tabindex="3" value="Procesar" onstart="return true;" action="#{kajoolAccesoControl.doProcesar()}" update="@this" rendered="false"/>					
+          <p:commandButton tabindex="3" value="Procesar" onstart="return true;" action="#{kajoolAccesoControl.doProcesar()}" update="@this" rendered="false"/>
 					<p:spacer height="1"/>
 				</p:panelGrid>
 			</div>

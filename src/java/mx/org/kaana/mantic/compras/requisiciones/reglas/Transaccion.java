@@ -227,7 +227,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("ejercicio", this.getCurrentYear());
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", this.requisicion.getRequisicion().getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticRequisicionesDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)

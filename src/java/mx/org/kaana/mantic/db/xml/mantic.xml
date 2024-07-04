@@ -2037,7 +2037,7 @@ select
 from      
   tc_mantic_requisiciones
 where      
-  consecutivo = '{consecutivo}'
+  id_empresa= {idEmpresa} and consecutivo = '{consecutivo}'
       </select>    
 			<select id="siguiente">
 select

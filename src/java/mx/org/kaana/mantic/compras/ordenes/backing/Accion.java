@@ -1257,7 +1257,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
       Periodo periodo= new Periodo();
-      periodo.addMeses(-6);
+      periodo.addMeses(-3);
       sb.append("(tc_mantic_requisiciones.id_requisicion_estatus in (2, 5)) and ");
       sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(periodo.toString()).append("') and ");
       if(!Objects.equals(residente.getKey(), -1L))
@@ -1265,10 +1265,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(todos)
         sb.append(Constantes.SQL_VERDADERO).append(" and ");
       else  
-        sb.append("(tc_keet_requisiciones_ordenes.id_requisicion_orden is null) and ");
+        sb.append("((tc_keet_requisiciones_ordenes.id_requisicion_orden is null) or (tc_mantic_ordenes_compras.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")) and ");
       sb.delete(sb.length()- 4, sb.length());
-      if(((OrdenCompra)this.getAdminOrden().getOrden()).isValid())
-        sb.append(" or (tc_mantic_ordenes_compras.id_orden_compra= ").append(((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra()).append(")");
       params.put(Constantes.SQL_CONDICION, sb.toString());
       // and (tc_mantic_requisiciones.id_contrato= {idContrato} or {idContrato}= -1)
       // SE SOLICITO QUE NO SE VERIFIQUE POR CONTRATO LA BUSQUEDA DE LAS PARTIDAS 28/07/2024
