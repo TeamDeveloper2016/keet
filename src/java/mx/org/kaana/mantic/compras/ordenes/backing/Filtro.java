@@ -67,8 +67,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_COMPRAS= "EJERCICIO,EMPRESA,CONTRATO,PRESUPUESTO,MATERIALES,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
-  private static final String COLUMN_DATA_FILE_DETAIL= "DESARROLLO,CLAVE,CONTRATO,PROVEEDOR,ARTICULO,CANTIDAD,IMPORTE";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
+  private static final String COLUMN_DATA_FILE_COMPRAS = "EJERCICIO,EMPRESA,CONTRATO,PRESUPUESTO,MATERIALES,PROVEEDOR,ESTATUS,ORDENES,TOTAL";  
+  private static final String COLUMN_DATA_FILE_DETAIL  = "DESARROLLO,CLAVE,CONTRATO,PROVEEDOR,ARTICULO,CANTIDAD,IMPORTE";  
   
 	private Reporte reporte;
 	private List<Correo> correos;
@@ -155,6 +156,32 @@ public class Filtro extends IBaseFilter implements Serializable {
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "comprasProveedores", template), COLUMN_DATA_FILE_COMPRAS);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  public StreamedContent getEspecial() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		Map<String, Object>params= this.toPrepare();
+		String template          = "ESPECIAL";
+		try {
+      params.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  

@@ -68,7 +68,7 @@ public class Waseanger implements Serializable {
     HttpResponse<String> file= Unirest.post("https://api.wassenger.com/v1/files")
    .header("Content-Type", "application/json")
    .header("Token", token)
-   .body("{\"url\":\"https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\"}")
+   .body("{\"url\":\"https://cafu.com.mx/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\"}")
    .asString();
     Upload upload= new Upload(file);
     if(upload.isOk())

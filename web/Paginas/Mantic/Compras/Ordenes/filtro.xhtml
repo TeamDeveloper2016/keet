@@ -144,6 +144,9 @@
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-code-o" value="Especial XLS" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{manticComprasOrdenesFiltro.especial}" />
+                  </p:menuitem>
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDENES_COMPRA')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Compras" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
@@ -157,6 +160,9 @@
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" action="#{manticComprasOrdenesFiltro.doAccion('AGREGAR')}" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-code-o" title="Especial XLS"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{manticComprasOrdenesFiltro.especial}" />
+                </p:commandButton>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDENES_COMPRA')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Compras"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
                   <p:fileDownload value="#{manticComprasOrdenesFiltro.compras}" />
