@@ -243,82 +243,103 @@
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
 			</select>
       <select id="ordenDetalle">
-        select
-          tc_mantic_ordenes_compras.id_orden_compra as id_key,
-          tc_mantic_ordenes_compras.id_empresa,
-          tc_mantic_imagenes.nombre as imagen,
-          tc_mantic_empresas.clave as clave_empresa,
-          tc_mantic_empresas.nombre as nombre_empresa,
-          tc_mantic_empresas.titulo as titulo_empresa,
-          tc_mantic_ordenes_compras.consecutivo,
-					tc_keet_desarrollos.nombres as centro_costos,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_bancos.nombre as banco,
-					tc_mantic_ordenes_compras.referencia,
-          tc_mantic_proveedores.id_proveedor,
-          tc_mantic_proveedores.razon_social as proveedor,
-          tc_mantic_proveedores.rfc as proveedor_rfc,
-          tc_mantic_ordenes_compras.total total_orden,
-          tc_mantic_ordenes_compras.id_orden_estatus,
-          tc_mantic_ordenes_compras.registro as registro_orden_compra,
-          tc_mantic_ordenes_compras.entrega_estimada,
-          tc_mantic_ordenes_compras.impuestos impuestos_orden,
-          tc_mantic_ordenes_compras.sub_total sub_total_orden,
-          tc_mantic_ordenes_compras.descuentos descuentos_orden,
-          tc_mantic_ordenes_compras.observaciones,
-          tc_keet_contratos.nombre as contrato,
-          tc_keet_contratos.etapa,
-          tc_mantic_ordenes_detalles.sub_total as subtotal,
-          tc_mantic_ordenes_detalles.*,
-          concat('(',
-            ifnull((select
-              tc_mantic_articulos_codigos.codigo 
-            from
-              tc_mantic_articulos_codigos 
-            where
-              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)),
-            ''),
-            ' ) ',
-            tc_mantic_articulos.nombre) as articulo,
-          tc_mantic_articulos.precio,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
-					tr_mantic_empresa_tipo_contacto.valor as correo_facturacion,
-          tc_mantic_ordenes_compras.id_usuario,
-					(select
-					   concat(tc_manti_personal.nombres, ' ', tc_manti_personal.paterno, ' ', ifnull(tc_manti_personal.materno, ''))
-					 from 
-             tc_mantic_personas as tc_manti_personal 
-           where
-             tc_janal_usuarios.id_persona= tc_manti_personal.id_persona
-          ) as usuario
-				from 
-					tc_mantic_ordenes_compras
-				inner join 
-					tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-				inner join 
-					tc_mantic_tipos_medios_pagos on tc_mantic_ordenes_compras.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
-				left join 
-					tc_mantic_bancos on tc_mantic_ordenes_compras.id_banco= tc_mantic_bancos.id_banco
-				inner join 
-					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
-				inner join 
-					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
-				inner join 
-					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
-				inner join 
-					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_personas on tc_mantic_ordenes_compras.id_almacenista= tc_mantic_personas.id_persona
-				inner join
-					tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
-				left join 
-					tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
-        inner join
-					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario          
-        left join
-          tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
-				where 
-          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
+select
+  tc_mantic_ordenes_compras.id_orden_compra as id_key,
+  tc_mantic_ordenes_compras.id_empresa,
+  tc_mantic_imagenes.nombre as imagen,
+  tc_mantic_empresas.clave as clave_empresa,
+  tc_mantic_empresas.nombre as nombre_empresa,
+  tc_mantic_empresas.titulo as titulo_empresa,
+  tc_mantic_ordenes_compras.consecutivo,
+  tc_keet_desarrollos.nombres as centro_costos,
+  tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
+  tc_mantic_bancos.nombre as banco,
+  tc_mantic_ordenes_compras.referencia,
+  tc_mantic_proveedores.id_proveedor,
+  tc_mantic_proveedores.razon_social as proveedor,
+  tc_mantic_proveedores.rfc as proveedor_rfc,
+  tc_mantic_ordenes_compras.total as total_orden,
+  tc_mantic_ordenes_compras.id_orden_estatus,
+  tc_mantic_ordenes_compras.registro as registro_orden_compra,
+  tc_mantic_ordenes_compras.entrega_estimada,
+  tc_mantic_ordenes_compras.impuestos as impuestos_orden,
+  tc_mantic_ordenes_compras.sub_total as sub_total_orden,
+  tc_mantic_ordenes_compras.descuentos as descuentos_orden,
+  tc_mantic_ordenes_compras.observaciones,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.etapa,
+  tc_mantic_ordenes_detalles.sub_total as subtotal,
+  tc_mantic_ordenes_detalles.*,
+  concat(if(tt_keet_requisiciones.consecutivo is null, '', concat('R[ ', tt_keet_requisiciones.consecutivo, ' ]')), ' (',
+    ifnull((select
+      tc_mantic_articulos_codigos.codigo 
+    from
+      tc_mantic_articulos_codigos 
+    where
+      tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)),
+    ''), ' ) ',
+    tc_mantic_articulos.nombre) as articulo,
+  tc_mantic_articulos.precio,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
+  tr_mantic_empresa_tipo_contacto.valor as correo_facturacion,
+  tc_mantic_ordenes_compras.id_usuario,
+  (select
+     concat(tc_manti_personal.nombres, ' ', tc_manti_personal.paterno, ' ', ifnull(tc_manti_personal.materno, ''))
+   from 
+     tc_mantic_personas as tc_manti_personal 
+   where
+     tc_janal_usuarios.id_persona= tc_manti_personal.id_persona
+  ) as usuario
+from 
+  tc_mantic_ordenes_compras
+inner join 
+  tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join 
+  tc_mantic_tipos_medios_pagos on tc_mantic_ordenes_compras.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+left join 
+  tc_mantic_bancos on tc_mantic_ordenes_compras.id_banco= tc_mantic_bancos.id_banco
+inner join 
+  tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
+inner join 
+  tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+inner join 
+  tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+inner join 
+  tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_personas on tc_mantic_ordenes_compras.id_almacenista= tc_mantic_personas.id_persona
+inner join
+  tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
+left join 
+  tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
+inner join
+  tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario          
+left join
+  tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
+left join (
+  select
+    tc_keet_requisiciones_ordenes.id_orden_compra,
+    tc_mantic_requisiciones_detalles.id_articulo,
+    tc_mantic_requisiciones.consecutivo
+  from
+    tc_keet_requisiciones_ordenes 
+  inner join
+    tc_mantic_requisiciones_detalles on tc_keet_requisiciones_ordenes.id_requisicion_detalle= tc_mantic_requisiciones_detalles.id_requisicion_detalle
+  inner join
+    tc_mantic_requisiciones on tc_mantic_requisiciones_detalles.id_requisicion= tc_mantic_requisiciones.id_requisicion  
+  where
+    tc_keet_requisiciones_ordenes.id_orden_compra= 11735
+  group by
+    tc_keet_requisiciones_ordenes.id_orden_compra,
+    tc_mantic_requisiciones_detalles.id_articulo   
+) as tt_keet_requisiciones on tc_mantic_ordenes_compras.id_orden_compra= tt_keet_requisiciones.id_orden_compra and tc_mantic_ordenes_detalles.id_articulo= tt_keet_requisiciones.id_articulo
+where 
+  tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
+group by
+  tc_mantic_ordenes_detalles.id_orden_compra,
+  tc_mantic_ordenes_detalles.id_orden_detalle
+order by
+  tc_mantic_ordenes_detalles.id_orden_detalle        
       </select>
       <select id="diferenciasOrdenCompra">
          select

@@ -72,7 +72,7 @@
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="idTipoNomina" value="Tipo nómina:"/>
 								<p:selectOneMenu id="idTipoNomina" value="#{keetNominasAccion.attrs.idTipoNomina}" var="row" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" process="@this" update="idNomina aceptar aceptarIcon @(.nominas)" listener="#{keetNominasAccion.doLoadNominas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadNominas()"/> 
+									<p:ajax event="change" process="@this" update="idNomina aceptar aceptarIcon @(.nominas) contenedorGrupos:movimientos" listener="#{keetNominasAccion.doLoadNominas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadNominas()"/> 
 									<f:selectItems value="#{keetNominasAccion.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{row.nombre}"/>
@@ -80,7 +80,7 @@
 								</p:selectOneMenu>	
 								<p:outputLabel for="idNomina" value="Nómina:"/>
 								<p:selectOneMenu id="idNomina" value="#{keetNominasAccion.attrs.idNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt nominas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" process="@this" update="@(.nominas)" listener="#{keetNominasAccion.doLoadNomina}" onstart="return janal.partial('nomina');" oncomplete="janal.desbloquear()"/> 
+									<p:ajax event="change" process="@this" update="@(.nominas) contenedorGrupos:movimientos" listener="#{keetNominasAccion.doLoadNomina}" onstart="return janal.partial('nomina');" oncomplete="janal.desbloquear()"/> 
 									<f:selectItems value="#{keetNominasAccion.attrs.nominas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Periodo" styleClass="janal-column-center">
 										<h:outputText value="#{item.nombre}"/>
@@ -230,11 +230,11 @@
                   <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:exportPdf', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
                   <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:exportXls', 'contenedorGrupos\\:movimientos')" oncomplete="janal.desbloquear()"/>
                 </f:facet>												
-                <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
+                <p:column class="MarAuto Responsive" sortBy="#{row.nombreCompleto}">
                   <f:facet name="header">
                     <h:outputText value="Razón social"/>
                   </f:facet>
-                  <h:outputText value="#{row['razonSocial']}"/>
+                  <h:outputText value="#{row['nombreCompleto']}"/>
                 </p:column>														
                 <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
                   <f:facet name="header">
@@ -290,6 +290,11 @@
                   </f:facet>
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>	
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40">
+                  <p:commandButton icon="fa fa-refresh" process="@this movimientos contenedorGrupos:tabla" update="movimientos contenedorGrupos:tabla @(.nominas)" action="#{keetNominasAccion.doProcesar}" title="Re-procesar" disabled="#{not(keetNominasAccion.attrs.idNominaEstatus lt 4)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
+										<f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.destajo}" />
+									</p:commandButton>
+								</p:column>
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{keetNominasAccion.lazyMovimientos== null? 0: keetNominasAccion.lazyMovimientos.rowCount}] registros"/>
                 </f:facet>

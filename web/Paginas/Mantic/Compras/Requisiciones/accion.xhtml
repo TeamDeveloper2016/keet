@@ -65,6 +65,10 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
+		<pe:remoteCommand name="attached" process="@this @(.attached)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasRequisicionesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('$(\'#contenedorGrupos\\:parche_input\').focus()', 500); janal.reset();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
 		<pe:remoteCommand name="lookup" actionListener="#{manticComprasRequisicionesAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado" oncomplete="janal.reset();">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
@@ -126,6 +130,23 @@
               <p:remoteCommand name="reloadContratos" process="@this" update="idContrato"/>
 						</p:tab>
 						<p:tab title="Articulos">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <h:outputText value="Articulo:"/>
+                <p:autoComplete id="parche" widgetVar="parche" var="parche" itemLabel="#{parche.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt key-down-event attached" itemValue="#{parche}" value="#{manticComprasRequisicionesAccion.attrs.articulo}" completeMethod="#{manticComprasRequisicionesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+                  <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.attached(); $('#contenedorGrupos\\:parche_input').val('');"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                      <f:facet name="header" class="TexAlCenter">
+                        <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="50" height="30"/>
+                      </f:facet>
+                      <h:outputText value="Código:" />
+                      <h:outputText value="#{parche.propio}" />
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{parche.nombre}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>												
+              </p:panelGrid>  
 							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesAccion.adminOrden.articulos}" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticComprasRequisicionesAccion.attrs.paginator}" rows="#{manticComprasRequisicionesAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
 								<p:column styleClass="MarAuto Responsive janal-wid-3 janal-view-normal">
 									<f:facet name="header">
@@ -158,12 +179,8 @@
                               </f:facet>
                               <h:outputText value="Código:" />
                               <h:outputText value="#{custom.propio}" />
-                              <h:outputText value="Precio venta:" />
-                              <p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
                               <h:outputText value="Nombre:" />
                               <h:outputText value="#{custom.nombre}" />
-                              <h:outputText value="Código auxiliar:" />
-                              <h:outputText value="#{custom.codigo}" />
                             </h:panelGrid>
                           </f:facet>
                         </p:autoComplete>												
@@ -187,7 +204,7 @@
 									</f:facet>
 									<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 								</p:column>		
-								<p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-60': 'janal-wid-10'}">
+								<p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-40': 'janal-wid-10'}">
 									<f:facet name="header">
 										<p:outputLabel for="cantidades" value="Cantidad"/>
 									</f:facet>

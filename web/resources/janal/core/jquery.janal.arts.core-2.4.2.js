@@ -935,6 +935,12 @@
 		  replace(this.cursor.index);
 			return false;
 		},
+		attached: function() {
+			janal.console('jsArticulo.attached: ');
+      this.cursor.index= this.cursor.top;
+		  attached(this.cursor.index);
+			return false;
+		},
 		look: function(name) {
 			console.log('jsArticulo.look: '+ $(name).val());
 			var search= $(name).val().replace(janal.cleanString, '').trim();

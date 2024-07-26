@@ -1260,7 +1260,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       periodo.addMeses(-3);
       sb.append("(tc_mantic_requisiciones.id_requisicion_estatus in (2, 5)) and ");
       sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(periodo.toString()).append("') and ");
-      if(!Objects.equals(residente.getKey(), -1L))
+      if(!Objects.equals(residente, null) && !Objects.equals(residente.getKey(), -1L))
         sb.append("(tc_mantic_requisiciones.id_solicita= ").append(residente.getKey()).append(") and ");
       if(todos)
         sb.append(Constantes.SQL_VERDADERO).append(" and ");

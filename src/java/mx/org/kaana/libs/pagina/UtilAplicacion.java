@@ -56,7 +56,7 @@ public class UtilAplicacion {
   private static final String VENTAS= "jquery.janal.ventas.core-1.1.1.js";
   private static final String VALES = "jquery.janal.vales.core-0.0.5.js";
 	private static final String TICKET= "jquery.janal.ticket.core-0.1.7.js";
-  private static final String CALC  = "jquery.janal.arts.core-2.3.9.js";
+  private static final String CALC  = "jquery.janal.arts.core-2.4.2.js";
   private static final String KARDEX= "jquery.janal.kardex.core-0.5.5.js";
   private static final String CLOSE = "jquery.janal.close.core-0.0.5.js";
   private static final String DLGS  = "jquery.janal.precio.core-0.5.2.js";

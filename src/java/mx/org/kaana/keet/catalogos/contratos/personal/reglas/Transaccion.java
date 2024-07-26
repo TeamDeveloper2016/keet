@@ -99,7 +99,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					} // for					
 					break;				
 				case PROCESAR:									
-					params= new HashMap<>();
 					for(SelectionItem item: this.empleados) {
 						procesaEmpleado= true;
 						persona= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, TrManticEmpresaPersonalDto.class, Long.valueOf(item.getKey()));
@@ -123,7 +122,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				case DEPURAR:
 					for(SelectionItem item: this.empleados) {
 						if(verificacionLotes(sesion, Long.valueOf(item.getKey()))){
-							params= new HashMap<>();
 							params.put("idEmpresaPersona", Long.valueOf(item.getKey()));						
 							DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contratoPersona", params);					
 						} // if
@@ -178,11 +176,10 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private boolean eliminarIncidencias(Session sesion) throws Exception{
 		boolean regresar                         = true;
 		List<TcManticIncidentesArchivosDto> files= null;
-		Map<String, Object>params                = null;
+		Map<String, Object>params                = new HashMap<>();
 		File file                                = null;
 		try {
 			for(Incidente incidencia: this.incidenciasDelete){
-				params= new HashMap<>();
 				params.put("idIncidente", incidencia.getIdIncidente());
 				files= DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesArchivosDto.class, "TcManticIncidentesArchivosDto", "allIncidente", params, Constantes.SQL_TODOS_REGISTROS);
 				if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcManticIncidentesBitacoraDto", "rows", params) > -1L){

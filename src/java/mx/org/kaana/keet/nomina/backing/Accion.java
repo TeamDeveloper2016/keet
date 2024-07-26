@@ -71,6 +71,7 @@ public class Accion extends IBaseFilter implements Serializable {
 		this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		this.attrs.put("nomina", new Nomina());
 		this.attrs.put("tuplas", 0L);
+    this.attrs.put("idNominaEstatus", 10L);
 		this.toLoadCatalogos();
   } // init
   
@@ -193,8 +194,12 @@ public class Accion extends IBaseFilter implements Serializable {
 			Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);
 			if(nomina== null) 
 			  nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "complemento", params);
-			if(nomina== null)
+			if(nomina== null) {
 				nomina= new Nomina();
+        this.attrs.put("idNominaEstatus", 10L);         
+      } // if  
+      else
+        this.attrs.put("idNominaEstatus", nomina.getIdNominaEstatus());        
       this.attrs.put("nomina", nomina);
 			if(nomina.getIdTipoNomina()== 2L)
 				params.put("idNomina", ((Nomina)this.attrs.get("ultima")).getIdNomina());
@@ -213,12 +218,11 @@ public class Accion extends IBaseFilter implements Serializable {
 
 	@Override
 	public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina, clave");
-      columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable();
@@ -275,6 +279,36 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // finally
 	}	
 	
+  public void doProcesar() {
+		Transaccion transaccion= null;
+		try {
+			Entity row= (Entity)this.attrs.get("destajo");
+			if(row.toLong("idTipoProceso")== 1L) {
+				transaccion= new Transaccion(((Nomina)this.attrs.get("nomina")).getIdNomina(), row.toLong("idPersonaReprocesar"), JsfBase.getAutentifica());
+			  if(transaccion.ejecutar(EAccion.REPROCESAR))
+					JsfBase.addMessage("Se reprocesó con éxito la nómina de "+ row.toString("nombreCompleto"), ETipoMensaje.INFORMACION);
+			  else
+					JsfBase.addMessage("Ocurrio un error en el reproceso de "+ row.toString("nombreCompleto"), ETipoMensaje.ERROR);
+			} // if
+			else {
+				transaccion= new Transaccion(((Nomina)this.attrs.get("nomina")).getIdNomina(), JsfBase.getAutentifica(), row.toLong("idPersonaReprocesar"));
+			  if(transaccion.ejecutar(EAccion.DEPURAR))
+					JsfBase.addMessage("Se reprocesó con éxito la nómina del subcontratista "+ row.toString("nombreCompleto"), ETipoMensaje.INFORMACION);
+			  else
+					JsfBase.addMessage("Ocurrio un error en el reproceso del subcontratista "+ row.toString("nombreCompleto"), ETipoMensaje.ERROR);
+			} // if
+			this.doLoadNomina();
+      this.doMovimientos();
+			this.doLoad();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			transaccion= null;
+		} // finally
+	}	
 	
 	public String doConsultar(String accion) {
     String regresar= null;

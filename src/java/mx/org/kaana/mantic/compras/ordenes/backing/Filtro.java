@@ -475,7 +475,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			allEstatus= UISelect.build("TcManticOrdenesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
-			this.attrs.put("activa", !Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && Objects.equals(seleccionado.toLong("idOrdenEstatus"), 1L));
+			this.attrs.put("activa", !Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && !Objects.equals(seleccionado.toLong("idTipoOrden"), 5L) && Objects.equals(seleccionado.toLong("idOrdenEstatus"), 1L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -496,7 +496,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Long idOrdenCodigo                 = -1L;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-      if(!Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && Objects.equals((Long)this.attrs.get("estatus"), 3L)) {
+      if(!Objects.equals(seleccionado.toLong("idTipoOrden"), 1L) && !Objects.equals(seleccionado.toLong("idTipoOrden"), 5L) && Objects.equals((Long)this.attrs.get("estatus"), 3L)) {
         params.put("codigo", this.attrs.get("codigo"));
         exists= (Entity)DaoFactory.getInstance().toEntity("TcKeetOrdenesCodigosDto", "existe", params);
         if(exists!= null && !exists.isEmpty()) {
