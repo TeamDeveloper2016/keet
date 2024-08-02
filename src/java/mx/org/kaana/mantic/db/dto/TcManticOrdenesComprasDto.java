@@ -104,7 +104,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Clonea
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, -1L, -1L, -1L, null, -1L, -1L, null, 1L);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, 1L, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, -1L, -1L, -1L, null, -1L, -1L, null, 1L);
     setKey(key);
   }
 

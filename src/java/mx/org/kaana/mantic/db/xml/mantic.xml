@@ -975,6 +975,8 @@ where
           tc_mantic_bancos
         where 
           {condicion} 
+        order by
+          tc_mantic_bancos.id_banco
       </select>
       <select id="identically">
         select      
@@ -4916,6 +4918,8 @@ order by
           tc_mantic_tipos_medios_pagos
         where 
           {condicion} 
+        order by
+          tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
       </select>
       <select id="identically">
         select      

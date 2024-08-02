@@ -995,12 +995,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<UISelectEntity> tiposMediosPagos= null;
 		Map<String, Object>params            = new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
       if(!tiposMediosPagos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
-          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(0));
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(2));
         else  
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(tiposMediosPagos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkTipoMedioPago())));
 		} // try
@@ -1024,9 +1024,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("bancos", bancos);
       if(!bancos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
-          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(0));
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(6));
         else  
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(bancos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkBanco())));
+      this.attrs.put("isBanco", Boolean.TRUE);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -1252,7 +1253,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     UISelectEntity residente  = (UISelectEntity)this.attrs.get("idResidente");
     StringBuilder sb          = new StringBuilder();
     try {
-      params.put("sortOrder", "order by tc_mantic_requisiciones_detalles.id_requisicion_detalle");
+      params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_orden_compra is null, tc_mantic_requisiciones_detalles.id_requisicion_detalle");
       params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());

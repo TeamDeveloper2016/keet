@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordenDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.compras.ordenes.scriplet.OrdenesDetalles" uuid="a3542042-156a-46f2-b7a4-73d76a67d6b2">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="20"/>
+	<property name="ireport.y" value="64"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -699,14 +699,14 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="89" y="34" width="74" height="12" uuid="1b8bfa7c-40e9-4905-acc3-1bb9a0f01492"/>
+				<reportElement stretchType="RelativeToTallestObject" x="89" y="34" width="74" height="10" forecolor="#FF0033" uuid="1b8bfa7c-40e9-4905-acc3-1bb9a0f01492"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Arial Narrow" size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIONES:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement x="89" y="46" width="526" height="25" isPrintWhenDetailOverflows="true" uuid="3d6bedf7-f251-4b84-963b-f5acafc7348a"/>
+				<reportElement x="89" y="46" width="526" height="25" isPrintWhenDetailOverflows="true" forecolor="#FF0033" uuid="3d6bedf7-f251-4b84-963b-f5acafc7348a"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -765,6 +765,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{REFERENCIA}]]></textFieldExpression>
 			</textField>
+			<rectangle radius="4">
+				<reportElement mode="Transparent" x="89" y="45" width="526" height="25" forecolor="#FF3333" uuid="b8ef5e29-c06e-4c5a-8dca-f8dddc8daa22"/>
+			</rectangle>
 		</band>
 	</summary>
 </jasperReport>
