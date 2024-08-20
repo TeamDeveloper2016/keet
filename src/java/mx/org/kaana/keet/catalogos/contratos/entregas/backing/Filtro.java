@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.entregas.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,13 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
@@ -21,6 +26,8 @@ import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -30,6 +37,8 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetCatalogosContratosEntregasFiltro")
 @ViewScoped
@@ -37,6 +46,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
   private static final Log LOG = LogFactory.getLog(Filtro.class);
+	private static final String DATA_FILE_CONTRATO= "EMPRESA,CLAVE,CONTRATO,ETAPA,TOTAL,ENTREGADAS,INICIADAS,FALTAN";
+	private static final String DATA_FILE_DETALLE = "EMPRESA,CLAVE,CONTRATO,ETAPA,LOTE,PROTOTIPO,ENTREGADA,INICIO,ENTREGA,ENTREGO,RECIBIO,OBSERVACIONES";
   
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
@@ -57,6 +68,60 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		this.lotes = lotes;
 	}
 
+  public StreamedContent getContrato() {
+		StreamedContent regresar = null;		
+		Map<String, Object>params= new HashMap<>();
+		Xls xls                  = null;
+    String template          = "LTEC";
+		try {
+      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaCapturaDestajosDto", "lotesPorContrato", template), DATA_FILE_CONTRATO);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getContrato
+
+  public StreamedContent getDetalle() {
+		StreamedContent regresar = null;		
+		Map<String, Object>params= new HashMap<>();
+		Xls xls                  = null;
+    String template          = "LTEE";
+		try {
+      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaCapturaDestajosDto", "lotesPorDetalle", template), DATA_FILE_DETALLE);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getDetalle
+  
   @PostConstruct
   @Override
   protected void init() {		

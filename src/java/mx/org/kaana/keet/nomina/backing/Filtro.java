@@ -464,10 +464,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   public StreamedContent getFaltas() {
 		StreamedContent regresar= null;
 		Xls xls                 = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		String template         = "FALTAS";
 		try {
-	  	params=new HashMap<>();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(params, "VistaIncidenciasDto", "faltas", template), COLUMN_DATA_FILE_FALTAS);	

@@ -9,6 +9,15 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Entrega de lotes terminados" />
   <ui:define name="librerias">
+    <script type="text/javascript">
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+    </script>  
 		<style type="text/css">
 			.ui-commandlink {
 				color: transparent !important;
@@ -77,15 +86,29 @@
                   </p:panelGrid>  
   							</p:panelGrid>	
 							</p:panelGrid>
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-						    <p:outputLabel for="idEntrega" value="Lotes entregado(s):"/>
-                <p:selectOneMenu id="idEntrega" value="#{keetCatalogosContratosEntregasFiltro.attrs.idEntrega}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoad}" update="destajo" oncomplete="janal.desbloquear();"/>
-                  <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-                  <f:selectItem itemValue="1" itemLabel="SI"/>
-                  <f:selectItem itemValue="2" itemLabel="NO"/>
-                </p:selectOneMenu>																	
-							</p:panelGrid>
+              <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-90, janal-fix-5 janal-column-center, janal-fix-5 janal-column-center">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:outputLabel for="idEntrega" value="Lotes entregado(s):"/>
+                  <p:selectOneMenu id="idEntrega" value="#{keetCatalogosContratosEntregasFiltro.attrs.idEntrega}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosEntregasFiltro.doLoad}" update="destajo" oncomplete="janal.desbloquear();"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
+                    <f:selectItem itemValue="2" itemLabel="NO"/>
+                  </p:selectOneMenu>																	
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:outputLabel value="..."/>
+                  <p:commandButton icon="fa fa-home" title="Lotes por contrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                    <p:fileDownload value="#{keetCatalogosContratosEntregasFiltro.contrato}" />
+                  </p:commandButton>
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:outputLabel value="..."/>
+                  <p:commandButton icon="fa fa-sellsy" title="Lotes entregados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+                    <p:fileDownload value="#{keetCatalogosContratosEntregasFiltro.detalle}" />
+                  </p:commandButton>
+                </p:panelGrid>
+              </p:panelGrid>
               <p:remoteCommand name="reloadManzanas" process="@this" update="manzanas"/>
               <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
               <p:remoteCommand name="reload" process="@this" update="destajo"/>

@@ -10930,6 +10930,74 @@ order by
   convert(tc_keet_contratos_lotes.manzana, unsigned integer),
   convert(tc_keet_contratos_lotes.lote, unsigned integer)
 			</select>
+			<select id="lotesPorContrato">
+select 
+  tc_keet_contratos.id_contrato id_key,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.etapa,
+  count(*) as total,
+  sum(if(tc_keet_contratos_lotes.entrega is not null and tc_keet_contratos_lotes.arranque is not null, 1, 0)) as entregadas,
+  sum(if(tc_keet_contratos_lotes.entrega is null and tc_keet_contratos_lotes.arranque is not null, 1, 0)) as iniciadas,
+  sum(if(tc_keet_contratos_lotes.entrega is null and tc_keet_contratos_lotes.arranque is null, 1, 0)) as faltan
+from 
+  tc_keet_proyectos
+inner join 
+  tc_mantic_empresas on tc_keet_proyectos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+inner join 
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+where 
+  tc_keet_proyectos.id_desarrollo={idDesarrollo}         
+  and {condicion}
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos_lotes.orden
+      </select>
+			<select id="lotesPorDetalle">
+select 
+  tc_keet_contratos.id_contrato id_key,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.etapa,
+  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+  tc_keet_prototipos.nombre as prototipo,
+  if(tc_keet_contratos_lotes.entrega is null, 'NO', 'SI') as entregada,
+  ifnull(date_format(tc_keet_contratos_lotes.arranque, '%d/%m/%Y'), ' ') as inicio,
+  ifnull(date_format(tc_keet_contratos_lotes.entrega, '%d/%m/%Y'), '') as entrega,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as entrego,
+  tc_keet_contratos_lotes.recibio,
+  tc_keet_contratos_lotes.observaciones
+from 
+  tc_keet_proyectos
+inner join 
+  tc_mantic_empresas on tc_keet_proyectos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+inner join 
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+left join 
+	tc_janal_usuarios on tc_keet_contratos_lotes.id_entrego= tc_janal_usuarios.id_usuario
+left join 
+	tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+where 
+  tc_keet_proyectos.id_desarrollo={idDesarrollo}         
+  and {condicion}
+group by
+  tc_keet_contratos_lotes.id_contrato_lote
+order by
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos_lotes.orden
+      </select>
 			<select id="lotesSubContratistas">
 select 
   tc_keet_contratos_lotes.id_contrato_lote id_key,

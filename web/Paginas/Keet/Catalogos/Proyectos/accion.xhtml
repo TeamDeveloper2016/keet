@@ -100,7 +100,7 @@
 						<p:tab title="Siembra" >	
               <p:outputLabel value="*Los prototipos estan asociados a los clientes, verifique de favor que el cliente tenga prototipos asignados" styleClass="janal-color-blue"/>
 							<p:spacer/>
-							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.lotes}" rows="60" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="cliente">																					
+							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.lotes}" rows="200" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="cliente">																					
 								<p:column headerText="No" class="janal-wid-3">										
                   <p:outputLabel value="#{index+1}" styleClass="janal-wid-100-txt"/>
                 </p:column>  

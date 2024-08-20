@@ -293,7 +293,7 @@
 						<p:tab id="tabSiembra" title="Siembra">	
 							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
 							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doExistGeo}"/>														
-              <p:dataTable id="tablaLotes" lazy="false" widgetVar="wTablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="80" rowsPerPageTemplate="80" paginator="true" reflow="true" rowKey="#{lote.key}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated style-panel" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosAccion.toColor(lote)}">
+              <p:dataTable id="tablaLotes" lazy="false" widgetVar="wTablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="200" rowsPerPageTemplate="80" paginator="true" reflow="true" rowKey="#{lote.key}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated style-panel" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosAccion.toColor(lote)}">
 								<p:column headerText="Clave" class="janal-wid-8">										
 									<p:inputText value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
