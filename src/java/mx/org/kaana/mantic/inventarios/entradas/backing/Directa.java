@@ -207,8 +207,8 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
       } // if  
       if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml())) {
-          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+//        if(!Cadena.isVacio(this.getXml())) {
+//          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
             transaccion = new Proceso((NotaEntradaDirecta)this.getAdminOrden().getOrden(), this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR)) {
@@ -223,12 +223,12 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
-          } // if  
-          else 
-            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
-        } // if
-        else 
-          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+//          } // if  
+//          else 
+//            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+//        } // if
+//        else 
+//          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
       } // if
       else 
         JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
@@ -256,10 +256,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -380,8 +379,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   
 	public void doUpdateClienteEmpleado() {
 		List<UISelectEntity> desarrollos= null;
-		List<Columna> columns           = null;
-		Map<String, Object>params       = null;
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollosEmpleado");
       this.empleado.setIkDesarrollo(desarrollos.get(desarrollos.indexOf(this.empleado.getIkDesarrollo())));
@@ -394,17 +391,12 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		finally {
-			Methods.clean(params);
-			Methods.clean(columns);
-		} // finally
 	} // doUpdateClienteEmpleado
   
 	public void doLoadContratosProyecto() {
 		List<UISelectEntity> contratos= null;
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.proyecto.getIdDesarrollo());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
@@ -485,10 +477,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	}
 
   private void toLoadCondiciones(UISelectEntity proveedor) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
@@ -557,10 +548,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	}
 
 	public void doCheckFolio() {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
       this.attrs.put("folio", "");
-			params=new HashMap<>();
 			params.put("factura", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdProveedor());
 			params.put("idNotaEntrada", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -694,9 +684,8 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	
   private void toMoveSelectedProveedor() {
 		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
-	  Map<String, Object> params= null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());
@@ -745,9 +734,8 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 
 	private void toLoadTiposMediosPagos() {
 		List<UISelectEntity> tiposMediosPagos= null;
-		Map<String, Object>params            = null;
+		Map<String, Object>params            = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
@@ -767,12 +755,10 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   
 	private void toLoadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> columns      = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			bancos= UIEntity.seleccione("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
@@ -793,9 +779,8 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   
 	private void toLoadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -815,9 +800,8 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   
 	private void toLoadEmpresaTipoContacto() {
 		List<UISelectEntity> empresaTiposContactos= null;
-		Map<String, Object>params                 = null;
+		Map<String, Object>params                 = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresa", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
 			params.put("idTipoContacto", "9, 10, 11, 15, 16, 17, 18");
 			empresaTiposContactos= UIEntity.build("TrManticEmpresaTipoContactoDto", "tipos", params);
@@ -846,7 +830,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			this.attrs.put("isBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago));
       if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago)) 
         UIBackingUtilities.execute(
-          "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'requerido', mascara: 'libre'});"
+          "janal.renovate('contenedorGrupos\\\\:idBanco', {validaciones: 'requerido', mascara: 'libre'});"
         );		
 		} // try
 		catch (Exception e) {
@@ -1001,5 +985,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     }// finally
     return (List<UISelectEntity>)this.attrs.get("empleados");
   }	// doCompleteEmpleado
-          
+      
+  public void doUpadateInfo() {
+    ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDeuda(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getOriginal());   
+  }
+  
 }

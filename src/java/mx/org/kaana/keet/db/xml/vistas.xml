@@ -10934,6 +10934,7 @@ order by
 select 
   tc_keet_contratos.id_contrato id_key,
   tc_mantic_empresas.nombre as empresa,
+  tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.etapa,
@@ -10945,6 +10946,8 @@ from
   tc_keet_proyectos
 inner join 
   tc_mantic_empresas on tc_keet_proyectos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 inner join 
   tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
 inner join 
@@ -10964,6 +10967,7 @@ order by
 select 
   tc_keet_contratos.id_contrato id_key,
   tc_mantic_empresas.nombre as empresa,
+  tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.etapa,
@@ -10971,7 +10975,7 @@ select
   tc_keet_prototipos.nombre as prototipo,
   if(tc_keet_contratos_lotes.entrega is null, 'NO', 'SI') as entregada,
   ifnull(date_format(tc_keet_contratos_lotes.arranque, '%d/%m/%Y'), ' ') as inicio,
-  ifnull(date_format(tc_keet_contratos_lotes.entrega, '%d/%m/%Y'), '') as entrega,
+  ifnull(date_format(tc_keet_contratos_lotes.entrega, '%d/%m/%Y'), ' ') as entrega,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as entrego,
   tc_keet_contratos_lotes.recibio,
   tc_keet_contratos_lotes.observaciones
@@ -10979,6 +10983,8 @@ from
   tc_keet_proyectos
 inner join 
   tc_mantic_empresas on tc_keet_proyectos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 inner join 
   tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
 inner join 

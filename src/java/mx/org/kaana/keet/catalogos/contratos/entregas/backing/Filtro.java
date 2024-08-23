@@ -46,8 +46,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
   private static final Log LOG = LogFactory.getLog(Filtro.class);
-	private static final String DATA_FILE_CONTRATO= "EMPRESA,CLAVE,CONTRATO,ETAPA,TOTAL,ENTREGADAS,INICIADAS,FALTAN";
-	private static final String DATA_FILE_DETALLE = "EMPRESA,CLAVE,CONTRATO,ETAPA,LOTE,PROTOTIPO,ENTREGADA,INICIO,ENTREGA,ENTREGO,RECIBIO,OBSERVACIONES";
+	private static final String DATA_FILE_CONTRATO= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,ETAPA,TOTAL,ENTREGADAS,INICIADAS,FALTAN";
+	private static final String DATA_FILE_DETALLE = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,ETAPA,LOTE,PROTOTIPO,ENTREGADA,INICIO,ENTREGA,ENTREGO,RECIBIO,OBSERVACIONES";
   
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;

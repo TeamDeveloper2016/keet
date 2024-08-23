@@ -53,10 +53,12 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     this.empleados= new ArrayList<>();
   }
   
+  @Override
 	public UISelectEntity getIkEmpresa() {
 		return ikEmpresa;
 	}
 
+  @Override
 	public void setIkEmpresa(UISelectEntity ikEmpresa) {
 		this.ikEmpresa=ikEmpresa;
 		if(this.ikEmpresa!= null)

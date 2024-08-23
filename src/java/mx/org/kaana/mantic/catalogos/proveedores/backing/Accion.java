@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -126,7 +127,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           idProveedor = Long.valueOf(this.attrs.get("idProveedor").toString());
           this.registroProveedor = new RegistroProveedor(idProveedor);
 					this.loadCollections();
-					if(!this.registroProveedor.getProveedoresDomicilio().isEmpty()) {
+					if(Objects.equals(this.registroProveedor.getProveedoresDomicilio(), null) || !this.registroProveedor.getProveedoresDomicilio().isEmpty()) {
 						this.registroProveedor.setProveedorDomicilioSeleccion(this.registroProveedor.getProveedoresDomicilio().get(0));
 						this.doConsultarProveedorDomicilio();
 					} // if
