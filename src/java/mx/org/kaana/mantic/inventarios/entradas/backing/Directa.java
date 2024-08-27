@@ -580,10 +580,11 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	
 	public void doCalculateFechaPago() {
 		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaFactura();
-		if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
+		if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo()== null) {
 			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(7L);
-		LocalDate calendar= fechaFactura.plusDays(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
-		((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaPago(calendar);
+		  LocalDate calendar= fechaFactura.plusDays(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
+		  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaPago(calendar);
+    } // if  
 	}
 
 	public void doCalculatePagoFecha() {

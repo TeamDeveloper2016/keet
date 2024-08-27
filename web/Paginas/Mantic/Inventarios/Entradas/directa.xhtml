@@ -26,7 +26,7 @@
 				'contenedorGrupos\\:idProveedor'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:factura'          : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'fecha|requerido', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})|requerido', mascara: 'fecha', grupo: 'general', individual: true},
+				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'fecha|fecha-menor({"cual":"contenedorGrupos\\\\:fechaFactura"})|requerido', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:diasPlazo'        : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'        : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|requerido', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre'},
@@ -188,7 +188,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
+                  <p:calendar id="fechaFactura" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="total" value="Deuda:"/>
@@ -201,7 +201,7 @@
               <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt">
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx"/>
+                  <p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="diasPlazo" value="Dias plazo:"/>
@@ -211,7 +211,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx">
+                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx">
                     <p:ajax event="dateSelect" listener="#{manticInventariosEntradasDirecta.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
                   </p:calendar>
                 </p:panelGrid>  

@@ -328,7 +328,7 @@ left join (
   inner join
     tc_mantic_requisiciones on tc_mantic_requisiciones_detalles.id_requisicion= tc_mantic_requisiciones.id_requisicion  
   where
-    tc_keet_requisiciones_ordenes.id_orden_compra= 11735
+    tc_keet_requisiciones_ordenes.id_orden_compra= {idOrdenCompra}
   group by
     tc_keet_requisiciones_ordenes.id_orden_compra,
     tc_mantic_requisiciones_detalles.id_articulo   

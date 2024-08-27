@@ -11205,6 +11205,7 @@ order by
 			<select id="conceptosExtras">
 				select
 					tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.id_estacion,
 					tc_keet_estaciones.nivel,
 					tc_keet_estaciones.clave,
 					tc_keet_estaciones.nombre,
@@ -11214,6 +11215,8 @@ order by
 					tc_keet_estaciones.costo,
           tc_keet_estaciones.costo as importe,
           ifnull(tc_keet_contratos_destajos_contratistas.justificacion, tc_keet_contratos_destajos_proveedores.justificacion) as justificacion,
+          ifnull(tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista, tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor) as id_pivote,
+          ifnull(ifnull(tc_keet_contratos_destajos_contratistas.id_nomina, tc_keet_contratos_destajos_proveedores.id_nomina), -1) as id_nomina,
 					principal.*
 				from (  
 				select
@@ -12033,7 +12036,7 @@ where
         where 
           tc_keet_puntos_grupos.id_departamento= {idDepartamento}
 				  and tc_keet_puntos_grupos.id_extra= {idExtra}	
-  				and tc_keet_rubros.id_rubro not in (
+  				and tc_keet_rubros.id_rubro {cuales} in (
 				select					
 					principal.id_rubro
 				from(  

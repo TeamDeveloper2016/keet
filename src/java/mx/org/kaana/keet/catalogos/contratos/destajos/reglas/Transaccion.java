@@ -113,10 +113,16 @@ public class Transaccion extends IBaseTnx {
 				case AGREGAR:					
 					regresar= this.agregarConceptoExtra(sesion);					
 					break;
+				case MODIFICAR:
+					if(Objects.equals(this.conceptoExtra.getTipo(), 1L))
+						regresar= this.modificarConceptoExtraContratista(sesion);
+					else
+						regresar= this.modificarConceptoExtraSubContratista(sesion);
+					break;
 				case ELIMINAR:
 					idUsuario= JsfBase.getIdUsuario();
 					this.factorAcumulado= 0D;
-					if(this.revision.getTipo().equals(1L))
+					if(Objects.equals(this.revision.getTipo(), 1L))
 						regresar= this.eliminarConceptoExtraContratista(sesion, idUsuario);
 					else
 						regresar= this.eliminarConceptoExtraSubContratista(sesion, idUsuario);
@@ -727,7 +733,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
       dto.setJustificacion(this.conceptoExtra.getJustificacion());
 			idContratoDestajo= DaoFactory.getInstance().insert(sesion, dto);
-			this.conceptoExtra.setPuntosRevision(loadPuntosRevision(sesion, estacion.getIdEstacion()));
+			this.conceptoExtra.setPuntosRevision(this.loadPuntosRevision(sesion, estacion.getIdEstacion()));
 			this.processPuntosContratistasExtras(sesion, JsfBase.getIdUsuario(), idContratoDestajo);
       regresar= Boolean.TRUE;
 		} // try
@@ -833,8 +839,62 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadPuntosRevision
 	
+	private boolean modificarConceptoExtraContratista(Session sesion) throws Exception { 
+		boolean regresar            = Boolean.FALSE;		
+		TcKeetContratosDestajosContratistasDto dto= null;
+		TcKeetEstacionesDto estacion= null;
+		Double diferencia           = 0D;
+		try {			
+      dto       = (TcKeetContratosDestajosContratistasDto)DaoFactory.getInstance().findById(TcKeetContratosDestajosContratistasDto.class, this.conceptoExtra.getIdPivote());
+      diferencia= Numero.toAjustarDecimales(this.conceptoExtra.getImporte()- dto.getCosto());
+      dto.setCosto(this.conceptoExtra.getImporte());				
+      dto.setJustificacion(this.conceptoExtra.getJustificacion());
+      DaoFactory.getInstance().update(sesion, dto);
+      estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.conceptoExtra.getIdEstacion());
+      estacion.setNombre(this.conceptoExtra.getDescripcion());
+      estacion.setDescripcion(this.conceptoExtra.getDescripcion());
+      estacion.setCosto(this.conceptoExtra.getImporte());
+      estacion.setCargo(this.conceptoExtra.getImporte());
+      Methods.setValue(estacion, "cargo"+ dto.getSemana(), new Object[] {this.conceptoExtra.getImporte()});
+      DaoFactory.getInstance().update(sesion, estacion);
+      this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
+      regresar= Boolean.TRUE;		
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+  }
+  
+	private boolean modificarConceptoExtraSubContratista(Session sesion) throws Exception { 
+		boolean regresar            = Boolean.FALSE;		
+		TcKeetContratosDestajosProveedoresDto dto= null;
+		TcKeetEstacionesDto estacion= null;
+		Double diferencia           = 0D;
+		try {			
+      dto       = (TcKeetContratosDestajosProveedoresDto)DaoFactory.getInstance().findById(TcKeetContratosDestajosProveedoresDto.class, this.conceptoExtra.getIdPivote());
+      diferencia= this.conceptoExtra.getImporte()- dto.getCosto();
+      dto.setCosto(this.conceptoExtra.getImporte());				
+      dto.setJustificacion(this.conceptoExtra.getJustificacion());
+      DaoFactory.getInstance().update(sesion, dto);
+      estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.conceptoExtra.getIdEstacion());
+      estacion.setNombre(this.conceptoExtra.getDescripcion());
+      estacion.setDescripcion(this.conceptoExtra.getDescripcion());
+      estacion.setCosto(this.conceptoExtra.getImporte());
+      Methods.setValue(estacion, "cargo"+ dto.getSemana(), new Object[] {this.conceptoExtra.getImporte()});
+      estacion.setCargo(this.conceptoExtra.getImporte());
+      DaoFactory.getInstance().update(sesion, estacion);
+      this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
+      regresar= Boolean.TRUE;		
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+  }
+  
 	private boolean eliminarConceptoExtraContratista(Session sesion, Long idUsuario) throws Exception { 
-		boolean regresar= Boolean.FALSE;		
+		boolean regresar            = Boolean.FALSE;		
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
 		Map<String, Object>params   = new HashMap<>();

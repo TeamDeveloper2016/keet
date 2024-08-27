@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -36,6 +37,9 @@ public class Extra extends IBaseAttribute implements Serializable {
 	private static final long serialVersionUID  = 4077399316243366480L;
 	private static final Long NIVEL_ESPECIALIDAD= 5L;
   
+  private EAccion accion;
+  private Entity concepto;
+  
   public String getValidacion() {
     String regresar= "libre";
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -50,6 +54,11 @@ public class Extra extends IBaseAttribute implements Serializable {
     } // swtich
     return regresar;
   }
+  
+  public Boolean getEnable() {
+      return Objects.equals(this.accion, EAccion.MODIFICAR);  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {		
@@ -61,6 +70,8 @@ public class Extra extends IBaseAttribute implements Serializable {
     try {			
 			this.attrs.put("latitud", "21.890563");
   		this.attrs.put("longitud", "-102.252030");
+      this.accion  = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.concepto= JsfBase.getFlashAttribute("concepto")== null? null: (Entity)JsfBase.getFlashAttribute("concepto");
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
@@ -112,19 +123,35 @@ public class Extra extends IBaseAttribute implements Serializable {
 	} 
 	  
   public void doLoad() {
-		Map<String, Object>params        = null;
-    List<UISelectEntity> puntosGrupos= null;
-    List<UISelectEntity> estaciones  = null;
+		Map<String, Object>params      = new HashMap<>();
+    List<UISelectEntity> conceptos = null;
+    List<UISelectEntity> estaciones= null;
     try {      			
-			params= new HashMap<>();
 			params.put("idDepartamento", this.attrs.get("idDepartamento"));
 			params.put("idExtra", EBooleanos.SI.getIdBooleano());
-			params.put("clave", this.toClaveEstacion());
+      if(!Objects.equals(concepto, null) && Objects.equals(this.accion, EAccion.MODIFICAR)) {
+			  params.put("clave", concepto.toString("clave").substring(0, 16));
+        this.attrs.put("descripcion", concepto.toString("descripcion"));
+        this.attrs.put("importe", concepto.toDouble("importe"));
+        this.attrs.put("justificacion", concepto.toString("justificacion"));
+      } // if  
+      else  
+			  params.put("clave", this.toClaveEstacion());
 			params.put("nivel", NIVEL_ESPECIALIDAD);
-			puntosGrupos= UIEntity.seleccione("VistaRubrosDto", "byDepartamentoExtra", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
-			this.attrs.put("conceptos", puntosGrupos);									
+			params.put("cuales", Objects.equals(this.accion, EAccion.MODIFICAR)? "": "not");
+			conceptos= UIEntity.seleccione("VistaRubrosDto", "byDepartamentoExtra", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
+			this.attrs.put("conceptos", conceptos);									
+      if(!Objects.equals(conceptos, null) && !Objects.equals(concepto, null) && Objects.equals(this.accion, EAccion.MODIFICAR)) {
+        int index= conceptos.indexOf(new UISelectEntity(concepto.toLong("idRubro")));
+        if(index< 0)
+          this.attrs.put("concepto", conceptos.get(0));
+        else
+          this.attrs.put("concepto", conceptos.get(index));
+      } // if
 			estaciones= UIEntity.seleccione("TcKeetEstacionesDto", "byClaveNivel", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
 			this.attrs.put("especialidades", estaciones);
+      if(!Objects.equals(estaciones, null) && !Objects.equals(concepto, null) && Objects.equals(this.accion, EAccion.MODIFICAR) && estaciones.size()> 1) 
+        this.attrs.put("especialidad", estaciones.get(1));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -168,12 +195,12 @@ public class Extra extends IBaseAttribute implements Serializable {
 		Transaccion transaccion= null;		
     try {						
 			transaccion= new Transaccion(this.loadConceptoExtra());
-			if(transaccion.ejecutar(EAccion.AGREGAR)) {
-				JsfBase.addMessage("Agregar concepto extra", "Se realizó la captura del concepto extra de forma correcta", ETipoMensaje.INFORMACION);
+			if(transaccion.ejecutar(this.accion)) {
+				JsfBase.addMessage("Agregar extra", "Se realizó el registro del extra de forma correcta", ETipoMensaje.INFORMACION);
 				regresar= this.doCancelar();
 			} // if
 			else
-				JsfBase.addMessage("Agregar concepto extra", "Ocurrió un error al realizar la captura del concepto extra", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Agregar extra", "Ocurrió un error al realizar el registro", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -185,22 +212,22 @@ public class Extra extends IBaseAttribute implements Serializable {
 	private ConceptoExtra loadConceptoExtra() {
 		ConceptoExtra regresar        = null;
 		List<UISelectEntity> conceptos= null;
-		UISelectEntity concepto       = null;
+		UISelectEntity rubro          = null;
 		Entity figura                 = null;
 		Entity seleccionado           = null;
 		Long idFigura                 = -1L;
 		try {
 			conceptos= (List<UISelectEntity>) this.attrs.get("conceptos");
-			concepto= conceptos.get(conceptos.indexOf((UISelectEntity)this.attrs.get("concepto")));
-			figura= (Entity) this.attrs.get("figura");
+			rubro    = conceptos.get(conceptos.indexOf((UISelectEntity)this.attrs.get("concepto")));
+			figura   = (Entity) this.attrs.get("figura");
 			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 			idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");			
 			regresar= new ConceptoExtra();
 			regresar.setIdFigura(idFigura);
 			regresar.setTipo(figura.toLong("tipo"));
 			regresar.setIdEstacion(Long.valueOf(this.attrs.get("especialidad").toString()));
-			regresar.setIdPuntoGrupo(concepto.toLong("idPuntoGrupo"));
-			regresar.setIdRubro(concepto.getKey());
+			regresar.setIdPuntoGrupo(rubro.toLong("idPuntoGrupo"));
+			regresar.setIdRubro(rubro.getKey());
 			regresar.setIdDepartamento(Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			regresar.setDescripcion((String)this.attrs.get("descripcion"));
 			regresar.setImporte(Double.valueOf(this.attrs.get("importe").toString()));
@@ -209,6 +236,10 @@ public class Extra extends IBaseAttribute implements Serializable {
 			regresar.setMetros(this.toDistance());
       regresar.setIdContratoLote(((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 			regresar.setJustificacion((String)this.attrs.get("justificacion"));
+      if(!Objects.equals(concepto, null) && Objects.equals(this.accion, EAccion.MODIFICAR)) {
+  			regresar.setIdEstacion(this.concepto.toLong("idEstacion"));
+        regresar.setIdPivote(this.concepto.toLong("idPivote"));
+      } // if
 		} // try
 		catch (Exception e) {			
 			throw e;

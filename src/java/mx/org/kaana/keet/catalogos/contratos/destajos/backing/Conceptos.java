@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -35,16 +36,13 @@ public class Conceptos extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 2847354766000406350L;  
   private static final Log LOG = LogFactory.getLog(Conceptos.class);
+  
 	private FormatLazyModel lazyModelExtras;
 
 	public FormatLazyModel getLazyModelExtras() {
 		return lazyModelExtras;
 	}
 
-	public void setLazyModelExtras(FormatLazyModel lazyModelExtras) {
-		this.lazyModelExtras = lazyModelExtras;
-	}
-		
   @PostConstruct
   @Override
   protected void init() {		
@@ -116,10 +114,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
 		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
 			params= this.toPrepare();
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
@@ -139,11 +136,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	  
   public void doLoadExtras() {
 		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+    List<Columna> columns    = new ArrayList<>();				
     UISelectEntity figura    = (UISelectEntity)this.attrs.get("figura");
     try {      			
 			params= this.toPrepare();
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
@@ -170,9 +166,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
   } // doLoad	
 	
 	private Map<String, Object> toPrepare(){
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();
 			regresar.put("idDepartamento", this.attrs.get("idDepartamento"));
 			regresar.put("clave", this.toClaveEstacion());
 			regresar.put("estatus", EEstacionesEstatus.INICIAR.getKey() + "," + EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());			
@@ -185,9 +180,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	} // toPrepare
 	
 	private String toClaveEstacion() {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {			
-			regresar= new StringBuilder();
       if(this.attrs.get("seleccionadoPivote")!= null && !((Entity)this.attrs.get("seleccionadoPivote")).isEmpty()) {
   			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("idEmpresa"), 3, '0', true));
 			  regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
@@ -261,7 +255,23 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	public String doCapturarExtra() {
     String regresar= null;    				
     try {						
+  		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);									
 			this.toSetFlash(null);
+			regresar= "extra".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doCapturarExtra
+	
+	public String doModificarExtra(Entity seleccionado) {
+    String regresar= null;    				
+    try {						
+  		JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+  		JsfBase.setFlashAttribute("idEstacion", seleccionado.getKey());
+			this.toSetFlash(seleccionado);
 			regresar= "extra".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -278,7 +288,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
 		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
-		if(seleccionado!= null) {
+		if(!Objects.equals(seleccionado, null)) {
 			JsfBase.setFlashAttribute("concepto", seleccionado);	
   		JsfBase.setFlashAttribute("total", seleccionado.containsKey("importe")? seleccionado.toDouble("importe"): 0L);
   		JsfBase.setFlashAttribute("anticipo", seleccionado.containsKey("retencion")? seleccionado.toDouble("retencion"): 0L);
@@ -318,4 +328,5 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
 }

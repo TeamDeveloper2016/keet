@@ -1405,8 +1405,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         } // if  
         this.getAdminOrden().toCalculate();
       } // if  
-      else 
+      else {
+        JsfBase.addMessage("  El material ya no esta vigente !", ETipoMensaje.INFORMACION);
         this.attrs.put("articulo", null);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

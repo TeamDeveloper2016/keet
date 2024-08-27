@@ -11,12 +11,13 @@ public class ConceptoExtra extends Revision implements Serializable {
 	private String descripcion;
 	private Double importe;
 	private String justificacion;
+	private Long idPivote;
 
 	public ConceptoExtra() {
-		this(-1L, -1L, -1L, "", 0D, "");
+		this(-1L, -1L, -1L, "", 0D, "", -1L);
 	}
 
-	public ConceptoExtra(Long idEstacion, Long idPuntoGrupo, Long idRubro, String descripcion, Double importe, String justificacion) {
+	public ConceptoExtra(Long idEstacion, Long idPuntoGrupo, Long idRubro, String descripcion, Double importe, String justificacion, Long idPivote) {
 		super();
 		this.idEstacion   = idEstacion;
 		this.idPuntoGrupo = idPuntoGrupo;
@@ -24,6 +25,7 @@ public class ConceptoExtra extends Revision implements Serializable {
 		this.descripcion  = descripcion;
 		this.importe      = importe;
     this.justificacion= justificacion;
+    this.idPivote     = idPivote;
 	}
 
   @Override
@@ -74,6 +76,14 @@ public class ConceptoExtra extends Revision implements Serializable {
 
   public void setJustificacion(String justificacion) {
     this.justificacion = justificacion;
+  }
+
+  public Long getIdPivote() {
+    return idPivote;
+  }
+
+  public void setIdPivote(Long idPivote) {
+    this.idPivote = idPivote;
   }
   
 }

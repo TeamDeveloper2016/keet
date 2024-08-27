@@ -43,10 +43,9 @@ public final class AdminNotasDirectas extends AdminNotas implements Serializable
   }
 
   private void toLoadProyectosEmpleados() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
       Double suma= 0D;
-      params = new HashMap<>();      
       params.put("idNotaEntrada", this.orden.getIdNotaEntrada());      
       List<NotaProyecto> proyectos= (List<NotaProyecto>)DaoFactory.getInstance().toEntitySet(NotaProyecto.class, "VistaIngresosDto", "proyecto", params);
       for (NotaProyecto item: proyectos) {

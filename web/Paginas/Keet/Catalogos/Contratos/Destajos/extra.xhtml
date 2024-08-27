@@ -113,7 +113,7 @@
 						</p:tab>							
 					</p:accordionPanel>						
 					<p:outputLabel for="especialidad" value="Estaciones:"/>
-					<p:selectOneMenu id="especialidad" value="#{keetCatalogosContratosDestajosExtra.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
+					<p:selectOneMenu id="especialidad" value="#{keetCatalogosContratosDestajosExtra.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{keetCatalogosContratosDestajosExtra.enable}">															
 						<f:selectItems value="#{keetCatalogosContratosDestajosExtra.attrs.especialidades}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
 						<p:column headerText="Código" styleClass="janal-wid-col-150">
 							<h:outputText value="#{item.codigo}"/>
@@ -123,7 +123,7 @@
 						</p:column> 						
 					</p:selectOneMenu>
 					<p:outputLabel for="concepto" value="Concepto:"/>
-					<p:selectOneMenu id="concepto" value="#{keetCatalogosContratosDestajosExtra.attrs.concepto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
+          <p:selectOneMenu id="concepto" value="#{keetCatalogosContratosDestajosExtra.attrs.concepto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{keetCatalogosContratosDestajosExtra.enable}">
 						<f:selectItems value="#{keetCatalogosContratosDestajosExtra.attrs.conceptos}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
 						<p:column headerText="Código" styleClass="janal-wid-col-150">
 							<h:outputText value="#{item.codigo}"/>
