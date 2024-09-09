@@ -628,7 +628,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
         } // else
         index= ((List<UISelectEntity>)this.attrs.get("especialidades")).indexOf((UISelectEntity)this.attrs.get("especialidad"));
         parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
-        parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
+        parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectEntity>)this.attrs.get("especialidades")).get(index).toString("nombre"));
         parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
         parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
         parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());

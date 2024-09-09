@@ -11217,6 +11217,7 @@ order by
           ifnull(tc_keet_contratos_destajos_contratistas.justificacion, tc_keet_contratos_destajos_proveedores.justificacion) as justificacion,
           ifnull(tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista, tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor) as id_pivote,
           ifnull(ifnull(tc_keet_contratos_destajos_contratistas.id_nomina, tc_keet_contratos_destajos_proveedores.id_nomina), -1) as id_nomina,
+          ifnull(tc_keet_nominas.id_nomina_estatus, -1) as id_nomina_estatus,
 					principal.*
 				from (  
 				select
@@ -11253,7 +11254,7 @@ order by
 					tc_keet_rubros.codigo,
 					tc_keet_rubros.nombre,
 					tc_keet_rubros.orden
-				) principal
+				) as principal
 				inner join
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
         left join
@@ -11264,6 +11265,8 @@ order by
           tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion= tc_keet_contratos_destajos_proveedores.id_estacion
         left join
           tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
+        left join 
+          tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina or tc_keet_contratos_destajos_proveedores.id_nomina= tc_keet_nominas.id_nomina
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})

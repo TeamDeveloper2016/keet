@@ -216,8 +216,8 @@
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
               </f:facet>
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia"/>
-							<p:commandButton icon="fa fa-arrows-alt" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idNomina ne '-1'}"/>
-              <p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doModificarExtra(row)}" title="Modificar" disabled="#{row.idNomina ne '-1'}" rendered="false"/>
+							<p:commandButton icon="fa fa-arrows-alt" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idNominaEstatus eq '4' or row.idNominaEstatus eq '5'}"/>
+              <p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doModificarExtra(row)}" title="Modificar" disabled="#{row.idNominaEstatus eq '4' or row.idNominaEstatus eq '5'}"/>
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModelExtras== null? 0: keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount}] registros"/>

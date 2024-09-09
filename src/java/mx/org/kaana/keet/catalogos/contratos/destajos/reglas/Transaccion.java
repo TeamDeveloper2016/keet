@@ -857,7 +857,8 @@ public class Transaccion extends IBaseTnx {
       estacion.setCargo(this.conceptoExtra.getImporte());
       Methods.setValue(estacion, "cargo"+ dto.getSemana(), new Object[] {this.conceptoExtra.getImporte()});
       DaoFactory.getInstance().update(sesion, estacion);
-      this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
+      if(!Objects.equals(diferencia, 0D))
+        this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
       regresar= Boolean.TRUE;		
 		} // try
 		catch (Exception e) {			
@@ -884,7 +885,8 @@ public class Transaccion extends IBaseTnx {
       Methods.setValue(estacion, "cargo"+ dto.getSemana(), new Object[] {this.conceptoExtra.getImporte()});
       estacion.setCargo(this.conceptoExtra.getImporte());
       DaoFactory.getInstance().update(sesion, estacion);
-      this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
+      if(!Objects.equals(diferencia, 0D))
+        this.actualizaEstacionPadre(sesion, estacion, diferencia, 0D, dto.getSemana().toString(), Boolean.TRUE, this.conceptoExtra.getIdContratoLote());
       regresar= Boolean.TRUE;		
 		} // try
 		catch (Exception e) {			
