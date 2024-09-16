@@ -136,8 +136,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.idEmpresaPersona= idEmpresaPersona;
 		this.idProveedor     = idProveedor;
     this.notificar       = idNotificar;
-    this.realPath        = realPath;
     this.automatico      = automatico;
+    this.setRealPath(realPath);
 	}
 
 	public Transaccion(Long idFigura, Long idTipoFigura, Correo correo) {
@@ -146,8 +146,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.idTipoFigura= idTipoFigura;
 		this.correo      = correo;
     this.notificar   = new String[] {"1", "4"};
-    this.realPath    = JsfBase.getRealPath();
     this.automatico  = Boolean.FALSE;
+    this.setRealPath(JsfBase.getRealPath());
 	}	
 
 	public Transaccion(Long idNomina, Autentifica autentifica, TcKeetNominasBitacoraDto bitacora, String realPath, Boolean automatico) {
@@ -156,9 +156,23 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.autentifica= autentifica;
 		this.bitacora   = bitacora;
     this.notificar  = new String[] {"1", "4"};
-    this.realPath   = realPath;
     this.automatico = automatico;
+    this.setRealPath(realPath);
 	}
+
+  public String getRealPath() {
+    return realPath;
+  }
+
+  public void setRealPath(String realPath) {
+    if(Objects.equals(realPath, null))
+      if(!Objects.equals(JsfBase.getRealPath(), null))
+        this.realPath= JsfBase.getRealPath();
+      else
+        this.realPath= "/appservers/apache-tomcat-8.5.20/webapps/ROOT/";
+    else
+      this.realPath= realPath;
+  }
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -1002,10 +1016,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporte(sesion, jasper, sujeto);
 			params.put("tipo", "Reporte - "+ titulo);			
-			attachments= new Attachment(this.realPath, jasper.getNombre(), Boolean.FALSE, Boolean.FALSE);
+			attachments= new Attachment(this.getRealPath(), jasper.getNombre(), Boolean.FALSE, Boolean.FALSE);
 			files= new ArrayList<>();
 			files.add(attachments);
-			files.add(new Attachment(this.realPath, "logo", ECorreos.DESTAJOS.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
+			files.add(new Attachment(this.getRealPath(), "logo", ECorreos.DESTAJOS.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(correos)) {
@@ -1045,19 +1059,19 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
-      parametros.put("REPORTE_ICON", this.realPath.concat("resources/iktan/icon/acciones/"));	
-      parametros.put("REPORTE_ICON", this.realPath.concat("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_ICON", this.getRealPath().concat("resources/iktan/icon/acciones/"));	
+      parametros.put("REPORTE_ICON", this.getRealPath().concat("/resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");
       params.put(Constantes.SQL_CONDICION, "tc_keet_nominas.id_nomina= "+  this.idNomina+ " and tc_keet_contratos_personal.id_desarrollo="+ figura.toLong("idDesarrollo"));
       String nombre= "EMPLEADOS-"+ Cadena.rellenar(""+ figura.toString("desarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
-      String name= this.realPath.concat(this.realPath.endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
+      String name= this.getRealPath().concat(this.getRealPath().endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
       File file= new File(name);
       if(file.exists())
         file.delete();
-    	jasper.toProcess(sesion, this.realPath, this.automatico);
+    	jasper.toProcess(sesion, this.getRealPath(), this.automatico);
       LOG.info("Reporte generado: "+ name);
     } // try
     catch(Exception e) {
@@ -1082,7 +1096,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
-      parametros.put("REPORTE_ICON", this.realPath.concat("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_ICON", this.getRealPath().concat("/resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       params.put("loNuevo", "");
@@ -1093,11 +1107,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar(""+ figura.getKey(), 5, '0', true)+ "-"+ Cadena.rellenar(""+ figura.toLong("idDesarrollo"), 3, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
-      String name= this.realPath.concat(this.realPath.endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
+      String name= this.getRealPath().concat(this.getRealPath().endsWith(File.separator)? "": File.separator).concat(jasper.getNombre());
       File file= new File(name);
       if(file.exists())
         file.delete();
-    	jasper.toProcess(sesion, this.realPath, this.automatico);
+    	jasper.toProcess(sesion, this.getRealPath(), this.automatico);
       LOG.info("Reporte generado: "+ name);
     } // try
     catch(Exception e) {
@@ -1187,7 +1201,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
-        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.realPath);
+        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.getRealPath());
         for (String residente: residentes.keySet()) {
           cafu.setNombre(Cadena.nombrePersona(residente));
           cafu.setCelular((String)residentes.get(residente));
@@ -1208,7 +1222,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			regresar= this.toReporte(sesion, jasper, sujeto);
       if(contratista!= null && enviar) {
         try {
-          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.realPath);
+          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.getRealPath());
           LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
           cafu.doSendDestajo(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(cafu.toSaludo()));
         } // try
@@ -1298,7 +1312,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			regresar= this.toReporte(sesion, jasper, sujeto);
       if(contratista!= null) {
         try {
-          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.realPath);
+          cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.getRealPath());
           LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
           cafu.doSendDestajo(sesion);
         } // try
@@ -1321,7 +1335,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         Cuentas cuentas= new Cuentas("residentes");
         residentes.putAll(cuentas.all());
         
-        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.realPath);
+        cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, desarrollo, this.getRealPath());
         for (String residente: residentes.keySet()) {
           cafu.setNombre(Cadena.nombrePersona(residente));
           cafu.setCelular((String)residentes.get(residente));
@@ -1357,7 +1371,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*",
-        this.realPath);
+        this.getRealPath());
       LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
       cafu.doSendCorteNomina(sesion);
 		} // try 
@@ -1388,7 +1402,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*",
-        this.realPath);
+        this.getRealPath());
       LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
       cafu.doSendCierreNomina(sesion);
 		} // try 
@@ -1532,9 +1546,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       params.put("idEmpresa", idEmpresa);      
       Value value = DaoFactory.getInstance().toField("TcManticEmpresasDto", "logo", params, "imagen");
       if(value!= null && value.getData()!= null)
-        regresar= this.realPath.concat(Constantes.RUTA_IMAGENES).concat(value.toString());
+        regresar= this.getRealPath().concat(Constantes.RUTA_IMAGENES).concat(value.toString());
       else
-        regresar= this.realPath.concat(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
+        regresar= this.getRealPath().concat(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1612,7 +1626,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         residentes.putAll(cuentas.all());
       else
         residentes.putAll(cuentas.admin());
-      cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.realPath, empleados);
+      cafu= new Cafu("", "", periodo.toString("nomina"), "*"+ periodo.toString("inicio")+ "* al *"+ periodo.toString("termino")+ "*", "", "", contratistas, "", this.getRealPath(), empleados);
       for (String residente: residentes.keySet()) {
         cafu.setNombre(Cadena.nombrePersona(residente));
         cafu.setCelular((String)residentes.get(residente));

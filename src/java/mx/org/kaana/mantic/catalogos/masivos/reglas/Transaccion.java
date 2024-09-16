@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -1842,7 +1841,8 @@ public class Transaccion extends IBaseTnx {
                     0D, // Double porcentajeFondo
                     0D, // Double saldo
                     null, // String comentarios
-                    1L // Long idCredito
+                    1L, // Long idCredito
+                    1L // Long idClaseProveedor
 									);
 									DaoFactory.getInstance().insert(sesion, proveedor);
 

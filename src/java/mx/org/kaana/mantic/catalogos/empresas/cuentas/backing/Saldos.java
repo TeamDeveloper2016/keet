@@ -161,7 +161,41 @@ public class Saldos extends IBaseFilter implements Serializable {
       sb.append("and (tc_mantic_empresas_deudas.limite>= str_to_date('").append(periodo.toString()).append("','%Y%m%d')");
       periodo.addDias(14);
       sb.append("and tc_mantic_empresas_deudas.limite<= str_to_date('").append(periodo.toString()).append("','%Y%m%d'))");
-      sb.append("and (tc_mantic_proveedores.id_credito= 2)");
+      sb.append("and (tc_mantic_proveedores.id_clase_proveedor= 2)");
+      params.put(Constantes.SQL_CONDICION,(String)params.get(Constantes.SQL_CONDICION)+ sb.toString());
+      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally		
+    return regresar;		
+	} 
+  
+  public StreamedContent getEspecial() {
+		StreamedContent regresar  = null;		
+		Xls xls                   = null;
+    String template           = "SM";
+    Map<String, Object> params= null;
+    StringBuilder sb          = new StringBuilder();
+		try {
+      params= this.toPrepare();
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      Periodo periodo = new Periodo();
+      periodo.addDias(-7);
+      sb.append("and (tc_mantic_empresas_deudas.limite>= str_to_date('").append(periodo.toString()).append("','%Y%m%d')");
+      periodo.addDias(14);
+      sb.append("and tc_mantic_empresas_deudas.limite<= str_to_date('").append(periodo.toString()).append("','%Y%m%d'))");
+      sb.append("and (tc_mantic_proveedores.id_clase_proveedor= 3)");
       params.put(Constantes.SQL_CONDICION,(String)params.get(Constantes.SQL_CONDICION)+ sb.toString());
       xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
 			if(xls.procesar()) { 

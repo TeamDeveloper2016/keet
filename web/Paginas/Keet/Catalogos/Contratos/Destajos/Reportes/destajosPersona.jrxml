@@ -222,7 +222,7 @@
 	</background>
 	<pageHeader>
 		<band height="78" splitType="Stretch">
-			<image scaleImage="RetainShape" hAlign="Center">
+			<image scaleImage="RetainShape" hAlign="Center" onErrorType="Blank">
 				<reportElement key="image-1" stretchType="RelativeToTallestObject" x="0" y="0" width="137" height="77" uuid="7d34a0af-473f-424c-9620-1a1602775de9"/>
 				<box>
 					<topPen lineWidth="0.0" lineColor="#000000"/>

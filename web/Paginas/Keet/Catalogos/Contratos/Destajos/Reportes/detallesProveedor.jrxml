@@ -288,7 +288,7 @@
 	</background>
 	<pageHeader>
 		<band height="84" splitType="Stretch">
-			<image scaleImage="RetainShape" hAlign="Center">
+			<image scaleImage="RetainShape" hAlign="Center" onErrorType="Blank">
 				<reportElement key="image-1" stretchType="RelativeToTallestObject" x="0" y="0" width="137" height="82" uuid="e0f8f985-a3b2-4380-9e3d-063e04714757"/>
 				<box>
 					<topPen lineWidth="0.0" lineColor="#000000"/>

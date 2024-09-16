@@ -91,7 +91,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-	    this.desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin()? "lazy": "residentes", params, columns);  
+	    this.desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.isEncargado()? "lazy": "residentes", params, columns);  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

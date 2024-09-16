@@ -133,6 +133,9 @@
                   <p:menuitem value="Flujo semanal" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
                     <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.semanal}" />  
                   </p:menuitem>
+                  <p:menuitem value="Flujo especiales" icon="fa fa-file-excel-o" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{manticCatalogosEmpresasCuentasSaldos.especial}" />  
+                  </p:menuitem>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">   
