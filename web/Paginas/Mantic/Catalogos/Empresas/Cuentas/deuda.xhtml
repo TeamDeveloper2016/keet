@@ -398,7 +398,7 @@
                 <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosEmpresasCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
                 <p:ajax event="rowSelectCheckbox" listener="#{manticCatalogosEmpresasCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
                 <p:column id="checkDeuda" selectionMode="multiple" style="width:30px;text-align:center"/>							
-                <p:column class="janal-column-center MarAuto Responsive" sortBy="#{row.nombre}">
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
                   <f:facet name="header">
                     <h:outputText value="Empresa"/>
                   </f:facet>

@@ -861,6 +861,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+      ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().clear();
 			this.doLoadContratos();
       this.toLoadAlmacenistas();
 		} // try

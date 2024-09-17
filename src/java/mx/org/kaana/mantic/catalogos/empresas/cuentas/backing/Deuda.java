@@ -164,15 +164,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 
 	private void loadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 		} // try
 		catch (Exception e) {
@@ -186,11 +184,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -206,11 +202,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -225,11 +219,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	public void doLoadCajasGeneral() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresaGeneral"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -244,11 +236,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	public void doLoadCajasSegmento() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresaSegmento"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -263,11 +253,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	private void loadProvedorDeuda() throws Exception {
 		Entity deuda             = null;
-		Map<String, Object>params= null;
-    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+    List<Columna> columns    = new ArrayList<>();
 		try {
-			params = new HashMap<>();
-      columns= new ArrayList<>();  
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "deuda", params);
       deuda.get("saldo").setData(Numero.toRedondearSat(deuda.toDouble("saldo")));
@@ -292,15 +280,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();
 		List<Entity> cuentas      = null;
     try {  	  
-			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			params.put("sortOrder", "order by	tc_mantic_notas_entradas.consecutivo desc");			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -339,15 +325,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} // validaPagogeneral
 	
 	public void doLoadCuentas() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
 		try {
 			this.seleccionadosSegmento= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			params.put("sortOrder", "order by	tc_mantic_notas_entradas.consecutivo desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus in(1, 2, 3)");			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -431,12 +415,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} // onRowToggle
 	
 	private void loadHistorialPagos() throws Exception{
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {  	  
-			params= new HashMap<>();
 			params.put("idEmpresaDeuda", ((Entity)this.attrs.get("registroSeleccionado")).getKey());			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -558,9 +540,8 @@ public class Deuda extends IBaseFilter implements Serializable {
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -605,7 +586,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doValidaTipoPagoSegmento
+	} 
 	
 	public void doLoadCuentasAFavor() {
 		Entity seleccionado= null;		
@@ -622,14 +603,12 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} // doLoadCuentas
 	
 	private void doLoadNotasEntradas() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
 		try {
 			this.seleccionadosNotas= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));														
 			params.put("idEmpresaEstatus", EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());														
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -645,14 +624,12 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} // doLoadNotasEntradas
 	
 	private void doLoadNotasCredito() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
 		try {
 			this.seleccionadosCredito= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa() + "," + EEstatusEmpresas.PROGRAMADA.getIdEstatusEmpresa());																	
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
