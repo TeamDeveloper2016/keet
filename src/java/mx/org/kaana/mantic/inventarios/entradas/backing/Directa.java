@@ -579,16 +579,15 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	}
 	
 	public void doCalculateFechaPago() {
-		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaFactura();
-		if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo()== null) {
+		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaRecepcion();
+		if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo()== null) 
 			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(7L);
-		  LocalDate calendar= fechaFactura.plusDays(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
-		  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaPago(calendar);
-    } // if  
+		LocalDate calendar= fechaFactura.plusDays(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
+		((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaPago(calendar);
 	}
 
 	public void doCalculatePagoFecha() {
-		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaRecepcion();
 		LocalDate fechaPago   = ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaPago();
 		((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaFactura, fechaPago));
 	}

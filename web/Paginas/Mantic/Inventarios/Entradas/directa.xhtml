@@ -206,7 +206,7 @@
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="diasPlazo" value="Dias plazo:"/>
                   <p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-92" styleClass="involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.diasPlazo}" decimalPlaces="0">
-                    <p:ajax event="keyup" listener="#{manticInventariosEntradasDirecta.doCalculateFechaPago}" process="@this" update="fechaPago"/>
+                    <p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doCalculateFechaPago}" process="@this" update="fechaPago"/>
                   </p:inputNumber>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">

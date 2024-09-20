@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Listado de nóminas" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre'},
+        fecha       : {validaciones: 'libre', mascara: 'fecha'},
+        ejercicio   : {validaciones: 'libre', mascara: 'libre'},
+        semana      : {validaciones: 'libre', mascara: 'libre'},
+        idTipoNomina: {validaciones: 'libre', mascara: 'libre'},
+        estatus     : {validaciones: 'libre', mascara: 'libre'}
+      };
+			
+			fieldsDialog= {
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogo');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion			
+      
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetNominasPagos.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetNominasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPagos.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="fecha" value="Fecha:"/>
+							<p:calendar id="fecha" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetNominasPagos.fecha}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
+							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
+							<p:selectOneMenu id="ejercicio" value="#{keetNominasPagos.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetNominasPagos.doLoadSemanas}" process="@this" onstart="return janal.bloquear()" update="semana" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{keetNominasPagos.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.ejercicio}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+							<p:outputLabel for="semana" value="Semana:"/>
+							<p:selectOneMenu id="semana" value="#{keetNominasPagos.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPagos.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.semana}"/>
+                </p:column>   
+                <p:column headerText="Inicio">
+                  <h:outputText value="#{item.inicio}"/>
+                </p:column>   
+                <p:column headerText="Termino">
+                  <h:outputText value="#{item.termino}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+							<p:outputLabel for="tipo" value="Tipo nómina:"/>
+							<p:selectOneMenu id="tipo" value="#{keetNominasPagos.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPagos.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+							<p:outputLabel for="estatus" value="Estatus:"/>
+							<p:selectOneMenu id="estatus" value="#{keetNominasPagos.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPagos.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+              <p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetNominasPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<!--p:commandButton id="nofificar" styleClass="janal-text-white lg-pantalla" value="Notificar" icon="fa fa-plus" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetNominasPagos.doNotificar}" oncomplete="janal.desbloquear();" update="tabla"/-->
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetNominasPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasPagos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasPagos.attrs.seleccionado}" selectionMode="single" paginator="#{keetNominasPagos.lazyModel.rowCount gt keetNominasPagos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header">
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+  						</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
+              <f:facet name="header">
+                <h:outputText value="Ejercicio"/>
+              </f:facet>
+              <h:outputText value="#{row['ejercicio']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.semana}">
+              <f:facet name="header">
+                <h:outputText value="Semana"/>
+              </f:facet>
+              <h:outputText value="#{row['semana']}" title="Periodo: #{row.inicio} al #{row.termino}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+              <f:facet name="header">
+                <h:outputText value="Tipo"/>
+              </f:facet>
+              <h:outputText value="#{row['tipo']}"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.inicio}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Inicio"/>
+              </f:facet>
+              <h:outputText value="#{row['inicio']}"/>
+            </p:column>														
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.termino}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Termino"/>
+              </f:facet>
+              <h:outputText value="#{row['termino']}"/>
+            </p:column>	
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.personas}">
+              <f:facet name="header">
+                <h:outputText value="Personas"/>
+              </f:facet>
+              <h:outputText value="#{row['personas']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Neto ($)"/>
+              </f:facet>
+              <h:outputText value="#{row['neto']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.proveedores}">
+              <f:facet name="header">
+                <h:outputText value="Subcontratistas"/>
+              </f:facet>
+              <h:outputText value="#{row['proveedores']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.global}">
+              <f:facet name="header">
+                <h:outputText value="Total ($)"/>
+              </f:facet>
+              <h:outputText value="#{row['global']}" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]" />
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idNominaEstatus eq '1'? 'circulo-verde': row.idNominaEstatus eq '2' or row.idNominaEstatus eq '3'? 'circulo-amarillo' : 'circulo-rojo'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetNominasPagos.lazyModel== null? 0: keetNominasPagos.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem value="Contratistas" icon="fa fa-download" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina contratistas" style="display: #{keetNominasPagos.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+	  					<p:fileDownload value="#{keetNominasPagos.documento}" />
+  					</p:menuitem>
+            <p:separator style="display: #{keetNominasPagos.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+						<p:menuitem value="Comparativo" icon="fa fa-sellsy" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar nómina de egresos" style="display: #{keetNominasPagos.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+	  					<p:fileDownload value="#{keetNominasPagos.resumen}" />
+  					</p:menuitem>
+            <p:separator style="display: #{keetNominasPagos.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem icon="fa fa-file-excel-o" value="Nómina personal" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="display: #{keetNominasPagos.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}">
+              <p:fileDownload value="#{keetNominasPagos.personas}" />
+            </p:menuitem>  
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la nómina" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{keetNominasPagos.attrs.idEstatus}" styleClass="janal-wid-100-txt">															
+						<f:selectItems value="#{keetNominasPagos.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:110px !important;overflow-y: auto" columnClasses="janal-wid-100">				
+					<p:outputLabel for="justificacion" value="Justificación:"/>
+					<p:inputTextarea id="justificacion" value="#{keetNominasPagos.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="3"/>														
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{keetNominasPagos.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+	<ui:param name="lineaSeparacion" value="false"/>
+</ui:composition>

@@ -57,7 +57,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
+import org.hibernate.Session; 
 import org.hibernate.Transaction;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;

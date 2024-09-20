@@ -872,9 +872,8 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	}
 
 	public void doCheckFolio() {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
 			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -901,15 +900,15 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	}
 	
 	public void doCalculateFechaPago() {
-		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaRecepcion();
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
-			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
+			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(7L);
 		LocalDate calendar= fechaFactura.plusDays(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
 		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(calendar);
 	}
 
 	public void doCalculatePagoFecha() {
-		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaRecepcion();
 		LocalDate fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
 		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaFactura, fechaPago));
 	}
@@ -1318,7 +1317,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // loadAlmacenistas
+	} 
   
 	private void toLoadEmpresaTipoContacto() {
 		List<UISelectEntity> empresaTiposContactos= null;
@@ -1340,7 +1339,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // loadEmpresaTipoContacto
+	} 
  
 	public void doCheckTipoMedioPago() {
 		Long tipoMedioPago= null;
