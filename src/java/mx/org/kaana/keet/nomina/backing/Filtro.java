@@ -70,7 +70,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final Log LOG = LogFactory.getLog(Filtro.class);
   
   private static final String COLUMN_DATA_FILE_FALTAS= "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
-  private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,NOMBRE COMPLETO,RFC,CURP,ACTIVO,DESARROLLO,CONTRATO,TOTAL";  
+  private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,PUESTO,NOMBRE COMPLETO,RFC,CURP,ACTIVO,DESARROLLO,CONTRATO,TOTAL";  
   
 	private LocalDate fecha;
   protected Reporte reporte;

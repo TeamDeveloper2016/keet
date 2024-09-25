@@ -886,9 +886,12 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0701");
 				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
 			} // else
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
-			if(entity!= null && entity.size()> 0) 
-				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+      // SE SOLICITO QUE PARA IMPULSA NO SE VALIDE EL FOLIO Y SE PUEDA SUBIR LA FACTURA VARIAS VECES 20/09/2024
+      if(!Objects.equals(this.getEmisor(), null) && !Objects.equals(this.getEmisor().getRfc(), "CMG0912117Y3")) {
+        Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
+        if(entity!= null && entity.size()> 0) 
+          UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+  		} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
