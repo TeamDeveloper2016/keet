@@ -85,7 +85,7 @@ public class RegistroRequisicion implements Serializable {
 		return totalProveedores;
 	}
 
-	private void init(){
+	private void init() {
 		MotorBusqueda motorBusqueda= null;		
 		try {
 			motorBusqueda= new MotorBusqueda(this.idRequisicion);
@@ -96,9 +96,9 @@ public class RegistroRequisicion implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // init
+	} 
 	
-	public void doAgregarRequisicionProveedor(){
+	public void doAgregarRequisicionProveedor() {
 		RequisicionProveedor requisicionProveedor= null;
 		try {					
 			requisicionProveedor= new RequisicionProveedor(this.contadores.getTotalRequisicionProveedor() + this.countIndice, ESql.INSERT, true);				
@@ -112,9 +112,9 @@ public class RegistroRequisicion implements Serializable {
 		finally{			
 			this.countIndice++;
 		} // finally
-	} // doAgregarEspecificacion
+	} 
 	
-	public void doEliminarRequisicionProveedor(){
+	public void doEliminarRequisicionProveedor() {
 		try {			
 			if(this.proveedores.remove(this.proveedorSeleccion)){
 				if(!this.proveedorSeleccion.getNuevo())
@@ -128,9 +128,9 @@ public class RegistroRequisicion implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
-	} // doEliminarEspecificacion	
+	} 
 	
-	public boolean validateDuplicateProveedor(){
+	public boolean validateDuplicateProveedor() {
 		boolean regresar  = false;
 		int countDuplicate= 0;
 		try {
@@ -146,14 +146,15 @@ public class RegistroRequisicion implements Serializable {
 			throw e;
 		} // catch	
 		return regresar;
-	} // validateDuplicateProveedor
+	} 
 	
-	private void addDeleteList(IBaseDto dto){
+	private void addDeleteList(IBaseDto dto) {
 		try {
 			this.deleteList.add(dto);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // addDeleteList
+	} 
+  
 }

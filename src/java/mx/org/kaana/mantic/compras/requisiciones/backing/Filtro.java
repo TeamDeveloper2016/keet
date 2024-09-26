@@ -51,7 +51,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}	
 	
   @PostConstruct
   @Override

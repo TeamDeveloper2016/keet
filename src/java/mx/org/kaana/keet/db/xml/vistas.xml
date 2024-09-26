@@ -845,10 +845,10 @@ order by
 select
   tc_keet_paquetes.id_paquete as id_key,
   tc_keet_paquetes.id_paquete,
-  tc_keet_prototipos.id_prototipo,
-  tc_keet_prototipos.nombre as prototipo,
   tc_keet_desarrollos.id_desarrollo,
   tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_prototipos.id_prototipo,
+  tc_keet_prototipos.nombre as prototipo,
   tc_keet_procesos.id_proceso,  
   tc_keet_procesos.nombre as proceso,
   tc_keet_sub_procesos.id_sub_proceso,  

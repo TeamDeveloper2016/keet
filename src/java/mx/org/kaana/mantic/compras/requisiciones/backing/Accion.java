@@ -18,6 +18,8 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -42,7 +44,9 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+  
 	private RegistroRequisicion registroRequisicion;	
+	protected FormatLazyModel lazyModelPaquetes;
   private EAccion accion;
 	
 	public Accion() {
@@ -58,6 +62,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 		this.registroRequisicion = registroRequisicion;
 	}	
 
+  public FormatLazyModel getLazyModelPaquetes() {
+    return lazyModelPaquetes;
+  }
+
 	@PostConstruct
   @Override
   protected void init() {		
@@ -65,9 +73,9 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion")== null? -1L: JsfBase.getFlashAttribute("idRequisicion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("isPesos", false);
-			this.attrs.put("sinIva", false);
-			this.attrs.put("buscaPorCodigo", false);
+      this.attrs.put("isPesos", Boolean.FALSE);
+			this.attrs.put("sinIva", Boolean.FALSE);
+			this.attrs.put("buscaPorCodigo", Boolean.FALSE);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());					
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
@@ -75,6 +83,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.doLoad();
 			this.toLoadProveedores();
       this.toLoadEmpresas();
+      this.attrs.put("aplicar", Boolean.TRUE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -429,6 +438,28 @@ public class Accion extends IBaseArticulos implements Serializable {
         else
   	      this.registroRequisicion.getRequisicion().setIkContrato(UIBackingUtilities.toFirstKeySelectEntity(contratos));
       } // if  
+      this.toLoadPaquetes();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally    
+  }
+
+  private void toLoadPaquetes() {
+		List<UISelectEntity>paquetes= null;
+    Map<String, Object> params  = new HashMap<>();
+    try {
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_prototipos.id_prototipo, tc_keet_procesos.nombre, tc_keet_sub_procesos.nombre");
+      params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo= "+ this.registroRequisicion.getRequisicion().getIkDesarrollo().getKey());
+  		paquetes= UIEntity.seleccione("VistaPaquetesDto", "lazy", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "proceso");
+      this.attrs.put("paquetes", paquetes);
+      if(!Objects.equals(paquetes, null) && !paquetes.isEmpty())
+        this.registroRequisicion.getRequisicion().setIkPaquete(paquetes.get(0));
+      this.doLoadPaquetes();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -439,4 +470,99 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally    
   }
   
+  public void doLoadPaquetes() {
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idPaquete", this.registroRequisicion.getRequisicion().getIkPaquete().getKey());
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      this.lazyModelPaquetes = new FormatCustomLazy("TcKeetPaquetesDetallesDto", "igual", params, columns);
+      UIBackingUtilities.resetDataTable("paquetes");
+ 			this.attrs.put("paquete", null);
+      this.attrs.put("aplicar", Objects.equals(this.registroRequisicion.getRequisicion().getIkPaquete().getKey(), -1L));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  }
+
+  public void doDefineEmpresa() {
+		List<UISelectEntity>contratos= null;
+    try {      
+      contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+      if(!Objects.equals(contratos, null)) {
+        int index= contratos.indexOf(new UISelectEntity(this.registroRequisicion.getRequisicion().getIkContrato().getKey()));
+        if(index>= 0) 
+          this.registroRequisicion.getRequisicion().setIkEmpresa(new UISelectEntity(contratos.get(index).toLong("idEmpresa")));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+  public void doAplicar() {
+    List<Entity> items        = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idPaquete", this.registroRequisicion.getRequisicion().getIkPaquete().getKey());
+      items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetPaquetesDetallesDto", "detalle", params, Constantes.SQL_TODOS_REGISTROS);
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+        for (Entity item: items) {
+          int index= this.getAdminOrden().getArticulos().indexOf(new Articulo(item.toLong("idArticulo")));
+          if(index< 0) {
+            params.put("idArticulo", item.toLong("idArticulo"));
+            params.put("idProveedor", getAdminOrden().getIdProveedor());
+            params.put("idAlmacen", getAdminOrden().getIdAlmacen());
+            Articulo temporal= new Articulo(item.toLong("idArticulo"));
+            temporal.setIdArticulo(item.toLong("idArticulo"));
+            temporal.setIdProveedor(getAdminOrden().getIdProveedor());
+            temporal.setIdRedondear(item.toLong("idRedondear"));
+            temporal.setCodigo(item.toString("codigo"));
+            temporal.setPropio(item.toString("propio"));
+            temporal.setNombre(item.toString("nombre"));
+            temporal.setValor(item.toDouble(getPrecio()));
+            temporal.setCosto(item.toDouble(getPrecio()));
+            temporal.setIva(item.toDouble("iva"));
+            temporal.setDescuento(getAdminOrden().getDescuento());
+            temporal.setExtras(getAdminOrden().getExtras());
+            temporal.setCantidad(item.toDouble("cantidad"));
+            temporal.setUnidadMedida(item.toString("unidadMedida"));
+            temporal.setPrecio(item.toDouble("precio"));				
+            temporal.setUltimo(this.attrs.get("ultimo")!= null);
+            temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+            Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+            temporal.setStock(stock== null? 0D: stock.toDouble());
+            this.getAdminOrden().getArticulos().add(this.getAdminOrden().getArticulos().size()- 1, temporal);
+          } // if
+          else 
+            this.getAdminOrden().getArticulos().get(index).setCantidad(this.getAdminOrden().getArticulos().get(index).getCantidad()+ item.toDouble("cantidad"));
+        } // for
+        this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+        UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+        UIBackingUtilities.execute("jsArticulos.callback('"+ this.getAdminOrden().getArticulos().get(this.getAdminOrden().getArticulos().size()- 1).getKey()+ "');");				
+        UIBackingUtilities.execute("PF('wContenedorGrupos').select(1);");				
+        JsfBase.addMessage("Aplicar", "Se agregaron los materiales a la requisición, verifique de favor !");
+        this.getAdminOrden().toCantidad();
+      } // if  
+      else
+        JsfBase.addMessage("Aplicar", "No existen materiales que agregar !");        
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally		
+  }
 } 

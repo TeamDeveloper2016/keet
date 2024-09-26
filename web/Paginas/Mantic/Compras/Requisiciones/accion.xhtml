@@ -77,7 +77,8 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">																											
-          <p:accordionPanel id="contenedorGrupos" activeIndex="0">
+          <p:accordionPanel id="contenedorGrupos" activeIndex="0" widgetVar="wContenedorGrupos">
+            <p:ajax event="tabChange" process="@this" update="@(.paquetes)"/>
 						<p:tab title="General">							
 							<p:panelGrid id="panelGeneral" columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel value="Consecutivo:" styleClass="#{manticComprasRequisicionesAccion.attrs.nombreAccion ne 'Agregar'? '': 'janal-display-none'}"/>
@@ -87,7 +88,7 @@
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                     <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                     <p:selectOneMenu id="idDesarrollo" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
+                      <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadContratos}" update="idContrato contenedorGrupos:idPaquete contenedorGrupos:paquetes" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
                       <f:selectItems value="#{manticComprasRequisicionesAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -100,6 +101,7 @@
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                     <p:outputLabel for="idContrato" value="Contrato:"/>
                     <p:selectOneMenu id="idContrato" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.ikContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doDefineEmpresa}" update="idContrato contenedorGrupos:idPaquete contenedorGrupos:paquetes" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos(); reloadPaquetes();"/>
                       <f:selectItems value="#{manticComprasRequisicionesAccion.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -128,6 +130,7 @@
 							</p:panelGrid>	
               <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
               <p:remoteCommand name="reloadContratos" process="@this" update="idContrato"/>
+              <p:remoteCommand name="reloadPaquetes" process="@this" update="contenedorGrupos:idPaquete contenedorGrupos:paquetes"/>
 						</p:tab>
 						<p:tab title="Articulos">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
@@ -230,9 +233,9 @@
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idAutomatico eq 9? 'circulo-azul': row.morado ne ' '? 'circulo-verde': 'circulo-rojo'}.png" title="#{row.idAutomatico eq 9? 'ELIMINADO': row.morado ne ' '? 'SOLICITADO': 'NO SOLICITADO'}"/>
                 </p:column>  
 								<f:facet name="footer">
-									<p:outputLabel for="articulos" styleClass="filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="float: left;"/>
-									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo" value="Cantidad de articulos: [ #{manticComprasRequisicionesAccion.adminOrden.totales.cantidad} ]"/>
-									<p:inputText id="articulos" value="#{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="display:none"/>
+									<p:outputLabel for="articulos" styleClass="filas recalculo paquetes" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="float: left;"/>
+									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo paquetes" value="Cantidad de articulos: [ #{manticComprasRequisicionesAccion.adminOrden.totales.cantidad} ]"/>
+                  <p:inputText id="articulos" styleClass="paquetes" value="#{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="display:none"/>
 								</f:facet>
 							</p:dataTable>	
               <p:fieldset legend="Semaforo" rendered="#{manticComprasRequisicionesAccion.attrs.nombreAccion eq 'Consultar'}">
@@ -288,6 +291,64 @@
                   <p:outputLabel value="Total [#{manticComprasRequisicionesAccion.attrs.lazyModel== null? 0: manticComprasRequisicionesAccion.attrs.lazyModel.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>	
+            </p:tab>  
+            <p:tab title="Kit's">
+              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-95, janal-fix-5 janal-column-right">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:outputLabel for="idPaquete" value="Paquete(s):"/>
+                  <p:selectOneMenu id="idPaquete" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.ikPaquete}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt paquetes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadPaquetes}" update="paquetes aplicar" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    <f:selectItems value="#{manticComprasRequisicionesAccion.attrs.paquetes}" var="element" itemValue="#{element}" itemLabel="#{element.proceso} #{empty element.subProceso or element.subProceso eq ''? '': '|'} #{element.subProceso}"/>
+                    <p:column headerText="Proceso">
+                      <h:outputText value="#{item.proceso}"/>
+                    </p:column> 
+                    <p:column headerText="Sub proceso">
+                      <h:outputText value="#{item.subProceso}"/>
+                    </p:column> 
+                    <p:column headerText="Prototipo">
+                      <h:outputText value="#{item.prototipo}"/>
+                    </p:column> 
+                  </p:selectOneMenu>	
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:spacer/>
+                  <p:commandButton id="aplicar" icon="fa fa-list-ol" process="@this" value="Aplicar" update="contenedorGrupos:tabla @(.paquetes)" actionListener="#{manticComprasRequisicionesAccion.doAplicar()}" title="Aplicar" disabled="#{manticComprasRequisicionesAccion.attrs.aplicar}" styleClass="paquetes"/>
+                </p:panelGrid>
+              </p:panelGrid>
+              <p:dataTable lazy="true" id="paquetes" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesAccion.lazyModelPaquetes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesAccion.attrs.paquete}" selectionMode="single" paginator="#{manticComprasRequisicionesAccion.lazyModelPaquetes.rowCount gt manticComprasRequisicionesAccion.lazyModelPaquetes.pageSize}" rowIndexVar="index" paginatorPosition="bottom" styleClass="paquetes">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Listado de materiales" styleClass="janal-text-white"/>
+                  </div>  
+                </f:facet>  
+                <p:column styleClass="MarAuto Responsive janal-fix-3">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>					
+                <p:column class="MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-30': 'janal-fix-8'}">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>		
+                <p:column class="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Nombres"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														            
+                <p:column class="MarAuto Responsive janal-column-right #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-fix-8'}">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row['cantidad']}"/>
+                </p:column>		
+                <f:facet name="footer">
+                  Total [#{manticComprasRequisicionesAccion.lazyModelPaquetes== null? 0: manticComprasRequisicionesAccion.lazyModelPaquetes.rowCount}] registros
+                </f:facet>
+              </p:dataTable>  
             </p:tab>  
             <p:tab title="Proveedores" rendered="false">
 							<p:dataTable id="listado" var="requisicionProveedor" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores}" rows="6" paginator="false" reflow="true" rowKey="#{requisicionProveedor.key}" emptyMessage=" " styleClass="paginated">												

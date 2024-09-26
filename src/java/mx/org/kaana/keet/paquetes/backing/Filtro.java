@@ -149,9 +149,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   } 
 
   private void toLoadDesarrollos() {
-		Map<String, Object>params= new HashMap<>();
+		Map<String, Object>params= new HashMap<>(); 
 		try {
-      if(JsfBase.isAdminEncuestaOrAdmin())
+      if(JsfBase.isAdminEncuestaOrAdmin() || JsfBase.isEncargado())
 		    params.put("idEmpresaPersona", -1);
       else  
 		    params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());
