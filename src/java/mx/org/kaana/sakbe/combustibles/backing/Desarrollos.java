@@ -117,7 +117,7 @@ public class Desarrollos extends IBaseFilter implements Serializable {
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-	    this.desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin()? "lazy": "residentes", params, columns);  
+	    this.desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.isEncargado()? "lazy": "residentes", params, columns);  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -150,14 +150,12 @@ public class Desarrollos extends IBaseFilter implements Serializable {
 	} // toPrepare  
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = null;
-    Map<String, Object> params= null;		
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();		
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
   		params.put("codigo", toCodigo(codigo));			
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", (String) this.attrs.get("idXml"), params, columns, 40L));			
@@ -333,7 +331,6 @@ public class Desarrollos extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
 		} // catch		
-    
   }
   
 }

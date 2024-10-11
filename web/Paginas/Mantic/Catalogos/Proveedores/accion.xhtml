@@ -18,6 +18,7 @@
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:nombreComercial': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -117,7 +118,11 @@
                   <p:column styleClass="janal-column-right" headerText="Tiempo estimado de entrega(dias)">
                     <h:outputText value="#{item.dias}"/>
                   </p:column>   
-                </p:selectOneMenu>                
+                </p:selectOneMenu> 
+                <p:outputLabel for="idTipoMedioPago" value="Metodo de pago:" styleClass="janal-wid-100"/>
+                <p:selectOneMenu id="idTipoMedioPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMedioPago}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposMediosPagos}"/>
+                </p:selectOneMenu>
                 <p:outputLabel value="Clase:" for="idClaseProveedor"/>
                 <p:selectOneMenu id="idClaseProveedor" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idClaseProveedor}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">
                   <f:selectItem itemLabel="CRÉDITO" itemValue="1"/>

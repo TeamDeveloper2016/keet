@@ -83,6 +83,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.doLoad();
 			this.toLoadProveedores();
       this.toLoadEmpresas();
+      this.attrs.put("cuantos", 1L);
       this.attrs.put("aplicar", Boolean.TRUE);
     } // try
     catch (Exception e) {
@@ -380,7 +381,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       params.put("operador", "<=");
       params.put("idContratoEstatus", EContratosEstatus.LIQUIDADO.ordinal());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-  		desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin()? "lazy": "residentes", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+  		desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.isEncargado()? "lazy": "residentes", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("desarrollos", desarrollos);
       if(Objects.equals(this.accion, EAccion.AGREGAR))
 	      this.registroRequisicion.getRequisicion().setIkDesarrollo(UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
@@ -513,6 +514,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   public void doAplicar() {
     List<Entity> items        = null;
     Map<String, Object> params= new HashMap<>();
+    Long factor               = (Long)this.attrs.get("cuantos");
     try {
       params.put("idPaquete", this.registroRequisicion.getRequisicion().getIkPaquete().getKey());
       items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetPaquetesDetallesDto", "detalle", params, Constantes.SQL_TODOS_REGISTROS);
@@ -535,24 +537,26 @@ public class Accion extends IBaseArticulos implements Serializable {
             temporal.setIva(item.toDouble("iva"));
             temporal.setDescuento(getAdminOrden().getDescuento());
             temporal.setExtras(getAdminOrden().getExtras());
-            temporal.setCantidad(item.toDouble("cantidad"));
             temporal.setUnidadMedida(item.toString("unidadMedida"));
             temporal.setPrecio(item.toDouble("precio"));				
             temporal.setUltimo(this.attrs.get("ultimo")!= null);
             temporal.setSolicitado(this.attrs.get("solicitado")!= null);
             Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
             temporal.setStock(stock== null? 0D: stock.toDouble());
+            temporal.setCantidad(item.toDouble("cantidad")* factor);
             this.getAdminOrden().getArticulos().add(this.getAdminOrden().getArticulos().size()- 1, temporal);
           } // if
-          else 
-            this.getAdminOrden().getArticulos().get(index).setCantidad(this.getAdminOrden().getArticulos().get(index).getCantidad()+ item.toDouble("cantidad"));
+          else {
+            Double cantidad= this.getAdminOrden().getArticulos().get(index).getCantidad();
+            this.getAdminOrden().getArticulos().get(index).setCantidad(cantidad+ (item.toDouble("cantidad")* factor));
+          } // else  
         } // for
         this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+        this.getAdminOrden().toCantidad();
         UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
         UIBackingUtilities.execute("jsArticulos.callback('"+ this.getAdminOrden().getArticulos().get(this.getAdminOrden().getArticulos().size()- 1).getKey()+ "');");				
         UIBackingUtilities.execute("PF('wContenedorGrupos').select(1);");				
         JsfBase.addMessage("Aplicar", "Se agregaron los materiales a la requisición, verifique de favor !");
-        this.getAdminOrden().toCantidad();
       } // if  
       else
         JsfBase.addMessage("Aplicar", "No existen materiales que agregar !");        
@@ -565,4 +569,5 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(params);
     } // finally		
   }
+  
 } 

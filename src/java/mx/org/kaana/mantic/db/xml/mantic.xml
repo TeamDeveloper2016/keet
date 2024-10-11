@@ -4940,7 +4940,8 @@ order by
       </select>
       <select id="caja">
         select      
-          *
+          tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
+          tc_mantic_tipos_medios_pagos.*
         from      
           tc_mantic_tipos_medios_pagos
         where      

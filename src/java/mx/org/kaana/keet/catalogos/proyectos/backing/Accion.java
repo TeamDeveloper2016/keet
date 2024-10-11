@@ -186,7 +186,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadClientes() {
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("sucursales", this.proyecto.getProyecto().getIkEmpresa());
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		List<UISelectEntity> clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("clientes", clientes);
       if(clientes!= null && !clientes.isEmpty()) {

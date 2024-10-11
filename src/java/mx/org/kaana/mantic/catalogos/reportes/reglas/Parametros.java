@@ -47,7 +47,7 @@ public final class Parametros implements Serializable {
     this.idAlmacen   = idAlmacen;
     this.idProveedor = idProveedor;
     this.idCliente   = idCliente;
-    this.setComunes(toDatosEmpresa());
+    this.setComunes(this.toDatosEmpresa());
     if(this.idProveedor != -1L)
       this.toComplementarProveedor();
     if(this.idAlmacen != -1L)
@@ -65,12 +65,10 @@ public final class Parametros implements Serializable {
   }
 
   private Map<String, Object> toDatosEmpresa() throws Exception {
-    Map<String, Object>regresar= null;
-		Map<String, Object>params  = null;
+    Map<String, Object>regresar= new HashMap<>();
+		Map<String, Object>params  = new HashMap<>();
     Entity datosEmpresa        = null;
     try {
-      regresar= new HashMap<>();	
-      params  = new HashMap<>();	
       params.put("idEmpresa", this.idEmpresa);	
       datosEmpresa = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
       if(datosEmpresa != null) {
@@ -96,10 +94,9 @@ public final class Parametros implements Serializable {
 	}
   
   public void toComplementarAlmacen(Long idKeyAlmacen, boolean isOrigen) throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
     Entity datosAlmacen      = null;
 		try {
-      params= new HashMap<>();	
       params.put("idAlmacen", idKeyAlmacen);	
 			datosAlmacen = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosAlmacen", params);
       if(datosAlmacen != null && isOrigen){
@@ -132,10 +129,9 @@ public final class Parametros implements Serializable {
 	} // toComplementarAlmacen
   
   public void toComplementarProveedor() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
     Entity datosProveedor    = null;
 		try {
-      params= new HashMap<>();	
       params.put("idProveedor", this.idProveedor);	
 			datosProveedor = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosProveedor", params);
       if(datosProveedor != null){
@@ -160,10 +156,9 @@ public final class Parametros implements Serializable {
 	} // toComplementarProveedor
   
   public void toComplementarSubContratistas() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
     Entity datosProveedor    = null;
 		try {
-      params= new HashMap<>();	
       params.put("idProveedor", this.idProveedor);	
 			datosProveedor = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosSubcontratistas", params);
       if(datosProveedor != null){
@@ -188,10 +183,9 @@ public final class Parametros implements Serializable {
 	} // toComplementarSubContratistas
   
   public void toComplementarCliente() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
     Entity datosCiente       = null;
 		try {
-      params= new HashMap<>();	
       params.put("idCliente", this.idCliente);	
 			datosCiente = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosCliente", params);
       if(datosCiente != null){

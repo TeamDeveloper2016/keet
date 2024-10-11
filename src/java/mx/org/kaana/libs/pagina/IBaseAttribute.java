@@ -185,6 +185,8 @@ public abstract class IBaseAttribute implements Serializable {
 				if(index>= 0)
 					regresar= sucursales.get(index);
 			} // if
+      else
+        regresar= new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // if
 		return regresar;
 	}

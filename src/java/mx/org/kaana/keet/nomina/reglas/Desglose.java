@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -56,10 +55,12 @@ public class Desglose extends Empleados implements Serializable {
       this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
       for (Entity pago: nominas) {
         this.nomina= pago;
+/*        
         this.addCell(this.posicionColumna, this.posicionFila, "NOMINA ".concat(this.nomina.toString("semana")).concat(" DEL PERSONAL, SEMANA ").
                 concat(this.nomina.toString("semana").
                 concat(" DEL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("inicio")).toUpperCase()).
                 concat(" AL ").concat(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, this.nomina.toDate("termino")).toUpperCase())));
+*/
         List<Entity> residentes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "residentes", params);
         if(residentes!= null && !residentes.isEmpty()) {
           for (Entity residente: residentes) {
@@ -72,7 +73,8 @@ public class Desglose extends Empleados implements Serializable {
         else
           personas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "exportarCalculadaPagos", params);
         if(personas!= null && !personas.isEmpty()) {
-          this.toAddTitulosEmpleado();
+          if(posicionFila< 5)
+            this.toAddTitulosEmpleado();
           for (Entity item: personas) {
             if(!Objects.equals(desarrollo, item.toString("desarrollo"))) {
               if(!Objects.equals(desarrollo, "")) 
@@ -122,7 +124,8 @@ public class Desglose extends Empleados implements Serializable {
           this.addCellColor(this.posicionColumna, this.posicionFila, "LA NOMINA NO TIENE EMPLEADOS", jxl.format.Colour.BLUE);
           this.toAddView(0, 80);
         } // else   
-        this.posicionFila+= 2;
+        this.posicionFila--;
+        desarrollo= "";
       } // for  
       this.toAddView(0, 10);
       this.toAddView(1, 23);
@@ -135,6 +138,8 @@ public class Desglose extends Empleados implements Serializable {
       this.toAddView(15, 15);
       this.toAddView(16, 15);
       this.toAddView(17, 15);
+      this.toAddView(18, 15);
+      this.toAddView(19, 15);
     } // try
     catch (Exception e) {
       throw e;
@@ -150,13 +155,12 @@ public class Desglose extends Empleados implements Serializable {
   
   @Override
   protected void toAddTitulosEmpleado() throws Exception {
-    this.posicionFila++;
     this.addCell(this.posicionColumna, this.posicionFila, "NOMINA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 1, this.posicionFila, "DESARRLLO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 2, this.posicionFila, "CONTRATO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 3, this.posicionFila, "CLAVE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 4, this.posicionFila, "CATEGORIA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 5, this.posicionFila, "DEPARTAMENTO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 4, this.posicionFila, "DEPARTAMENTO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 5, this.posicionFila, "CATEGORIA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 6, this.posicionFila, "NOMBRE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 7, this.posicionFila, "DOM", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 8, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
@@ -169,6 +173,8 @@ public class Desglose extends Empleados implements Serializable {
     this.addCell(this.posicionColumna+ 15, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 16, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 17, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 18, this.posicionFila, "INICIO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 19, this.posicionFila, "TERMINO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
   }
   
   @Override
@@ -181,13 +187,15 @@ public class Desglose extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("desarrollo"));
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("contrato"));
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("clave"));
-      this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("puesto"));
-      this.addCell(this.posicionColumna+ 5, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 5, this.posicionFila, item.toString("puesto"));
       this.addCell(this.posicionColumna+ 6, this.posicionFila, item.toString("nombre"));
       this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
       this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
       this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(cajaChica), this.value); 
       this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
+      this.addCell(this.posicionColumna+ 18, this.posicionFila, this.nomina.toString("inicio"));
+      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("termino"));
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
@@ -233,10 +241,12 @@ public class Desglose extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 1, this.posicionFila, item.toString("desarrollo"));
       this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("contrato"));
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("clave"));
-      this.addCell(this.posicionColumna+ 4, this.posicionFila, "SUB CONTRATISTA");
-      this.addCell(this.posicionColumna+ 5, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("departamento"));
+      this.addCell(this.posicionColumna+ 5, this.posicionFila, "SUB CONTRATISTA");
       this.addCell(this.posicionColumna+ 6, this.posicionFila, item.toString("nombre"));
       this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
+      this.addCell(this.posicionColumna+ 18, this.posicionFila, this.nomina.toString("inicio"));
+      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("termino"));
       this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
     } // try
     catch (Exception e) {

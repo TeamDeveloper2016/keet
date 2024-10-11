@@ -16,6 +16,8 @@
 				'contenedorGrupos\\:idContrato'           : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:pedido'               : {validaciones: 'requerido', mascara: 'fecha'},
 				'contenedorGrupos\\:esperado'             : {validaciones: 'requerido', mascara: 'fecha'},
+				'contenedorGrupos\\:idPaquete'            : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idCuantos'            : {validaciones: 'libre', mascara: 'libre'},
 				'cantidades'                              : {mutiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
 				'contenedorGrupos\\:tabla\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
 				'contenedorGrupos\\:listado\\:proveedores': {validaciones: 'libre', mascara: 'libre'},
@@ -88,7 +90,7 @@
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                     <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                     <p:selectOneMenu id="idDesarrollo" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadContratos}" update="idContrato contenedorGrupos:idPaquete contenedorGrupos:paquetes" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
+                      <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadContratos}" update="idContrato contenedorGrupos:idPaquete contenedorGrupos:paquetes contenedorGrupos:idCuantos" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
                       <f:selectItems value="#{manticComprasRequisicionesAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -130,7 +132,7 @@
 							</p:panelGrid>	
               <p:remoteCommand name="reloadDesarrollos" process="@this" update="idDesarrollo"/>
               <p:remoteCommand name="reloadContratos" process="@this" update="idContrato"/>
-              <p:remoteCommand name="reloadPaquetes" process="@this" update="contenedorGrupos:idPaquete contenedorGrupos:paquetes"/>
+              <p:remoteCommand name="reloadPaquetes" process="@this" update="contenedorGrupos:idPaquete contenedorGrupos:paquetes contenedorGrupos:idCuantos"/>
 						</p:tab>
 						<p:tab title="Articulos">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
@@ -292,23 +294,49 @@
 								</f:facet>
 							</p:dataTable>	
             </p:tab>  
-            <p:tab title="Kit's">
-              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-95, janal-fix-5 janal-column-right">
+            <p:tab title="Kit materiales">
+              <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-90, janal-fix-5, janal-fix-5 janal-column-right">
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                   <p:outputLabel for="idPaquete" value="Paquete(s):"/>
                   <p:selectOneMenu id="idPaquete" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.ikPaquete}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt paquetes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" listener="#{manticComprasRequisicionesAccion.doLoadPaquetes}" update="paquetes aplicar" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                     <f:selectItems value="#{manticComprasRequisicionesAccion.attrs.paquetes}" var="element" itemValue="#{element}" itemLabel="#{element.proceso} #{empty element.subProceso or element.subProceso eq ''? '': '|'} #{element.subProceso}"/>
+                    <p:column headerText="Prototipo">
+                      <h:outputText value="#{item.prototipo}"/>
+                    </p:column> 
                     <p:column headerText="Proceso">
                       <h:outputText value="#{item.proceso}"/>
                     </p:column> 
                     <p:column headerText="Sub proceso">
                       <h:outputText value="#{item.subProceso}"/>
                     </p:column> 
-                    <p:column headerText="Prototipo">
-                      <h:outputText value="#{item.prototipo}"/>
-                    </p:column> 
                   </p:selectOneMenu>	
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                  <p:outputLabel for="idCuantos" value="Cuantos:"/>
+                  <p:selectOneMenu id="idCuantos" value="#{manticComprasRequisicionesAccion.attrs.cuantos}" converter="javax.faces.Long" styleClass="janal-wid-100-txt paquetes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" update="idCuantos" oncomplete="janal.desbloquear();"/>
+                    <f:selectItem itemValue="1" itemLabel="1"/>
+                    <f:selectItem itemValue="2" itemLabel="2"/>
+                    <f:selectItem itemValue="3" itemLabel="3"/>
+                    <f:selectItem itemValue="4" itemLabel="4"/>
+                    <f:selectItem itemValue="5" itemLabel="5"/>
+                    <f:selectItem itemValue="6" itemLabel="6"/>
+                    <f:selectItem itemValue="7" itemLabel="7"/>
+                    <f:selectItem itemValue="8" itemLabel="8"/>
+                    <f:selectItem itemValue="9" itemLabel="9"/>
+                    <f:selectItem itemValue="10" itemLabel="10"/>
+                    <f:selectItem itemValue="11" itemLabel="11"/>
+                    <f:selectItem itemValue="12" itemLabel="12"/>
+                    <f:selectItem itemValue="13" itemLabel="13"/>
+                    <f:selectItem itemValue="14" itemLabel="14"/>
+                    <f:selectItem itemValue="15" itemLabel="15"/>
+                    <f:selectItem itemValue="16" itemLabel="16"/>
+                    <f:selectItem itemValue="17" itemLabel="17"/>
+                    <f:selectItem itemValue="18" itemLabel="18"/>
+                    <f:selectItem itemValue="19" itemLabel="19"/>
+                    <f:selectItem itemValue="20" itemLabel="20"/>
+                  </p:selectOneMenu>  
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                   <p:spacer/>

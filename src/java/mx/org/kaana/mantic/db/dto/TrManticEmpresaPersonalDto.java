@@ -84,17 +84,19 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private Long idLimpiar;
 	@Column (name="id_por_dia")
   private Long idPorDia;
+	@Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
 
   public TrManticEmpresaPersonalDto() {
     this(new Long(-1L));
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, 2L, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L, 0D, 1L, 2L);
+    this(null, null, 2L, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L, 0D, 1L, 2L, 1L);
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate contratacion, LocalDate baja, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate ingreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro, Double sobreSueldo, Long idLimpiar, Long idPorDia) {
+  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate contratacion, LocalDate baja, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate ingreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro, Double sobreSueldo, Long idLimpiar, Long idPorDia, Long idTipoMedioPago) {
     setClave(clave);
     setIdPuesto(idPuesto);
     setIdContrato(idContrato);
@@ -122,6 +124,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     this.sobreSueldo= sobreSueldo;
     this.idLimpiar= idLimpiar;
     this.idPorDia= idPorDia;
+    this.idTipoMedioPago= idTipoMedioPago;
   }
 	
   public void setClave(String clave) {
@@ -340,6 +343,14 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     this.idPorDia = idPorDia;
   }
 
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -408,6 +419,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(getIdLimpiar());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPorDia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -442,13 +455,14 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.put("sobreSueldo", getSobreSueldo());
 		regresar.put("idLimpiar", getIdLimpiar());
 		regresar.put("idPorDia", getIdPorDia());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getContratacion(), getBaja(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro(), getSobreSueldo(), getIdLimpiar(), getIdPorDia()
+			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getContratacion(), getBaja(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro(), getSobreSueldo(), getIdLimpiar(), getIdPorDia(), getIdTipoMedioPago()
     };
     return regresar;
   }

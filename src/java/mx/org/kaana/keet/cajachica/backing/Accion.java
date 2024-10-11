@@ -181,11 +181,10 @@ public class Accion extends Catalogos implements Serializable {
 	
 	private void toLoadTiposPagos() {
 		List<UISelectEntity> tiposMediosPagos= null;
-		Map<String, Object>params            = null;
+		Map<String, Object>params            = new HashMap<>();
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
-			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			params.put("intermediario", -1);
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "caja", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
       if(tiposMediosPagos!= null && !tiposMediosPagos.isEmpty())
         if(Objects.equals(this.accion, EAccion.AGREGAR))

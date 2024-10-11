@@ -370,6 +370,7 @@ public class Transaccion extends IBaseTnx {
 				empresaPersonal.setDiarioImss(this.persona.getEmpresaPersona().getDiarioImss());
 				empresaPersonal.setSueldoImss(this.persona.getEmpresaPersona().getSueldoImss());
 				empresaPersonal.setInfonavit(this.persona.getEmpresaPersona().getInfonavit());
+				empresaPersonal.setIdTipoMedioPago(this.persona.getEmpresaPersona().getIdTipoMedioPago());
 				empresaPersonal.setFactorInfonavit(this.persona.getEmpresaPersona().getFactorInfonavit());
         if(this.persona.getDepartamentos()!= null && this.persona.getDepartamentos().length> 0)
 				  empresaPersonal.setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());

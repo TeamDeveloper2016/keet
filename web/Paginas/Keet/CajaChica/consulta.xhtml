@@ -44,7 +44,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
 								<p:outputLabel for="cortes" value="Corte de caja:"/>
 								<p:selectOneMenu id="cortes" value="#{keetCajaChicaConsulta.attrs.corte}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCajaChicaConsulta.doLoadCorte}" update="tabla apanelBusqueda totales" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCajaChicaConsulta.doLoadCorte}" update="tabla apanelBusqueda desglose" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCajaChicaConsulta.attrs.cortes}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>									
 									<p:column headerText="Consecutivo">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -76,8 +76,8 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>																																		
-								<p:commandButton id="replaceConcepto" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
-								<p:commandButton id="replaceGasto" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+								<p:commandButton id="replaceConcepto" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="desglose apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+								<p:commandButton id="replaceGasto" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="desglose apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
               </p:panelGrid>										
 							<div class="lg-pantalla">
 								<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
@@ -110,12 +110,12 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-					<p:dataGrid id="tabla" var="row" value="#{keetCajaChicaConsulta.gastos}" columns="4" layout="grid" rowIndexVar="index"
+					<p:dataGrid id="desglose" var="row" value="#{keetCajaChicaConsulta.gastos}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCajaChicaConsulta.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.consecutivo} [ #{row.nomina} ]" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
+								<p:commandLink process="@this" update="desglose" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
                   <p:outputLabel value="$#{row.importe}" styleClass="lg-pantalla amanzana-lote-font" style="cursor: pointer;"/>
 									<p:outputLabel value="$#{row.importe}" styleClass="xs-pantalla bmanzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"/>
@@ -137,15 +137,15 @@
 						</p:panel>						
 					</p:dataGrid>	
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="totales" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{keetCajaChicaConsulta.acumulados}" paginator="#{keetCajaChicaConsulta.acumulados.size() gt 5}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-wid-100-txt" selectionMode="single" selection="#{keetCajaChicaConsulta.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+          <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{keetCajaChicaConsulta.acumulados}" paginator="#{keetCajaChicaConsulta.acumulados.size() gt 5}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-wid-100-txt" selectionMode="single" selection="#{keetCajaChicaConsulta.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
             <f:facet name="header">
               <p:outputLabel value="Gastos totales por residente" styleClass="janal-icons-header janal-text-white"/>
               <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'totales')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'totales')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'totales')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'totales')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>
             <p:column styleClass="janal-column-left Responsive">
               <f:facet name="header">

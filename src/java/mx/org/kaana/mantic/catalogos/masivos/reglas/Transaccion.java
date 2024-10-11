@@ -1842,7 +1842,8 @@ public class Transaccion extends IBaseTnx {
                     0D, // Double saldo
                     null, // String comentarios
                     1L, // Long idCredito
-                    1L // Long idClaseProveedor
+                    1L, // Long idClaseProveedor
+                    1L // Long idTipoMedioPago
 									);
 									DaoFactory.getInstance().insert(sesion, proveedor);
 

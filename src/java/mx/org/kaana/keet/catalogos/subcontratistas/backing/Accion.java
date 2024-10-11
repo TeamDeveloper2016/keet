@@ -1,13 +1,20 @@
 package mx.org.kaana.keet.catalogos.subcontratistas.backing;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.RegistroProveedor;
 
 @Named(value = "keetCatalogosSubcontratistasAccion")
@@ -50,6 +57,6 @@ public class Accion extends mx.org.kaana.mantic.catalogos.proveedores.backing.Ac
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad  
+  } 
 
 }

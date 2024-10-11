@@ -18,6 +18,7 @@
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:nombreComercial': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:fondoGarantia': {validaciones: 'flotante|rango({"min":0,"max":5})', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
@@ -109,7 +110,11 @@
                   <p:column styleClass="janal-column-right" headerText="Tiempo estimado de entrega(dias)">
                     <h:outputText value="#{item.dias}"/>
                   </p:column>   
-                </p:selectOneMenu>                
+                </p:selectOneMenu>   
+                <p:outputLabel for="idTipoMedioPago" value="Metodo de pago:" styleClass="janal-wid-100"/>
+                <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosSubcontratistasAccion.registroProveedor.proveedor.idTipoMedioPago}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCatalogosSubcontratistasAccion.attrs.tiposMediosPagos}"/>
+                </p:selectOneMenu>
                 <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias):" styleClass="janal-display-none"/>
                 <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt janal-display-none" value="#{keetCatalogosSubcontratistasAccion.registroProveedor.proveedor.diasEntrega}" rendered="false"/> 
                 <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia" styleClass="janal-display-none"/>
@@ -119,7 +124,7 @@
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
                 </p:selectOneMenu>
                 <p:outputLabel value="Descuento:" for="descuento" styleClass="janal-display-none"/>
-                <p:inputText id="descuento" styleClass="janal-wid-100-txt " value="#{keetCatalogosSubcontratistasAccion.registroProveedor.proveedor.descuento}"/> 
+                <p:inputText id="descuento" styleClass="janal-wid-100-txt janal-display-none" value="#{keetCatalogosSubcontratistasAccion.registroProveedor.proveedor.descuento}"/> 
                 <p:outputLabel value="Tipo de mondeda:" for="idTipoMoneda" styleClass="janal-display-none"/>
                 <p:selectOneMenu id="idTipoMoneda" var="item" value="#{keetCatalogosSubcontratistasAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long" styleClass="janal-wid-100-txt janal-display-none">
                   <f:selectItem itemLabel="PESOS" itemValue="1"/>
