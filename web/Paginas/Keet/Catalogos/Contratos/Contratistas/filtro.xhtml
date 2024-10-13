@@ -43,7 +43,7 @@
                 </p:selectOneMenu>	
 								<p:outputLabel for="idContrato" value="Contrato:"/>
                 <p:selectOneMenu id="idContrato" value="#{keetCatalogosContratosContratistasFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{keetCatalogosContratosContratistasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                  <f:selectItems value="#{keetCatalogosContratosContratistasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column> 

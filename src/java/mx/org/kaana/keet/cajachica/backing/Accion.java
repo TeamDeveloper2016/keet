@@ -23,6 +23,7 @@ import mx.org.kaana.keet.cajachica.beans.ArchivoGasto;
 import mx.org.kaana.keet.cajachica.beans.Gasto;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.keet.db.dto.TcKeetGastosDto;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -66,6 +67,7 @@ public class Accion extends Catalogos implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;				
     try {
+      this.accion= EAccion.AGREGAR;
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
@@ -79,7 +81,6 @@ public class Accion extends Catalogos implements Serializable {
       this.toLoadResidentes();
 			this.doLoad();								
 			this.initPadre();			
-			this.attrs.put("accion", EAccion.AGREGAR);										
 			this.attrs.put("buscaPorCodigo", false);
 			if(!Cadena.isVacio(this.attrs.get("retornoInicial")))
 				this.attrs.put("retorno", this.attrs.get("retornoInicial"));
@@ -104,7 +105,6 @@ public class Accion extends Catalogos implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.setPrecio(ETipoVenta.MENUDEO.getNombreCampo());			
 			this.attrs.put("idVenta", -1L);
-      this.attrs.put("accion", EAccion.AGREGAR);      
       this.attrs.put("idCliente", -1L);			
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", true);
@@ -120,14 +120,14 @@ public class Accion extends Catalogos implements Serializable {
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("ticketLock", -1L);		
-      this.accion= EAccion.AGREGAR;
-			super.doLoad();
       this.toLoadTiposPagos();
+      this.toLoadContratos();
+			super.doLoad();
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // initPadre
+	} 
 	
   @Override
   public void doLoad() {			
@@ -146,7 +146,7 @@ public class Accion extends Catalogos implements Serializable {
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
 			this.attrs.put("desarrollo", desarrollo);
 			params.clear();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findDesarrollo", params);
 			UIBackingUtilities.toFormatEntity(cajaChica, columns);
 			this.attrs.put("cajaChica", cajaChica);
@@ -158,18 +158,25 @@ public class Accion extends Catalogos implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally	
-  } // doLoad	  	
+  } 
 	
 	private void toLoadExistente() throws Exception {
 		List<ArticuloVenta> material= null;
-		Map<String, Object>params   = null;
+		Map<String, Object>params   = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idGasto", this.attrs.get("idGasto"));
 			material=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGastosDetallesDto", "detalle", params);
 			material.add(new ArticuloVenta(-1L));
 			this.getAdminOrden().setArticulos(material);			
 			this.getAdminOrden().toCalculate();
+      TcKeetGastosDto gasto= (TcKeetGastosDto)DaoFactory.getInstance().findById(TcKeetGastosDto.class, (Long)this.attrs.get("idGasto"));
+      if(!Objects.equals(gasto, null)) {
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(new UISelectEntity(gasto.getIdTipoMedioPago()));
+        if(Objects.equals(gasto.getIdContrato(), null)) 
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(-1L));
+        else  
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(gasto.getIdContrato()));
+      } // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -177,7 +184,7 @@ public class Accion extends Catalogos implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // loadExistente
+	} 
 	
 	private void toLoadTiposPagos() {
 		List<UISelectEntity> tiposMediosPagos= null;
@@ -186,21 +193,33 @@ public class Accion extends Catalogos implements Serializable {
 			params.put("intermediario", -1);
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "caja", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
-      if(tiposMediosPagos!= null && !tiposMediosPagos.isEmpty())
-        if(Objects.equals(this.accion, EAccion.AGREGAR))
-          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
-        else {
-          int index= tiposMediosPagos.indexOf(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkTipoMedioPago());
-          if(index>= 0)
-            ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(index));          
-          else
-            ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
-        } // else
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // toLoadTiposPagos
+	} 
+
+ 	private void toLoadContratos() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> contratos= null;
+    try {
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+ 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  	  contratos= UIEntity.seleccione("VistaContratosDto", "desarrollos", params, columns, "clave", Constantes.SQL_TODOS_REGISTROS);
+  		this.attrs.put("contratos", contratos);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}  
   
 	@Override
 	public String doAceptar() {
@@ -208,9 +227,9 @@ public class Accion extends Catalogos implements Serializable {
 		Transaccion transaccion= null;				
     try {											
       Gasto gasto= this.toLoadGasto();
-			if(gasto!= null && !this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
+			if(gasto!= null && !this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {
 				transaccion= new Transaccion(gasto, this.documentos);
-				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+				if(transaccion.ejecutar(this.accion)) {
 					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta", ETipoMensaje.INFORMACION);										
 					regresar= this.doCancelar();
 					if(Cadena.isVacio(this.attrs.get("retorno")))
@@ -235,7 +254,7 @@ public class Accion extends Catalogos implements Serializable {
     try {											
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
-				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+				if(transaccion.ejecutar(this.accion)) {
 					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
 					JsfBase.setFlashAttribute("retorno", "accion");										
@@ -263,6 +282,10 @@ public class Accion extends Catalogos implements Serializable {
   			regresar= new Gasto();									
         regresar.setIdCajaChicaCierre(((Entity)this.attrs.get("cajaChica")).getKey());			
         regresar.setIdTipoMedioPago(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdTipoMedioPago());
+        if(Objects.equals(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdContrato(), -1L))
+          regresar.setIdContrato(null);
+        else
+          regresar.setIdContrato(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdContrato());
         regresar.setArticulos(this.getAdminOrden().getArticulos());			
         if(!Cadena.isVacio(this.attrs.get("idGasto"))) 
           regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
@@ -306,11 +329,10 @@ public class Accion extends Catalogos implements Serializable {
 	
 	@Override
 	public void doUpdateArticulosPrecioCliente() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		int buscarCodigoPor       = 2;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -432,9 +454,8 @@ public class Accion extends Catalogos implements Serializable {
   
 	private void toLoadResidentes() {
 		List<Entity>residentes   = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			residentes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "residentes", params);
 			this.attrs.put("residentes", residentes);

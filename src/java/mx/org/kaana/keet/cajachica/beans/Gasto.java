@@ -11,17 +11,19 @@ public class Gasto implements Serializable {
 	private Long idGasto;
 	private Long idCajaChicaCierre;	
 	private Long idTipoMedioPago;	
+	private Long idContrato;	
 	private List<Articulo> articulos;
 
 	public Gasto() {
-		this(-1L, new ArrayList<>(), -1L, 1L);
+		this(-1L, new ArrayList<>(), -1L, 1L, -1L);
 	}
 	
-	public Gasto(Long idCajaChicaCierre, List<Articulo> articulos, Long idGasto, Long idTipoMedioPago) {
+	public Gasto(Long idCajaChicaCierre, List<Articulo> articulos, Long idGasto, Long idTipoMedioPago, Long idContrato) {
 		this.idCajaChicaCierre= idCajaChicaCierre;
 		this.articulos        = articulos;
 		this.idGasto          = idGasto;
     this.idTipoMedioPago  = idTipoMedioPago;
+    this.idContrato       = idContrato;
 	}
 
 	public Long getIdCajaChicaCierre() {
@@ -61,6 +63,14 @@ public class Gasto implements Serializable {
 
   public void setIdTipoMedioPago(Long idTipoMedioPago) {
     this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
   }
   
 }

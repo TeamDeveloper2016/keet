@@ -248,9 +248,9 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			nota.setArticulos(this.getAdminOrden().getArticulos());
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
-      if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml()) && !this.getIsDirecta()) {
-          if(this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta()) {
+      if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || !Cadena.isVacio(this.attrs.get("folio"))) {
+        if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (!Cadena.isVacio(this.getXml()) && !this.getIsDirecta())) {
+          if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta())) {
             transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {

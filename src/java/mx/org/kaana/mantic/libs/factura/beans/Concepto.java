@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Concepto extends Articulo implements Serializable{
 
 	private static final long serialVersionUID = 4868374301878977376L;	
+  
 	private String claveProdServ;
 	private String noIdentificacion;
 	private String cantidad;
@@ -152,7 +153,5 @@ public class Concepto extends Articulo implements Serializable{
 		}
 		return true;
 	}
-	
-	
 	
 }

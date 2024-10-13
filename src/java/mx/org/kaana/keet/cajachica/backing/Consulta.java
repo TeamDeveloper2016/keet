@@ -11,6 +11,7 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -256,6 +257,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));													
 			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());										
 			JsfBase.setFlashAttribute("consecutivo", seleccionado.toString("consecutivo"));										
+			JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);										
 			JsfBase.setFlashAttribute("retorno", "consulta");				
 			if(seleccionado.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()))
 				regresar= "accion".concat(Constantes.REDIRECIONAR);

@@ -177,12 +177,6 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 		return TcManticFicticiasDto.class;
 	}			
 
-  @Override
-  protected void finalize() throws Throwable {
-    super.finalize(); 
-    Methods.clean(this.documentos);
-  }
-
   public IActions isEqual(Documento documento) {
     IActions regresar= null;
     for (IActions item : this.documentos) {
@@ -205,5 +199,11 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.setDiferencia(this.getTotal()- this.getSaldo());
     this.setFacturas(new Long(this.getDocumentos().size()));
   }
-  
+
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize(); 
+    Methods.clean(this.documentos);
+  }
+
 }

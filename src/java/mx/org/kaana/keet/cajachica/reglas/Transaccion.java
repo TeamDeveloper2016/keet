@@ -181,6 +181,8 @@ public class Transaccion extends IBaseTnx {
         importe = gastoDto.getImporte();
 				gastoDto.setArticulos(this.gasto.getTotalArticulos()-1L);
 				gastoDto.setImporte(this.toImporte());
+			  gastoDto.setIdTipoMedioPago(this.gasto.getIdTipoMedioPago());
+			  gastoDto.setIdContrato(this.gasto.getIdContrato());
 				DaoFactory.getInstance().update(sesion, gastoDto);
 				this.idGasto= this.gasto.getIdGasto();
         importe = gastoDto.getImporte()- importe;
@@ -219,6 +221,7 @@ public class Transaccion extends IBaseTnx {
 			regresar.setArticulos(this.gasto.getTotalArticulos()-1L);
 			regresar.setIdCajaChicaCierre(this.gasto.getIdCajaChicaCierre());
 			regresar.setIdTipoMedioPago(this.gasto.getIdTipoMedioPago());
+			regresar.setIdContrato(this.gasto.getIdContrato());
 			regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar.setIdEmpresaPersona(JsfBase.getAutentifica().getPersona().getIdEmpresaPersona());
 			regresar.setImporte(this.toImporte());
