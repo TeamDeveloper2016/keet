@@ -154,4 +154,6 @@ public class Concepto extends Articulo implements Serializable{
 		return true;
 	}
 	
+	
+	
 }

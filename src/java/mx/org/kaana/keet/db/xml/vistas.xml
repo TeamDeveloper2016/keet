@@ -8645,36 +8645,36 @@ order by
   tc_keet_contratos.clave desc 
 			</select>
 			<select id="findPrototipos">
-				select 
-					distinct(tc_keet_prototipos.id_prototipo) as id_key,
-          tc_keet_prototipos.*
-				from
-					tc_keet_contratos
-				inner join
-					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
-				inner join
-					tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo = tc_keet_prototipos.id_prototipo
-				where
-					(tc_keet_contratos.id_contrato= {idContrato} or {idContrato}= -1)
-          and {condicion}
-        order by
-          tc_keet_prototipos.nombre
+select 
+  distinct(tc_keet_prototipos.id_prototipo) as id_key,
+  tc_keet_prototipos.*
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+inner join
+  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo = tc_keet_prototipos.id_prototipo
+where
+  (tc_keet_contratos.id_contrato= {idContrato} or {idContrato}= -1)
+  and {condicion}
+order by
+  tc_keet_prototipos.nombre
 			</select>
 			<select id="findCliente">
-				select 
-					tc_keet_contratos.id_contrato as id_key,
-					tc_keet_contratos.*
-				from
-					tc_keet_contratos
-				inner join
-					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-				inner join
-					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-				where
-					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
-					and tc_keet_proyectos.id_cliente= {idCliente}
-        order by
-          tc_keet_contratos.registro desc 
+select 
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.*
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+where
+  tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+  and tc_keet_proyectos.id_cliente= {idCliente}
+order by
+  tc_keet_contratos.registro desc 
 			</select>
 			<select id="personalAsignado">
 				select
