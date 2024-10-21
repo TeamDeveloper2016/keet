@@ -134,6 +134,7 @@ public class Desglose extends Empleados implements Serializable {
       this.toAddView(4, 25);
       this.toAddView(5, 30);
       this.toAddView(6, 55);
+      this.toAddView(7, 25);
       this.toAddView(14, 15);
       this.toAddView(15, 15);
       this.toAddView(16, 15);
@@ -162,19 +163,20 @@ public class Desglose extends Empleados implements Serializable {
     this.addCell(this.posicionColumna+ 4, this.posicionFila, "DEPARTAMENTO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 5, this.posicionFila, "CATEGORIA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 6, this.posicionFila, "NOMBRE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 7, this.posicionFila, "DOM", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 8, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 9, this.posicionFila, "MAR", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 10, this.posicionFila, "MIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 11, this.posicionFila, "JUE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 12, this.posicionFila, "VIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 13, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 14, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 15, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 16, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 17, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 18, this.posicionFila, "INICIO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 19, this.posicionFila, "TERMINO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 7, this.posicionFila, "MEDIO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 8, this.posicionFila, "DOM", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 9, this.posicionFila, "LUN", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 10, this.posicionFila, "MAR", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 11, this.posicionFila, "MIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 12, this.posicionFila, "JUE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 13, this.posicionFila, "VIE", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 14, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 15, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 16, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 17, this.posicionFila, "CAJA CHICA", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 18, this.posicionFila, "SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 19, this.posicionFila, "INICIO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 20, this.posicionFila, "TERMINO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
   }
   
   @Override
@@ -190,12 +192,13 @@ public class Desglose extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 5, this.posicionFila, item.toString("puesto"));
       this.addCell(this.posicionColumna+ 6, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
-      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
-      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(cajaChica), this.value); 
-      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
-      this.addCell(this.posicionColumna+ 18, this.posicionFila, this.nomina.toString("inicio"));
-      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("termino"));
+      this.addCell(this.posicionColumna+ 7, this.posicionFila, item.toString("medio"));
+      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
+      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
+      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(cajaChica), this.value); 
+      this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")+ cajaChica), this.number);
+      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("inicio"));
+      this.addCell(this.posicionColumna+ 20, this.posicionFila, this.nomina.toString("termino"));
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
@@ -209,9 +212,9 @@ public class Desglose extends Empleados implements Serializable {
           faltas.append(dia.toLong("dia"));
       for (int x= 1; x < 8; x++) 
         if(faltas.toString().contains(String.valueOf(x)))
-          this.addCell(this.posicionColumna+ x+ 6, this.posicionFila, "", Alignment.CENTRE);
+          this.addCell(this.posicionColumna+ x+ 7, this.posicionFila, "", Alignment.CENTRE);
         else 
-          this.addCell(this.posicionColumna+ x+ 6, this.posicionFila, "X", Alignment.CENTRE);
+          this.addCell(this.posicionColumna+ x+ 7, this.posicionFila, "X", Alignment.CENTRE);
     } // try
     catch (Exception e) {
       throw e;
@@ -224,12 +227,12 @@ public class Desglose extends Empleados implements Serializable {
   @Override
   protected void toAddSubtotalesEmpleado(String desarrollo) throws Exception {
     this.posicionFila++;
-    for (int x = 0; x < 14; x++) 
+    for (int x = 0; x < 15; x++) 
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
-    this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
-    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
-    this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
-    this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
+    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
+    this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
+    this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("cajaChica")), this.total); 
+    this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("neto"));
   }
   
@@ -244,9 +247,10 @@ public class Desglose extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 5, this.posicionFila, "SUB CONTRATISTA");
       this.addCell(this.posicionColumna+ 6, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
-      this.addCell(this.posicionColumna+ 18, this.posicionFila, this.nomina.toString("inicio"));
-      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("termino"));
+      this.addCell(this.posicionColumna+ 7, this.posicionFila, item.toString("medio"));
+      this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
+      this.addCell(this.posicionColumna+ 19, this.posicionFila, this.nomina.toString("inicio"));
+      this.addCell(this.posicionColumna+ 20, this.posicionFila, this.nomina.toString("termino"));
       this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
     } // try
     catch (Exception e) {
@@ -257,14 +261,14 @@ public class Desglose extends Empleados implements Serializable {
   @Override
   protected void toAddSubtotalesProveedor(String desarrollo) throws Exception {
     this.posicionFila++;
-    for (int x= 0; x < 17; x++) 
+    for (int x= 0; x< 18; x++) 
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
-    this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
+    this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("total"));
   }
   
   public static void main(String ... args) throws Exception {
-    Desglose corte= new Desglose(139L);
+    Desglose corte= new Desglose(208L);
     LOG.info(corte.local());
   }
   
