@@ -10,11 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetNotasContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetNotasFacturasDetallesDto;
+import mx.org.kaana.keet.db.dto.TcKeetNotasFacturasDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -42,6 +45,9 @@ import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaLoteFamilia;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.log4j.Logger;
 
 /**
@@ -66,6 +72,11 @@ public class Transaccion extends Inventarios implements Serializable {
 	protected TcManticNotasBitacoraDto bitacora;
 	private List<UISelectEntity> lotes;
 	private List<UISelectEntity> familias;
+  private ComprobanteFiscal factura;
+
+	public Transaccion(TcManticNotasEntradasDto orden) {
+		this(orden, new ArrayList<Articulo>(), false, null, null);
+	}
 
 	public Transaccion(TcManticNotasEntradasDto orden, TcManticNotasBitacoraDto bitacora) {
 		this(orden);
@@ -73,11 +84,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.pdf= null;
 		this.bitacora= bitacora;
 	}
-	
-	public Transaccion(TcManticNotasEntradasDto orden) {
-		this(orden, new ArrayList<Articulo>(), false, null, null);
-	}
-
+  
 	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
@@ -85,12 +92,14 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.aplicar  = aplicar;
 		this.xml      = xml;
 		this.pdf      = pdf;
+    this.factura  = null;
 	} // Transaccion
 
 	public Transaccion(NotaEntradaProcess notaProcess, boolean aplicar, Importado xml, Importado pdf) {
 		this(notaProcess.getNotaEntrada(), notaProcess.getArticulos(), aplicar, xml, pdf);
 		this.familias= notaProcess.getFamilias();
 		this.lotes   = notaProcess.getLotes();
+    this.factura = notaProcess.getFactura();
 	} // Transaccion
   
 	protected void setMessageError(String messageError) {
@@ -139,6 +148,7 @@ public class Transaccion extends Inventarios implements Serializable {
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
           this.registrarFamiliasLotes(sesion);
+          this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
 					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);
@@ -153,6 +163,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.toApplyNotaEntrada(sesion);
 	   	    this.toUpdateDeleteXml(sesion);	
           this.registrarFamiliasLotes(sesion);
+          this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
 					break;
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
@@ -168,6 +179,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
+          this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
 					break;
 				case COMPLEMENTAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -187,6 +199,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
+          this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
@@ -221,6 +234,12 @@ public class Transaccion extends Inventarios implements Serializable {
 						} // if	
 					} // if
 					break;
+				case GENERAR:
+          regresar= this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada());
+          break;
+				case PROCESAR:
+          regresar= this.toProcesarFacturas(sesion, -1L);
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -584,6 +603,108 @@ public class Transaccion extends Inventarios implements Serializable {
     catch (Exception e) {
       throw e;      
     } // catch	
+  }
+  
+  private boolean registrarFactura(Session sesion, Long idNotaEntrada) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      TcKeetNotasFacturasDto item= new TcKeetNotasFacturasDto(
+        -1L, // Long idNotaFactura, 
+        null, // String cadenaOriginal, 
+        this.factura.getTimbreFiscalDigital().getUuid(), // String folioFiscal, 
+        this.factura.getSello(), // String selloDigital, 
+        this.factura.getFormaPago(), // String formaPago, 
+        this.factura.getEmisor().getNombre(), // String razonSocial, 
+        idNotaEntrada, // Long idNotaEntrada, 
+        this.factura.getLugarExpedicion(), // String lugarExpedicion, 
+        this.factura.getVersion(), // String version, 
+        this.factura.getTimbreFiscalDigital().getSelloCfd(), // String certificado, 
+        this.factura.getEmisor().getRfc(), // String rfc, 
+        Numero.getDouble(this.factura.getTotal(), 0D), // Double total, 
+        this.factura.getFolio(), // String factura, 
+        Fecha.toLocalDateTime(this.factura.getTimbreFiscalDigital().getFechaTimbrado()), // LocalDateTime timbrado, 
+        Numero.getDouble(this.factura.getImpuesto().getTotalImpuestosTrasladados(), 0D), // Double iva, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        Numero.getDouble(this.factura.getSubTotal(), 0D), // Double subtotal, 
+        this.factura.getSerie(), // String serie, 
+        this.factura.getMoneda(), // String moneda, 
+        this.factura.getTipoCambio(), // String tipoCambio, 
+        this.factura.getMetodoPago(), // String metodoPago, 
+        this.factura.getEmisor().getRegimenFiscal() // String regimen
+      );
+      TcKeetNotasFacturasDto existe= (TcKeetNotasFacturasDto)DaoFactory.getInstance().findIdentically(sesion, TcKeetNotasFacturasDto.class, item.toMap());
+      if(Objects.equals(existe, null))
+        DaoFactory.getInstance().insert(sesion, item);
+      else {
+        item.setIdNotaFactura(existe.getIdNotaFactura());
+        DaoFactory.getInstance().update(sesion, item);
+      } // if  
+      for (Concepto concepto: this.factura.getConceptos()) {
+        TcKeetNotasFacturasDetallesDto detalle= new TcKeetNotasFacturasDetallesDto(
+          concepto.getDescripcion(), // String descripcion, 
+          null, // String codigo, 
+          item.getIdNotaFactura(), // Long idNotaFactura, 
+          concepto.getUnidad(), // String unidadMedida, 
+          concepto.getDescuento(), // String descuento, 
+          concepto.getClaveProdServ(), // String sat, 
+          -1L, // Long idNotaFacturaDetalle, 
+          Numero.getDouble(concepto.getValorUnitario(), 0D), // Double unitario, 
+          Numero.getDouble(concepto.getTraslado().getBase(), 0D), // Double total, 
+          concepto.getClaveUnidad(), // String claveUnidad, 
+          Numero.getDouble(concepto.getTraslado().getImporte(), 0D), // Double iva, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          Numero.getDouble(concepto.getTraslado().getBase(), 0D)- Numero.getDouble(concepto.getTraslado().getImporte(), 0D), // Double subtotal, 
+          Numero.getDouble(concepto.getCantidad(), 0D), // Double cantidad, 
+          concepto.getNoIdentificacion() // String identificador     
+        ); 
+        TcKeetNotasFacturasDetallesDto encontrado= (TcKeetNotasFacturasDetallesDto)DaoFactory.getInstance().findIdentically(sesion, TcKeetNotasFacturasDetallesDto.class, detalle.toMap());
+        if(Objects.equals(encontrado, null))
+          DaoFactory.getInstance().insert(sesion, detalle);
+        else {
+          detalle.setIdNotaFacturaDetalle(encontrado.getIdNotaFacturaDetalle());
+          DaoFactory.getInstance().update(sesion, detalle);
+        } // if  
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    return regresar;
+  }
+
+  private boolean toProcesarFacturas(Session sesion, Long idNotaEntrada) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Reader reader             = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      sesion.flush();
+      params.put("idNotaEntrada", idNotaEntrada);      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", params);
+      for (Entity item: items) {
+			  File file= new File(item.toString("alias"));
+				if(file.exists()) {
+          reader= new Reader(file.getAbsolutePath());
+ 				  this.factura= reader.execute();
+          Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaFacturasDto", "exists", params);
+          // SI LA FACTURA EXISTE PARA ESTA NOTA DE ENTRADA PERO ES DIFERENTE LA FACTURA ENTONCES ELIMINAR LA FACTURA
+          if(!Objects.equals(exist, null) && !exist.isEmpty() && 
+             !Objects.equals(exist.toString("factura"), item.toString("factura")) && 
+             !Objects.equals(exist.toString("rfc"), item.toString("rfc"))) {
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDto.class, params);
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDetallesDto.class, params);
+          } // if
+          this.registrarFactura(sesion, item.toLong("idNotaEntrada"));
+        } // if  
+        else 
+          LOG.error("EL ARCHIVO NO EXISTE [".concat(item.toString("alias")).concat("]"));
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    return regresar;
   }
   
 } 

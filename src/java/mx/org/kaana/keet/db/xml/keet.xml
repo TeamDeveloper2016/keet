@@ -7,6 +7,55 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNotasFacturasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_notas_facturas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_notas_facturas
+where      
+  factura = '{factura}' and id_nota_entrada = {idNotaEntrada} and rfc = '{rfc}'
+      </select>
+      <delete id="rows">
+delete from tc_keet_notas_facturas where id_nota_entrada= {idNotaEntrada}
+      </delete>
+    </unit>   
+    <unit id="TcKeetNotasFacturasDetallesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_notas_facturas_detalles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_notas_facturas_detalles
+where      
+  id_nota_factura = {idNotaFactura} and sat = '{sat}' and identificador = '{identificador}'
+      </select>
+      <delete id="rows">
+delete 
+  tc_keet_notas_facturas_detalles 
+from 
+  tc_keet_notas_facturas_detalles 
+inner join 
+  tc_keet_notas_facturas on tc_keet_notas_facturas.id_nota_factura= tc_keet_notas_facturas_detalles.id_nota_factura
+where 
+  tc_keet_notas_facturas.id_nota_entrada= {idNotaFactura}
+      </delete>
+    </unit>     
     <unit id="TcKeetRequisicionesOrdenesDto">
       <select id="row">
 select      

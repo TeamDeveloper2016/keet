@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.entradas.beans;
 
 import java.util.List;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 
 /**
  *@company KAANA
@@ -17,16 +18,18 @@ public class NotaEntradaProcess {
 	private List<Articulo> articulos;
 	private List lotes;
 	private List familias;
+  private ComprobanteFiscal factura;
 
   public NotaEntradaProcess() {
-    this(null, null, null, null);
+    this(null, null, null, null, null);
   }
 
-  public NotaEntradaProcess(NotaEntrada notaEntrada, List<Articulo> articulos, List lotes, List familias) {
+  public NotaEntradaProcess(NotaEntrada notaEntrada, List<Articulo> articulos, List lotes, List familias, ComprobanteFiscal factura) {
     this.notaEntrada = notaEntrada;
     this.articulos = articulos;
     this.lotes = lotes;
     this.familias = familias;
+    this.factura= factura;
   }
 
   public NotaEntrada getNotaEntrada() {
@@ -60,5 +63,13 @@ public class NotaEntradaProcess {
   public void setFamilias(List familias) {
     this.familias = familias;
   }
-    
+
+  public ComprobanteFiscal getFactura() {
+    return factura;
+  }
+
+  public void setFactura(ComprobanteFiscal factura) {
+    this.factura = factura;
+  }
+  
 }

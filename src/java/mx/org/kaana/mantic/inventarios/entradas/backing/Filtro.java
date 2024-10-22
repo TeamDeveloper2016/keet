@@ -44,6 +44,7 @@ import mx.org.kaana.mantic.enums.ETipoMovimiento;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1368701967796774746L;
+  
   private LocalDate fechaInicio;
   private LocalDate fechaTermino;
   private Reporte reporte;
@@ -62,6 +63,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void setFechaTermino(LocalDate fechaTermino) {
     this.fechaTermino = fechaTermino;
+  }
+  
+  public Boolean getIsAdmin() {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      regresar= JsfBase.isAdmin();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    return regresar; 
   }
   
 	public Reporte getReporte() {
@@ -158,9 +170,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public void doEliminar() {
 		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Entity seleccionado     = (Entity) this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado correctamente", ETipoMensaje.ERROR);
@@ -411,5 +422,37 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("accion", EAccion.ASIGNAR);
 		return "/Paginas/Mantic/Catalogos/Articulos/asociar".concat(Constantes.REDIRECIONAR);
 	}
-	
+
+  public void doGenerar() {
+		Transaccion transaccion= null;
+		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+		try {
+			transaccion= new Transaccion(new TcManticNotasEntradasDto(seleccionado.getKey()));
+			if(transaccion.ejecutar(EAccion.GENERAR))
+				JsfBase.addMessage("Procesar", "La nota de entrada se proceso correctamente", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Procesar", "Ocurrió un error al procesar la nota de entrada", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+  }
+  
+  public void doProcesar() {
+		Transaccion transaccion= null;
+		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+		try {
+			transaccion= new Transaccion(new TcManticNotasEntradasDto(seleccionado.getKey()));
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Procesar", "Las notas de entradas se procesaron correctamente", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Procesar", "Ocurrió un error al procesar las notas de entradas", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+  }
+  
 }
