@@ -441,9 +441,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public void doProcesar() {
 		Transaccion transaccion= null;
-		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
 		try {
-			transaccion= new Transaccion(new TcManticNotasEntradasDto(seleccionado.getKey()));
+			transaccion= new Transaccion(new TcManticNotasEntradasDto(-1L));
 			if(transaccion.ejecutar(EAccion.PROCESAR))
 				JsfBase.addMessage("Procesar", "Las notas de entradas se procesaron correctamente", ETipoMensaje.ERROR);
 			else

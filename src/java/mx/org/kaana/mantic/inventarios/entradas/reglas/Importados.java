@@ -37,6 +37,7 @@ public class Importados extends Transaccion implements Serializable {
 			switch(accion) {
 				case AGREGAR:
      	    this.toUpdateDeleteXml(sesion);	
+          this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada());
 					break;
 			} // switch
 		} // try

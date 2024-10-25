@@ -27,6 +27,29 @@ where
 order by  
   tc_mantic_notas_entradas.id_nota_entrada        
       </select>  
+			<select id="parche">
+select
+  tc_mantic_notas_entradas.id_nota_entrada as id_key,
+  tc_mantic_notas_entradas.id_nota_entrada,
+  tc_mantic_notas_entradas.id_proveedor,
+  ifnull(tc_keet_notas_facturas.factura, '') as factura,
+  ifnull(tc_keet_notas_facturas.rfc, '') as rfc,
+  tc_mantic_notas_archivos.nombre,
+  tc_mantic_notas_archivos.archivo,
+  tc_mantic_notas_archivos.alias,
+  tc_mantic_notas_entradas.registro
+from
+  tc_mantic_notas_entradas
+inner join 
+  tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada and tc_mantic_notas_archivos.id_tipo_archivo= 1 and tc_mantic_notas_archivos.id_principal= 1 and tc_mantic_notas_archivos.id_eliminado= 2
+left join        
+  tc_keet_notas_facturas on tc_mantic_notas_entradas.id_nota_entrada= tc_keet_notas_facturas.id_nota_entrada
+where
+  tc_mantic_notas_entradas.id_proveedor= 34
+  and date_format(tc_mantic_notas_entradas.fecha_factura, '%Y%m')= '202409'
+order by  
+  tc_mantic_notas_entradas.id_nota_entrada        
+      </select>  
 			<select id="exists">
 select
   tc_mantic_notas_entradas.id_nota_entrada as id_key,

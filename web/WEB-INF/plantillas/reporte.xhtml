@@ -157,7 +157,7 @@
 										<p:ajax event="complete" listener="#{kajoolTemplateReporte.doCompleto}" />  
 									</p:progressBar>  			
 								</p:panel>
-								<p:panel id="descargar" styleClass="tabla-filtro"  widgetVar="descargaArchivo">
+								<p:panel id="descargar" styleClass="tabla-filtro" widgetVar="descargaArchivo">
 									<h:panelGrid columns="2" id="archivo" styleClass="janal-column-center"  >
 										<label for="generado">Archivo generado:</label>				
                     <p:commandLink id="generado" title="Click para descargar el archivo" process="@none" ajax="false" onclick="$('#descargar').hide();$('#barra').hide();">

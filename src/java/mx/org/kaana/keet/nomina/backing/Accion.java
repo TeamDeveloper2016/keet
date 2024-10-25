@@ -133,7 +133,7 @@ public class Accion extends IBaseFilter implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	} // doAceptar	
+	} 
   
   public void doCompleto() {
 		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina", ETipoMensaje.INFORMACION);		

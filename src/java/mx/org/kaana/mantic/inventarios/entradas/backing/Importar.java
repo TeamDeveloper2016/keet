@@ -86,11 +86,9 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	@Override
 	public void doLoad() {	
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -109,9 +107,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doLoad
 
 	public void doTabChange(TabChangeEvent event) {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       if(event.getTab().getTitle().equals("Archivos")) {
         params.put("idNotaEntrada", this.orden.getIdNotaEntrada());      
         params.put("idTipoDocumento", 13L);      
@@ -171,4 +168,5 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	} // doAceptar		
+  
 }

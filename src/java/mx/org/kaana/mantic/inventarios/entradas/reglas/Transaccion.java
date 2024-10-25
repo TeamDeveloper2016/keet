@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -238,7 +239,7 @@ public class Transaccion extends Inventarios implements Serializable {
           regresar= this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada());
           break;
 				case PROCESAR:
-          regresar= this.toProcesarFacturas(sesion, -1L);
+          regresar= this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada());
           break;
 			} // switch
 			if(!regresar)
@@ -339,10 +340,9 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	protected Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar= null;
-		Map<String, Object> params=null;
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -673,37 +673,49 @@ public class Transaccion extends Inventarios implements Serializable {
     return regresar;
   }
 
-  private boolean toProcesarFacturas(Session sesion, Long idNotaEntrada) throws Exception {
+  protected boolean toProcesarFacturas(Session sesion, Long idNotaEntrada) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Reader reader             = null;
     Map<String, Object> params= new HashMap<>();
+    Monitoreo monitoreo       = JsfBase.getAutentifica().getMonitoreo();
     try {      
-      sesion.flush();
-      params.put("idNotaEntrada", idNotaEntrada);      
-      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", params);
-      for (Entity item: items) {
-			  File file= new File(item.toString("alias"));
-				if(file.exists()) {
-          reader= new Reader(file.getAbsolutePath());
- 				  this.factura= reader.execute();
-          Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaFacturasDto", "exists", params);
-          // SI LA FACTURA EXISTE PARA ESTA NOTA DE ENTRADA PERO ES DIFERENTE LA FACTURA ENTONCES ELIMINAR LA FACTURA
-          if(!Objects.equals(exist, null) && !exist.isEmpty() && 
-             !Objects.equals(exist.toString("factura"), item.toString("factura")) && 
-             !Objects.equals(exist.toString("rfc"), item.toString("rfc"))) {
-            DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDto.class, params);
-            DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDetallesDto.class, params);
-          } // if
-          this.registrarFactura(sesion, item.toLong("idNotaEntrada"));
-        } // if  
-        else 
-          LOG.error("EL ARCHIVO NO EXISTE [".concat(item.toString("alias")).concat("]"));
-      } // for
+//      sesion.flush();
+//      monitoreo.comenzar(0L);
+//      params.put("idNotaEntrada", idNotaEntrada);      
+//      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", "parche", params, 10L); // Constantes.SQL_TODOS_REGISTROS);
+//      if(!Objects.equals(items, null) && !items.isEmpty()) {
+//  			monitoreo.setTotal(new Long(items.size()));
+//	  		monitoreo.setId("PROCESAR NOTAS DE ENTRADA");
+//        for (Entity item: items) {
+//          File file= new File(item.toString("alias"));
+//          if(file.exists()) {
+//            reader= new Reader(file.getAbsolutePath());
+//            this.factura= reader.execute();
+//            Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaFacturasDto", "exists", params);
+//            // SI LA FACTURA EXISTE PARA ESTA NOTA DE ENTRADA PERO ES DIFERENTE LA FACTURA ENTONCES ELIMINAR LA FACTURA
+//            if(!Objects.equals(exist, null) && !exist.isEmpty() && 
+//               !Objects.equals(exist.toString("factura"), item.toString("factura")) && 
+//               !Objects.equals(exist.toString("rfc"), item.toString("rfc"))) {
+//              DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDto.class, params);
+//              DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDetallesDto.class, params);
+//            } // if
+//            this.registrarFactura(sesion, item.toLong("idNotaEntrada"));
+//          } // if  
+//          else 
+//            LOG.error("EL ARCHIVO NO EXISTE [".concat(item.toString("alias")).concat("]"));
+//          monitoreo.incrementar();
+//        } // for
+//      } // if
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;      
     } // catch	
+    finally {
+      monitoreo.terminar();
+			monitoreo.setProgreso(0L);			
+			Methods.clean(params);
+		} // finally    
     return regresar;
   }
   
