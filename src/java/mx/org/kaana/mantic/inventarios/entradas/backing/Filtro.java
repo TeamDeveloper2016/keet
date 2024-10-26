@@ -217,10 +217,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -236,10 +235,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticNotasEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idNotaEstatus", new UISelectEntity("-1"));
+      params.put("idNotaEntrada", -1L);      
+      Long size= DaoFactory.getInstance().toSize("VistaFacturasDto", "parche", params);
+			this.attrs.put("registros", size);
 			this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
-      throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
     } // catch   
     finally {
       Methods.clean(columns);

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetNotasContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNotasFacturasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNotasFacturasDto;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -150,6 +151,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						articulo.setModificado(false);
           this.registrarFamiliasLotes(sesion);
           this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
+      		LOG.info("Se generó de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);
@@ -165,6 +167,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	   	    this.toUpdateDeleteXml(sesion);	
           this.registrarFamiliasLotes(sesion);
           this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
+      		LOG.info("Se generó de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 					break;
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
@@ -181,6 +184,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
           this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
+      		LOG.info("Se generó de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 					break;
 				case COMPLEMENTAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -201,6 +205,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
           this.toProcesarFacturas(sesion, this.orden.getIdNotaEntrada()); 
+      		LOG.info("Se generó de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
@@ -218,7 +223,7 @@ public class Transaccion extends Inventarios implements Serializable {
             DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasContratosLotesDto.class, this.orden.toMap());
 					} // if
 					else
-       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
+       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos";
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -253,7 +258,6 @@ public class Transaccion extends Inventarios implements Serializable {
           this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
 			throw new Exception(this.messageError);
 		} // catch		
-		LOG.info("Se genero de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
@@ -679,33 +683,41 @@ public class Transaccion extends Inventarios implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Monitoreo monitoreo       = JsfBase.getAutentifica().getMonitoreo();
     try {      
-//      sesion.flush();
-//      monitoreo.comenzar(0L);
-//      params.put("idNotaEntrada", idNotaEntrada);      
-//      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", "parche", params, 10L); // Constantes.SQL_TODOS_REGISTROS);
-//      if(!Objects.equals(items, null) && !items.isEmpty()) {
-//  			monitoreo.setTotal(new Long(items.size()));
-//	  		monitoreo.setId("PROCESAR NOTAS DE ENTRADA");
-//        for (Entity item: items) {
-//          File file= new File(item.toString("alias"));
-//          if(file.exists()) {
-//            reader= new Reader(file.getAbsolutePath());
-//            this.factura= reader.execute();
-//            Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaFacturasDto", "exists", params);
-//            // SI LA FACTURA EXISTE PARA ESTA NOTA DE ENTRADA PERO ES DIFERENTE LA FACTURA ENTONCES ELIMINAR LA FACTURA
-//            if(!Objects.equals(exist, null) && !exist.isEmpty() && 
-//               !Objects.equals(exist.toString("factura"), item.toString("factura")) && 
-//               !Objects.equals(exist.toString("rfc"), item.toString("rfc"))) {
-//              DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDto.class, params);
-//              DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDetallesDto.class, params);
-//            } // if
-//            this.registrarFactura(sesion, item.toLong("idNotaEntrada"));
-//          } // if  
-//          else 
-//            LOG.error("EL ARCHIVO NO EXISTE [".concat(item.toString("alias")).concat("]"));
-//          monitoreo.incrementar();
-//        } // for
-//      } // if
+      sesion.flush();
+      monitoreo.comenzar(0L);
+      params.put("idNotaEntrada", idNotaEntrada);      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", "parche", params, Constantes.SQL_TODOS_REGISTROS);
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+  			monitoreo.setTotal(new Long(items.size()));
+	  		monitoreo.setId("PROCESAR NOTAS DE ENTRADA");
+        LOG.error("INICIANDO.....................................................................");
+        for (Entity item: items) {
+          try {
+            File file= new File(item.toString("alias"));
+            if(file.exists()) {
+              reader= new Reader(file.getAbsolutePath());
+              this.factura= reader.execute();
+              Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaFacturasDto", "exists", params);
+              // SI LA FACTURA EXISTE PARA ESTA NOTA DE ENTRADA PERO ES DIFERENTE LA FACTURA ENTONCES ELIMINAR LA FACTURA
+              if(!Objects.equals(exist, null) && !exist.isEmpty() && 
+                 !Objects.equals(exist.toString("factura"), item.toString("factura")) && 
+                 !Objects.equals(exist.toString("rfc"), item.toString("rfc"))) {
+                DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDto.class, params);
+                DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasFacturasDetallesDto.class, params);
+              } // if
+              this.registrarFactura(sesion, item.toLong("idNotaEntrada"));
+            } // if  
+            else 
+              LOG.error("EL ARCHIVO NO EXISTE [".concat(item.toString("alias")).concat("]"));
+            monitoreo.incrementar();
+            LOG.error("PRECESADOS: "+ monitoreo.getProgreso()+ " de "+ monitoreo.getTotal());
+          } // try
+          catch(Exception e ) {
+            LOG.error("Error: "+ e);
+          } // catch
+        } // for
+        LOG.error("TERMNINADO.......................................................");
+      } // if
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {

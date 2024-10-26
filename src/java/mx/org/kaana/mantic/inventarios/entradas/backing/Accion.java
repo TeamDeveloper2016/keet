@@ -249,36 +249,40 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       nota.setFactura(this.getFactura());
-      if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (!Cadena.isVacio(this.getXml()) && !this.getIsDirecta())) {
-        if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta())) {
-          transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
-          if (transaccion.ejecutar(this.accion)) {
-            if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-              if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
-                JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
-                regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
-              } // if
+      if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || Cadena.isVacio(this.attrs.get("folio"))) {
+        if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (!Cadena.isVacio(this.getXml()) && !this.getIsDirecta())) {
+          if(Objects.equals(this.proveedor.getIdProveedor(), 0L) || (this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta())) {
+            transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
+            if (transaccion.ejecutar(this.accion)) {
+              if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
+                if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
+                  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+                  regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
+                } // if
+                else
+                  regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+                if(this.accion.equals(EAccion.AGREGAR))
+                  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+                else
+                  UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+              } // if	
               else
-                regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-              if(this.accion.equals(EAccion.AGREGAR))
-                UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-              else
-                UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-            } // if	
-            else
-              this.getAdminOrden().toStartCalculate();
-            if(!this.accion.equals(EAccion.CONSULTAR)) 
-              JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
-            JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-          } // if
+                this.getAdminOrden().toStartCalculate();
+              if(!this.accion.equals(EAccion.CONSULTAR)) 
+                JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+              JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+            } // if
+            else 
+              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
+          } // if  
           else 
-            JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
-        } // if  
+            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+        } // if
         else 
-          JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
-      } // if
+          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+      } // if  
       else 
-        JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -304,10 +308,9 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -910,7 +913,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	public void doCalculatePagoFecha() {
 		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaRecepcion();
 		LocalDate fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
-		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaFactura, fechaPago));
+		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaPago, fechaFactura));
 	}
 
 	public StreamedContent doFileDownload() {
