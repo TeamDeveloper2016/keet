@@ -105,13 +105,11 @@ public class Xls extends XlsBase {
 	}
   	
   protected Map convertirHashMap(IBaseDto registro) throws Exception {
-    Map columna             = null;    
-    Map registroMap         = null;
+    Map columna             = new HashMap();    
+    Map registroMap         = registro.toMap();
     String [] nombreColumnas= null;
     try  {            
-      registroMap= registro.toMap();            
       nombreColumnas= this.campos.split(",");
-      columna= new HashMap();
       for (int i=0; i< getColumnasInformacion(); i++) {        
         columna.put("col"+ String.valueOf(i), registroMap.get(Cadena.toBeanName(nombreColumnas[i])));
       } // for  
@@ -129,11 +127,11 @@ public class Xls extends XlsBase {
 		Set<String> fields		= null;		
     try {               
 			fields= this.registros.get(0).toMap().keySet();
-			for(String field : fields) {
+			for(String field: fields) {
 				columnas.append(field);
 				columnas.append(",");
 			} // for x    
-			columnas = columnas.delete(columnas.length() -1, columnas.length());
+			columnas= columnas.delete(columnas.length() -1, columnas.length());
 			regresar= columnas.toString();      
     }
     catch (Exception e) {

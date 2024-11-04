@@ -57,7 +57,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
   private static final Log LOG = LogFactory.getLog(Saldos.class);
-	private static final String DATA_FILE      = "EMPRESA,DESARROLLO,CONTRATO,ORDEN COMPRA,PROVEEDOR,FACTURA,FECHA FACTURA,FECHA RECEPCION,FECHA VENCIMIENTO,NETO A PAGAR,ABONADO,DIAS,SALDO VENCIDO,1 A 30,31 A 60,61 A 90,91 A 120,MAS 120,NO VENCIDO";
+	private static final String DATA_FILE      = "EMPRESA,DESARROLLO,CONTRATO,ORDEN COMPRA,PROVEEDOR,FACTURA,CONCEPTO,FECHA FACTURA,FECHA RECEPCION,FECHA VENCIMIENTO,NETO A PAGAR,ABONADO,DIAS,SALDO VENCIDO,1 A 30,31 A 60,61 A 90,91 A 120,MAS 120,NO VENCIDO";
 
   
   private Reporte reporte;
@@ -121,14 +121,17 @@ public class Saldos extends IBaseFilter implements Serializable {
   }
 
   public StreamedContent getFlujos() {
-		StreamedContent regresar= null;		
-		Xls xls                 = null;
-    String template         = "FL";
+		StreamedContent regresar  = null;		
+		Xls xls                   = null;
+    String template           = "FL";
     Map<String, Object> params= null;
+    StringBuilder sb          = new StringBuilder();
 		try {
       params= this.toPrepare();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
+      sb.append("and (tc_mantic_proveedores.id_clase_proveedor= 1)");
+      params.put(Constantes.SQL_CONDICION, (String)params.get(Constantes.SQL_CONDICION)+ sb.toString());
       xls= new Xls(fileName, new Modelo(params, "VistaEmpresasDto", "flujos", template), DATA_FILE);	
 			if(xls.procesar()) { 
 		    String contentType= EFormatos.XLS.getContent();

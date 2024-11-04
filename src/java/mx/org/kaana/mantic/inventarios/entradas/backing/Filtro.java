@@ -44,6 +44,8 @@ import mx.org.kaana.mantic.enums.ETipoMovimiento;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1368701967796774746L;
+  private static final String COLUMN_DATA_FILE= "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
+
   
   private LocalDate fechaInicio;
   private LocalDate fechaTermino;
@@ -79,7 +81,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public Reporte getReporte() {
 		return reporte;
 	}	// getReporte
-	
+
   @PostConstruct
   @Override
   protected void init() {
@@ -236,7 +238,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticNotasEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idNotaEstatus", new UISelectEntity("-1"));
       params.put("idNotaEntrada", -1L);      
-      Long size= DaoFactory.getInstance().toSize("VistaFacturasDto", "parche", params);
+      Long size= DaoFactory.getInstance().toSize("VistaFacturasDto", params);
 			this.attrs.put("registros", size);
 			this.doLoadDesarrollos();
     } // try

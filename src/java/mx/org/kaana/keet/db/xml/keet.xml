@@ -159,6 +159,12 @@ from
 where      
   id_desarrollo = {idDesarrollo} and id_nomina = {idNomina}
       </select>
+      <delete id="rows">
+delete from      
+  tc_keet_nominas_grupos
+where      
+  id_nomina = {idNomina}
+      </delete>
     </unit>    
     <unit id="TcKeetEstimacionesArchivosDto">
       <select id="row">
@@ -1697,13 +1703,19 @@ where
           {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_nominas_desarrollos
-        where      
-          id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_nomina = {idNomina}
+select      
+  *
+from      
+  tc_keet_nominas_desarrollos
+where      
+  id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_nomina = {idNomina}
       </select>
+      <delete id="rows">
+delete from      
+  tc_keet_nominas_desarrollos
+where      
+  id_nomina = {idNomina}
+      </delete>
     </unit>    
     <unit id="TcKeetContratosDeduccionesDto">
       <select id="row">

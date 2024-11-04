@@ -686,7 +686,7 @@ public class Transaccion extends Inventarios implements Serializable {
       sesion.flush();
       monitoreo.comenzar(0L);
       params.put("idNotaEntrada", idNotaEntrada);      
-      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", "parche", params, Constantes.SQL_TODOS_REGISTROS);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaFacturasDto", params, Constantes.SQL_TODOS_REGISTROS);
       if(!Objects.equals(items, null) && !items.isEmpty()) {
   			monitoreo.setTotal(new Long(items.size()));
 	  		monitoreo.setId("PROCESAR NOTAS DE ENTRADA");

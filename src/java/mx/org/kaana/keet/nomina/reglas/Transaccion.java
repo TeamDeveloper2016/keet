@@ -645,6 +645,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idNomina", this.nomina.getIdNomina());
+      // SE AJUSTO LA CONSULTA PARA CUANDO SE REPROCESE SE TOME LAS ACEPTADAS Y APLICADAS
 			List<TcManticIncidentesDto> prestamos= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params, Constantes.SQL_TODOS_REGISTROS);
 			if(prestamos!= null && !prestamos.isEmpty()) {		
 				for (TcManticIncidentesDto item: prestamos) {
@@ -699,6 +700,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           } // if
 				} // for
       } // if
+      // MARCAR TODOS LOS INCIDENTES QUE NO AFECTAN NOMINA A LA NOMINA ACTUAL
+      DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -1426,6 +1429,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Double total= 0D;
     try {      
 			params.put("idNomina", this.idNomina);
+      DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDesarrollosDto.class, params);
+      DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasGruposDto.class, params);
       List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "TcKeetNominasPersonasDto", "desarrollo", params);
 			if(personas!= null && !personas.isEmpty()) {      
         for (Entity item: personas) {

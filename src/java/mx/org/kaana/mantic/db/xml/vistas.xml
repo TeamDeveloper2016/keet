@@ -5001,41 +5001,41 @@ group by
 		</unit>
 		<unit id="VistaPersonasDto">
 			<select id="lazy">
-				select 
-				  tc_mantic_personas.id_persona as id_key,
-				  tc_mantic_personas.nombres,
-				  tc_mantic_personas.paterno,
-				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
-				  tc_mantic_personas.rfc,
-				  tc_mantic_personas.curp,
-				  tc_janal_tipos_sexos.id_tipo_sexo,
-		 		  tc_janal_tipos_sexos.nombre as sexo,
-				  tc_janal_tipos_sexos.nombre,
-				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre sucursal,
-					tc_mantic_personas.id_tipo_persona,
-					tc_janal_perfiles.descripcion as perfil,
-					tc_janal_usuarios.ultimo_acceso
-				from 
-					tc_janal_usuarios
-				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
-				inner join
-					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
-				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-				inner join 
-					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
-				inner join
-					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
-				where 				
-				  tr_mantic_empresa_personal.id_empresa in (1,2)	
-				  and tc_mantic_personas.id_tipo_persona!= 1
-				  and {condicion}
-				{sortOrder}  
+select 
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  tc_janal_tipos_sexos.id_tipo_sexo,
+  tc_janal_tipos_sexos.nombre as sexo,
+  tc_janal_tipos_sexos.nombre,
+  tc_mantic_personas.cuenta,
+  tc_mantic_empresas.nombre sucursal,
+  tc_mantic_personas.id_tipo_persona,
+  tc_janal_perfiles.descripcion as perfil,
+  tc_janal_usuarios.ultimo_acceso
+from 
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+inner join
+  tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+inner join
+  tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+where 				
+  tr_mantic_empresa_personal.id_empresa in (1,2)	
+  and tc_mantic_personas.id_tipo_persona!= 1
+  and {condicion}
+{sortOrder}  
 			</select>  
 			<select id="contratistas">
 				select 
@@ -5062,49 +5062,49 @@ group by
 				  tc_mantic_puestos.nombre
 			</select>
 			<select id="row">
-				select 
-				  tc_mantic_personas.id_persona as id_key,
-				  tc_mantic_personas.nombres,
-				  tc_mantic_personas.paterno,
-				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
-				  tc_mantic_personas.rfc,
-				  tc_mantic_personas.curp,
-				  tc_mantic_personas.fecha_nacimiento,
-				  tc_mantic_tipos_personas.nombre as tipo_persona,
-				  tc_janal_tipos_sexos.id_tipo_sexo,
-		 		  tc_janal_tipos_sexos.nombre as sexo,
-				  tc_janal_tipos_sexos.nombre,
-				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre sucursal,
-					tc_mantic_puestos.nombre puesto,
-					tr_mantic_persona_tipo_contacto.valor contacto,
-					tr_mantic_empresa_personal.id_activo
-				from 
-					tc_mantic_personas
-				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-				inner join 
-					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
-				inner join
-					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
-				inner join
-					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
-				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
-				left join 
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
-				where 				
-					tc_mantic_personas.nombres like '%{nombres}%' 
-				  and tc_mantic_personas.paterno like '%{paterno}%'
-				  and tc_mantic_personas.materno  like '%{materno}%'
-				  and tc_mantic_personas.rfc  like '%{rfc}%'
-				  and tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
-				  and tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
-				  and tr_mantic_empresa_personal.id_empresa in ({sucursales})								
-				{sortOrder}  
+select 
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  tc_mantic_personas.fecha_nacimiento,
+  tc_mantic_tipos_personas.nombre as tipo_persona,
+  tc_janal_tipos_sexos.id_tipo_sexo,
+  tc_janal_tipos_sexos.nombre as sexo,
+  tc_janal_tipos_sexos.nombre,
+  tc_mantic_personas.cuenta,
+  tc_mantic_empresas.nombre sucursal,
+  tc_mantic_puestos.nombre puesto,
+  tr_mantic_persona_tipo_contacto.valor contacto,
+  tr_mantic_empresa_personal.id_activo
+from 
+  tc_mantic_personas
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+inner join
+  tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+inner join
+  tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+left join
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+left join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+where 				
+  tc_mantic_personas.nombres like '%{nombres}%' 
+  and tc_mantic_personas.paterno like '%{paterno}%'
+  and tc_mantic_personas.materno  like '%{materno}%'
+  and tc_mantic_personas.rfc  like '%{rfc}%'
+  and tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
+  and tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
+  and tr_mantic_empresa_personal.id_empresa in ({sucursales})								
+{sortOrder}  
 			</select>              
 			<select id="chalanes">
 				select 
@@ -7730,6 +7730,7 @@ select
 	tc_mantic_ordenes_compras.consecutivo as 'orden compra',
 	tc_mantic_proveedores.razon_social as proveedor,
 	tc_mantic_notas_entradas.factura,
+  group_concat(distinct tc_keet_notas_facturas_detalles.descripcion separator ' | ') as concepto,
 	tc_mantic_notas_entradas.fecha_factura as 'fecha factura',
 	tc_mantic_notas_entradas.fecha_recepcion as 'fecha recepcion',
 	tc_mantic_empresas_deudas.limite as 'fecha vencimiento',
@@ -7760,7 +7761,11 @@ left join
 left join 
   tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 left join 
-  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo				  
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+left join 
+  tc_keet_notas_facturas on tc_mantic_notas_entradas.id_nota_entrada= tc_keet_notas_facturas.id_nota_entrada
+left join 
+  tc_keet_notas_facturas_detalles on tc_keet_notas_facturas.id_nota_factura= tc_keet_notas_facturas_detalles.id_nota_factura
 where
 	tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
   and {condicion}
