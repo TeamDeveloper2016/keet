@@ -9,7 +9,7 @@
 	<parameter name="ID_CONTRATO" class="java.math.BigDecimal">
 		<defaultValueExpression><![CDATA[new BigDecimal(-1)]]></defaultValueExpression>
 	</parameter>
-	<queryString language="SQL">
+	<queryString>
 		<![CDATA[select
           tc_keet_estimaciones.id_estimacion as id_key,
           'FACTURADO' as category,
@@ -18,7 +18,9 @@
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         where
           tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
         union all
@@ -30,15 +32,16 @@
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         left join
           tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
         where
           tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
         order by
           category,
-          serie
-]]>
+          serie]]>
 	</queryString>
 	<field name="CATEGORY" class="java.lang.String"/>
 	<field name="SERIE" class="java.lang.String"/>

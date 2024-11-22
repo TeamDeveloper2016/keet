@@ -7,8 +7,8 @@
 	<parameter name="ID_CONTRATO" class="java.math.BigDecimal">
 		<defaultValueExpression><![CDATA[new BigDecimal(-1)]]></defaultValueExpression>
 	</parameter>
-	<queryString language="SQL">
-		<![CDATA[        select
+	<queryString>
+		<![CDATA[select
           tc_keet_estimaciones.id_estimacion as id_key,
           tc_keet_estimaciones.id_estimacion,
           tc_keet_estimaciones.importe,
@@ -25,7 +25,9 @@
         from
           tc_keet_estimaciones
         inner join
-          tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         inner join
           tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
         inner join (
@@ -33,8 +35,10 @@
             max(tc_keet_estimaciones.id_estimacion) as id_estimacion
           from
             tc_keet_estimaciones
-          inner join
-            tc_keet_nominas_periodos on tc_keet_estimaciones.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        inner join
+          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
           where
             tc_keet_estimaciones.id_contrato= $P!{ID_CONTRATO}
         ) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion

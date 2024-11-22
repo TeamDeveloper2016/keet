@@ -424,8 +424,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // getGlobalEstimados
  
   public String doMateriales() {
-    JsfBase.setFlashAttribute("idContrato", ((Entity) this.attrs.get("seleccionado")).getKey());
-    JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
+    JsfBase.setFlashAttribute("idContrato", -1L);
+    JsfBase.setFlashAttribute("idCliente", -1L);
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/filtro");
     return "/Paginas/Keet/Catalogos/Materiales/filtro".concat(Constantes.REDIRECIONAR);
   }
