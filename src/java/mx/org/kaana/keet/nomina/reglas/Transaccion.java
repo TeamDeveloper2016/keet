@@ -385,8 +385,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				this.idNomina // Long idNomina			 
 			);
 			DaoFactory.getInstance().insert(sesion, estatus);
-			DaoFactory.getInstance().update(sesion, this.nomina);
 		} // if
+    DaoFactory.getInstance().update(sesion, this.nomina);
 	}
 	
 	private void procesarPersonas(Session sesion, String proceso) throws Exception {

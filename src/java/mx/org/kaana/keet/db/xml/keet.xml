@@ -4524,18 +4524,18 @@ where
           id_proveedor = {idProveedor} and id_nomina = {idNomina}
       </select>
 			<select id="proveedores">
-				select
-					tc_keet_nominas_proveedores.id_nomina,
-					count(*) as proveedores,
-					sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
-					sum(tc_keet_nominas_proveedores.iva) as iva,
-					sum(tc_keet_nominas_proveedores.total) as total
-				from
-					tc_keet_nominas_proveedores
-				where
-					tc_keet_nominas_proveedores.id_nomina= {idNomina}
-				group by
-					tc_keet_nominas_proveedores.id_nomina		
+select
+  tc_keet_nominas_proveedores.id_nomina,
+  count(*) as proveedores,
+  sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
+  sum(tc_keet_nominas_proveedores.iva) as iva,
+  sum(tc_keet_nominas_proveedores.total) as total
+from
+  tc_keet_nominas_proveedores
+where
+  tc_keet_nominas_proveedores.id_nomina= {idNomina}
+group by
+  tc_keet_nominas_proveedores.id_nomina		
 			</select>
 			<delete id="nomina">
 				delete 

@@ -295,7 +295,7 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
 		regresar.put("idRubro", getIdRubro());
 		regresar.put("nombre", getNombre());
 		regresar.put("lote", getLote());
-		regresar.put("idContratoLote()", getIdContratoLote());
+		regresar.put("idContratoLote", getIdContratoLote());
 		regresar.put("fondoGarantia", getFondoGarantia());
 		regresar.put("destajo", getDestajo());
 		regresar.put("porcentajeFondo", getPorcentajeFondo());
