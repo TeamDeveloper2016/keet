@@ -260,18 +260,30 @@
                   </f:facet>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.contrato}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.contrato}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Contrato"/>
                   </f:facet>
                   <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
                   <h:outputText value="#{row['contrato']}"/>
                 </p:column>											
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.contrato}">
+                  <f:facet name="header">
+                    <h:outputText value="Contrato"/>
+                  </f:facet>
+                  <h:outputText value="#{row['contrato']}"/>
+                </p:column>											
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.factura}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
                   </f:facet>
                   <i class="fa fa-fw fa-file-text-o janal-color-blue" title="Timbrado: #{row['timbrado']}"></i>
+                  <h:outputText value="#{row['factura']}"/>
+                </p:column>											
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.factura}">
+                  <f:facet name="header">
+                    <h:outputText value="Factura"/>
+                  </f:facet>
                   <h:outputText value="#{row['factura']}"/>
                 </p:column>											
                 <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}" rendered="false">
@@ -322,11 +334,17 @@
                   </f:facet>
                   <h:outputText value="#{row['dias']}"/>
                 </p:column>
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
                   <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}" style="display: #{row.idManual eq '1'? '': 'none'}"></i>
+                  <h:outputText value="#{row['estatus']}"/>
+                </p:column>
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.estatus}">
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
                   <h:outputText value="#{row['estatus']}"/>
                 </p:column>
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-2">

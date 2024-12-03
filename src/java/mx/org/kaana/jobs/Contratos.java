@@ -40,41 +40,53 @@ public class Contratos implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {    
     List<Entity> contratos    = null;
     Map<String, Object> params= new HashMap<>();
+    Boolean process           = Boolean.FALSE;      
     Transaccion transaccion   = null;
 		try {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            process= Boolean.TRUE;
+            break;
+          case "gylvi":
+            break;
+          case "triana":
+            break;
+        } // swtich
         LOG.error("PROCESANDO LOS CONTRATOS PARA ACTIVAR O DESACTIVAR SEGUN APLIQUE");
-        params.put("estatus", "1, 2, 3, 4, 5");      
-        params.put("fecha", "20231001");      
-        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
-        contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosDto", "control", params);
-        if(contratos!= null && !contratos.isEmpty()) {
-          LOG.error("CANTIDAD DE CONTRATOS A REVISAR "+ contratos.size());
-          for (Entity item: contratos) {
-            if(item.toLong("dias")>= 19L) {
-              StringBuilder control= new StringBuilder(this.toCheckContrato(item));
-              Long idContratoEstatus= null;
-              if(Objects.equals(control.length(), 0)) {
-                if(!Objects.equals(item.toLong("idContratoEstatus"), EContratosEstatus.ACTIVO.getKey()))
-                  idContratoEstatus= EContratosEstatus.ACTIVO.getKey();
+        if(process) {
+          params.put("estatus", "1, 2, 3, 4, 5");      
+          params.put("fecha", "20231001");      
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
+          contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosDto", "control", params);
+          if(contratos!= null && !contratos.isEmpty()) {
+            LOG.error("CANTIDAD DE CONTRATOS A REVISAR "+ contratos.size());
+            for (Entity item: contratos) {
+              if(item.toLong("dias")>= 19L) {
+                StringBuilder control= new StringBuilder(this.toCheckContrato(item));
+                Long idContratoEstatus= null;
+                if(Objects.equals(control.length(), 0)) {
+                  if(!Objects.equals(item.toLong("idContratoEstatus"), EContratosEstatus.ACTIVO.getKey()))
+                    idContratoEstatus= EContratosEstatus.ACTIVO.getKey();
+                } // if  
+                else {
+                  control.insert(0, "CONTRATO: ".concat(item.toString("nombre")).concat(", NUMERO: ").concat(item.toString("numero")).concat(" => "));
+                  control.append(" => ").append(item.toLong("idContratoEstatus"));
+                  LOG.error(control.toString());
+                  if(Objects.equals(item.toLong("idContratoEstatus"), EContratosEstatus.ACTIVO.getKey()))
+                    idContratoEstatus= EContratosEstatus.ESCANEADO.getKey();
+                } // if  
+                if(!Objects.equals(idContratoEstatus, null)) {
+                  transaccion = new Transaccion(item.toLong("idContrato"), idContratoEstatus);
+                  if(transaccion.ejecutar(EAccion.ASIGNAR))
+                    LOG.error("Se actualizó de forma correcta el contrato [ "+ item.toLong("idContrato")+ " ]");
+                  else
+                    LOG.error("Ocurrio un error al actualizar el contrato");		              
+                } // if  
               } // if  
-              else {
-                control.insert(0, "CONTRATO: ".concat(item.toString("nombre")).concat(", NUMERO: ").concat(item.toString("numero")).concat(" => "));
-                control.append(" => ").append(item.toLong("idContratoEstatus"));
-                LOG.error(control.toString());
-                if(Objects.equals(item.toLong("idContratoEstatus"), EContratosEstatus.ACTIVO.getKey()))
-                  idContratoEstatus= EContratosEstatus.ESCANEADO.getKey();
-              } // if  
-              if(!Objects.equals(idContratoEstatus, null)) {
-                transaccion = new Transaccion(item.toLong("idContrato"), idContratoEstatus);
-                if(transaccion.ejecutar(EAccion.ASIGNAR))
-                  LOG.error("Se actualizó de forma correcta el contrato [ "+ item.toLong("idContrato")+ " ]");
-                else
-                  LOG.error("Ocurrio un error al actualizar el contrato");		              
-              } // if  
-            } // if  
-          } // for
-          LOG.error("TERMINANDO DE REVISAR LOS ESTATUS DE LOS CONTRATOS");
+            } // for
+            LOG.error("TERMINANDO DE REVISAR LOS ESTATUS DE LOS CONTRATOS");
+          } // if
         } // if
 			} // if
 	  } // try

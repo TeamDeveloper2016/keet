@@ -265,7 +265,7 @@ public class Nomina implements Serializable {
 
 	private Long toLookForDia(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente) throws CloneNotSupportedException {
 		// SE RECUPERAN LOS DIAS DEL PERIODO A PAGAR PARA CALCULAR DESPUES LOS DIAS A PAGAR BASADOS EN SUS MOVIMIENTOS
-		Long regresar    = Numero.getLong(this.lookForConstants("PERIODO"), 7L);
+		Long regresar    = Numero.getLong(this.lookForConstants("PERIODO"), 6L);
 		LocalDate inicio = this.periodo.getInicio();
 		LocalDate termino= this.periodo.getTermino();
 		for (TcManticIncidentesDto item: incidentes) {
@@ -285,6 +285,8 @@ public class Nomina implements Serializable {
 			if(index>= 0) {
 				Concepto concepto= particulares.get(index);
 				regresar= DAYS.between(inicio, termino);
+        if(regresar< 1L || regresar> 6L)
+          regresar= 6L;
 				concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), String.valueOf(regresar)));
 			} // if
 		} // if
