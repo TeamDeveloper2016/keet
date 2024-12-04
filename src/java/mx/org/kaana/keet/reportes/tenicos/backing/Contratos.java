@@ -44,7 +44,7 @@ public class Contratos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
-  private Reporte reporte;
+  protected Reporte reporte;
   
   @PostConstruct
   @Override
@@ -156,7 +156,7 @@ public class Contratos extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	// doCompleteCliente	
 	
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");

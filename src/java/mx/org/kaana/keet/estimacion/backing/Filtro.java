@@ -79,15 +79,15 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_estimaciones.registro desc");
+      params.put("sortOrder", "order by tc_keet_estimaciones.consecutivo desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaEstimacionesDto", params, columns);
       UIBackingUtilities.resetDataTable();

@@ -146,7 +146,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -158,29 +158,35 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
+						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>	
+            <p:column class="MarAuto Responsive janal-display-none" sortBy="#{row.razonSocial}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
+						<p:column class="MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>
               <h:outputText value="#{row['folio']}"/>
+            </p:column>	
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
             </p:column>	
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
               <f:facet name="header">
                 <h:outputText value="Contrato"/>
               </f:facet>
               <h:outputText value="#{row['contrato']}"/>
-            </p:column>	
-						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.desarrollo}">
-              <f:facet name="header">
-                <h:outputText value="Desarrollo"/>
-              </f:facet>
-              <h:outputText value="#{row['desarrollo']}"/>
             </p:column>	
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.factura}" rendered="false">
               <f:facet name="header">
@@ -194,7 +200,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.total}">
+            <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
