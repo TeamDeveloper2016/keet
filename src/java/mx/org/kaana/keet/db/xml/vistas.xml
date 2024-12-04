@@ -44,9 +44,9 @@ select
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.no_viviendas,
-  0 as inicios,
-  0 as terminos,
-  0 as proceso
+  sum(if(tc_keet_contratos_lotes.arranque&gt;= str_to_date('{inicio}', '%Y%m%d') and tc_keet_contratos_lotes.arranque&lt;= str_to_date('{termino}', '%Y%m%d'), 1, 0)) as inicios,
+  sum(if(tc_keet_contratos_lotes.entrega&gt;= str_to_date('{inicio}', '%Y%m%d') and tc_keet_contratos_lotes.entrega&lt;= str_to_date('{termino}', '%Y%m%d'), 1, 0)) as terminos,
+  sum(if(tc_keet_contratos_lotes.arranque&gt;= str_to_date('{inicio}', '%Y%m%d') and tc_keet_contratos_lotes.arranque&lt;= str_to_date('{termino}', '%Y%m%d'), 0, if(tc_keet_contratos_lotes.entrega&gt;= str_to_date('{inicio}', '%Y%m%d') and tc_keet_contratos_lotes.entrega&lt;= str_to_date('{termino}', '%Y%m%d'), 0, 1))) as proceso
 from 
   tc_keet_contratos
 inner join
@@ -58,9 +58,13 @@ inner join
 inner join 
   tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
 inner join
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+inner join
   tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
 where        
   {condicion}
+group by
+  tc_keet_contratos.id_contrato  
 {sortOrder}
 			</select>	
     </unit>  
@@ -7490,32 +7494,34 @@ order by
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
 			</select>
 			<select id="ultima">
-        select
-					tc_keet_nominas.id_nomina as id_key,
-				  tc_keet_nominas.id_nomina,
-          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
-          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
-				  tc_keet_nominas.id_tipo_nomina,
-				  tc_keet_nominas.proveedores,
-				  tc_keet_nominas.personas,
-				  tc_keet_nominas.total,
-				  tc_keet_nominas.neto,
-				  tc_keet_nominas.total+ tc_keet_nominas.neto as global,
-					tc_keet_nominas_periodos.*,
-				  tc_keet_nominas_estatus.id_nomina_estatus,
-				  tc_keet_nominas_estatus.nombre as estatus,
-				  tc_keet_nominas.observaciones
-				from
-					tc_keet_nominas
-				inner join 
-					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-				inner join 
-					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
-				where
-					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
-				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
-				order by
-					tc_keet_nominas.id_nomina desc, tc_keet_nominas.id_nomina_estatus desc
+select
+  tc_keet_nominas.id_nomina as id_key,
+  tc_keet_nominas.id_nomina,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
+  tc_keet_nominas.id_tipo_nomina,
+  tc_keet_nominas.proveedores,
+  tc_keet_nominas.personas,
+  tc_keet_nominas.total,
+  tc_keet_nominas.neto,
+  tc_keet_nominas.total+ tc_keet_nominas.neto as global,
+  tc_keet_nominas_periodos.*,
+  tc_keet_nominas_estatus.id_nomina_estatus,
+  tc_keet_nominas_estatus.nombre as estatus,
+  tc_keet_nominas.observaciones,
+  tc_keet_nominas_periodos.inicio as ini,
+  tc_keet_nominas_periodos.termino as fin
+from
+  tc_keet_nominas
+inner join 
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join 
+  tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+where
+  tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
+  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
+order by
+  tc_keet_nominas.id_nomina desc, tc_keet_nominas.id_nomina_estatus desc
 			</select>			
 			<select id="referencia">
 				select      

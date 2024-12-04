@@ -333,7 +333,7 @@ public class Contratos extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte
+  } 
   
   public boolean doVerificarReporte() {
     Boolean regresar = Boolean.FALSE;
@@ -347,6 +347,6 @@ public class Contratos extends IBaseFilter implements Serializable {
       regresar = Boolean.FALSE;
 		} // else
     return regresar;
-	} // doVerificarReporte	
+	} 
   
 }
