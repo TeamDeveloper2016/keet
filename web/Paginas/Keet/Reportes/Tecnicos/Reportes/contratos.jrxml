@@ -255,7 +255,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="26" isBold="true"/>
+					<font fontName="Arial Narrow" size="20" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ENCUESTA}]]></textFieldExpression>
 			</textField>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="procesos" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="76ae20a3-dc6e-4e9a-8d8f-3b427271c490">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="control" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="76ae20a3-dc6e-4e9a-8d8f-3b427271c490">
 	<property name="ireport.zoom" value="1.771561000000001"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -93,39 +93,41 @@
 	<field name="CLAVE" class="java.lang.String"/>
 	<field name="CONTRATO" class="java.lang.String"/>
 	<field name="NO_VIVIENDAS" class="java.math.BigDecimal"/>
-	<field name="INICIOS" class="java.math.BigDecimal"/>
-	<field name="TERMINOS" class="java.math.BigDecimal"/>
-	<field name="PROCESO" class="java.math.BigDecimal"/>
+	<field name="COSTO" class="java.math.BigDecimal"/>
+	<field name="EJECUTADO" class="java.math.BigDecimal"/>
+	<field name="EJERCER" class="java.math.BigDecimal"/>
+	<field name="PEJECUTADO" class="java.math.BigDecimal"/>
+	<field name="PEJERCER" class="java.math.BigDecimal"/>
 	<variable name="DES_VIVIENDAS" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
 		<variableExpression><![CDATA[$F{NO_VIVIENDAS}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="DES_INICIOS" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
-		<variableExpression><![CDATA[$F{INICIOS}]]></variableExpression>
+	<variable name="DES_COSTO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
+		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="DES_TERMINOS" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
-		<variableExpression><![CDATA[$F{TERMINOS}]]></variableExpression>
+	<variable name="DES_EJECUTADO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
+		<variableExpression><![CDATA[$F{EJECUTADO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="DES_PROCESO" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
-		<variableExpression><![CDATA[$F{PROCESO}]]></variableExpression>
+	<variable name="DES_EJERCER" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
+		<variableExpression><![CDATA[$F{EJERCER}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="GPO_VIVIENDAS" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{NO_VIVIENDAS}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="GPO_INICIOS" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{INICIOS}]]></variableExpression>
+	<variable name="GPO_COSTO" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{COSTO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="GPO_TERMINOS" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{TERMINOS}]]></variableExpression>
+	<variable name="GPO_EJECUTADO" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{EJECUTADO}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="GPO_PROCESO" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{PROCESO}]]></variableExpression>
+	<variable name="GPO_EJERCER" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{EJERCER}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<group name="DESARROLLO" isStartNewPage="true" isReprintHeaderOnEachPage="true">
@@ -148,32 +150,32 @@
 						<text><![CDATA[Empresa]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="579" y="0" width="99" height="15" forecolor="#FFFFFF" uuid="96b44eff-f018-44f5-bf6a-aa064ef91c9c"/>
+						<reportElement x="523" y="0" width="69" height="15" forecolor="#FFFFFF" uuid="96b44eff-f018-44f5-bf6a-aa064ef91c9c"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Terminos]]></text>
+						<text><![CDATA[Ejecutado]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="175" y="0" width="243" height="15" forecolor="#FFFFFF" uuid="a6564b47-2775-4d45-bb10-1f8e4ce932de"/>
+						<reportElement x="175" y="0" width="205" height="15" forecolor="#FFFFFF" uuid="a6564b47-2775-4d45-bb10-1f8e4ce932de"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Contrato]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="483" y="0" width="96" height="15" forecolor="#FFFFFF" uuid="1e851bbe-60f8-4bcf-93a4-1ef8867eb35c"/>
+						<reportElement x="444" y="0" width="79" height="15" forecolor="#FFFFFF" uuid="1e851bbe-60f8-4bcf-93a4-1ef8867eb35c"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Inicios]]></text>
+						<text><![CDATA[Monto]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="677" y="0" width="75" height="15" forecolor="#FFFFFF" uuid="a45cc29a-3b11-4db4-a848-8c1b3ebbb2dc"/>
+						<reportElement x="635" y="0" width="75" height="15" forecolor="#FFFFFF" uuid="a45cc29a-3b11-4db4-a848-8c1b3ebbb2dc"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Proceso]]></text>
+						<text><![CDATA[Por ejercer]]></text>
 					</staticText>
 					<staticText>
 						<reportElement x="0" y="0" width="23" height="15" forecolor="#FFFFFF" uuid="78ee648b-fa4b-47a9-a59a-1e20787162b1"/>
@@ -183,7 +185,7 @@
 						<text><![CDATA[No.]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="418" y="0" width="64" height="15" forecolor="#FFFFFF" uuid="bb5d99c6-8a8f-465b-8b67-01e38cb4c9f4"/>
+						<reportElement x="380" y="0" width="64" height="15" forecolor="#FFFFFF" uuid="bb5d99c6-8a8f-465b-8b67-01e38cb4c9f4"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
@@ -195,6 +197,20 @@
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Clave]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="592" y="0" width="43" height="15" forecolor="#FFFFFF" uuid="6cfcc5e1-f725-43e4-8dcc-80bbcb75dd1e"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
+						</textElement>
+						<text><![CDATA[%]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="709" y="0" width="43" height="15" forecolor="#FFFFFF" uuid="593f073f-d702-4d02-a639-aeff956be3f2"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="9" isBold="true"/>
+						</textElement>
+						<text><![CDATA[%]]></text>
 					</staticText>
 				</frame>
 				<frame>
@@ -225,35 +241,35 @@
 					</graphicElement>
 				</line>
 				<staticText>
-					<reportElement x="346" y="0" width="71" height="12" forecolor="#000000" uuid="6e96fbd3-fed9-4729-b579-57dc3472802c"/>
+					<reportElement x="307" y="0" width="71" height="12" forecolor="#000000" uuid="6e96fbd3-fed9-4729-b579-57dc3472802c"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Sub total:]]></text>
 				</staticText>
-				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="677" y="0" width="75" height="12" uuid="06afbd4b-d258-482a-89ed-98429aba1e83"/>
+				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="635" y="0" width="75" height="12" uuid="06afbd4b-d258-482a-89ed-98429aba1e83"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{DES_PROCESO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{DES_EJERCER}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="580" y="0" width="98" height="12" uuid="a993ce45-c657-48b4-9270-717a1014ff49"/>
+				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="524" y="0" width="68" height="12" uuid="a993ce45-c657-48b4-9270-717a1014ff49"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{DES_TERMINOS}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{DES_EJECUTADO}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="483" y="0" width="98" height="12" uuid="0f1f16b5-039f-478f-809b-d5072b4f3eae"/>
+				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="445" y="0" width="78" height="12" uuid="0f1f16b5-039f-478f-809b-d5072b4f3eae"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{DES_INICIOS}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{DES_COSTO}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="DESARROLLO" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="418" y="0" width="65" height="12" uuid="06ad7dee-d3be-4f41-953b-8260fdf77d7b"/>
+					<reportElement x="379" y="0" width="65" height="12" uuid="06ad7dee-d3be-4f41-953b-8260fdf77d7b"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
@@ -372,12 +388,12 @@
 		<band height="14" splitType="Stretch">
 			<frame>
 				<reportElement style="EvenOddRowStyle" x="0" y="0" width="752" height="14" uuid="d1d42fd5-0a6e-40f9-9c24-ac15dcbd4d6b"/>
-				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
-					<reportElement x="579" y="0" width="99" height="14" uuid="23ecc18d-1b9c-4542-ab1f-0999eeaa93b0"/>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="false">
+					<reportElement x="523" y="0" width="69" height="14" uuid="23ecc18d-1b9c-4542-ab1f-0999eeaa93b0"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{TERMINOS}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{EJECUTADO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="119" y="0" width="56" height="14" uuid="20ace299-43da-457b-bf24-99eef2b083bf"/>
@@ -386,15 +402,15 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CLAVE}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="678" y="0" width="74" height="14" uuid="716eac77-05a0-4a5a-b7e6-65dfd4a3de52"/>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="635" y="0" width="75" height="14" uuid="716eac77-05a0-4a5a-b7e6-65dfd4a3de52"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{PROCESO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{EJERCER}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="175" y="0" width="243" height="14" uuid="5c0bced3-611e-4668-9d39-423b4043b7c3"/>
+					<reportElement x="175" y="0" width="205" height="14" uuid="5c0bced3-611e-4668-9d39-423b4043b7c3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
@@ -408,18 +424,18 @@
 					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="418" y="0" width="64" height="14" uuid="06965f38-1ab6-4a85-a64a-a1fa10d8370e"/>
+					<reportElement x="380" y="0" width="64" height="14" uuid="06965f38-1ab6-4a85-a64a-a1fa10d8370e"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NO_VIVIENDAS}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement x="483" y="0" width="96" height="14" uuid="3d8d702c-f959-4b76-9211-3f13c5606dad"/>
+					<reportElement x="444" y="0" width="79" height="14" uuid="3d8d702c-f959-4b76-9211-3f13c5606dad"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{INICIOS}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="23" y="0" width="96" height="14" uuid="bd7c8f15-ffb7-45a6-83f7-02c49cbb6c71"/>
@@ -427,6 +443,20 @@
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{EMPRESA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="711" y="0" width="40" height="14" uuid="0352ed28-3087-48d0-8f61-19a9e9e0e46e"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PEJERCER}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+					<reportElement x="592" y="0" width="43" height="14" uuid="191e3386-a88b-4320-bd24-282940c1809c"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PEJECUTADO}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -478,35 +508,35 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="346" y="0" width="71" height="13" forecolor="#000000" uuid="9a0ae9d1-f844-4ba1-922b-1ad022152578"/>
+				<reportElement x="306" y="0" width="71" height="13" forecolor="#000000" uuid="9a0ae9d1-f844-4ba1-922b-1ad022152578"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="581" y="1" width="96" height="12" uuid="40414d61-7dd4-4cbc-80f2-3e70dee0edc6"/>
+			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+				<reportElement x="524" y="1" width="68" height="12" uuid="40414d61-7dd4-4cbc-80f2-3e70dee0edc6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{GPO_TERMINOS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{GPO_EJECUTADO}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="677" y="1" width="75" height="12" uuid="d2cdb3e6-c5b8-4743-af52-3483a480414c"/>
+			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+				<reportElement x="637" y="1" width="75" height="12" uuid="d2cdb3e6-c5b8-4743-af52-3483a480414c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{GPO_PROCESO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{GPO_EJERCER}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="483" y="1" width="98" height="12" uuid="98fc3917-0a86-4ff5-a55c-b9472745a797"/>
+			<textField evaluationTime="Report" pattern="¤ #,##0.00">
+				<reportElement x="443" y="1" width="80" height="12" uuid="98fc3917-0a86-4ff5-a55c-b9472745a797"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{GPO_INICIOS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{GPO_COSTO}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="418" y="1" width="65" height="12" uuid="770e156c-352f-4847-992d-6bd22932817d"/>
+			<textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00">
+				<reportElement x="378" y="1" width="65" height="12" uuid="770e156c-352f-4847-992d-6bd22932817d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>

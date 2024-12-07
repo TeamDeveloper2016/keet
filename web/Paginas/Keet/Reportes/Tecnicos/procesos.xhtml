@@ -16,24 +16,9 @@
         'idDesarrollo'  : {validaciones: 'libre', mascara: 'libre'},
         'clave'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'nombre'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'etapa'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'semana'        : {validaciones: 'libre', mascara: 'libre'},
         'idContratoEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
-		
-		  fields= {
-				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
-			};
-
-			function justifica() {
-				var ok= janal.partial('dialogo');
-				if(ok) {
-					PF('dlgEstatus').hide();
-					janal.restore();
-					janal.refresh();
-				} // if
-				return ok;
-			} // justifica
-
       //<![CDATA[
 				function start() {
 					janal.bloquear();
@@ -80,9 +65,21 @@
               <p:inputText id="clave" value="#{keetReportesTecnicosProcesos.attrs.clave}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="nombre" value="Nombre:"/>
               <p:inputText id="nombre" value="#{keetReportesTecnicosProcesos.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="etapa" value="Etapa:"/>
-              <p:inputText id="etapa" value="#{keetReportesTecnicosProcesos.attrs.etapa}" styleClass="janal-wid-100-txt"/>  
             </p:panelGrid>
+            <p:outputLabel for="semana" value="Semana:"/>
+            <p:selectOneMenu id="semana" value="#{keetReportesTecnicosProcesos.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:ajax event="change" listener="#{keetReportesTecnicosProcesos.doUpdateNomina}" process="@this" update="nominas"/>
+              <f:selectItems value="#{keetReportesTecnicosProcesos.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.semana}"/>
+              </p:column>   
+              <p:column headerText="Inicio">
+                <h:outputText value="#{item.ini}"/>
+              </p:column>   
+              <p:column headerText="Termino">
+                <h:outputText value="#{item.fin}"/>
+              </p:column>   
+            </p:selectOneMenu>	
 						<p:outputLabel for="idContratoEstatus" value="Estatus:"/>
 						<p:selectOneMenu id="idContratoEstatus" value="#{keetReportesTecnicosProcesos.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<f:selectItems value="#{keetReportesTecnicosProcesos.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -99,18 +96,18 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:panel header="Ultima nómina" toggleable="true" toggleOrientation="horizontal">
-            <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center">
+            <p:panelGrid id="nominas" columns="3" layout="grid" styleClass="janal-wid-100">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center">
                 <p:outputLabel value="Semana:"/>
-                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.semana}" styleClass="janal-column-center janal-wid-100-txt" readonly="true" />  
+                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.semana}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/>  
               </p:panelGrid>  
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center">
                 <p:outputLabel value="Inicio:"/>
-                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.ini}" styleClass="janal-column-center janal-wid-100-txt" readonly="true" />  
+                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.ini}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/>  
               </p:panelGrid>  
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center">
                 <p:outputLabel value="Termino:"/>
-                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.fin}" styleClass="janal-column-center janal-wid-100-txt" readonly="true" />  
+                <p:inputText value="#{keetReportesTecnicosProcesos.nomina.fin}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/>  
               </p:panelGrid>  
             </p:panelGrid>  
           </p:panel>  
@@ -150,7 +147,7 @@
               </f:facet>
               <h:outputText value="#{row['empresa']}"/>
             </p:column>
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
               <f:facet name="header">
                 <h:outputText value="Fraccionamiento" />
               </f:facet>
@@ -168,7 +165,7 @@
               </f:facet>
               <h:outputText value="#{row['contrato']}"/>
             </p:column>			            
-						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.noViviendas}">
+						<p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.noViviendas}">
               <f:facet name="header">
                 <h:outputText value="Contratadas" />
               </f:facet>

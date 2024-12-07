@@ -8,7 +8,7 @@
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Reporte de obras en proceso" />
+  <ui:param name="titulo" value="Reporte de control presupuestal en partidas" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -16,10 +16,7 @@
         'idDesarrollo'  : {validaciones: 'libre', mascara: 'libre'},
         'clave'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'nombre'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'etapa'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'razonSocial'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'viviendasMayor': {validaciones: 'libre', mascara: 'libre'},
-        'viviendasMenor': {validaciones: 'libre', mascara: 'libre'},
+        'semana'        : {validaciones: 'libre', mascara: 'libre'},
         'idContratoEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       //<![CDATA[
@@ -43,10 +40,10 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetReportesTecnicosContratos.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetReportesTecnicosContratos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" listener="#{keetReportesTecnicosContratos.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
-                <f:selectItems value="#{keetReportesTecnicosContratos.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetReportesTecnicosControl.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetReportesTecnicosControl.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{keetReportesTecnicosControl.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+                <f:selectItems value="#{keetReportesTecnicosControl.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -55,8 +52,8 @@
                 </p:column>   
               </p:selectOneMenu>
 							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
-              <p:selectOneMenu id="idDesarrollo" value="#{keetReportesTecnicosContratos.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetReportesTecnicosContratos.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetReportesTecnicosControl.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetReportesTecnicosControl.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -65,70 +62,51 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{keetReportesTecnicosContratos.attrs.clave}" styleClass="janal-wid-100-txt"/>  
+              <p:inputText id="clave" value="#{keetReportesTecnicosControl.attrs.clave}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="nombre" value="Nombre:"/>
-              <p:inputText id="nombre" value="#{keetReportesTecnicosContratos.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="etapa" value="Etapa:"/>
-              <p:inputText id="etapa" value="#{keetReportesTecnicosContratos.attrs.etapa}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="razonSocial" value="Cliente:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetReportesTecnicosContratos.attrs.cliente}" completeMethod="#{keetReportesTecnicosContratos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-										<h:outputText value="Clave:" />
-										<h:outputText value="#{custom.clave}" />
-										<h:outputText value="RFC:" />
-										<h:outputText value="#{custom.rfc}" />
-										<h:outputText value="Razón social:" />
-										<h:outputText value="#{custom.razonSocial}" />
-									</h:panelGrid>
-								</f:facet>
-							</p:autoComplete>
-							<p:outputLabel for="viviendasMenor" value="Viviendas menor a:" title="Viviendas."/>
-              <p:inputNumber id="viviendasMenor" value="#{keetReportesTecnicosContratos.attrs.viviendasMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
-							<p:outputLabel for="viviendasMayor" value="Viviendas mayor a:" title="Viviendas."/>
-              <p:inputNumber id="viviendasMayor" value="#{keetReportesTecnicosContratos.attrs.viviendasMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
+              <p:inputText id="nombre" value="#{keetReportesTecnicosControl.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
             </p:panelGrid>
 						<p:outputLabel for="idContratoEstatus" value="Estatus:"/>
-						<p:selectOneMenu id="idContratoEstatus" value="#{keetReportesTecnicosContratos.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-							<f:selectItems value="#{keetReportesTecnicosContratos.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+						<p:selectOneMenu id="idContratoEstatus" value="#{keetReportesTecnicosControl.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<f:selectItems value="#{keetReportesTecnicosControl.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 							<p:column headerText="Nombre">
 								<h:outputText value="#{item.nombre}"/>
 							</p:column>   
 						</p:selectOneMenu>
 						<p:separator/>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetReportesTecnicosContratos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetReportesTecnicosContratos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetReportesTecnicosControl.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetReportesTecnicosControl.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetReportesTecnicosContratos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetReportesTecnicosContratos.attrs.seleccionado}" selectionMode="single" paginator="#{keetReportesTecnicosContratos.lazyModel.rowCount gt keetReportesTecnicosContratos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetReportesTecnicosControl.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetReportesTecnicosControl.attrs.seleccionado}" selectionMode="single" paginator="#{keetReportesTecnicosControl.lazyModel.rowCount gt keetReportesTecnicosControl.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
                 <p:menuitem icon="fa fa-hand-holding-usd" value="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetReportesTecnicosContratos.globalPagados}" />
+                  <p:fileDownload value="#{keetReportesTecnicosControl.globalPagados}" />
                 </p:menuitem>
                 <p:menuitem icon="fa fa-file-invoice-dollar" value="Conceptos estimados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetReportesTecnicosContratos.globalEstimados}" />
+                  <p:fileDownload value="#{keetReportesTecnicosControl.globalEstimados}" />
                 </p:menuitem>
                 <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this" actionListener="#{keetReportesTecnicosContratos.doReporte()}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this" actionListener="#{keetReportesTecnicosControl.doReporte()}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-hand-holding-usd" title="Conceptos pagados" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" >
-								<p:fileDownload value="#{keetReportesTecnicosContratos.globalPagados}" />
+								<p:fileDownload value="#{keetReportesTecnicosControl.globalPagados}" />
 							</p:commandButton>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-invoice-dollar" title="Conceptos estimados" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" >
-								<p:fileDownload value="#{keetReportesTecnicosContratos.globalEstimados}" />
+								<p:fileDownload value="#{keetReportesTecnicosControl.globalEstimados}" />
 							</p:commandButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this" actionListener="#{keetReportesTecnicosContratos.doReporte()}" oncomplete="janal.desbloquear()" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this" actionListener="#{keetReportesTecnicosControl.doReporte()}" oncomplete="janal.desbloquear()" update="descargar"/>
             </f:facet>
             <p:column styleClass="janal-wid-3" headerText="No.">
               <h:outputText value="#{index+ 1}.-"/>
@@ -139,7 +117,7 @@
               </f:facet>
               <h:outputText value="#{row['empresa']}"/>
             </p:column>
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
               <f:facet name="header">
                 <h:outputText value="Fraccionamiento" />
               </f:facet>
@@ -151,48 +129,78 @@
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.contrato}">
               <f:facet name="header">
                 <h:outputText value="Centro costos"/>
               </f:facet>
               <h:outputText value="#{row['contrato']}"/>
             </p:column>			            
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.noViviendas}">
+						<p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.noViviendas}">
               <f:facet name="header">
-                <h:outputText value="No viviendas" />
+                <h:outputText value="Contratadas" />
               </f:facet>
               <h:outputText value="#{row['noViviendas']}"/>
             </p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.costo}">
               <f:facet name="header">
-                <h:outputText value="Monto contrato"/>
+                <h:outputText value="Monto"/>
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.destajos}">
               <f:facet name="header">
-                <h:outputText value="Estatus" />
+                <h:outputText value="Destajos" />
               </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
+              <h:outputText value="#{row['destajos']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.subcontratados}">
               <f:facet name="header">
-                <h:outputText value="Registro" />
+                <h:outputText value="Subcontratados" />
               </f:facet>
-              <h:outputText value="#{row['registro']}"/>
+              <h:outputText value="#{row['subcontratados']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right janal-display-none" sortBy="#{row.porElDia}">
+              <f:facet name="header">
+                <h:outputText value="Por día" />
+              </f:facet>
+              <h:outputText value="#{row['porElDia']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right janal-display-none" sortBy="#{row.administrativos}">
+              <f:facet name="header">
+                <h:outputText value="Administrativos" />
+              </f:facet>
+              <h:outputText value="#{row['administrativos']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.materiales}">
+              <f:facet name="header">
+                <h:outputText value="Materiales" />
+              </f:facet>
+              <h:outputText value="#{row['materiales']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.maquinarias}">
+              <f:facet name="header">
+                <h:outputText value="Maquinarias" />
+              </f:facet>
+              <h:outputText value="#{row['maquinarias']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right janal-display-none" sortBy="#{row.indirecto}">
+              <f:facet name="header">
+                <h:outputText value="Indirecto" />
+              </f:facet>
+              <h:outputText value="#{row['indirecto']}"/>
             </p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetReportesTecnicosContratos.lazyModel== null? 0: keetReportesTecnicosContratos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetReportesTecnicosControl.lazyModel== null? 0: keetReportesTecnicosControl.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem action="#{keetReportesTecnicosContratos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem action="#{keetReportesTecnicosControl.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator/>					
 						<p:menuitem value="Conceptos pagados" icon="fa fa-hand-holding-usd" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Conceptos pagados">
-	  					<p:fileDownload value="#{keetReportesTecnicosContratos.egresos}" />
+	  					<p:fileDownload value="#{keetReportesTecnicosControl.egresos}" />
   					</p:menuitem>
 						<p:menuitem value="Conceptos estimados" icon="fa fa-file-invoice-dollar" ajax="false" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" onclick="PrimeFaces.monitorDownload(start, stop);" title="Conceptos estimados">
-	  					<p:fileDownload value="#{keetReportesTecnicosContratos.estimados}" />
+	  					<p:fileDownload value="#{keetReportesTecnicosControl.estimados}" />
   					</p:menuitem>
           </p:contextMenu>
         </div>

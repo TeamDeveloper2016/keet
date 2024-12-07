@@ -87,7 +87,9 @@ public enum EReportes implements IReportAttribute {
   VALE_ALMACEN              ("VistaBoletasDto", "folio", "Vale de almacen", "/Paginas/Keet/Vales/Reportes/vale", EFormatos.PDF, "VA", "/Paginas/Keet/Vales/filtro"),
   ANALISIS_COSTOS           ("VistaCostosDto", "lazy", "Análsis de costos de los contratos", "/Paginas/Keet/Costos/Reportes/costos", EFormatos.PDF, "AC", "/Paginas/Keet/Costos/costos"),
   REPORTE_CONTRATOS         ("VistaReportesDto", "lazy", "Reporte de obras en proceso", "/Paginas/Keet/Reportes/Tecnicos/Reportes/contratos", EFormatos.PDF, "RCT", "/Paginas/Keet/Reportes/Tecnicos/contratos"),
-  REPORTE_PROCESOS          ("VistaReportesDto", "procesos", "Reporte de inicios terminos proceso", "/Paginas/Keet/Reportes/Tecnicos/Reportes/procesos", EFormatos.PDF, "RCT", "/Paginas/Keet/Reportes/Tecnicos/procesos");
+  REPORTE_PROCESOS          ("VistaReportesDto", "procesos", "Reporte de avances", "/Paginas/Keet/Reportes/Tecnicos/Reportes/procesos", EFormatos.PDF, "REV", "/Paginas/Keet/Reportes/Tecnicos/procesos"),
+  REPORTE_PRESUPUESTO       ("VistaReportesDto", "presupuesto", "Reporte de presupuesto vs ejecución", "/Paginas/Keet/Reportes/Tecnicos/Reportes/presupuesto", EFormatos.PDF, "RPE", "/Paginas/Keet/Reportes/Tecnicos/presupuesto"),
+  REPORTE_CONTROL           ("VistaReportesDto", "control", "Reporte de control presupuestal", "/Paginas/Keet/Reportes/Tecnicos/Reportes/control", EFormatos.PDF, "RCTR", "/Paginas/Keet/Reportes/Tecnicos/control");
 			
 	private final String proceso;
   private final String idXml;
