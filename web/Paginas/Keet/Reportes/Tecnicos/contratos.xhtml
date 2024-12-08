@@ -108,13 +108,6 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-                <p:menuitem icon="fa fa-hand-holding-usd" value="Conceptos pagados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetReportesTecnicosContratos.globalPagados}" />
-                </p:menuitem>
-                <p:menuitem icon="fa fa-file-invoice-dollar" value="Conceptos estimados" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetReportesTecnicosContratos.globalEstimados}" />
-                </p:menuitem>
-                <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
@@ -122,12 +115,6 @@
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-hand-holding-usd" title="Conceptos pagados" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" >
-								<p:fileDownload value="#{keetReportesTecnicosContratos.globalPagados}" />
-							</p:commandButton>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-invoice-dollar" title="Conceptos estimados" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" >
-								<p:fileDownload value="#{keetReportesTecnicosContratos.globalEstimados}" />
-							</p:commandButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this" actionListener="#{keetReportesTecnicosContratos.doReporte()}" oncomplete="janal.desbloquear()" update="descargar"/>
             </f:facet>
             <p:column styleClass="janal-wid-3" headerText="No.">

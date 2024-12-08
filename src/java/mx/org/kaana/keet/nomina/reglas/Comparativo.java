@@ -149,17 +149,18 @@ public class Comparativo extends XlsBase implements Serializable {
       else
         this.nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "nomina", params);
       params.put("idEmpresa", this.idEmpresa);
+      params.put("idNomina", this.nomina.toLong("idNomina"));      
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosMaterialesDto", "contratos", params);
       if(items!= null && !items.isEmpty()) {
-        regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "RESUMEN-SEMANA-".concat(nomina.toString("semana")).concat("_").concat(items.get(0).toString("empresa")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+        regresar= Archivo.toFormatNameFile(Constantes.ARCHIVO_PATRON_NOMBRE, "RESUMEN-SEMANA-".concat(this.nomina.toString("semana")).concat("_").concat(items.get(0).toString("empresa")).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
         this.posicionFila   = 0;
         this.posicionColumna= 1;
         this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
         this.hoja = this.libro.createSheet(Constantes.ARCHIVO_PATRON_NOMBRE, 0);
         this.addCell(this.posicionColumna, this.posicionFila, "SEMANA:");
-        this.addCellNegritas(this.posicionColumna+ 1, this.posicionFila++, nomina.toString("semana"), Alignment.LEFT);
+        this.addCellNegritas(this.posicionColumna+ 1, this.posicionFila++, this.nomina.toString("semana"), Alignment.LEFT);
         this.addCell(this.posicionColumna, this.posicionFila, "PERIODO:");
-        this.addCellNegritas(this.posicionColumna+ 1, this.posicionFila++, Global.format(EFormatoDinamicos.FECHA_NOMBRE_MES, nomina.toString("inicio"))+ " al "+ Global.format(EFormatoDinamicos.FECHA_NOMBRE_MES, nomina.toString("termino")), Alignment.LEFT);
+        this.addCellNegritas(this.posicionColumna+ 1, this.posicionFila++, Global.format(EFormatoDinamicos.FECHA_NOMBRE_MES, this.nomina.toString("inicio"))+ " al "+ Global.format(EFormatoDinamicos.FECHA_NOMBRE_MES, this.nomina.toString("termino")), Alignment.LEFT);
         this.posicionColumna= 1;
         this.addCellNegritas(this.posicionColumna--, this.posicionFila+ 1, "REPORTE DE NOMINA SEMANAL", Alignment.CENTRE);
         this.toHeaders(items);

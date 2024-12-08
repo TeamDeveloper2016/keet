@@ -239,11 +239,11 @@ public class ManoObra extends XlsBase implements Serializable {
         this.posicionColumna= 0;
       } // if  
       else
-        this.posicionFila+=2;
+        this.posicionFila+= 2;
       this.addCellColor(this.posicionColumna+ count, this.posicionFila- 2, null, Alignment.CENTRE, jxl.format.Colour.BLUE);
       
-      String value= String.format("SI(%s=0, 0, (%s*100)/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
-      this.addFormula(this.posicionColumna+ count, this.posicionFila-1, value, this.porcentaje);
+      String value= String.format("SI(%s=0, 0, %s/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
+      this.addFormula(this.posicionColumna+ count, this.posicionFila- 1, value, this.porcentaje);
       this.addDouble(this.posicionColumna+ count, this.posicionFila, corte.getDestajo(), this.negritas);
       this.posicionFila++;
       index= this.totales.indexOf(corte);
@@ -294,7 +294,7 @@ public class ManoObra extends XlsBase implements Serializable {
         this.posicionFila+=2;
       this.addCellColor(this.posicionColumna+ count, this.posicionFila- 2, null, Alignment.CENTRE, jxl.format.Colour.BROWN);
       
-      String value= String.format("SI(%s=0, 0, (%s*100)/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
+      String value= String.format("SI(%s=0, 0, %s/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
       this.addFormula(this.posicionColumna+ count, this.posicionFila-1, value, this.porcentaje);
       this.addDouble(this.posicionColumna+ count, this.posicionFila, corte.getPorDia(), this.negritas);
       this.posicionFila++;
@@ -336,7 +336,7 @@ public class ManoObra extends XlsBase implements Serializable {
         this.posicionFila+=2;
       this.addCellColor(this.posicionColumna+ count, this.posicionFila- 2, null, Alignment.CENTRE, jxl.format.Colour.DARK_PURPLE);
       
-      String value= String.format("SI(%s=0, 0, (%s*100)/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
+      String value= String.format("SI(%s=0, 0, %s/%s)", this.toColumnName(2, this.posicionFila- 1), this.toColumnName(this.posicionColumna+ count, this.posicionFila), this.toColumnName(2, this.posicionFila- 1));
       this.addFormula(this.posicionColumna+ count, this.posicionFila-1, value, this.porcentaje);
       this.addDouble(this.posicionColumna+ count, this.posicionFila, Numero.toRedondearSat(corte.getDestajo()+ corte.getPorDia()), this.negritas);
       this.posicionFila++;

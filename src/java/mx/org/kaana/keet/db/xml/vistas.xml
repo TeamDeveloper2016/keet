@@ -105,6 +105,7 @@ group by
 			<select id="control">
 select 
   tc_keet_contratos.id_contrato id_key,
+  tc_keet_contratos.id_contrato,
   tc_mantic_empresas.id_empresa,
   tc_mantic_empresas.nombre as empresa, 
   tc_keet_desarrollos.id_desarrollo,

@@ -1,22 +1,35 @@
 package mx.org.kaana.keet.reportes.tenicos.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.nomina.reglas.Egresos;
+import mx.org.kaana.keet.nomina.reglas.ManoObra;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetReportesTecnicosControl")
 @ViewScoped
@@ -93,5 +106,34 @@ public class Control extends Contratos implements Serializable {
       JsfBase.addMessageError(e);			
     } // catch	
   } 
+ 
+  public StreamedContent getContrato() {
+		StreamedContent regresar= null;		
+    ManoObra manoObra       = null;
+    Entity ultima           = null;
+    Map<String, Object> params= new HashMap<>();
+		Entity seleccionado      = null;				
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");						
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
+      params.put("idTipoNomina", 1);      
+      params.put("ejercicio", Fecha.getAnioActual());      
+      ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ejercicio", params);
+      if(ultima!= null && !ultima.isEmpty()) {
+        manoObra   = new ManoObra(ultima.toLong("idNomina"), seleccionado.toLong("idDesarrollo"), seleccionado.toLong("idContrato"));
+        String name= manoObra.execute();
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+        regresar          = new DefaultStreamedContent(stream, contentType, name);				
+      } // if  
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getContrato
   
 }
