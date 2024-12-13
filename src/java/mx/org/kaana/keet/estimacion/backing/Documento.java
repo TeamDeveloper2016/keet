@@ -151,6 +151,7 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
     Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      this.articulos= new ArrayList<>();
       switch (this.accion) {
         case REPROCESAR:								
         case AGREGAR:								
@@ -201,7 +202,6 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           this.ingreso.setIdCliente(this.estimaciones.getEstimacion().getIdCliente());
           this.ingreso.setIdDesarrollo(this.estimaciones.getEstimacion().getIdDesarrollo());
           this.ingreso.setIdContrato(this.estimaciones.getEstimacion().getIdContrato());
-          this.articulos= new ArrayList<>();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -486,10 +486,9 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
 	} // toCadenaOriginal
  
   private Long toClaveCatalogo(EClaveCatalogo tipo, String clave) {
-    Long regresar= null;
-    Map<String, Object> params = null;
+    Long regresar             = null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("clave", clave);      
       Value value= null;
       switch(tipo) {
@@ -525,9 +524,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
   private UISelectEntity toLeyendas(EClaveCatalogo tipo, Long idKey) {
     UISelectEntity regresar   = null;
     List<UISelectEntity> items= null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idTipo", 1);
       switch(tipo) {
         case SERIES:  
@@ -555,10 +553,9 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
   }
 
   private void toReadArticulos() throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     List<Articulo> conceptos   = null;
     try {
-      params = new HashMap<>();
       params.put("idArticuloTipo", 3);
       this.articulos.clear();
       if(this.getFactura()!= null && !this.getFactura().getConceptos().isEmpty()) {

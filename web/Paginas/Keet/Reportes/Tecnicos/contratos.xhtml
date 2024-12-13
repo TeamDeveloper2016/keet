@@ -12,15 +12,15 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'     : {validaciones: 'libre', mascara: 'libre'},
-        'idDesarrollo'  : {validaciones: 'libre', mascara: 'libre'},
-        'clave'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'nombre'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'etapa'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'razonSocial'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'viviendasMayor': {validaciones: 'libre', mascara: 'libre'},
-        'viviendasMenor': {validaciones: 'libre', mascara: 'libre'},
-        'idContratoEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+        idEmpresa     : {validaciones: 'libre', mascara: 'libre'},
+        idDesarrollo  : {validaciones: 'libre', mascara: 'libre'},
+        clave         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        nombre        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        razonSocial   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        idComodin     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        idContratoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       //<![CDATA[
 				function start() {
@@ -66,10 +66,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{keetReportesTecnicosContratos.attrs.clave}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="nombre" value="Nombre:"/>
+              <p:outputLabel for="nombre" value="Centro de costos:"/>
               <p:inputText id="nombre" value="#{keetReportesTecnicosContratos.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="etapa" value="Etapa:"/>
-              <p:inputText id="etapa" value="#{keetReportesTecnicosContratos.attrs.etapa}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="razonSocial" value="Cliente:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetReportesTecnicosContratos.attrs.cliente}" completeMethod="#{keetReportesTecnicosContratos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
@@ -83,11 +81,21 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>
-							<p:outputLabel for="viviendasMenor" value="Viviendas menor a:" title="Viviendas."/>
-              <p:inputNumber id="viviendasMenor" value="#{keetReportesTecnicosContratos.attrs.viviendasMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
-							<p:outputLabel for="viviendasMayor" value="Viviendas mayor a:" title="Viviendas."/>
-              <p:inputNumber id="viviendasMayor" value="#{keetReportesTecnicosContratos.attrs.viviendasMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
             </p:panelGrid>
+            <p:outputLabel for="idComodin" value="Fecha inicio:"/>
+            <p:selectOneMenu id="idComodin" styleClass="janal-wid-100-txt contacto" value="#{keetReportesTecnicosContratos.attrs.idComodin}" converter="javax.faces.Integer">
+              <f:selectItem itemLabel="RECEPCIÓN" itemValue="0"/>								
+              <f:selectItem itemLabel="ACEPTACIÓN" itemValue="1"/>								
+              <f:selectItem itemLabel="ARRANQUE" itemValue="2"/>								
+              <f:selectItem itemLabel="INICIO" itemValue="3"/>								
+              <f:selectItem itemLabel="TERMINO" itemValue="4"/>								
+              <f:selectItem itemLabel="VENCE" itemValue="5"/>								
+              <f:selectItem itemLabel="REGISTRO" itemValue="6"/>								
+            </p:selectOneMenu>
+            <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+            <p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetReportesTecnicosContratos.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+            <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+            <p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetReportesTecnicosContratos.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
 						<p:outputLabel for="idContratoEstatus" value="Estatus:"/>
 						<p:selectOneMenu id="idContratoEstatus" value="#{keetReportesTecnicosContratos.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<f:selectItems value="#{keetReportesTecnicosContratos.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

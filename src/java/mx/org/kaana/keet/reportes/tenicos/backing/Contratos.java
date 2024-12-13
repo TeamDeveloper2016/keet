@@ -2,6 +2,7 @@ package mx.org.kaana.keet.reportes.tenicos.backing;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.nomina.reglas.Egresos;
 import mx.org.kaana.keet.nomina.reglas.Estimados;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -43,7 +45,8 @@ import org.primefaces.model.StreamedContent;
 public class Contratos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-
+  private static final String[] fields= {"recepcion", "aceptacion", "arranque", "inicio", "termino", "vence", "registro"};
+  
   protected Reporte reporte;
   
   @PostConstruct
@@ -54,6 +57,7 @@ public class Contratos extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
+			this.attrs.put("idComodin", 2);
 			this.toLoadEmpresas();
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", "tipoObra");
 			this.attrs.put("tipoObras", tiposObras);
@@ -161,6 +165,7 @@ public class Contratos extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+    String comodin                = "arranque";
 		if(this.attrs.get("idContratoProcess")!= null)
 			sb.append("tc_keet_contratos.id_contrato=").append(this.attrs.get("idContratoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
@@ -189,6 +194,12 @@ public class Contratos extends IBaseFilter implements Serializable {
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idContratoEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)				
 			sb.append("tc_keet_proyectos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(" and ");
+    if(!Cadena.isVacio(this.attrs.get("idComodin")) && (Integer)this.attrs.get("idComodin")>= 0L) 
+      comodin= fields[(Integer)this.attrs.get("idComodin")];
+    if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+      sb.append("(date_format(tc_keet_contratos.").append(comodin).append(", '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (LocalDate)this.attrs.get("fechaInicio"))).append("') and ");	
+    if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+      sb.append("(date_format(tc_keet_contratos.").append(comodin).append(", '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (LocalDate)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

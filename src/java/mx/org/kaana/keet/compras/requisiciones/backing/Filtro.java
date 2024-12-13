@@ -165,10 +165,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // loadCatalog
 	
 	private void loadEmpresas() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -220,12 +219,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	private void loadEjercicios(){		
 		List<UISelectItem> ejercicios= null;
-		List<UISelectItem> semanas   = null;
+		List<UISelectItem> semanas   = new ArrayList<>();
 		try {						
 			ejercicios= UISelect.seleccione("TcKeetGastosDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("ejercicios", ejercicios);
 			this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectItem(ejercicios));
-			semanas= new ArrayList<>();
 			for(int count=0; count<53; count++)
 				semanas.add(new UISelectItem(new Long(count+1), "Semana ".concat(String.valueOf(count+1))));
 			semanas.add(0, new UISelectItem(-1L, "SELECCIONE"));
@@ -245,14 +243,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	// doCompleteArticulo
 	
 	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = null;
-    Map<String, Object> params    = null;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
