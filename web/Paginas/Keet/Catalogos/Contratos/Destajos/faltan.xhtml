@@ -25,6 +25,12 @@
 				font-size: 3.2vw !important;
 				font-weight: bold !important;
 			}
+      .imox-button > .ui-button {
+        transform: scale(0.6);
+      }  
+      .imox-button > ui-button-icon-only {
+        min-width: 20px;
+      }
 		</style>
 	</ui:define> 
   <ui:define name="contenido">    	
@@ -137,7 +143,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="2">
+          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="3">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Lotes asignados a los contratistas/subcontratistas" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -159,18 +165,21 @@
 							</f:facet>
               <h:outputText value="#{row.nombre}" title="#{row.nombre}" style="white-space: nowrap;"/>
             </p:column>  
-            <p:columns headerText="#{column.name}" value="#{keetCatalogosContratosDestajosFaltan.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
+            <p:columns headerText="#{column.name}" value="#{keetCatalogosContratosDestajosFaltan.fields}" var="column" columnIndexVar="colIndex" styleClass="janal-column-center #{column.style}">
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
-              <p:commandLink process="@this" title="Registrar" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}">
-                <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" styleClass="janal-float-left" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
-              </p:commandLink>  
-              <h:outputText value="#{row[column.field]['estatus']}" styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
-              <h:outputText value="#{empty(row[column.field]['titulo'])? '|': row[column.field]['titulo']}" styleClass="#{empty(row[column.field]['titulo'])? 'janal-color-cell': ''}"/>
+              <p:menuButton styleClass="imox-button" disabled="#{empty(row[column.field]['semaforo'])}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}">
+                <p:menuitem value="Registrar 100%" icon="fa fa-paint-brush" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(0, row, column['field'])}" update="destajo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:menuitem value="Registro parcial" icon="fa fa-inr" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(1, row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:menuitem value="Rechazar puntos" icon="fa fa-magic" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(2, row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+              </p:menuButton>
+              <h:outputText value="#{row[column.field]['estatus']}   " styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
+              <h:outputText value="#{empty(row[column.field]['titulo'])? '|': row[column.field]['titulo']}   " styleClass="#{empty(row[column.field]['titulo'])? 'janal-color-cell': ''}"/>
+              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
             </p:columns>            
 						<f:facet name="footer">
-              <p:outputLabel value="[-] Es sin iniciar, [*] Pago parcial" styleClass="janal-color-black janal-font-bold janal-float-left"/>
+              <p:outputLabel value="[rojo] Sin iniciar, [amarillo] Pago parcial y [verde] Pago total" styleClass="janal-color-black janal-font-bold janal-float-left"/>
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosFaltan.model== null? 0: keetCatalogosContratosDestajosFaltan.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>	          

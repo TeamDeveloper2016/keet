@@ -3003,10 +3003,10 @@ from (
               id_nomina
             from                       
               tc_keet_contratos_destajos_proveedores
-           ) tt_estacion_nomina
+           ) as tt_estacion_nomina
            group by
              id_estacion
-         ) tt_destajo_nomina on tc_keet_estaciones.id_estacion= tt_destajo_nomina.id_estacion
+         ) as tt_destajo_nomina on tc_keet_estaciones.id_estacion= tt_destajo_nomina.id_estacion
         left join
           tc_keet_nominas on tc_keet_nominas.id_nomina= tt_destajo_nomina.id_nomina
         left join 
@@ -12083,7 +12083,7 @@ order by
 						from
 							tc_keet_contratos_destajos_proveedores
 						inner join
-							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
+							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor= tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
 						where
 							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
 						union 
@@ -12092,7 +12092,7 @@ order by
 						from 
 							tc_keet_contratos_destajos_contratistas
 						inner join
-							tc_keet_contratos_puntos_contratistas ON tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
+							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista= tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
 						where
 							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
 					)
@@ -12167,7 +12167,7 @@ order by
 					tc_keet_puntos_controles.orden,
 					rechazos.registro,
 					rechazos.observaciones,
-					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
           round((tc_keet_puntos_controles.factor* {importe})/ 100, 1) as importe
 				from
 					tc_keet_puntos_paquetes
@@ -12178,22 +12178,34 @@ order by
 				inner join(
 					select 
 						id_pivote, id_punto_paquete, registro, observaciones, id_usuario
-					from(
-						select
-							convert(concat(9000,tc_keet_contratos_rechazos_proveedores.id_contrato_rechazo_proveedor), unsigned integer) as id_pivote,
-							id_punto_paquete, registro, observaciones, id_usuario
-						from 
-				      tc_keet_contratos_rechazos_proveedores
-						union
-						select 
-							convert(concat(8000,tc_keet_contratos_rechazos_contratistas.id_contrato_rechazo_contratista), unsigned integer) as id_pivote,
-							id_punto_paquete, registro, observaciones, id_usuario
+					from (
+            select
+						  convert(concat(9000, tc_keet_contratos_rechazos_proveedores.id_contrato_rechazo_proveedor), unsigned integer) as id_pivote,
+							tc_keet_contratos_rechazos_proveedores.id_punto_paquete,
+							tc_keet_contratos_rechazos_proveedores.registro,
+							tc_keet_contratos_rechazos_proveedores.observaciones,
+							tc_keet_contratos_rechazos_proveedores.id_usuario       
 						from
-							tc_keet_contratos_rechazos_contratistas
-					) general
+              tc_keet_contratos_rechazos_proveedores       
+						inner join
+						  tc_keet_contratos_destajos_proveedores on tc_keet_contratos_rechazos_proveedores.id_contrato_destajo_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor
+              and tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= {idContratoDestajoProveedor}
+						union
+						select
+							convert(concat(8000, tc_keet_contratos_rechazos_contratistas.id_contrato_rechazo_contratista), unsigned integer) as id_pivote,
+							tc_keet_contratos_rechazos_contratistas.id_punto_paquete,
+							tc_keet_contratos_rechazos_contratistas.registro,
+							tc_keet_contratos_rechazos_contratistas.observaciones,
+							tc_keet_contratos_rechazos_contratistas.id_usuario       
+						from
+							tc_keet_contratos_rechazos_contratistas      
+						inner join
+						  tc_keet_contratos_destajos_contratistas on tc_keet_contratos_rechazos_contratistas.id_contrato_destajo_contratista= tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista
+              and tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= {idContratoDestajoContratista}								
+					) as general
 					group by 
 						id_pivote, id_punto_paquete, registro, observaciones, id_usuario
-				) rechazos on tc_keet_puntos_paquetes.id_punto_paquete = rechazos.id_punto_paquete
+				) as rechazos on tc_keet_puntos_paquetes.id_punto_paquete = rechazos.id_punto_paquete
 				inner join
 					tc_janal_usuarios on rechazos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 

@@ -116,8 +116,16 @@ public class Criterio implements Serializable {
     this.hoy = hoy;
   }
 
+  public void setIdEstacionEstatus(Long idEstacionEstatus) {
+    this.idEstacionEstatus= idEstacionEstatus;
+  }
+
   public Long getIdEstacionEstatus() {
     return idEstacionEstatus;
+  }
+
+  public void setEstatus(String estatus) {
+    this.estatus= estatus;
   }
 
   public String getEstatus() {
@@ -156,6 +164,10 @@ public class Criterio implements Serializable {
     this.datos = datos;
   }
 
+  public void setSemaforo(String semaforo) {
+    this.semaforo= semaforo;
+  }
+  
   public String getSemaforo() {
     return semaforo;
   }

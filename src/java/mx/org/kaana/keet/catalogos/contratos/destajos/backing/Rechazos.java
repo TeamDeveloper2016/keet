@@ -36,21 +36,21 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
   @PostConstruct
   @Override
   protected void init() {		
-    EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
+    EOpcionesResidente opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
+		Long idDesarrollo        = (Long) JsfBase.getFlashAttribute("idDesarrollo");
     try {
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "conceptos": JsfBase.getFlashAttribute("retorno"));		
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("claveEstacion", JsfBase.getFlashAttribute("claveEstacion"));
-			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
+			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto"));
 			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
       this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
 			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
@@ -68,11 +68,12 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 		Entity contratoLote      = null;
 		Map<String, Object>params= new HashMap<>();
 		try {
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
+      Entity item= (Entity)this.attrs.get("seleccionadoPivote");
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(item.toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contratos", contrato);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(item.toString("idContratoLote")));
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
 		} // try
@@ -135,14 +136,14 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			if(this.selecteds.length>= 1) {
 				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)) {
-					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Puntos de revisión", "Se realizó el rechazo de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
 				} // if
 				else
-					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Puntos de revisión", "Ocurrió un error al realizar el rechazo", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Rechazo de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -178,15 +179,18 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     try {						
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
 			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
+			JsfBase.setFlashAttribute("idFigura", (Entity)this.attrs.get("figura"));									
 			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
+			JsfBase.setFlashAttribute("idDesarrolloProcess", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+			JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
 			JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
 			JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
 			JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
-			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
+			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

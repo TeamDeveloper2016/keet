@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -24,6 +25,8 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
+import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
 import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
@@ -34,9 +37,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
@@ -445,7 +446,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
               Codigo concepto= this.model.get(index);
               concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual"), item));
               if(!Objects.equals(lote, anterior)) {
-                this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-col-85"));
+                this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-col-120"));
                 anterior= lote;
               } // if  
             } // if
@@ -522,10 +523,9 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   
 	public String doCancelar() {
     String regresar                   = null;    
-		EOpcionesResidente opcion         = null;		
+		EOpcionesResidente opcion         = ((EOpcionesResidente)this.attrs.get("opcionResidente"));		
 		EOpcionesResidente opcionAdicional= null;		
     try {			
-			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("opcion", opcion);			
 			if(this.attrs.get("opcionAdicional")!= null)
@@ -601,7 +601,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     UISelectEntity figura        = null;
     Parametros comunes           = null;
     boolean isCompleto           = false;
@@ -611,7 +611,6 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
       int index= figuras.indexOf((UISelectEntity) this.attrs.get("figura"));
       if(index>= 0) {
         figura= figuras.get(index);			
-        params = new HashMap<>();  
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         parametros= comunes.getComunes();
         if(isCompleto) {
@@ -686,12 +685,11 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
   }
  
   public void doWhatsup() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     String contratista        = null;
     UISelectEntity figura     = null;
     UISelectEntity semana     = null;  
     try {      
-      params = new HashMap<>();      
       List<UISelectEntity> figuras= (List<UISelectEntity>)this.attrs.get("figuras");
       int index= figuras.indexOf((UISelectEntity)this.attrs.get("figura"));
       if(index>= 0) {
@@ -760,7 +758,23 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     return !row.getCodigo().startsWith("#");
   }
  
-  public String doDetalle(Codigo row, String key) {
+  public String doDetalle(Integer option, Codigo row, String key) {
+    String regresar= null;
+    switch(option) {
+      case 0: // REGISTRAR AL 100% LOS CONCEPTOS
+        regresar= this.toRegistrar(row, key);
+        break;
+      case 1: // IR LA OPCION NORMAL QUE SE TIENE
+        regresar= this.toDetalle(row, key);
+        break; 
+      case 2: // IR LA PAGINA DE RECHAZAR LOS CONCEPTOS
+        regresar= this.toRechazos(row, key);
+        break;
+    } // switch
+    return regresar;
+  }
+  
+  private String toDetalle(Codigo row, String key) {
     String regresar             = null;    		
 		List<UISelectEntity> figuras= null;
 		UISelectEntity figura       = null;
@@ -790,6 +804,109 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
       } // if
       else 
         JsfBase.addMessage("Este concepto ya esta pagado, favor de verificarlo !", ETipoMensaje.ALERTA);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  }
+ 
+  private String toRegistrar(Codigo row, String key) {
+		List<UISelectEntity> figuras= null;
+		UISelectEntity figura       = null;
+    String regresar             = null;    		
+    Transaccion transaccion     = null;		
+		Map<String, Object>params   = new HashMap<>();
+    try {      			
+      Criterio criterio= (Criterio)row.get(key);   
+      if(Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.INICIAR.getKey()) || Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.EN_PROCESO.getKey())) {
+        params.put("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
+        params.put("idPuntoGrupo", criterio.getDatos().toLong("idPuntoGrupo"));
+        params.put("idEstacion", criterio.getDatos().toLong("idEstacion"));
+        params.put("importe", criterio.getDatos().toDouble("importe"));
+        params.put("anticipo", criterio.getDatos().toDouble("retencion"));
+        List<Entity> puntos=(List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRevision", params);
+        if(!Objects.equals(puntos, null) && puntos.size()> 0) {
+          figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+          figura = figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
+          transaccion= new Transaccion(this.toLoadRevision(figura, criterio, puntos), EEstacionesEstatus.TERMINADO.getKey());
+          if(transaccion.ejecutar(EAccion.PROCESAR)) {
+            criterio.setEstatus("TERMINADO");
+            criterio.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+            criterio.setSemaforo("circulo-verde.png");
+            JsfBase.addMessage("Puntos de revisión", "Se registraron de forma correcta los puntos de revision", ETipoMensaje.INFORMACION);
+          } // IF  
+          else
+            JsfBase.addMessage("Puntos de revisión", "Ocurrió un error al registrar los puntos de revision", ETipoMensaje.ERROR);
+        } // if
+      } // if
+      else 
+        JsfBase.addMessage("Este concepto ya esta pagado, favor de verificarlo !", ETipoMensaje.ALERTA);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {      
+      Methods.clean(params);
+    } // finally			
+    return regresar;
+  }
+  
+	private Revision toLoadRevision(Entity figura, Criterio criterio, List<Entity> puntos) {
+		Revision regresar= new Revision();
+		Long idFigura    = -1L;
+		try {
+			idFigura= figura.toLong("tipo").equals(1L)? criterio.getDatos().toLong("idContratoLoteContratista"): criterio.getDatos().toLong("idContratoLoteProveedor");
+			regresar.setIdFigura(idFigura);
+			regresar.setTipo(figura.toLong("tipo"));
+			regresar.setIdEstacion(criterio.getDatos().toLong("idEstacion"));
+      // AQUI VAN LOS PUNTOS QUE FUERON MARCADOS CON SUS PORCENTAJES
+			regresar.setPuntosRevision(puntos.toArray(new Entity[0]));
+			regresar.setLatitud("21.890563"); 
+			regresar.setLongitud("-102.252030");
+			regresar.setMetros(0D);
+			regresar.setIdContratoLote(criterio.getDatos().toLong("idContratoLote"));
+			regresar.setClave(criterio.getDatos().toString("clave"));
+			regresar.setIdDepartamento(((UISelectEntity)this.attrs.get("especialidad")).getKey());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} 
+  
+  private String toRechazos(Codigo row, String key) {
+    String regresar             = null;    		
+		List<UISelectEntity> figuras= null;
+		UISelectEntity figura       = null;
+    try {			
+      Criterio criterio= (Criterio)row.get(key);
+      if(Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.EN_PROCESO.getKey()) || Objects.equals(criterio.getIdEstacionEstatus(), EEstacionesEstatus.TERMINADO.getKey())) {
+        figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+        figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
+        JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
+        JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
+        JsfBase.setFlashAttribute("figura", figura);									
+        JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
+        JsfBase.setFlashAttribute("idDepartamento", ((UISelectEntity)this.attrs.get("especialidad")).getKey());
+        JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
+        JsfBase.setFlashAttribute("georreferencia", new Point(21.890563, -102.252030));				
+        JsfBase.setFlashAttribute("concepto", criterio.getDatos());
+        JsfBase.setFlashAttribute("seleccionado", criterio.getDatos());
+        JsfBase.setFlashAttribute("claveEstacion", criterio.getDatos().toString("clave"));
+        JsfBase.setFlashAttribute("total", criterio.getDatos().toDouble("importe"));
+        JsfBase.setFlashAttribute("anticipo", criterio.getDatos().toDouble("retencion"));
+        JsfBase.setFlashAttribute("nombreConcepto", "");			
+        JsfBase.setFlashAttribute("semana", this.attrs.get("semana"));			
+        JsfBase.setFlashAttribute("contrato", this.attrs.get("contrato"));			
+        JsfBase.setFlashAttribute("manzana", this.attrs.get("manzana"));	
+        JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/faltan");			
+        regresar= "rechazos".concat(Constantes.REDIRECIONAR);			
+      } // if
+      else 
+        JsfBase.addMessage("Este concepto NO tiene puntos de revision pagados, favor de verificarlo !", ETipoMensaje.ALERTA);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

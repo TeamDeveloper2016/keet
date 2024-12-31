@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -115,6 +116,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
   public void doLoad() {
 		Map<String, Object>params= this.toPrepare();
     List<Columna> columns    = new ArrayList<>();				
+		Entity figura            = (Entity)this.attrs.get("figura");
+		Entity seleccionado      = (Entity)this.attrs.get("seleccionadoPivote");
     try {      			
       params.put("importe", (Double)this.attrs.get("importe"));
       params.put("anticipo", (Double)this.attrs.get("anticipo"));
@@ -126,6 +129,12 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("totalRegistros", DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRevision", params).size());
 			UIBackingUtilities.resetDataTable();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));                  
+      params.put("idContratoDestajoProveedor", -1L);
+      params.put("idContratoDestajoContratista", -1L);
+			if(Objects.equals(figura.toLong("tipo"), 1L))
+        params.put("idContratoDestajoContratista", seleccionado.toLong("idContratoLoteContratista"));
+      else          
+        params.put("idContratoDestajoProveedor", seleccionado.toLong("idContratoLoteProveedor"));
 	    this.lazyModelRechazos= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevisionRechazos", params, columns);			
 			UIBackingUtilities.resetDataTable("tablaRechazos");
     } // try
@@ -172,14 +181,14 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			if(this.selecteds.length> 0) {				
 				transaccion= new Transaccion(this.loadRevision(), this.selecteds.length== (Integer)this.attrs.get("totalRegistros")? EEstacionesEstatus.TERMINADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)) {
-					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Puntos de revisión", "Se registraron los puntos de revision de forma correcta", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
 				} // if
 				else
-					JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Puntos de revisión", "Ocurrió un error al registrar los puntos de revision", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Captura de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
