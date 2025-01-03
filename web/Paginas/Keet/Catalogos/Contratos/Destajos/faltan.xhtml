@@ -10,6 +10,31 @@
   <ui:param name="titulo" value="Destajos realizados hasta el momento" />
   <ui:define name="librerias">
     <script type="text/javascript">
+			$(document).ready(function() {
+        controlContextMenu();
+      });  
+      
+      function controlContextMenu() {
+        $("img.janal-img-event").click(function(o) {
+          var name= $(this).parent()[0].id;
+          o.preventDefault();
+          o.stopPropagation();
+          PrimeFaces.ab(
+            {s: name, f: "datos", p: name,
+            onst:function(cfg){return janal.bloquear();},
+            onco:function(xhr, status, args, data) {
+              janal.desbloquear();
+              PF('optionsMenu').jq.css({
+                left: o.pageX,
+                top : o.pageY,
+                "z-index": ++PrimeFaces.zindex
+              });
+              $('#optionsMenu').show();
+            }
+          });          
+        });
+      }
+      
       function movePage(link) {
         $('#janal-move-page').attr('href', link);
         setTimeout("$('a.janal-move-element')[0].click();", 500);
@@ -169,20 +194,22 @@
               <f:facet name="header">
                 <h:outputText value="#{column.name}"/>
               </f:facet>
-              <p:menuButton styleClass="imox-button" disabled="#{empty(row[column.field]['semaforo'])}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}">
-                <p:menuitem value="Registrar 100%" icon="fa fa-paint-brush" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(0, row, column['field'])}" update="destajo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <p:menuitem value="Registro parcial" icon="fa fa-inr" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(1, row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <p:menuitem value="Rechazar puntos" icon="fa fa-magic" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(2, row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-              </p:menuButton>
+              <p:commandLink id="semaforo" process="@this" title="Registrar" actionListener="#{keetCatalogosContratosDestajosFaltan.doSemaforo(row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row) and not empty(row[column.field]['semaforo'])}">
+                <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row) and not empty(row[column.field]['semaforo'])}" styleClass="janal-img-event"/>
+              </p:commandLink>  
               <h:outputText value="#{row[column.field]['estatus']}   " styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
               <h:outputText value="#{empty(row[column.field]['titulo'])? '|': row[column.field]['titulo']}   " styleClass="#{empty(row[column.field]['titulo'])? 'janal-color-cell': ''}"/>
-              <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
             </p:columns>            
 						<f:facet name="footer">
               <p:outputLabel value="[rojo] Sin iniciar, [amarillo] Pago parcial y [verde] Pago total" styleClass="janal-color-black janal-font-bold janal-float-left"/>
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosFaltan.model== null? 0: keetCatalogosContratosDestajosFaltan.model.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>	          
+          <p:contextMenu id="optionsMenu" widgetVar="optionsMenu" for="panelBusqueda:mientras">
+            <p:menuitem value="Registrar 100%" icon="fa fa-paint-brush" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(0)}" update="destajo" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); controlContextMenu()"/>
+            <p:menuitem value="Registro parcial" icon="fa fa-inr" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(1)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+            <p:menuitem value="Rechazar puntos" icon="fa fa-magic" action="#{keetCatalogosContratosDestajosFaltan.doDetalle(2)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+          </p:contextMenu> 
 					<p:spacer height="3px"/>
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" reflow="true" value="#{keetCatalogosContratosDestajosFaltan.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFaltan.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFaltan.attrs.destajos? '': 'none'}">
 						<f:facet name="header">

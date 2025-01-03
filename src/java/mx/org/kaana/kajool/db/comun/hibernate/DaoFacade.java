@@ -525,6 +525,18 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
   }
 
   @Override
+  public Long deleteAll(String idXml, Map params) throws Exception {
+    Long regresa = -1L;
+    try {
+      regresa = super.deleteAll(params, idXml, this.hbmClass);
+    } // try
+		catch (Exception e) {
+      throw e;
+    } // catch
+    return regresa;
+  }
+  
+  @Override
   public Long deleteAll(Session session, Map params) throws Exception {
     Long regresa = -1L;
     try {

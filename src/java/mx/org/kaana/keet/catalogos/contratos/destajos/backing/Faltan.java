@@ -502,7 +502,7 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     finally {
       Methods.clean(params);
     } // finally				
-  } // doPartidas	
+  } 
   
   public String toTokenClave() {
     StringBuilder regresar = new StringBuilder();
@@ -758,17 +758,17 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
     return !row.getCodigo().startsWith("#");
   }
  
-  public String doDetalle(Integer option, Codigo row, String key) {
+  public String doDetalle(Integer option) {
     String regresar= null;
     switch(option) {
       case 0: // REGISTRAR AL 100% LOS CONCEPTOS
-        regresar= this.toRegistrar(row, key);
+        regresar= this.toRegistrar((Codigo)this.attrs.get("itemRow"), (String)this.attrs.get("itemKey"));
         break;
       case 1: // IR LA OPCION NORMAL QUE SE TIENE
-        regresar= this.toDetalle(row, key);
+        regresar= this.toDetalle((Codigo)this.attrs.get("itemRow"), (String)this.attrs.get("itemKey"));
         break; 
       case 2: // IR LA PAGINA DE RECHAZAR LOS CONCEPTOS
-        regresar= this.toRechazos(row, key);
+        regresar= this.toRechazos((Codigo)this.attrs.get("itemRow"), (String)this.attrs.get("itemKey"));
         break;
     } // switch
     return regresar;
@@ -913,6 +913,11 @@ public class Faltan extends IBaseReporteDestajos implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
+  }
+ 
+  public void doSemaforo(Codigo row, String key) {
+    this.attrs.put("itemRow", row);
+    this.attrs.put("itemKey", key);
   }
   
 }

@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.xml.Dml;
 
-import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
@@ -104,6 +103,8 @@ public abstract class IBaseDao<T extends IBaseDto> {
 
   public abstract Long deleteAll(Map params) throws Exception;
 
+  public abstract Long deleteAll(String idXml, Map params) throws Exception;
+  
   public abstract Long deleteAll(Session session, Map params) throws Exception;
  
 	public abstract Long deleteAll(Session session, String idXml, Map params) throws Exception;
