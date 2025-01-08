@@ -259,7 +259,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	} 
 	
 	public void doLoadContratos() {
@@ -268,7 +268,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
       // A PARTIR DEL 1 DE OCTUBRE SE PODRA HACER VALIDACIONES DE QUE LOS CONTRATOS ESTEN COMPLETOS PARA DEJARLOS COMO ACTIVOS
 			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
-      params.put(Constantes.SQL_CONDICION,  "tc_keet_contratos.id_contrato_estatus= "+ EContratosEstatus.ACTIVO.getKey());
+      // SE SOLICITO QUE SE PERMITAN AGREGAR ORDENES A TODOS LOS CONTRATOS  08/01/2025
+      // params.put(Constantes.SQL_CONDICION,  "tc_keet_contratos.id_contrato_estatus= "+ EContratosEstatus.ACTIVO.getKey());
+      params.put(Constantes.SQL_CONDICION,  Constantes.SQL_VERDADERO);
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(!contratos.isEmpty()) 
