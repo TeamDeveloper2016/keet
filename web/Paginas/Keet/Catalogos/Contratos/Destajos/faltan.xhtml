@@ -97,7 +97,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 								<p:outputLabel for="departamento" value="Departamento:"/>
                 <p:selectOneMenu id="departamento" value="#{keetCatalogosContratosDestajosFaltan.attrs.especialidad}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadFiguras}" update="contratista lotes tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadFiguras}" update="contratista lotes tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes(); controlContextMenu();"/>
 									<f:selectItems value="#{keetCatalogosContratosDestajosFaltan.attrs.especialidades}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column headerText="Departamento">
                     <h:outputText value="#{item.nombre}"/>
@@ -106,7 +106,7 @@
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFaltan.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-										<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadCasas}" update="tabla mientras proveedor persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
+										<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadCasas}" update="tabla mientras proveedor persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes(); controlContextMenu();"/>
 										<f:selectItems value="#{keetCatalogosContratosDestajosFaltan.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>									
 										<p:column headerText="Puesto">
 											<h:outputText value="#{item.puesto}"/>
@@ -125,7 +125,7 @@
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                   <p:outputLabel for="contratos" value="Contratos:"/>
                   <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosFaltan.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadManzanas}" update="tabla mientras manzanas departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadManzanas(); reloadContratista(); reloadLotes();"/>
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadManzanas}" update="tabla mientras manzanas departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadManzanas(); reloadContratista(); reloadLotes(); controlContextMenu();"/>
                     <f:selectItems value="#{keetCatalogosContratosDestajosFaltan.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                     <p:column headerText="Clave">
                       <h:outputText value="#{item.clave}"/>
@@ -144,7 +144,7 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100" style="display: none">
                 <p:outputLabel for="manzanas" value="Manzanas:"/>
                 <p:selectOneMenu id="manzanas" value="#{keetCatalogosContratosDestajosFaltan.attrs.manzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadDepartamentos}" update="tabla mientras departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes();"/>
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoadDepartamentos}" update="tabla mientras departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes(); controlContextMenu();"/>
                   <f:selectItems value="#{keetCatalogosContratosDestajosFaltan.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.manzana or element.manzana eq ''? '': '|'} #{element.manzana}"/>
                   <p:column headerText="Contato">
                     <h:outputText value="#{item.nombre}"/>
@@ -158,7 +158,7 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100" style="display: none">
                 <p:outputLabel for="lotes" value="Lotes:"/>
                 <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosDestajosFaltan.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reload();"/>
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFaltan.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reload(); controlContextMenu();"/>
                   <f:selectItems value="#{keetCatalogosContratosDestajosFaltan.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
                   <p:column headerText="Lote">
                     <h:outputText value="#{item.descripcionLote}"/>
@@ -168,7 +168,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="3">
+          <p:dataTable lazy="false" id="destajo" widgetVar="kajoolResumen" var="row" value="#{keetCatalogosContratosDestajosFaltan.model}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="200" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosFaltan.model.size() gt 200}" rowIndexVar="index" paginatorPosition="bottom" rowKey="#{row.id}" rowStyleClass="#{keetCatalogosContratosDestajosFaltan.doColor(row)}" stickyHeader="false" stickyTopAt=".janal-header-page" scrollable="true" scrollWidth="99%" scrollHeight="400" frozenColumns="2">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Lotes asignados a los contratistas/subcontratistas" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
@@ -184,7 +184,7 @@
 							</f:facet>
               <h:outputText value="#{row.codigo}" title="#{row.nombre}"/>
             </p:column>  
-            <p:column headerText="Nombre" styleClass="janal-column-left MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-col-180': 'janal-col-240'}">
+            <p:column headerText="Nombre" styleClass="janal-column-left MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-col-140': 'janal-col-240'}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
@@ -195,7 +195,7 @@
                 <h:outputText value="#{column.name}"/>
               </f:facet>
               <p:commandLink id="semaforo" process="@this" title="Registrar" actionListener="#{keetCatalogosContratosDestajosFaltan.doSemaforo(row, column['field'])}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row) and not empty(row[column.field]['semaforo'])}">
-                <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row) and not empty(row[column.field]['semaforo'])}" styleClass="janal-img-event"/>
+                <h:graphicImage library="janal" name="icon/semaforos/#{row[column.field]['semaforo']}" title="#{row[column.field]['semana']}" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row) and not empty(row[column.field]['semaforo'])}" styleClass="janal-img-event" height="13px"/>
               </p:commandLink>  
               <h:outputText value="#{row[column.field]['estatus']}   " styleClass="janal-display-none" rendered="#{keetCatalogosContratosDestajosFaltan.isConcepto(row)}"/>
               <h:outputText value="#{empty(row[column.field]['titulo'])? '|': row[column.field]['titulo']}   " styleClass="#{empty(row[column.field]['titulo'])? 'janal-color-cell': ''}"/>
