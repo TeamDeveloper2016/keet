@@ -8811,6 +8811,7 @@ select
   tc_keet_contratos.id_contrato as id_key,
   tc_mantic_clientes.id_cliente,
   tc_keet_desarrollos.id_desarrollo,
+  (tc_keet_contratos.id_contrato_estatus* 3) as id_estatus,
   tc_mantic_empresas.nombre as empresa,  
   tc_keet_desarrollos.nombres as desarrollo,
   tc_mantic_clientes.razon_social,
@@ -8821,7 +8822,7 @@ select
 from
   tc_keet_contratos
 inner join
-  tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
+  tc_keet_contratos_estatus on tc_keet_contratos.id_contrato_estatus= tc_keet_contratos_estatus.id_contrato_estatus
 inner join
   tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 inner join

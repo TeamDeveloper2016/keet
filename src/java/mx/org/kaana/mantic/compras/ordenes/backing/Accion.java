@@ -920,7 +920,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   	OrdenCompraProcess orden= null;
     String todos            = null; 
     StringBuilder sb        = new StringBuilder();
-    try {			
+		UISelectEntity contrato = null;
+		List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratos");
+		try {
+      int index= contratos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkContrato());
+      if(index>= 0) 
+			  contrato= contratos.get(index);
 			// this.getAdminOrden().toCheckTotales();
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
@@ -945,13 +950,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 //          sb.append(sb.length()== 0? "": ",").append(todos);
 //      } // if
 //      else 
-        sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckPartidas(orden.getArticulos()));
+//        sb.append(((OrdenCompra)this.getAdminOrden().getOrden()).toCheckPartidas(orden.getArticulos()));
       // FALTA VALIDAR AQUELLOS ARTICULOS QUE NO CORRESPONDE A NINGUN LOTE
-      if(sb.length()> 0) {
-        // sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
-        sb.insert(0, "janal.show([").append("]);");
+//      if(sb.length()> 0) {
+//        // sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: 'SE SUGIERE CAMBIAR DE ORDINARIA A OTRO TIPO'},").append("]);");
+//        sb.insert(0, "janal.show([").append("]);");
+//        UIBackingUtilities.execute(sb.toString()); 
+//        JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
+//      } // if
+      if( !Objects.equals(contrato, null) && 
+          Objects.equals(((OrdenCompra)this.getAdminOrden().getOrden()).getIdTipoOrden(), 1L) && 
+          (Objects.equals(contrato.toLong("idEstatus"), 30L) || contrato.toString("nombre").contains("GENERAL")) ) {
+        sb.insert(0, "janal.show([{summary: 'Orden compra:', detail: ' Se sugiere cambiar el tipo de orden de compra'}]);");
         UIBackingUtilities.execute(sb.toString()); 
-        JsfBase.addMessage("Existen articulos con errores en la orden de compra !", ETipoMensaje.ALERTA);
       } // if
       else {
   			transaccion= new Transaccion(orden);

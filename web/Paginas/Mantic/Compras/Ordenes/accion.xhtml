@@ -208,6 +208,12 @@
 									<p:column styleClass="janal-column-right" headerText="No. viviendas">
 										<p:outputLabel value="#{list.noViviendas}"/>
 									</p:column>   
+									<p:column headerText="Estatus">
+										<p:outputLabel value="#{list.estatus}"/>
+									</p:column>   
+									<p:column headerText="Estatus">
+										<p:outputLabel value="#{list.idEstatus}"/>
+									</p:column>   
 								</p:selectOneMenu>	
 								<p:outputLabel for="lote" value="Lotes:"/>							
                 <p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" converter="janal.convertidor.Entity" label="Ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-100-txt" multiple="true" onchange="loadArtsLotes();" panelStyleClass="janal-wid-90" >
