@@ -63,7 +63,7 @@ public class Apertura implements Job, Serializable {
             LOG.error("La nómina se corrio de forma correcta [".concat(ultima.toString("nomina")).concat("] !"));
         } // if  
         else
-          LOG.error("La nomina no tiene el estatus correcto [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
+          LOG.error("La nomina NO tiene el estatus correcto [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
         LOG.error("No aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));

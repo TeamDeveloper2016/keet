@@ -121,6 +121,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		this.nomina= nomina;
 	}
 
+	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar, String realPath, Long idEmpresaPersona) {
+		this(nomina.getIdNomina(), autentifica, idEmpresaPersona, -1L, idNotificar, realPath, Boolean.TRUE);
+		this.nomina= nomina;
+	}
+
+	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar, Long idProveedor, String realPath) {
+		this(nomina.getIdNomina(), autentifica, -1L, idProveedor, idNotificar, realPath, Boolean.TRUE);
+		this.nomina= nomina;
+	}
+
 	public Transaccion(Long idNomina, Long idEmpresaPersona, Autentifica autentifica) {
 		this(idNomina, autentifica, idEmpresaPersona, -1L, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE);
 	}
@@ -741,7 +751,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		} // finally
 	}
 
-	private void toAddNewNomina(Session sesion) throws Exception {
+	protected void toAddNewNomina(Session sesion) throws Exception {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			if(this.nomina.getIdTipoNomina()== 1L) {
@@ -1117,7 +1127,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     return regresar;
   } // toReporte 	  
   
-  private void notificarControl(Session sesion) throws Exception {
+  protected void notificarControl(Session sesion) throws Exception {
     List<Columna> columns           = new ArrayList<>();		
     Map<String, Object> params      = new HashMap<>();
     Map<String, Object> residentes  = new HashMap<>();
@@ -1559,7 +1569,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     return regresar;
   } 
 
-  private void notificarResumenDestajos(Session sesion) throws Exception {
+  protected void notificarResumenDestajos(Session sesion) throws Exception {
     List<Columna> columns           = new ArrayList<>();		
     Map<String, Object> params      = new HashMap<>();
     Reporte jasper                  = null; 

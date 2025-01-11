@@ -17,16 +17,18 @@ import org.hibernate.Session;
 
 public class Puente extends Transaccion {
 
-	public Puente(TcKeetNominasDto nomina, Nomina calculos, Long idNomina, Long idEmpresaPersona, Autentifica autentifica) {
-		super(idNomina, idEmpresaPersona, autentifica);
-    this.nomina  = nomina;
+	public Puente(TcKeetNominasDto nomina, Nomina calculos, Long idEmpresaPersona, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico) {
+		super(nomina, autentifica, idNotificar, realPath, idEmpresaPersona);
     this.calculos= calculos;
 	}
 	
-	public Puente(TcKeetNominasDto nomina, Factura factura, Long idNomina, Long idProveedor, Autentifica autentifica) {
-		super(idNomina, autentifica, idProveedor);
-    this.nomina = nomina;
+	public Puente(TcKeetNominasDto nomina, Factura factura, Long idProveedor, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico) {
+    super(nomina, autentifica, idNotificar, idProveedor, realPath);
     this.factura= factura;
+	}
+  
+	public Puente(TcKeetNominasDto nomina, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico) {
+    super(nomina, autentifica, idNotificar, realPath);
 	}
   
 	@Override
@@ -41,6 +43,11 @@ public class Puente extends Transaccion {
 				case PROVEEDOR:
           this.factura.setSesion(sesion);
 					this.proveedor(sesion);
+					break;
+				case NOTIFICAR:
+          this.notificarResumenDestajos(sesion);
+          this.notificarControl(sesion);
+          this.toAddNewNomina(sesion);
 					break;
       } // switch
 		} // try

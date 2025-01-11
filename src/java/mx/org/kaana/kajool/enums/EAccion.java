@@ -27,7 +27,8 @@ public enum EAccion {
   TRANSFORMACION        ("Completo",     "icono-modificar",    "completó"),
 	RESTAURAR             ("Restaurar",    "icono-procesar",     "restauró"),
 	EMPLEADO              ("Empleado",     "icono-procesar",     "empleado"),
-	PROVEEDOR             ("Proveedor",    "icono-procesar",     "proveedor");
+	PROVEEDOR             ("Proveedor",    "icono-procesar",     "proveedor"),
+	NOTIFICAR             ("Notificar",    "icono-procesar",     "noticadó");
 
   private String name;
   private String icon;
