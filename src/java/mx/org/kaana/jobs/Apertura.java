@@ -87,8 +87,8 @@ public class Apertura implements Job, Serializable {
   } // toLoadUser
   
   public static void main(String ... args) throws JobExecutionException {
-    Apertura apertura= new Apertura();
-    apertura.execute(null);
+    // Apertura apertura= new Apertura();
+    // apertura.execute(null);
   }
   
 }
