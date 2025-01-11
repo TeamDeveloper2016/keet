@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
+import mx.org.kaana.keet.nomina.reglas.Calculos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -89,7 +90,23 @@ public class Accion extends IBaseFilter implements Serializable {
 	public String doCancelar() {   
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
-	
+
+	public void doCalcular() {
+		Calculos calculos= null;
+    Long idNomina       = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
+		try {		
+ 			calculos= new Calculos(idNomina, JsfBase.getAutentifica());
+			if(calculos.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} 
+  
 	public void doAceptar() {
 		Transaccion transaccion= null;
     TcKeetNominasDto nomina= null;

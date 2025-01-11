@@ -517,12 +517,11 @@ public final class Cadena {
     if (start < name.length() - 1) {
       for (int x = start; x < name.length(); x++) {
         if (name.charAt(x) != '_' && name.charAt(x) != ' ') {
-          if (toUpper) {
+          if (toUpper) 
             regresar.append(Character.toUpperCase(name.charAt(x)));
-          } else {
+          else 
             regresar.append(Character.toLowerCase(name.charAt(x)));
-          }
-        }
+        } // if
         toUpper = name.charAt(x) == '_' || name.charAt(x) == ' ';
       } // for x
     } // if
@@ -553,9 +552,8 @@ public final class Cadena {
     int count = 0;
     for (int x = 0; x < name.length(); x++) {
       if (name.charAt(x) == '_') {
-        if (count > 1) {
+        if (count > 1) 
           regresar.append(name.charAt(x));
-        }
         count = 0;
       } // if
       else {

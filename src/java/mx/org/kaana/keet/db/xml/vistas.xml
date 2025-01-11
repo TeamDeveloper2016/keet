@@ -7529,6 +7529,45 @@ order by
 					tr_mantic_empresa_personal.id_empresa, 
           tr_mantic_empresa_personal.id_empresa_persona
 			</select>
+			<select id="general">
+select
+  0 as es_empleado,
+  tr_mantic_empresa_personal.id_empresa_persona as id_pivote,
+  tr_mantic_empresa_personal.clave,
+  tr_mantic_empresa_personal.sueldo_semanal,
+  0 as fondo_garantia
+from
+  tr_mantic_empresa_personal
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_personas.id_tipo_persona!= 1
+  and tc_mantic_personas.id_tipo_persona!= 2
+  and {condicion}
+group by
+  tr_mantic_empresa_personal.id_empresa_persona
+union all
+select
+  1 as es_empleado,
+  tc_keet_contratos_lotes_proveedores.id_proveedor as id_pivote,
+  tc_mantic_proveedores.clave,
+  0 as sueldo_semanal,
+  tc_mantic_proveedores.fondo_garantia
+from
+  tc_keet_contratos_destajos_proveedores
+inner join
+  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+inner join
+  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+where
+  tc_mantic_proveedores.id_empresa in ({sucursales})
+  and (tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina})
+  and tc_keet_contratos_destajos_proveedores.costo> 0
+group by
+  tc_mantic_proveedores.id_proveedor  
+			</select>
 			<select id="algunos">
         select
 					tr_mantic_empresa_personal.id_empresa_persona,

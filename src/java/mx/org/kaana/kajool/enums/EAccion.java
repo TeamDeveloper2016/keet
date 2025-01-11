@@ -25,8 +25,9 @@ public enum EAccion {
   DESTRANSFORMACION     ("Eliminar",     "icono-eliminar",     "elimino"),
   DEPURAR               ("Depurar",      "icono-procesar",     "depuró"),
   TRANSFORMACION        ("Completo",     "icono-modificar",    "completó"),
-	RESTAURAR             ("Restaurar",    "icono-procesar",     "restauró");
-	
+	RESTAURAR             ("Restaurar",    "icono-procesar",     "restauró"),
+	EMPLEADO              ("Empleado",     "icono-procesar",     "empleado"),
+	PROVEEDOR             ("Proveedor",    "icono-procesar",     "proveedor");
 
   private String name;
   private String icon;

@@ -4538,12 +4538,12 @@ group by
   tc_keet_nominas_proveedores.id_nomina		
 			</select>
 			<delete id="nomina">
-				delete 
-				  tc_keet_nominas_proveedores 
-			  from 	
-			    tc_keet_nominas_proveedores 
-				where 
-				  id_nomina= {idNomina}				
+delete 
+  tc_keet_nominas_proveedores 
+from 	
+  tc_keet_nominas_proveedores 
+where 
+  id_nomina= {idNomina}				
 			</delete>
 			<delete id="proveedor">
 				delete 
@@ -4573,16 +4573,16 @@ group by
           id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = '{lote}' and id_contrato_lote= {idContratoLote}
       </select>
 			<delete id="nomina">
-				delete
-				  tc_keet_nominas_rubros 
-				from 
-				  tc_keet_nominas_rubros 
-			  inner join
-				  tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor= tc_keet_nominas_proveedores.id_nomina_proveedor
-			  inner join
-				  tc_keet_nominas on tc_keet_nominas_proveedores.id_nomina= tc_keet_nominas.id_nomina
-				where 
-				  tc_keet_nominas.id_nomina= {idNomina}				
+delete
+  tc_keet_nominas_rubros 
+from 
+  tc_keet_nominas_rubros 
+inner join
+  tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor= tc_keet_nominas_proveedores.id_nomina_proveedor
+inner join
+  tc_keet_nominas on tc_keet_nominas_proveedores.id_nomina= tc_keet_nominas.id_nomina
+where 
+  tc_keet_nominas.id_nomina= {idNomina}				
 			</delete>
 			<delete id="proveedor">
 				delete

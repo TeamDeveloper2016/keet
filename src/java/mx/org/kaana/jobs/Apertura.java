@@ -19,7 +19,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
-import mx.org.kaana.keet.nomina.reglas.Transaccion;
+import mx.org.kaana.keet.nomina.reglas.Calculos;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -32,12 +32,12 @@ import org.quartz.JobExecutionException;
 
 public class Apertura implements Job, Serializable {
 
-	private static final Log LOG              =LogFactory.getLog(Apertura.class);
-	private static final long serialVersionUID=7505746848602636876L;
+	private static final Log LOG              = LogFactory.getLog(Apertura.class);
+	private static final long serialVersionUID= 7505746848602636876L;
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
-		Transaccion transaccion   = null;
+		Calculos calculos         = null;
     Map<String, Object> params= new HashMap<>();    
 		try {
       Boolean process= Boolean.FALSE;      
@@ -57,16 +57,13 @@ public class Apertura implements Job, Serializable {
         Entity ultima= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
         if(ultima!= null && !ultima.isEmpty() && Objects.equals(ultima.toLong("idNominaEstatus"), ENominaEstatus.INICIADA.getIdKey())) {
           Autentifica autentifica= this.toLoadUser();
-          TcKeetNominasDto nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, ultima.toLong("idNomina"));
-          nomina.setIdCompleta(1L);
-          nomina.setObservaciones("PROCESO DE APERTURA AUTOMATICO DE NÓMINA");
           String path= this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().substring(0, this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().indexOf("/WEB-INF/"));
-          transaccion= new Transaccion(nomina, autentifica, new String[] {"1", "2", "4"}, path);
-          if(transaccion.ejecutar(EAccion.AGREGAR)) 
+          calculos= new Calculos(ultima.toLong("idNomina"), autentifica, new String[] {"1", "2", "4"}, path, Boolean.TRUE);
+          if(calculos.ejecutar(EAccion.PROCESAR)) 
             LOG.error("La nómina se corrio de forma correcta [".concat(ultima.toString("nomina")).concat("] !"));
         } // if  
         else
-          LOG.error("La nomina no tiene el estatus para correrse [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
+          LOG.error("La nomina no tiene el estatus correcto [".concat(ultima!= null && !ultima.isEmpty()? ultima.toString("nomina"): "1900-00").concat("] !"));
       } // if  
       else
         LOG.error("No aplica para este servidor [".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")).concat("]"));

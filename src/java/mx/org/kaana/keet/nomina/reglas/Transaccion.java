@@ -90,10 +90,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	private Autentifica autentifica;
 	private Long idEmpresaPersona;
 	private Long idProveedor;
-	private String messageError;
-	private TcKeetNominasDto nomina;
-	private Nomina calculos;
-	private Factura factura;
+	protected String messageError;
+	protected TcKeetNominasDto nomina;
+	protected Nomina calculos;
+	protected Factura factura;
 	private TcKeetNominasBitacoraDto bitacora;
 	private Long idFigura;
 	private Long idTipoFigura;
@@ -176,20 +176,20 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= true;
+		boolean regresar= Boolean.TRUE;
     try {
-      this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
+      this.messageError= "Ocurrio un error en el proceso de calculo de la nómina";
 			if(!accion.equals(EAccion.COMPLEMENTAR)) {
 				if(this.idNomina== -1L) {
 					DaoFactory.getInstance().insert(sesion, this.nomina);
 					this.idNomina= this.nomina.getIdNomina();
 				} // if
 				else
-          if(this.nomina!=null && this.nomina.isValid())
+          if(!Objects.equals(this.nomina, null) && this.nomina.isValid())
             DaoFactory.getInstance().update(sesion, this.nomina);
           else
-					  this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
-				this.calculos= new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));
+					  this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasDto.class, this.idNomina);
+				this.calculos= new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));
 				this.factura = new Factura(sesion, this.nomina);
 			} // if
       else
@@ -223,9 +223,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					break;
 				case REPROCESAR:
 					this.persona(sesion);
+	  			this.toTakeOutPersonas(sesion);
+          DaoFactory.getInstance().update(sesion, this.nomina);
 					break;
 				case DEPURAR:
 					this.proveedor(sesion);
+  				this.toTakeOutProveedores(sesion);
+          DaoFactory.getInstance().update(sesion, this.nomina);
 					break;
 				case JUSTIFICAR:
 				  if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -275,8 +279,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			} // switch
 		} // try
 		catch (Exception e) {			
-      Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e);		
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally {
 			this.nomina  = null;
@@ -342,11 +350,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {		
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", idEmpresaPersona);
-			DaoFactory.getInstance().updateAll(TcManticIncidentesDto.class, params, "persona");
-			DaoFactory.getInstance().deleteAll(TcKeetNominasDetallesDto.class, "persona", params);
-			DaoFactory.getInstance().deleteAll(TcKeetNominasPersonasDto.class, "persona", params);
-			DaoFactory.getInstance().updateAll(TcKeetContratosPuntosContratistasDto.class, params, "persona");
-			DaoFactory.getInstance().updateAll(TcKeetContratosDestajosContratistasDto.class, params, "persona");
+			DaoFactory.getInstance().updateAll(sesion, TcManticIncidentesDto.class, params, "persona");
+			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDetallesDto.class, "persona", params);
+			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasPersonasDto.class, "persona", params);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosContratistasDto.class, params, "persona");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosContratistasDto.class, params, "persona");
       sesion.flush();
     } // try
 		finally {
@@ -359,11 +367,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		try {		
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", idProveedor);
-			DaoFactory.getInstance().updateAll(TcKeetIncidentesDto.class, params, "persona");
-			DaoFactory.getInstance().deleteAll(TcKeetNominasRubrosDto.class, "proveedor", params);
-			DaoFactory.getInstance().deleteAll(TcKeetNominasProveedoresDto.class, "proveedor", params);
-			DaoFactory.getInstance().updateAll(TcKeetContratosPuntosProveedoresDto.class, params, "proveedor");
-			DaoFactory.getInstance().updateAll(TcKeetContratosDestajosProveedoresDto.class, params, "proveedor");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetIncidentesDto.class, params, "persona");
+			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasRubrosDto.class, "proveedor", params);
+			DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasProveedoresDto.class, "proveedor", params);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "proveedor");
+			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params, "proveedor");
       sesion.flush();
     } // try
 		finally {
@@ -421,7 +429,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							this.idNomina // Long idNomina
 						);
 						this.calculos(sesion, monitoreo, empleado);
-						// this.commit();
 					} // if
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 					if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey())
@@ -545,23 +552,18 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		} // finally		
 	}
 	
-	private void proveedor(Session sesion) throws Exception {
+	protected void proveedor(Session sesion) throws Exception {
 		Map<String, Object> params           = new HashMap<>();
 		TcKeetNominasProveedoresDto proveedor= null;
-		Monitoreo monitoreo                  = this.autentifica.getMonitoreo();
 		try {
-			monitoreo.comenzar(0L);
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", this.idProveedor);
 			this.cleanProveedor(sesion, this.idProveedor);
-			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedor", params, Constantes.SQL_TODOS_REGISTROS);
-			if(personal!= null && !personal.isEmpty()) {
-  			monitoreo.setTotal(new Long(personal.size()));
-	  		monitoreo.setId("NOMINA DEL LOS SUBCONTRATISTAS");				
-				int count= 1;
-				for (Entity persona: personal) {
+			List<Entity> subcontratista= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedor", params, Constantes.SQL_TODOS_REGISTROS);
+			if(subcontratista!= null && !subcontratista.isEmpty()) {
+				for (Entity persona: subcontratista) {
 					proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
 					if(proveedor== null) {
 						proveedor= new TcKeetNominasProveedoresDto(
@@ -576,36 +578,35 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               persona.toDouble("fondoGarantia"), // Double porcentajeFondo
               0D // anticipo
 						);
-						this.calculos(sesion, monitoreo, proveedor);
+						this.calculos(sesion, proveedor);
 					} // if
-					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
-					count++;
 				} // for
-				this.toTakeOutProveedores(sesion);
 			} // if
 		} // try
 		finally {
-      monitoreo.terminar();
-			monitoreo.setProgreso(0L);			
 			Methods.clean(params);
 		} // finally		
 	}
-	
-	private void persona(Session sesion) throws Exception {
+
+	public void calculos(Session sesion, Monitoreo monitoreo, TcKeetNominasProveedoresDto proveedor) throws Exception {
+    this.calculos(sesion, proveedor);
+    monitoreo.incrementar();
+	}
+  
+	public void calculos(Session sesion, TcKeetNominasProveedoresDto proveedor) throws Exception {
+		this.factura.process(proveedor);
+	}
+  
+	protected void persona(Session sesion) throws Exception {
 		Map<String, Object> params       = new HashMap<>();
 		TcKeetNominasPersonasDto empleado= null;
-		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
-			monitoreo.comenzar(0L);
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", this.idEmpresaPersona);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
-  			monitoreo.setTotal(new Long(personal.size()));
-	  		monitoreo.setId("NOMINA DEL PERSONAL");				
-				int count= 1;
 				this.cleanPersona(sesion, this.idEmpresaPersona);
 				for (Entity persona: personal) {
 					empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
@@ -619,31 +620,25 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							0D, // Double percepciones, 
 							this.idNomina // Long idNomina
 						);
-						this.calculos(sesion, monitoreo, empleado);
+						this.calculos(sesion, empleado);
 					} // if
-					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
-					count++;
 				} // for
-				this.toTakeOutPersonas(sesion);
 			} // if
 		} // try
 		finally {
-      monitoreo.terminar();
-			monitoreo.setProgreso(0L);			
 			Methods.clean(params);
 		} // finally		
 	}
 		
 	public void calculos(Session sesion, Monitoreo monitoreo, TcKeetNominasPersonasDto empleado) throws Exception {
-		this.calculos.process(empleado);
-		monitoreo.incrementar();
+		this.calculos(sesion, empleado);
+    monitoreo.incrementar();
 	}
 	
-	public void calculos(Session sesion, Monitoreo monitoreo, TcKeetNominasProveedoresDto proveedor) throws Exception {
-		this.factura.process(proveedor);
-		monitoreo.incrementar();
+	public void calculos(Session sesion, TcKeetNominasPersonasDto empleado) throws Exception {
+		this.calculos.process(empleado);
 	}
-
+	
 	private void closeIncidentes(Session sesion) throws Exception {
     Map<String, Object> params= new HashMap<>();
 		try {
@@ -715,12 +710,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idNomina", this.nomina.getIdNomina());
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasPersonasDto", "personas", params);
-			this.nomina.setPersonas(entity.toLong("personas"));
-			this.nomina.setAportaciones(entity.toDouble("aportaciones"));
-			this.nomina.setDeducciones(entity.toDouble("deducciones"));
-			this.nomina.setPercepciones(entity.toDouble("percepciones"));
-			this.nomina.setNeto(entity.toDouble("neto"));
+			Entity empleados= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasPersonasDto", "personas", params);
+      if(empleados!= null && !empleados.isEmpty()) {
+        this.nomina.setPersonas(empleados.toLong("personas"));
+        this.nomina.setAportaciones(empleados.toDouble("aportaciones"));
+        this.nomina.setDeducciones(empleados.toDouble("deducciones"));
+        this.nomina.setPercepciones(empleados.toDouble("percepciones"));
+        this.nomina.setNeto(empleados.toDouble("neto"));
+      } // if  
 		} // try
 		finally {
 			Methods.clean(params);
@@ -731,18 +728,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idNomina", this.nomina.getIdNomina());
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasProveedoresDto", "proveedores", params);
-      if(entity!= null && !entity.isEmpty()) {
-        this.nomina.setProveedores(entity.toLong("proveedores"));
-        this.nomina.setSubtotal(entity.toDouble("subtotal"));
-        this.nomina.setIva(entity.toDouble("iva"));
-        this.nomina.setTotal(entity.toDouble("total"));
-      } // if
-      else {
-        this.nomina.setProveedores(0L);
-        this.nomina.setSubtotal(0D);
-        this.nomina.setIva(0D);
-        this.nomina.setTotal(0D);
+			Entity proveedores= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasProveedoresDto", "proveedores", params);
+      if(proveedores!= null && !proveedores.isEmpty()) {
+        this.nomina.setProveedores(proveedores.toLong("proveedores"));
+        this.nomina.setSubtotal(proveedores.toDouble("subtotal"));
+        this.nomina.setIva(proveedores.toDouble("iva"));
+        this.nomina.setTotal(proveedores.toDouble("total"));
       } // if
 		} // try
 		finally {

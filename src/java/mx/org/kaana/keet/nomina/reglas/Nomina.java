@@ -79,6 +79,10 @@ public class Nomina implements Serializable {
 		this.load();
 	}
 
+  public void setSesion(Session sesion) {
+    this.sesion = sesion;
+  }
+  
   public TcKeetNominasPeriodosDto getPeriodo() {
     return periodo;
   }
@@ -398,7 +402,7 @@ public class Nomina implements Serializable {
         // POR LO GENERAL PARA EL CALCULO ES QUE EL DESTAJO-CHALES-SUELDO BASE ES EL COMPLMENTO DE PAGO
         // SI LOS DESTAJOS, MENOS LOS SUELDOS DE LOS CHALES NO ALCANZA SE TEDRA QUE DESCONTAR DE LOS SUELDO DEL CONTRATISTA
         // POR LO TANTO PARA GYLVI LA INDICACION ES QUE LOS CONTRATISTAS NO DEBEN DE TENER UN SALARIO BASE
-        TrManticEmpresaPersonalDto contratista= (TrManticEmpresaPersonalDto)DaoFactory.getInstance().findById(TrManticEmpresaPersonalDto.class, empleado.getIdEmpresaPersona());
+        TrManticEmpresaPersonalDto contratista= (TrManticEmpresaPersonalDto)DaoFactory.getInstance().findById(this.sesion, TrManticEmpresaPersonalDto.class, empleado.getIdEmpresaPersona());
         // RECUPERAR EL SUELDO BASE DE TODOS LOS AGRAMIADOS O CHALES Y SE LE RESTA A LOS DESTAJOS REALIZDOS
 				Entity agremiados= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "VistaNominaDto", "agremiados", params);
 				if(agremiados!= null && !agremiados.isEmpty() && (Objects.equals(contratista, null) || Objects.equals(contratista.getIdPorDia(), 2L))) {
@@ -453,8 +457,8 @@ public class Nomina implements Serializable {
 	
 	@Override
 	protected void finalize() throws Throwable {
-		this.model = null;
-    this.parser= null;
+		this.model     = null;
+    this.parser    = null;
     this.interprete= null;
     this.expression= null;
 	}

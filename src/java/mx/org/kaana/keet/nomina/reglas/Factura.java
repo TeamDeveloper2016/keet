@@ -39,6 +39,10 @@ public class Factura implements Serializable {
 		this.nomina=nomina;
 	}
 	
+  public void setSesion(Session sesion) {
+    this.sesion = sesion;
+  }
+  
 	public void process(TcKeetNominasProveedoresDto proveedor) throws Exception {
 		Map<String, Object> params= new HashMap<>();
 		try {
@@ -54,7 +58,7 @@ public class Factura implements Serializable {
 					anticipo+= lote.getAnticipo();
 					DaoFactory.getInstance().update(this.sesion, lote);
           params.put("idContratoDestajoProveedor", lote.getIdContratoDestajoProveedor());
-    			DaoFactory.getInstance().updateAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params, "marcar");
+    			DaoFactory.getInstance().updateAll(this.sesion, TcKeetContratosPuntosProveedoresDto.class, params, "marcar");
 				} // for
 				proveedor.setDestajo(Numero.toRedondearSat(suma));
 				proveedor.setAnticipo(Numero.toRedondearSat(anticipo));
