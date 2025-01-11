@@ -415,8 +415,7 @@
 		</div>		
 	</ui:define>    
 	<ui:define name="acciones">
-		<p:remoteCommand name="procesar" actionListener="#{keetNominasAccion.doAceptar}" onstart="if(janal.partial('tipoNomina')){ startTask(); return true; } else return false;" oncomplete="cancel(); janal.desbloquear();"/>
-		<p:remoteCommand name="calculos" actionListener="#{keetNominasAccion.doCalcular}" onstart="if(janal.partial('tipoNomina')){ startTask(); return true; } else return false;" oncomplete="cancel(); janal.desbloquear();"/>
+		<p:remoteCommand name="calculos" actionListener="#{keetNominasAccion.doAceptar}" onstart="if(janal.partial('tipoNomina')){ startTask(); return true; } else return false;" oncomplete="cancel(); janal.desbloquear();"/>
 		<div class="lg-pantalla">
       <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" onstart="return janal.bloquear();" oncomplete="calculos();" disabled="#{keetNominasAccion.activar}" styleClass="nominas"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>

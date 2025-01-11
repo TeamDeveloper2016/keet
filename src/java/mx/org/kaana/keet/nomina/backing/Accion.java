@@ -91,15 +91,19 @@ public class Accion extends IBaseFilter implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-	public void doCalcular() {
+	public void doAceptar() {
 		Calculos calculos= null;
-    Long idNomina       = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
+    Long idNomina    = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
 		try {		
- 			calculos= new Calculos(idNomina, JsfBase.getAutentifica());
-			if(calculos.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+      if(!Objects.equals(idNomina, null) && idNomina> 0L) {
+        calculos= new Calculos(idNomina, JsfBase.getAutentifica());
+        if(calculos.ejecutar(EAccion.PROCESAR))
+          JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+      } // if
+      else
+        JsfBase.addMessage("Seleccione una semana por favor !", ETipoMensaje.ALERTA);	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -107,7 +111,8 @@ public class Accion extends IBaseFilter implements Serializable {
     } // catch   
 	} 
   
-	public void doAceptar() {
+  // ESTE METODO CAYO EN DESUSO POR QUE YA NO FUNCIONO
+	private void doAnterior() {
 		Transaccion transaccion= null;
     TcKeetNominasDto nomina= null;
 		try {		
