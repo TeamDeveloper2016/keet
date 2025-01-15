@@ -39,6 +39,8 @@ public class Monitoreo implements Serializable {
     this.progreso= 0L;
     this.total   = 0L;
 		this.corriendo= false;
+		this.start   = Calendar.getInstance();
+		this.finished= Calendar.getInstance();
 	}
 
 	public String getId() {
@@ -83,7 +85,7 @@ public class Monitoreo implements Serializable {
 
 	public void comenzar(Long total) {
 		this.total= total;
-		comenzar();
+		this.comenzar();
 	}
 	
 	public void comenzar() {

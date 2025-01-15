@@ -93,6 +93,7 @@ public final class Calculos extends IBaseTnx {
 			switch(accion) {
 				case PROCESAR:
   			  monitoreo.setTotal(this.tuplas);
+//          monitoreo.comenzar();
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
           if(regresar) {
             puente  = new Puente(this.nomina, autentifica, this.idNotificar, this.realPath, this.automatico);

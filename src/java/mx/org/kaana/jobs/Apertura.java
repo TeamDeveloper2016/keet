@@ -17,7 +17,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
-import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.keet.nomina.reglas.Calculos;
 import mx.org.kaana.libs.formato.BouncyEncryption;
@@ -87,8 +86,8 @@ public class Apertura implements Job, Serializable {
   } // toLoadUser
   
   public static void main(String ... args) throws JobExecutionException {
-    // Apertura apertura= new Apertura();
-    // apertura.execute(null);
+//     Apertura apertura= new Apertura();
+//     apertura.execute(null);
   }
   
 }

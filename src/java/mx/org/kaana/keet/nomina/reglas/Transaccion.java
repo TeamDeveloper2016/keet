@@ -1234,7 +1234,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       if(contratista!= null && enviar) {
         try {
           cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.getRealPath());
-          LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
+          LOG.info("Enviando whatsapp: "+ contratista);
           cafu.doSendDestajo(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(cafu.toSaludo()));
         } // try
         finally {
@@ -1324,7 +1324,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       if(contratista!= null) {
         try {
           cafu= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", this.getRealPath());
-          LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
+          LOG.info("Enviando whatsapp: "+ contratista);
           cafu.doSendDestajo(sesion);
         } // try
         finally {
@@ -1350,7 +1350,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         for (String residente: residentes.keySet()) {
           cafu.setNombre(Cadena.nombrePersona(residente));
           cafu.setCelular((String)residentes.get(residente));
-          LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
+          LOG.info("Enviando whatsapp: "+ residente);
           cafu.doSendResidentes(sesion);
         } // for
       } // if  
@@ -1383,7 +1383,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*",
         this.getRealPath());
-      LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
+      LOG.info("Enviando whatsapp grupo CAFU");
       cafu.doSendCorteNomina(sesion);
 		} // try 
 		catch(Exception e) {
@@ -1414,7 +1414,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*",
         this.getRealPath());
-      LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
+      LOG.info("Enviando whatsapp grupo CAFU");
       cafu.doSendCierreNomina(sesion);
 		} // try 
 		catch(Exception e) {
@@ -1647,7 +1647,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       for (String residente: residentes.keySet()) {
         cafu.setNombre(Cadena.nombrePersona(residente));
         cafu.setCelular((String)residentes.get(residente));
-        LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
+        LOG.info("Enviando whatsapp: "+ residente);
         cafu.doSendSupervisor(sesion);
       } // for
       if(!this.automatico)
