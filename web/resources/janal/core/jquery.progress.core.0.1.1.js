@@ -11,7 +11,7 @@
 		this.jqValue.hide().css('width', '0%');
 		this.jqLabel.hide();
 		this.top = top;
-		var _self = this;
+		var _self= this;
 		if (this.cfg.ajax) {
 			this.progressPoll = setInterval(function() {
 				var options = {

@@ -1136,6 +1136,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     String control                  = Arrays.toString(this.notificar);
     String desarrollo               = "";
     Boolean particular              = Boolean.FALSE;
+    Monitoreo monitoreo             = this.autentifica.progreso("NOMINA");
 		try {
       if(control.contains("2") || control.contains("3") || control.contains("4")) {
         columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
@@ -1164,7 +1165,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               contratistas.clear();
               idDesarrollo= item.toLong("idDesarrollo");
               desarrollo  = item.toString("desarrollo");
-            } // for
+            } // if
             List<Entity> celulares= null;
             if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
               particular= control.contains("3");
@@ -1184,6 +1185,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               } // for
               // NOTIFICAR AL A LOS CONTRATISTAS Y/O SUBCONTRATISAS CON EL REPORTE DE LOS DESTAJOS
             contratistas.put(item.toString("contratista"), this.toControlMessage(sesion, jasper, celular, item, particular));
+            monitoreo.incrementar();
+            if(!monitoreo.isCorriendo())
+              break;
           } // for
           // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
           if(control.contains("2"))
@@ -1575,6 +1579,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new LinkedHashMap<>();
     Map<String, String> empleados   = new HashMap<>();
+    Monitoreo monitoreo             = this.autentifica.progreso("NOMINA");
 		try {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
@@ -1592,6 +1597,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             empleados.put(item.toString("desarrollo"), this.toListadoNomina(sesion, jasper, item));
           } // for
           contratistas.put(Cadena.rellenar(""+ item.toLong("idDesarrollo"), 3, '0', true)+ "-"+ item.toString("contratista"), this.toReporte(sesion, jasper, item));
+          monitoreo.incrementar();
+ 					if(!monitoreo.isCorriendo())
+						break;
         } // for
         // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE TODOS SUS CONTRATISTAS Y/O SUBCONTRATISTAS
         this.toNotificarSupervisor(sesion, contratistas, items.get(0), empleados);

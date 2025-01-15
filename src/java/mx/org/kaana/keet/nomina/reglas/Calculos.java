@@ -49,16 +49,22 @@ public final class Calculos extends IBaseTnx {
   private String realPath;
   private String[] idNotificar;  
   private Boolean automatico;
+  private Long tuplas;
   
-	public Calculos(Long idNomina, Autentifica autentifica) {
-    this(idNomina, autentifica, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE);
+	public Calculos(Long idNomina, Autentifica autentifica, Long tuplas) {
+    this(idNomina, autentifica, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE, tuplas);
   }
   
 	public Calculos(Long idNomina, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico) {
+    this(idNomina, autentifica, idNotificar, realPath, automatico, -1L);
+  } 
+  
+	public Calculos(Long idNomina, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico, Long tuplas) {
 		this.idNomina   = idNomina;
 		this.autentifica= autentifica;
     this.idNotificar= idNotificar;
     this.automatico = automatico;
+    this.tuplas     = tuplas;
     this.setRealPath(realPath);
   } 
   
@@ -74,9 +80,10 @@ public final class Calculos extends IBaseTnx {
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    Puente puente   = null;
-    this.messageError= "Ocurrio un error en calculo de la nómina";
+    Boolean regresar   = Boolean.FALSE;
+    Puente puente      = null;
+    this.messageError  = "Ocurrio un error en calculo de la nómina";
+		Monitoreo monitoreo= this.autentifica.progreso("NOMINA");
     try {
       this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasDto.class, this.idNomina);
       if(this.automatico) {
@@ -85,6 +92,7 @@ public final class Calculos extends IBaseTnx {
       } // if  
 			switch(accion) {
 				case PROCESAR:
+  			  monitoreo.setTotal(this.tuplas);
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
           if(regresar) {
             puente  = new Puente(this.nomina, autentifica, this.idNotificar, this.realPath, this.automatico);
@@ -102,7 +110,10 @@ public final class Calculos extends IBaseTnx {
 			throw new Exception(this.messageError);
 		} // catch		
 		finally {
+      monitoreo.terminar();
+      this.autentifica.clean("NOMINA");
 			this.nomina= null;
+      puente     = null;
 		} // finally
     return regresar;
   }
@@ -110,8 +121,8 @@ public final class Calculos extends IBaseTnx {
 	private Boolean procesar(Session sesion, Boolean notificar) throws Exception {
     Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
-		Monitoreo monitoreo       = this.autentifica.getMonitoreo();
     Puente puente             = null;
+    Monitoreo monitoreo       = this.autentifica.progreso("NOMINA");
 		try {
 			monitoreo.comenzar(0L);
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
@@ -119,8 +130,8 @@ public final class Calculos extends IBaseTnx {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> todos= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "general", params, Constantes.SQL_TODOS_REGISTROS);
 			if(todos!= null && !todos.isEmpty()) {
-  			monitoreo.setTotal(new Long(todos.size()));
-	  		monitoreo.setId("NOMINA DEL PERSONAL");				
+        if(Objects.equals(this.tuplas, -1L))
+  			  monitoreo.setTotal(new Long(todos.size()));
 				if(this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey()) 
           this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
   		  this.empleado      = new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));
@@ -157,7 +168,6 @@ public final class Calculos extends IBaseTnx {
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
         this.toTotales(sesion);
         DaoFactory.getInstance().update(sesion, this.nomina);
-        monitoreo.terminar();
         this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, empleados)+ " persona(s) y "+ Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, subcontratistas)+ " proveedor(es)";
         if(notificar)
           this.notificarCorteNomina(sesion, this.empleado.getPeriodo());
@@ -169,7 +179,6 @@ public final class Calculos extends IBaseTnx {
       throw e;
     } // catch
 		finally {
-      monitoreo.terminar();
 			Methods.clean(params);
 			this.empleado      = null;
 			this.subcontratista= null;

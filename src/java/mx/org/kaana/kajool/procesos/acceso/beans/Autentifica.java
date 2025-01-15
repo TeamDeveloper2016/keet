@@ -30,6 +30,8 @@ public class Autentifica implements Serializable {
 	private static final String ADMIN= "ADMINISTRADOR";
   private static final String GERENTE= "GERENTE";
   private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
+  private static final String DEFAULT_MONITOR = "IMOX_PROGRESS";
+  
   private Persona persona;
   private Monitoreo monitoreo;
   private String paginaActual;   
@@ -40,6 +42,7 @@ public class Autentifica implements Serializable {
   private List<UsuarioMenu> topMenu;
   private List<UsuarioMenu> menu;
   private String ultimoAcceso;
+  private Map<String, Monitoreo> progreso;
 
   public Autentifica() {
     this(new Persona());
@@ -58,6 +61,8 @@ public class Autentifica implements Serializable {
     this.redirect     = redirect;
     this.credenciales = credenciales;
     this.paginaActual = paginaActual;
+    this.progreso     = new HashMap<>();
+    this.progreso.put(DEFAULT_MONITOR, new Monitoreo(DEFAULT_MONITOR));
   }	// Autentifica
 
   public Sucursal getEmpresa() {
@@ -95,7 +100,6 @@ public class Autentifica implements Serializable {
   public void setMenu(List<UsuarioMenu> menu) {
     this.menu = menu;
   }
-
   
   public EPaginasPrivilegios getRedirect() {
     return redirect;
@@ -123,6 +127,14 @@ public class Autentifica implements Serializable {
 
   public List<UsuarioMenu> getTopModulos() throws SQLException {
     return topMenu == null ? null : topMenu;
+  }
+
+  public Map<String, Monitoreo> getProgreso() {
+    return progreso;
+  }
+
+  public void setProgreso(Map<String, Monitoreo> progreso) {
+    this.progreso= progreso;
   }
 
   private boolean verificaCredencial() throws Exception {
@@ -438,6 +450,32 @@ public class Autentifica implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar.substring(0, regresar.length()- 2);
-	} // toLoadDependencias
+	} 
+
+  public Monitoreo progreso() {
+    return this.progreso(DEFAULT_MONITOR);
+  }
+  
+  public Monitoreo progreso(String id) {
+    Monitoreo regresar= null;
+    if(this.progreso.containsKey(id))
+      regresar= this.progreso.get(id);
+    else {
+      regresar= new Monitoreo(id);
+      this.progreso.put(id, regresar);
+    } // else
+    return regresar;
+  }
+
+  public void clean(String id) {
+    if(this.progreso.containsKey(id))
+      this.progreso.remove(id);
+  }
+  
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize();
+    Methods.clean(this.progreso);
+  }
   
 }

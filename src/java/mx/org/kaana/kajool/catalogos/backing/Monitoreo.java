@@ -36,6 +36,9 @@ public class Monitoreo implements Serializable {
 		this.id      = id;
 		this.messages= new ArrayList<>();
 		this.elapsed = new Elapsed();
+    this.progreso= 0L;
+    this.total   = 0L;
+		this.corriendo= false;
 	}
 
 	public String getId() {
@@ -47,11 +50,11 @@ public class Monitoreo implements Serializable {
 	}
 	
 	public Long getProgreso() {
-		return progreso;
+		return this.corriendo? progreso: 0L;
 	}
 
 	public Integer getPorcentaje() {
-		return (int)(this.getTotal()<= 0? 0: this.getProgreso()* 100/ this.getTotal());
+		return this.corriendo? (int)(this.getTotal()<= 0? 0: this.getProgreso()* 100/ this.getTotal()): 0;
 	}
 
 	public void setProgreso(Long progreso) {
@@ -63,7 +66,7 @@ public class Monitoreo implements Serializable {
 	}
 
 	public void setTotal(Long total) {
-		this.total=total;
+		this.total= total;
 	}
 
 	public List<String> getMessages() {
@@ -128,7 +131,7 @@ public class Monitoreo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Monitoreo{"+"total="+total+", progreso="+progreso+", corriendo="+corriendo+'}';
+		return "Monitoreo{"+ "total="+ total+ ", progreso="+ progreso+ ", corriendo="+ corriendo+ '}';
 	}
 	
 }

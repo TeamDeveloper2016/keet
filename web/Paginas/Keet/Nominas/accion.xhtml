@@ -124,7 +124,7 @@
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra">
                 <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasAccion.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
-                <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.progreso['NOMINA'].progreso}" global="true">
                   <p:ajax event="complete" listener="#{keetNominasAccion.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>

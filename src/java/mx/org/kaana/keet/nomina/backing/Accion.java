@@ -96,7 +96,7 @@ public class Accion extends IBaseFilter implements Serializable {
     Long idNomina    = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
 		try {		
       if(!Objects.equals(idNomina, null) && idNomina> 0L) {
-        calculos= new Calculos(idNomina, JsfBase.getAutentifica());
+        calculos= new Calculos(idNomina, JsfBase.getAutentifica(), (Long)this.attrs.get("tuplas"));
         if(calculos.ejecutar(EAccion.PROCESAR))
           JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
         else
@@ -210,6 +210,7 @@ public class Accion extends IBaseFilter implements Serializable {
 	
 	public void doLoadNomina() {
     Map<String, Object> params= new HashMap<>();
+    Long tuplas               = 0L;
     try {
 		  params.put("idNomina", ((UISelectEntity)this.attrs.get("idNomina")).getKey());
 			params.put("sucursales", this.attrs.get("sucursales"));
@@ -226,8 +227,13 @@ public class Accion extends IBaseFilter implements Serializable {
 			if(nomina.getIdTipoNomina()== 2L)
 				params.put("idNomina", ((Nomina)this.attrs.get("ultima")).getIdNomina());
 			Value value= DaoFactory.getInstance().toField("VistaNominaDto", nomina.getIdTipoNomina()== 1L? "ordinaria": "complementaria", params, "tuplas");
-			if(value!= null && value.getData()!= null)
-				this.attrs.put("tuplas", value.toLong());
+			if(value!= null && value.getData()!= null) {
+				tuplas= value.toLong();
+			  value= DaoFactory.getInstance().toField("VistaNominaDto", "notificaciones", params, "tuplas");
+			  if(value!= null && value.getData()!= null) 
+				  tuplas+= (value.toLong()* 2);
+      } // if  
+  	  this.attrs.put("tuplas", tuplas);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
