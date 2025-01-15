@@ -51,8 +51,8 @@ public final class Calculos extends IBaseTnx {
   private Boolean automatico;
   private Long tuplas;
   
-	public Calculos(Long idNomina, Autentifica autentifica, Long tuplas) {
-    this(idNomina, autentifica, new String[] {"1", "4"}, JsfBase.getRealPath(), Boolean.FALSE, tuplas);
+	public Calculos(Long idNomina, Autentifica autentifica, String[] idNotificar, Long tuplas) {
+    this(idNomina, autentifica, idNotificar, JsfBase.getRealPath(), Boolean.FALSE, tuplas);
   }
   
 	public Calculos(Long idNomina, Autentifica autentifica, String[] idNotificar, String realPath, Boolean automatico) {
@@ -69,13 +69,7 @@ public final class Calculos extends IBaseTnx {
   } 
   
   public void setRealPath(String realPath) {
-    if(Objects.equals(realPath, null))
-      if(!Objects.equals(JsfBase.getRealPath(), null))
-        this.realPath= JsfBase.getRealPath();
-      else
-        this.realPath= "/appservers/apache-tomcat-8.5.20/webapps/ROOT/";
-    else
-      this.realPath= realPath;
+    this.realPath= realPath;
   }
   
 	@Override
@@ -93,7 +87,6 @@ public final class Calculos extends IBaseTnx {
 			switch(accion) {
 				case PROCESAR:
   			  monitoreo.setTotal(this.tuplas);
-//          monitoreo.comenzar();
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
           if(regresar) {
             puente  = new Puente(this.nomina, autentifica, this.idNotificar, this.realPath, this.automatico);

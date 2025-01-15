@@ -96,7 +96,7 @@ public class Accion extends IBaseFilter implements Serializable {
     Long idNomina    = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
 		try {		
       if(!Objects.equals(idNomina, null) && idNomina> 0L) {
-        calculos= new Calculos(idNomina, JsfBase.getAutentifica(), (Long)this.attrs.get("tuplas"));
+        calculos= new Calculos(idNomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar(), (Long)this.attrs.get("tuplas"));
         if(calculos.ejecutar(EAccion.PROCESAR))
           JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
         else

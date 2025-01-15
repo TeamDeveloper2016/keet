@@ -69,6 +69,7 @@ public class Monitoreo implements Serializable {
 
 	public void setTotal(Long total) {
 		this.total= total;
+    this.comenzar();
 	}
 
 	public List<String> getMessages() {
@@ -84,8 +85,7 @@ public class Monitoreo implements Serializable {
 	}
 
 	public void comenzar(Long total) {
-		this.total= total;
-		this.comenzar();
+		this.setTotal(total);
 	}
 	
 	public void comenzar() {

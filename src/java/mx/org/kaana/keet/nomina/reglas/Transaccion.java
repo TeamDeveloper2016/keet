@@ -1216,7 +1216,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         for (String residente: residentes.keySet()) {
           cafu.setNombre(Cadena.nombrePersona(residente));
           cafu.setCelular((String)residentes.get(residente));
-          LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
+          LOG.info("Enviando whatsapp: "+ residente);
           cafu.doSendResidentes(sesion, "[ *CORTE PRELIMINAR DE NÓMINA* ] ".concat(cafu.toSaludo()));
         } // for
       } // if  
