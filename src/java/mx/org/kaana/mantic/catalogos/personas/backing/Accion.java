@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
@@ -78,6 +79,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.lazyModelBitacora = lazyModelBitacora;
 	}	
 	
+  public Boolean getHabilitar() {
+    return Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu");
+  }
+  
   @PostConstruct
   @Override
   protected void init() {		
@@ -1077,6 +1082,25 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} 
+  } 
+  
+  public void doUpdateSueldoSemanal() {
+    try {      
+      Double sueldoImss= this.registroPersona.getEmpresaPersona().getSueldoImss();
+      Double sobreSueldo= this.registroPersona.getEmpresaPersona().getSobreSueldo();
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          this.registroPersona.getEmpresaPersona().setSueldoSemanal(sueldoImss+ sobreSueldo); 
+          break;
+        case "gylvi": 
+        case "triana":
+          break;
+      } // swtich
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
 }

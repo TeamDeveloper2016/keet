@@ -212,11 +212,15 @@
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}"/>
 								<p:outputLabel for="sueldoSemanal" value="Deposito semanal:"/>								
-								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
+								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" readonly="#{manticCatalogosPersonasAccion.habilitar}"/>
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
-								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
+								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}">
+                  <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doUpdateSueldoSemanal}" process="@this sobreSueldo" update="sueldoSemanal"/>
+                </p:inputNumber>  
                 <p:outputLabel for="sobreSueldo" value="Sobre sueldo semanal:" styleClass="janal-color-black"/>								                 
-								<p:inputNumber id="sobreSueldo" styleClass="janal-wid-100-txt janal-color-black" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sobreSueldo}"/>                    
+								<p:inputNumber id="sobreSueldo" styleClass="janal-wid-100-txt janal-color-black" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sobreSueldo}">
+                  <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doUpdateSueldoSemanal}" process="@this mensualImss" update="sueldoSemanal"/>
+                </p:inputNumber>  
                 <p:outputLabel for="idLimpiar" value="Limpiar sobre sueldo:" styleClass="janal-color-black"/>
 								<p:selectOneMenu id="idLimpiar" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idLimpiar}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>

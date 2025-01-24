@@ -94,11 +94,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   } // toLoadTiposPersonas  
 	
 	protected void toLoadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();			
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -126,11 +124,11 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 	
 	@Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
 			params= this.toPrepare();
-      columns = new ArrayList<>();
+      params.put("sortOrder", "order by tr_mantic_empresa_personal.clave");
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
@@ -226,10 +224,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		Map<String, Object>params= null;
 		try {									   
 			params= this.toPrepare();
-			// params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_keet_departamentos.nombre, tc_mantic_puestos.nombre, tc_mantic_personas.rfc");
-			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave");
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.clave");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PERSONAS.getProceso(), EExportacionXls.PERSONAS.getIdXml(), EExportacionXls.PERSONAS.getNombreArchivo()), EExportacionXls.PERSONAS, 
-				"SUCURSAL,CODIGO NOMINA,DEPARTAMENTO,CONTRATISTA,PUESTO,RFC,NOMBRE,1ER APELLIDO,2DO APELLIDO,CONTRATACION,INGRESO,BAJA,ACTIVO,SEGURO,NSS,SUELDO SEMANAL"));
+				"SUCURSAL,CODIGO,RFC,NOMBRE,1ER APELLIDO,2DO APELLIDO,DEPARTAMENTO,PUESTO,CONTRATISTA,CONTRATACION,INGRESO,BAJA,ACTIVO,SEGURO,NSS,SUELDO SEMANAL,SUELDO IMSS,SOBRE SUELDO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
 		} // try
@@ -246,10 +243,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 	public void doReporte(String nombre) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     Parametros comunes           = null;
 		try {		
-      params= new HashMap<>();            
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -305,12 +301,11 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 	}
 	
 	public void doDeposito(String deposito){
-		Entity seleccionado            = null;
+		Entity seleccionado            = (Entity) this.attrs.get("seleccionado");
 		RegistroPersona registroPersona= null;
 		Transaccion transaccion        = null;
 		Boolean isDeposito             = false;
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");
 			registroPersona= new RegistroPersona(seleccionado.getKey());
 			isDeposito= Boolean.valueOf(deposito);
 			registroPersona.getEmpresaPersona().setIdNomina(isDeposito ? 1L : 2L);

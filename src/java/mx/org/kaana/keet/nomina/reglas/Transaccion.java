@@ -621,8 +621,19 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				for (Entity persona: personal) {
 					empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 					if(empleado== null) {
+            // AJUSTE SOLICITADO POR WENDY 24/01/2025 DONDE A LOS EMPLEADOS EL SUELDO_IMSS + EL SOBRE_SUELDO ES SU SALARIO SEMANAL PARA CAFU
+            Double sueldo= 0D;
+            switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+              case "cafu":
+                sueldo= persona.toDouble("sueldoImss");
+                break;
+              case "gylvi": 
+              case "triana":
+                sueldo= persona.toDouble("sueldoSemanal");
+                break;
+            } // swtich
 						empleado= new TcKeetNominasPersonasDto(
-							persona.toDouble("sueldoSemanal"), // Double neto, 
+							sueldo, // Double neto, 
 							persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
 							0D, // Double deducciones,
 							-1L, // Long idNominaPersona, 
