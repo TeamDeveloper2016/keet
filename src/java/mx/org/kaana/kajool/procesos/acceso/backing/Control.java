@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import mx.org.kaana.jobs.Eliminar;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIMessage;
@@ -20,7 +19,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
-import mx.org.kaana.keet.test.Proceso;
+import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.keet.test.personas.Desarrollo;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -134,8 +133,11 @@ public class Control extends IBaseAttribute implements Serializable {
 //      Proceso proceso= new Proceso(28L);
 //      proceso.ejecutar(EAccion.ACTIVAR);
 //    ESTO SE HIZO PARA CORREGIR UN ERROR EN EL CIERRE DE LA NOMINA
-      Eliminar eliminar= new Eliminar();
-      eliminar.execute(null); 
+//      Eliminar eliminar= new Eliminar();
+//      eliminar.execute(null); 
+//    ESTO SE HIZO PARA ACTUALIZAR LA TABLA DE NOMINAS PERIODOS
+//      Semanas semanas= new Semanas(4);
+//		  semanas.process();
       LOG.info("Ok.");
     } // try
     catch (Exception e) {

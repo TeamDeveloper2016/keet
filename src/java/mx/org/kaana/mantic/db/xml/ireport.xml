@@ -289,7 +289,8 @@ select
      tc_mantic_personas as tc_manti_personal 
    where
      tc_janal_usuarios.id_persona= tc_manti_personal.id_persona
-  ) as usuario
+  ) as usuario,
+  tc_keet_tipos_ordenes.nombre as tipo_orden
 from 
   tc_mantic_ordenes_compras
 inner join 
@@ -314,6 +315,8 @@ left join
   tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
 inner join
   tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario          
+inner join
+  tc_keet_tipos_ordenes on tc_mantic_ordenes_compras.id_tipo_orden= tc_keet_tipos_ordenes.id_tipo_orden
 left join
   tc_mantic_imagenes on tc_mantic_empresas.id_imagen= tc_mantic_imagenes.id_imagen
 left join (

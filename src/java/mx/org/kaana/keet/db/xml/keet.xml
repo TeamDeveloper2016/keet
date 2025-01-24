@@ -3014,6 +3014,25 @@ where
         where      
           orden = {orden} and ejercicio = {ejercicio}
       </select>
+      <select id="igual">
+        select      
+          tc_keet_nominas_periodos.id_nomina_periodo as id_key,
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas_periodos
+        where      
+          id_nomina_periodo= {idNominaPeriodo}
+				order by
+			    id_nomina_periodo	
+      </select>
+      <select id="siguiente">
+        select      
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas_periodos
+				where
+				  id_nomina_periodo&gt;{idNominaPeriodo}
+      </select>			
       <select id="ultimo">
         select      
           max(termino) as ultimo
@@ -3038,24 +3057,7 @@ where
 				  date_format(inicio, '%Y%m%d')&lt;= date_format('{fecha}','%Y%m%d')
   			  and date_format(termino, '%Y%m%d')&gt;= date_format('{fecha}','%Y%m%d')
       </select>			
-      <select id="siguiente">
-        select      
-          tc_keet_nominas_periodos.*
-        from      
-          tc_keet_nominas_periodos
-				where
-				  id_nomina_periodo&gt;{idNominaPeriodo}
-      </select>			
-      <select id="igual">
-        select      
-          tc_keet_nominas_periodos.id_nomina_periodo as id_key,
-          tc_keet_nominas_periodos.*
-        from      
-          tc_keet_nominas_periodos
-        where      
-          id_nomina_periodo= {idNominaPeriodo}
-      </select>
-    </unit>		
+    </unit>							
 		<unit id="TcKeetContratosLotesContratistasDto">
       <select id="row">
         select      
@@ -4334,44 +4336,6 @@ where
 				  id_nomina_estatus
       </select>    
 		</unit>		
-    <unit id="TcKeetNominasPeriodosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_nominas_periodos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_nominas_periodos
-        where      
-          orden = {orden} and ejercicio = {ejercicio}
-      </select>
-      <select id="siguiente">
-        select      
-          *
-        from      
-          tc_keet_nominas_periodos
-        where      
-          id_nomina_periodo> {idNominaPeriodo}
-				order by
-			    id_nomina_periodo	
-      </select>
-      <select id="igual">
-        select      
-          *
-        from      
-          tc_keet_nominas_periodos
-        where      
-          id_nomina_periodo= {idNominaPeriodo}
-				order by
-			    id_nomina_periodo	
-      </select>
-    </unit>							
     <unit id="TcKeetNominasPersonasDto">
       <select id="row">
         select      

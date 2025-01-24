@@ -7426,68 +7426,94 @@ order by
         {sortOrder}
       </select>  
 			<select id="detalle">
-				select
-					tc_keet_nominas_personas.id_nomina_persona as id_key,
-					tc_keet_nominas.id_nomina,
-					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
-				  tc_keet_nominas.id_nomina_estatus,
-					tc_mantic_empresas.nombre as sucursal,  
-				  1 as id_tipo_proceso,
-				  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
-					'PERSONAL' as tipo,
-					tr_mantic_empresa_personal.clave,
-					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
-					tc_mantic_personas.apodo,
-					tc_keet_nominas_personas.neto as importe,
-					tc_mantic_puestos.id_puesto,
-					tc_mantic_personas.id_persona
-				from
-					tc_keet_nominas
-				inner join
-					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-				inner join 
-					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
-				inner join 
-					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join 
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				inner join 
-					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
-				where
-					tc_keet_nominas.id_nomina= {idNomina}
-					and (upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ''), ' ', ifnull(tc_mantic_personas.apodo, ''))) regexp '{nombre}.*')
-				union all
-				select
-					tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
-					tc_keet_nominas.id_nomina,
-					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
-				  tc_keet_nominas.id_nomina_estatus,
-					tc_mantic_empresas.nombre as sucursal,  
-				  2 as id_tipo_proceso,
-				  tc_mantic_proveedores.id_proveedor as id_persona_reprocesar,
-					'SUBCONTRATISTA' as tipo,
-					tc_mantic_proveedores.clave,
-					tc_mantic_proveedores.razon_social as nombre_completo,
-					tc_mantic_proveedores.rfc as apodo,
-					tc_keet_nominas_proveedores.total as importe,
-					-1 as id_puesto,
-					tc_mantic_proveedores.id_proveedor as id_persona
-				from
-					tc_keet_nominas
-				inner join
-					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-				inner join 
-					tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
-				inner join 
-					tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
-				inner join 
-					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
-				where
-					tc_keet_nominas.id_nomina= {idNomina}
-					and upper(ifnull(tc_mantic_proveedores.razon_social, '')) regexp '{nombre}.*'
-				{sortOrder}
+select
+  tc_keet_nominas_personas.id_nomina_persona as id_key,
+  tc_keet_nominas.id_nomina,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+  tc_keet_nominas.id_nomina_estatus,
+  tc_mantic_empresas.nombre as sucursal,  
+  1 as id_tipo_proceso,
+  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
+  'EMPLEADO' as tipo,
+  tr_mantic_empresa_personal.clave,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
+  tr_mantic_empresa_personal.sueldo_semanal,
+  tr_mantic_empresa_personal.sueldo_imss,
+  tr_mantic_empresa_personal.sobre_sueldo,
+  0 as subtotal,
+  0 as iva,
+  tc_keet_nominas_personas.neto as neto,
+  tc_mantic_puestos.id_puesto,
+  tc_mantic_personas.id_persona,
+  tc_mantic_puestos.nombre as puesto,					
+  tc_keet_departamentos.nombre as departamento,
+  ifnull(concat(tt_mantic_personas.nombres, ' ', ifnull(tt_mantic_personas.paterno, ''), ' ', ifnull(tt_mantic_personas.materno, '')), '') as contratista
+from
+  tc_keet_nominas
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join 
+  tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+inner join 
+  tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join 
+  tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+left join 
+  tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
+left join 
+  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+left join 
+  tr_mantic_empresa_personal as tt_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tt_mantic_empresa_personal.id_contratista
+left join	
+  tc_mantic_personas as tt_mantic_personas on tt_mantic_empresa_personal.id_persona= tt_mantic_personas.id_persona and tt_mantic_personas.id_tipo_persona!= 1
+where
+  tc_keet_nominas.id_nomina= {idNomina}
+  and (upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ''), ' ', ifnull(tc_mantic_personas.apodo, ''))) regexp '{nombre}.*')
+union all
+select
+  tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
+  tc_keet_nominas.id_nomina,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+  tc_keet_nominas.id_nomina_estatus,
+  tc_mantic_empresas.nombre as sucursal,  
+  2 as id_tipo_proceso,
+  tc_mantic_proveedores.id_proveedor as id_persona_reprocesar,
+  'SUBCONTRATISTA' as tipo,
+  tc_mantic_proveedores.clave,
+  tc_mantic_proveedores.razon_social as nombre_completo,
+  0 as sueldo_semanal,
+  0 as sueldo_imss,
+  0 as sobre_sueldo,
+  tc_keet_nominas_proveedores.subtotal,
+  tc_keet_nominas_proveedores.iva,
+  tc_keet_nominas_proveedores.total as neto,
+  -1 as id_puesto,
+  tc_mantic_proveedores.id_proveedor as id_persona,
+  'SUBCONTRATISTA' as puesto,					
+  tc_keet_departamentos.nombre as departamento,
+  '' as contratista
+from
+  tc_keet_nominas
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join 
+  tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
+inner join 
+  tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join 
+  tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+inner join
+  tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+where
+  tc_keet_nominas.id_nomina= {idNomina}
+  and upper(ifnull(tc_mantic_proveedores.razon_social, '')) regexp '{nombre}.*'
+{sortOrder}
 			</select>
 			<select id="ejercicios">
 				select

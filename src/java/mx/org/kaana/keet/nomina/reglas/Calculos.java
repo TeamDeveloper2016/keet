@@ -11,8 +11,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
-import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
@@ -167,9 +165,6 @@ public final class Calculos extends IBaseTnx {
         this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, empleados)+ " persona(s) y "+ Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, subcontratistas)+ " proveedor(es)";
         if(notificar)
           this.notificarCorteNomina(sesion, this.empleado.getPeriodo());
-        // ESTO NO APLICA PORQUE SE DEJA EL HISTORIAL DE LO QUE FUE RECHAZADO
-        //DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosContratistasDto.class, "ceros", params);
-        //DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosProveedoresDto.class, "ceros", params);
         sesion.flush();
       } // if
       regresar= Boolean.TRUE;

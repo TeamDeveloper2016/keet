@@ -40,10 +40,10 @@ public class Semanas {
 	  Value data= DaoFactory.getInstance().toField("TcKeetNominasPeriodosDto", "ultimo", Collections.EMPTY_MAP, "ultimo");
 		if(data!= null && data.getData()!= null) {
 			LocalDate tomorrow= data.toDate().plusDays(1);
-			this.year= tomorrow.getYear();
+			this.year = tomorrow.getYear();
 			this.month= tomorrow.getMonthValue();
-			this.day= tomorrow.getDayOfMonth();
-			this.top= this.year+ years;
+			this.day  = tomorrow.getDayOfMonth();
+			this.top  = this.year+ years;
 		} // if
 	}
 	
@@ -86,13 +86,12 @@ public class Semanas {
 			Error.mensaje(e);
 		} // catch		
 		return regresar;
-	} // getSemanaEnCurso
+	} 
 	
 	public TcKeetNominasPeriodosDto getSemanaEnCursoDto() {
 	  TcKeetNominasPeriodosDto regresar= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("fecha", LocalDate.now().toString());
 			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "semanaEnCurso", params);			
 		} // try
@@ -103,14 +102,13 @@ public class Semanas {
 			Methods.clean(params);
 		} // finally		
 		return regresar;
-	} // getSemanaEnCursoDto
+	} 
 	
 	public TcKeetNominasPeriodosDto getSemanaSiguiente() {
 	  TcKeetNominasPeriodosDto regresar= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
       LocalDate siguiente= LocalDate.now();
-			params= new HashMap<>();
 			params.put("fecha", siguiente.plusDays(7).toString());
 			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "semanaEnCurso", params);			
 		} // try
@@ -121,13 +119,12 @@ public class Semanas {
 			Methods.clean(params);
 		} // finally		
 		return regresar;
-	} // getSemanaEnCursoDto
+	} 
 	
 	public TcKeetNominasPeriodosDto getSemanaSiguiente(Long idNominaPeriodo) {
 	  TcKeetNominasPeriodosDto regresar= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idNominaPeriodo", idNominaPeriodo);
 			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "siguiente", params);			
 		} // try
@@ -138,13 +135,12 @@ public class Semanas {
 			Methods.clean(params);
 		} // finally		
 		return regresar;
-	} // getSemanaEnCursoDto
+	} 
 	
 	public int getSemana() throws Exception {
-	  int regresar= 1;
-		Map<String, Object> params=null;
+	  int regresar              = 1;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			Value data= DaoFactory.getInstance().toField("VistaNominaDto", "referencia", params, "semana");
 			if(data!= null && data.getData()!= null) 
@@ -160,10 +156,9 @@ public class Semanas {
 	}
 	
 	public int getSemana(Session sesion) throws Exception {
-	  int regresar= 1;
-		Map<String, Object> params= null;
+	  int regresar              = 1;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			Value data= DaoFactory.getInstance().toField(sesion, "VistaNominaDto", "referencia", params, "semana");
 			if(data!= null && data.getData()!= null) 
@@ -183,27 +178,28 @@ public class Semanas {
 		LocalDate data= LocalDate.of(this.year, this.month, this.day);
 		LOG.info(data.getDayOfWeek().name()+ ", "+ data);
 		if(until< data.getYear())
-			until= data.getYear()+ until;
+			until= data.getYear()+ until+ 1;
 		int count= 1;
-		int pivot= this.year;
+		int pivot= data.plusDays(6).getYear();
 		while (data.getYear()< until) {
 			LocalDate cut= data.plusDays(3);
 			this.end     = data.plusDays(6);
 			// LOG.info(day.getDayOfWeek().name()+ ", "+ day+ " to "+ end+ " count  "+ count);
+      LocalDateTime corte= LocalDateTime.of(cut.getYear(), cut.getMonthValue(), cut.getDayOfMonth(), 8, 0, 0, 0);
+			if(pivot!= this.end.getYear()) {
+				count= 1;
+				pivot= this.end.getYear();
+			} // if	
 			semana= new TcKeetNominasPeriodosDto(
-				LocalDateTime.of(cut.getYear(), cut.getMonthValue(), cut.getDayOfMonth(), 8, 0, 0, 0),  // LocalDateTime corte, 
+				corte,  // LocalDateTime corte, 
 				-1L, // Long idNominaPeriodo, 
 				data, // LocalDate inicio, 
 				this.end, // LocalDate termino, 
 				new Long(count), // Long orden, 
-				new Long(data.getYear()) // Long ejercicio
+				new Long(this.end.getYear()) // Long ejercicio
 			);
 			LOG.info(count+ ", "+ semana);
 			data= this.end.plusDays(1);
-			if(pivot!= data.getYear()) {
-				count= 0;
-				pivot= data.getYear();
-			} // if	
 			count++;
 			DaoFactory.getInstance().insert(semana);
 		} // while
@@ -214,7 +210,7 @@ public class Semanas {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Semanas semanas= new Semanas(3);
+		Semanas semanas= new Semanas(4);
 		semanas.process();
 	}
 	
