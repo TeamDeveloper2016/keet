@@ -1,9 +1,9 @@
 package mx.org.kaana.mantic.catalogos.personas.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
+import mx.org.kaana.keet.db.dto.TcKeetPersonasPensionesDto;
 
-public class PersonaBeneficiario extends TcKeetPersonasBeneficiariosDto {
+public class PersonaAlimenticia extends TcKeetPersonasPensionesDto {
 	
 	private static final long serialVersionUID = 731679150148040999L;	
 	private ESql sqlAccion;
@@ -11,23 +11,23 @@ public class PersonaBeneficiario extends TcKeetPersonasBeneficiariosDto {
 	private Long consecutivo;
 	private Boolean modificar;	
 
-	public PersonaBeneficiario() {
+	public PersonaAlimenticia() {
 		this(-1L);
 	}
 
-	public PersonaBeneficiario(Long key) {
+	public PersonaAlimenticia(Long key) {
 		this(key, ESql.UPDATE);
 	}
 	
-	public PersonaBeneficiario(Long key, ESql sqlAccion) {
+	public PersonaAlimenticia(Long key, ESql sqlAccion) {
 		this(key, sqlAccion, false);
 	}
 	
-	public PersonaBeneficiario(Long key, ESql sqlAccion, Boolean nuevo) {		
+	public PersonaAlimenticia(Long key, ESql sqlAccion, Boolean nuevo) {		
 		this(key, sqlAccion, nuevo, 0L, false);
 	}
 	
-	public PersonaBeneficiario(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar) {		
+	public PersonaAlimenticia(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar) {		
 		super(key);
 		this.sqlAccion  = sqlAccion;
 		this.nuevo      = nuevo;

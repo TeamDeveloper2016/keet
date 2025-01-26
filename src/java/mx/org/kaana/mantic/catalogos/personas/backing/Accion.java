@@ -33,6 +33,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaAlimenticia;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.MotorBusqueda;
@@ -181,9 +182,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally		
-	} // loadTiposParentescos
+	}
 	
-	private void loadBancos(){
+	private void loadBancos() {
 		List<UISelectItem> bancos = null;
 		Map<String, Object> params= new HashMap<>();		
 		try {
@@ -355,6 +356,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if(!this.registroPersona.getPersonasBeneficiarios().isEmpty()){
 						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
 						this.doConsultarBeneficiario();
+					} // if					
+					if(!this.registroPersona.getPersonasAlimenticias().isEmpty()){
+						this.registroPersona.setPersonaAlimenticiaSeleccion(this.registroPersona.getPersonasAlimenticias().get(0));	
+						this.doConsultarAlimenticia();
 					} // if					
 					this.attrs.put("idEmpresa", new UISelectEntity(this.registroPersona.getIdEmpresa()));					
           if(this.registroPersona.getIdContratista()== null)
@@ -841,7 +846,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch				
-	} // loadAtributosComplemento
+	} 
 	
   public void clearAtributos() {
     try {
@@ -856,7 +861,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-  } // clearAtributos
+  } 
 
   public void doAgregarCliente() {
     try {
@@ -883,12 +888,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.registroPersona.getDomicilio().setDomicilio(new Entity());
       this.registroPersona.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
 			this.registroPersona.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
-      toAsignaEntidad();
-			loadMunicipios();
+      this.toAsignaEntidad();
+			this.loadMunicipios();
       this.registroPersona.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
 			this.registroPersona.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
-      toAsignaMunicipio();
-			loadLocalidades();
+      this.toAsignaMunicipio();
+			this.loadLocalidades();
       this.registroPersona.getDomicilio().setLocalidad(domicilio.getLocalidad());			
       this.registroPersona.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
 			this.registroPersona.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
@@ -907,7 +912,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doConsultarPersonaDomicilio	
+  } 
 	
 	public void doActualizaDomicilio(){
 		try {
@@ -920,20 +925,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doActualizaDomicilio
+	} 
 	
 	public void doEliminarDomicilio() {
 		try {
-			this.registroPersona.doEliminarPersonaDomicilio();;
+			this.registroPersona.doEliminarPersonaDomicilio();
 			this.registroPersona.setDomicilio(new Domicilio());
-      loadDomicilios();
-      doLoadAtributos(true);
+      this.loadDomicilios();
+      this.doLoadAtributos(true);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doActualizaDomicilio
+	} 
 	
 	public void doAgregarBeneficiario() {
     try {
@@ -944,36 +949,36 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doAgregarCliente
+  } 
 	
-	public void doActualizaBeneficiario(){
+	public void doActualizaBeneficiario() {
 		try {
-			this.registroPersona.doActualizarPersonaBeneficiario();;
+			this.registroPersona.doActualizarPersonaBeneficiario();
 			this.registroPersona.setPersonaBeneficiario(new PersonaBeneficiario());      
-      this.loadAtributosBeneficiario();
+      this.toLoadAtributosBeneficiario();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doActualizaDomicilio
+	} 
 	
-	public void doEliminarBeneficiario(){
+	public void doEliminarBeneficiario() {
 		try {
-			this.registroPersona.doEliminarPersonaBeneficiario();;
+			this.registroPersona.doEliminarPersonaBeneficiario();
 			this.registroPersona.setPersonaBeneficiario(new PersonaBeneficiario());      
-      loadAtributosBeneficiario();
+      this.toLoadAtributosBeneficiario();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doActualizaDomicilio
+	} 
 	
 	public void doConsultarBeneficiario() {
     PersonaBeneficiario beneficiario= null;    
     try {
-      this.registroPersona.doConsultarPersonaBeneficiario();;
+      this.registroPersona.doConsultarPersonaBeneficiario();
 			beneficiario = this.registroPersona.getBeneficiarioPivote();        
       this.registroPersona.getPersonaBeneficiario().setNombre(beneficiario.getNombre());
       this.registroPersona.getPersonaBeneficiario().setPaterno(beneficiario.getPaterno());
@@ -985,31 +990,31 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doConsultarBeneficiario
+  } 
 	
-	private void loadAtributosBeneficiario() throws Exception{		
+	private void toLoadAtributosBeneficiario() throws Exception{		
 		try {
 			if (!this.registroPersona.getPersonaBeneficiario().isValid()) 
-        clearAtributosBeneficiario();      
+        this.clearAtributosBeneficiario();      
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch				
-	} // loadAtributosComplemento
+	} 
 	
   public void clearAtributosBeneficiario() {
     try {
+      this.registroPersona.getPersonaBeneficiario().setNombre("");      
+      this.registroPersona.getPersonaBeneficiario().setPaterno("");
+      this.registroPersona.getPersonaBeneficiario().setMaterno("");
       this.registroPersona.getPersonaBeneficiario().setFechaNacimiento(LocalDate.now());
       this.registroPersona.getPersonaBeneficiario().setIdTipoParentesco(null);
-      this.registroPersona.getPersonaBeneficiario().setMaterno("");
-      this.registroPersona.getPersonaBeneficiario().setPaterno("");
-      this.registroPersona.getPersonaBeneficiario().setNombre("");      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-  } // clearAtributos
+  } 
 	
 	private void loadProveedores() throws Exception {
     List<UISelectEntity> proveedores= null;
@@ -1165,5 +1170,79 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
+ 
+	public void doAgregarAlimenticia() {
+    try {
+      this.registroPersona.doAgregarPersonaAlimenticia();
+      this.registroPersona.setPersonaAlimenticia(new PersonaAlimenticia());      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } 
+	
+	public void doActualizaAlimenticia() {
+		try {
+			this.registroPersona.doActualizarPersonaAlimenticia();
+			this.registroPersona.setPersonaAlimenticia(new PersonaAlimenticia());      
+      this.toLoadAtributosAlimenticia();
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} 
+	
+	public void doEliminarAlimenticia() {
+		try {
+			this.registroPersona.doEliminarPersonaAlimenticia();
+			this.registroPersona.setPersonaAlimenticia(new PersonaAlimenticia());      
+      this.toLoadAtributosAlimenticia();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} 
+	
+	public void doConsultarAlimenticia() {
+    PersonaAlimenticia alimenticia= null;    
+    try {
+      this.registroPersona.doConsultarPersonaAlimenticia();
+			alimenticia = this.registroPersona.getAlimenticiaPivote();        
+      this.registroPersona.getPersonaAlimenticia().setNombre(alimenticia.getNombre());
+      this.registroPersona.getPersonaAlimenticia().setPaterno(alimenticia.getPaterno());
+      this.registroPersona.getPersonaAlimenticia().setMaterno(alimenticia.getMaterno());
+      this.registroPersona.getPersonaAlimenticia().setPorcentaje(alimenticia.getPorcentaje());      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } 
+  
+	private void toLoadAtributosAlimenticia() throws Exception {		
+		try {
+			if (!this.registroPersona.getPersonaAlimenticia().isValid()) 
+        this.clearAtributosAlimenticia();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+	} 
+ 
+  public void clearAtributosAlimenticia() {
+    try {
+      this.registroPersona.getPersonaAlimenticia().setNombre("");      
+      this.registroPersona.getPersonaAlimenticia().setPaterno("");
+      this.registroPersona.getPersonaAlimenticia().setMaterno("");
+      this.registroPersona.getPersonaAlimenticia().setPorcentaje(0D);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } 
   
 }

@@ -17,6 +17,7 @@ import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaAlimenticia;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
@@ -55,10 +56,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	public List<PersonaDomicilio> toPersonasDomicilio(boolean update) throws Exception {
 		List<PersonaDomicilio> regresar= null;
 		TcManticDomiciliosDto domicilio= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		Entity entityDomicilio         = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaDomicilio.class, "TrManticPersonaDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			for(PersonaDomicilio personaDomicilio: regresar){
@@ -93,27 +93,25 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<PersonaTipoContacto> toPersonasTipoContacto() throws Exception {
 		List<PersonaTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "TrManticPersonaTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toClientesTipoContacto	
+	} 
 	
 	public Long toClienteRepresentante() throws Exception{
 		Long regresar= -1L;
-		Entity registro= null;
-		Map<String, Object>params= null;
+		Entity registro          = null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_representante=" + this.idPersona + " and id_principal=1");
 			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticClienteRepresentanteDto", "row", params);
 			if(registro!= null)
@@ -126,11 +124,10 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	}
 	
 	public Long toProveedorAgente() throws Exception{
-		Long regresar= -1L;
-		Entity registro= null;
-		Map<String, Object>params= null;
+		Long regresar            = -1L;
+		Entity registro          = null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_agente=" + this.idPersona + " and id_principal=1");
 			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticProveedorAgenteDto", "row", params);
 			if(registro!= null)
@@ -194,9 +191,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public TcKeetDeudoresDto toDeudor(Long idEmpresaPersona) throws Exception{
 		TcKeetDeudoresDto regresar= null;
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + idEmpresaPersona);
 			regresar= (TcKeetDeudoresDto) DaoFactory.getInstance().findFirst(TcKeetDeudoresDto.class, "row", params);	
 			if(regresar== null)
@@ -209,16 +205,15 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPuestoPersona
+	} 
 	
 	public List<PersonaBeneficiario> toPersonasBeneficiarios() throws Exception{
 		List<PersonaBeneficiario> regresar= null;
-		Map<String, Object>params         = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + this.idEmpresaPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaBeneficiario.class, "TcKeetPersonasBeneficiariosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);			
-		} // try
+		} // try 
 		catch (Exception e) {			
 			throw e;
 		} // catch
@@ -226,13 +221,28 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPuestoPersona
+	} 
+	
+	public List<PersonaAlimenticia> toPersonasAlimenticias() throws Exception{
+		List<PersonaAlimenticia> regresar= null;
+		Map<String, Object>params        = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + this.idEmpresaPersona);
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaAlimenticia.class, "TcKeetPersonasPensionesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} 
 	
 	public List<PersonaBanco> toPersonasBancos() throws Exception {
 		List<PersonaBanco> regresar= null;
-		Map<String, Object>params  = null;
+		Map<String, Object>params  = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + this.idEmpresaPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaBanco.class, "TcKeetPersonasBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!regresar.isEmpty()){
@@ -249,7 +259,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toClientesTipoContacto	
+	} 
   
 	public List<Especialidad> toPersonaDepartamentos(Long idEmpresaPersona) throws Exception{
 		List<Especialidad> regresar= null;
@@ -267,7 +277,6 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPersonaDepartamentos
-	
+	} 
   
 }

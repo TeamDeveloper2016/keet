@@ -59,9 +59,13 @@
 				'clabe'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor'},
 				'contenedorGrupos\\:nombreB'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:paternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas'},				
+				'contenedorGrupos\\:maternoB'     : {validaciones: 'libre', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas'},				
 				'contenedorGrupos\\:nacimientoB'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'beneficiario'},				
-				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombreP'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:paternoP'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:maternoP'     : {validaciones: 'libre', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},				
+				'contenedorGrupos\\:porcentajeP'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
 			};					
 			
@@ -385,6 +389,41 @@
                   <p:selectOneMenu id="parentesco" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.idTipoParentesco}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.parentescos}"/>
                   </p:selectOneMenu>	                  
+                </p:panelGrid>
+              </p:panelGrid>
+            </p:tab>
+						<p:tab title="Pensión alimenticia">
+              <p:panelGrid id="panelTablaAlimenticia" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-12, janal-wid-88">
+                <p:dataList id="tablaAlimenticia" value="#{manticCatalogosPersonasAccion.registroPersona.personasAlimenticias}" var="alimenticia" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
+                  <p:commandLink update="contenedorGrupos:formularioAlimenticia tablaAlimenticia contenedorGrupos:nombreP contenedorGrupos:paternoP contenedorGrupos:maternoP contenedorGrupos:porcentajeP" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarAlimenticia}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">
+										<f:setPropertyActionListener value="#{alimenticia}" target="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticiaSeleccion}" />
+										<i class="fa fa-minus-square fa-lg"></i>   
+                  </p:commandLink>		
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioAlimenticia tablaAlimenticia contenedorGrupos:nombreP contenedorGrupos:paternoP contenedorGrupos:maternoP contenedorGrupos:porcentajeP" title="Actualizar" action="#{manticCatalogosPersonasAccion.doActualizaAlimenticia}" rendered="#{alimenticia.modificar}">
+                    <f:setPropertyActionListener value="#{alimenticia}" target="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticiaSeleccion}" />
+										<i class="fa fa-check-square fa-lg"></i>
+                  </p:commandLink>																				
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioAlimenticia tablaAlimenticia contenedorGrupos:nombreP contenedorGrupos:paternoP contenedorGrupos:maternoP contenedorGrupos:porcentajeP" title="Pensión alimenticia #{alimenticia.consecutivo}" action="#{manticCatalogosPersonasAccion.doConsultarAlimenticia}">
+                    <f:setPropertyActionListener value="#{alimenticia}" target="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticiaSeleccion}" />		
+										<p:outputLabel value="Pensión alimenticia #{alimenticia.consecutivo}"/>
+                  </p:commandLink>                                                                        
+                  <f:facet name="footer" class="alinear-izquierda">																
+                    <p:commandLink title="Agregar pensión alimenticia" action="#{manticCatalogosPersonasAccion.doAgregarAlimenticia}" process="@this contenedorGrupos:nombreP contenedorGrupos:paternoP contenedorGrupos:maternoP contenedorGrupos:porcentajeP" update="contenedorGrupos:tablaAlimenticia contenedorGrupos:formularioAlimenticia" onstart="return janal.partial('alimenticia', true);" oncomplete="janal.refresh();janal.desbloquear();">
+											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar pensión alimenticia"/></i>
+										</p:commandLink>		              										
+                  </f:facet>
+                </p:dataList>
+                <p:panelGrid id="formularioAlimenticia" columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel value="Cuando finalice la captura por favor dar clic en + agregar pensión alimenticia" styleClass="janal-color-black janal-font-bold"/>
+                  <p:separator/>
+                  <p:outputLabel for="nombreP" value="Nombre:"/>
+                  <p:inputText id="nombreP" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticia.nombre}" />
+                  <p:outputLabel for="paternoP" value="1er apellido:"/>
+                  <p:inputText id="paternoP" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticia.materno}" />
+                  <p:outputLabel for="maternoP" value="2do apellido:"/>
+                  <p:inputText id="maternoP" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticia.paterno}"/>	
+                  <p:outputLabel for="porcentajeP" value="Porcentaje:"/>
+                  <p:inputNumber id="porcentajeP" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaAlimenticia.porcentaje}" converter="javax.faces.Double" decimalPlaces="2" maxValue="99" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero"/>	
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>

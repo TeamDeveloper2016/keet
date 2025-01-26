@@ -7,6 +7,33 @@
   </model>
 
   <dml>
+    <unit id="TcKeetPersonasPensionesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_personas_pensiones
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_personas_pensiones
+where      
+  paterno = '{paterno}' and nombre = '{nombre}'
+      </select>
+			<select id="maximo">
+select      
+  max(id_persona_pension) maximo
+from      
+  tc_keet_personas_pensiones
+      </select>
+			<delete id="rows">
+delete from tc_keet_personas_pensiones where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+    </unit>    
     <unit id="TcKeetAgrupacionesDto">
       <select id="row">
 select      
@@ -4662,29 +4689,29 @@ where
     </unit>	
     <unit id="TcKeetPersonasBeneficiariosDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_keet_personas_beneficiarios
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_keet_personas_beneficiarios
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_personas_beneficiarios
-        where      
-          id_persona_beneficiario = {idPersonaBeneficiario}
+select      
+  *
+from      
+  tc_keet_personas_beneficiarios
+where      
+  id_persona_beneficiario = {idPersonaBeneficiario}
       </select>
 			<select id="maximo">
-        select      
-          max(id_persona_beneficiario) maximo
-        from      
-          tc_keet_personas_beneficiarios
+select      
+  max(id_persona_beneficiario) maximo
+from      
+  tc_keet_personas_beneficiarios
       </select>
 			<delete id="rows">
-				delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
+delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
 			</delete>
     </unit>		
     <unit id="TcKeetProyectosArchivosDto">
