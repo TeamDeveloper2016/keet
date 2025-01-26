@@ -25,9 +25,10 @@
 				'contenedorGrupos\\:sexo'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idContrato'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idContratista': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:categoria'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:puesto'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idContratista': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:ingreso'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:contrato'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:idSeguro'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -144,7 +145,7 @@
 							<p:panelGrid id="panelEmpresa" columns="1" layout="grid" styleClass="janal-wid-100">										
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadPuestos}" process="@this idEmpresa" update="contenedorGrupos:puesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadPuestos();"/>										
+									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadCategorias}" process="@this idEmpresa" update="contenedorGrupos:puesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadPuestos();"/>										
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -165,8 +166,13 @@
 									<f:selectItem itemValue="1" itemLabel="SI"/>
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>	
+								<p:outputLabel for="categoria" value="Categoria:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+                <p:selectOneMenu id="categoria" value="#{manticCatalogosPersonasAccion.registroPersona.idAgrupacion}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doChangeCategoria}" onstart="return janal.bloquear()" process="@this" update="@(.empleado)" oncomplete="reloadPuestos(); janal.desbloquear()"/>
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.categorias}"/>
+								</p:selectOneMenu>																
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-                <p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="empleado janal-wid-100-txt" panelStyleClass="janal-wid-99" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doChangePuesto}" onstart="return janal.bloquear()" process="@this" update="@(.empleado)" oncomplete="janal.desbloquear()"/>
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>																
@@ -177,7 +183,7 @@
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-                <p:selectCheckboxMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.departamentos}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-99" converter="janal.convertidor.Entity" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
+                <p:selectCheckboxMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.departamentos}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" styleClass="empleado janal-wid-100-txt" panelStyleClass="janal-wid-99" converter="janal.convertidor.Entity" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
                   <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}" var="two" itemValue="#{two.key}" itemLabel="#{two.nombre}"/>                
                 </p:selectCheckboxMenu> 
 								<p:outputLabel for="contratista" value="Contratista:"/>
@@ -197,6 +203,7 @@
 								<p:calendar id="ingreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.ingreso}" placeholder="ejemplo 12/03/2019" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="contrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:calendar id="contrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contratacion}" placeholder="ejemplo 12/03/2019"  mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+                <p:remoteCommand name="reloadPuestos" process="@this" update="puesto departamento"/>
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">

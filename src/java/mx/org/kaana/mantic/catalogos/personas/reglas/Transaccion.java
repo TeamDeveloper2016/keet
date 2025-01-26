@@ -238,6 +238,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			this.persona.getEmpresaPersona().setIdPersona(idPersona);			
 			this.persona.getEmpresaPersona().setIdEmpresa(this.persona.getIdEmpresa());						
+			this.persona.getEmpresaPersona().setIdAgrupacion(this.persona.getIdAgrupacion());						
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("ALTA DE EMPLEADO");
@@ -376,6 +377,7 @@ public class Transaccion extends IBaseTnx {
 				  empresaPersonal.setIdDepartamento(((UISelectEntity)this.persona.getDepartamentos()[0]).getKey());
         else
 				  empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
+				empresaPersonal.setIdAgrupacion(this.persona.getIdAgrupacion());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdContratista(this.persona.getEmpresaPersona().getIdContratista());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());

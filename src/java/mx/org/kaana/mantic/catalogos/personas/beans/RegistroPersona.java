@@ -40,6 +40,7 @@ public class RegistroPersona implements Serializable {
 	private Long countIndice;
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
+	private Long idAgrupacion;
 	private Long idPuesto;
 	private Long idContratista;
 	private Long idEmpresa;
@@ -55,6 +56,7 @@ public class RegistroPersona implements Serializable {
 		this.idPersona          = idPersona;
 		this.contadores         = new ContadoresListas();
 		this.countIndice        = 0L;
+		this.idAgrupacion       = -1L;
 		this.idPuesto           = -1L;
     this.idContratista      = -1L;
 		this.idEmpresa          = -1L;
@@ -76,6 +78,7 @@ public class RegistroPersona implements Serializable {
 		this.countIndice          = 0L;
 		this.domicilio            = domicilio;
 		this.domicilioPivote      = domicilio;
+		this.idAgrupacion         = -1L;
 		this.idPuesto             = -1L;
     this.idContratista        = -1L;
 		this.idEmpresa            = -1L;
@@ -161,6 +164,14 @@ public class RegistroPersona implements Serializable {
 	public void setDomicilioPivote(Domicilio domicilioPivote) {
 		this.domicilioPivote = domicilioPivote;
 	}
+
+  public Long getIdAgrupacion() {
+    return idAgrupacion;
+  }
+
+  public void setIdAgrupacion(Long idAgrupacion) {
+    this.idAgrupacion = idAgrupacion;
+  }
 
 	public Long getIdPuesto() {
 		return idPuesto;
@@ -292,6 +303,7 @@ public class RegistroPersona implements Serializable {
 			} // for				
 			this.personasTiposContacto= motor.toPersonasTipoContacto();		
 			this.personasBancos= motor.toPersonasBancos();		
+			this.idAgrupacion= motor.toCategoriaPersona();
 			this.idPuesto= motor.toPuestoPersona();
       this.idContratista= motor.toContratistaPersona();
 			this.idEmpresa= motor.toEmpresaPersona();

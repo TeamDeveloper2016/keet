@@ -7,6 +7,63 @@
   </model>
 
   <dml>
+    <unit id="TcKeetAgrupacionesDto">
+      <select id="row">
+select      
+  tc_keet_agrupaciones.id_agrupacion as id_key,
+  tc_keet_agrupaciones.*
+from      
+  tc_keet_agrupaciones
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_agrupaciones
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetAgrupacionesPuestosDto">
+      <select id="row">
+select      
+  tc_keet_agrupaciones_puestos.id_agrupacion_puesto as id_key,
+  tc_keet_agrupaciones_puestos.*
+from      
+  tc_keet_agrupaciones_puestos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_agrupaciones_puestos
+where      
+  id_agrupacion = {idAgrupacion} and id_puesto = {idPuesto}
+      </select>
+    </unit>    
+    <unit id="TcKeetPuestosDepartamentosDto">
+      <select id="row">
+select      
+  tc_keet_puestos_departamentos.id_puesto_departamento as id_key,        
+  tc_keet_puestos_departamentos.*
+from      
+  tc_keet_puestos_departamentos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_puestos_departamentos
+where      
+  id_puesto = {idPuesto} and id_departamento = {idDepartamento}
+      </select>
+    </unit>    
     <unit id="TcKeetNotasFacturasDto">
       <select id="row">
 select      
@@ -4027,51 +4084,65 @@ where
     </unit>		
     <unit id="TcKeetDepartamentosDto">
       <select id="row">
-        select      
-          tc_keet_departamentos.id_departamento as id_key,
-					tc_keet_departamentos.*
-        from      
-          tc_keet_departamentos
-        where 
-          {condicion} 
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_departamentos
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_keet_departamentos
+where      
+  nombre = '{nombre}'
       </select>
       <select id="especialidades">
-        select      
-          tc_keet_departamentos.id_departamento as id_key,
-					tc_keet_departamentos.*
-        from      
-          tc_keet_departamentos
-        where 
-          id_especialidad= 1
-				order by
-				  nombre 
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  id_especialidad= 1
+order by
+  nombre 
       </select>
       <select id="residentes">
-        select      
-          tc_keet_departamentos.id_departamento as id_key,
-					tc_keet_departamentos.*
-        from      
-          tc_keet_departamentos
-        where 
-          id_departamento in (1, 21)
-				order by
-				  nombre 
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  id_departamento in (1, 21)
+order by
+  nombre 
       </select>
       <select id="igual">
-        select      
-          *
-        from      
-          tc_keet_departamentos
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_keet_departamentos
+where      
+  nombre = '{nombre}'
+      </select>
+      <select id="agrupacion">
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+inner join
+  tc_keet_puestos_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puestos_departamentos.id_departamento
+where 
+  tc_keet_puestos_departamentos.id_puesto= {idPuesto}
+  and tc_keet_puestos_departamentos.id_agrupacion= {idAgrupacion}      
+order by
+  tc_keet_departamentos.nombre
       </select>
 		</unit>	
     <unit id="TcKeetDivisionesDto">

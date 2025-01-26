@@ -4732,52 +4732,68 @@ order by
     </unit>
 	    <unit id="TcManticPresentacionesDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_presentaciones
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_mantic_presentaciones
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_presentaciones
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_mantic_presentaciones
+where      
+  nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticPuestosDto">
       <select id="row">
-       select 
-					tc_mantic_puestos.id_puesto as id_key,
-					tc_mantic_puestos.*
-				from 
-					tc_mantic_puestos
-				where 
-					{condicion} 
-				order by
-				  orden
+select 
+   tc_mantic_puestos.id_puesto as id_key,
+   tc_mantic_puestos.*
+ from 
+   tc_mantic_puestos
+ where 
+   {condicion} 
+ order by
+   orden
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_puestos
-        where      
-          id_puesto = {idPuesto}
+select      
+  *
+from      
+  tc_mantic_puestos
+where      
+  id_puesto = {idPuesto}
       </select>
       <select id="igual">
-        select      
-          *
-        from      
-          tc_mantic_puestos
-        where      
-          nombre = '{nombre}'
+select      
+  *
+from      
+  tc_mantic_puestos
+where      
+  nombre = '{nombre}'
       </select>
 			<select id="nextOrden">
-				select max(orden)+1 orden from tc_mantic_puestos
+select 
+  max(orden)+1 orden 
+from 
+  tc_mantic_puestos
+			</select>
+			<select id="agrupacion">
+select 
+  tc_mantic_puestos.id_puesto as id_key,
+  tc_mantic_puestos.*
+from 
+  tc_mantic_puestos
+inner join
+  tc_keet_agrupaciones_puestos on tc_mantic_puestos.id_puesto= tc_keet_agrupaciones_puestos.id_puesto
+where 
+  tc_keet_agrupaciones_puestos.id_agrupacion= {idAgrupacion}
+order by
+  tc_mantic_puestos.nombre
 			</select>
     </unit>
 	    <unit id="TcManticSinoDto">

@@ -125,16 +125,25 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.loadProveedores();
 		this.loadEstadosCiviles();
 		this.loadTiposParentescos();
-		this.loadDepartamentos();
     this.toLoadTiposPagos();
 	} // loadCollections	
 	
-	private void loadDepartamentos() {
+	private void toLoadDepartamentos() {
 		List<UISelectItem> departamentos= null;
 		Map<String, Object> params      = new HashMap<>();		
 		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-			departamentos= UIEntity.build("TcKeetDepartamentosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("idAgrupacion", this.registroPersona.getIdAgrupacion());			
+          params.put("idPuesto", this.registroPersona.getIdPuesto());			
+          departamentos= UIEntity.build("TcKeetDepartamentosDto", "agrupacion", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+          break;
+        case "gylvi": 
+        case "triana":
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+          departamentos= UIEntity.build("TcKeetDepartamentosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+          break;
+      } // swtich
 			this.attrs.put("departamentos", departamentos);
       if(!EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion"))) {       
         this.registroPersona.setDepartamentos(new Object[this.registroPersona.getEspecialidades().size()]);
@@ -144,6 +153,8 @@ public class Accion extends IBaseAttribute implements Serializable {
           if(index>= 0)
             this.registroPersona.getDepartamentos()[count++]= departamentos.get(index);
         } // for
+        if(count== 0)
+          this.registroPersona.setDepartamentos(new Object[] {});
       } // if
 		} // try
 		catch (Exception e) {
@@ -153,7 +164,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally		
-	} // loadDepartamentos
+	} 
 	
 	private void loadTiposParentescos(){
 		List<UISelectItem> parentescos= null;
@@ -203,22 +214,24 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch				
-	} // loadEmpresas
+	} 
 	
-	public void doLoadPuestos() {
-		List<UISelectItem> puestos= null;
-    Map<String, Object> params= new HashMap<>();
+	public void doLoadCategorias() {
+		List<UISelectItem> categorias= null;
+    Map<String, Object> params   = new HashMap<>();
     try {
-      // params.put(Constantes.SQL_CONDICION, "id_empresa=" + ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!puestos.isEmpty()) {
-				this.attrs.put("puestos", puestos);
-        if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion")))
-				  this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+      categorias = UISelect.build("TcKeetAgrupacionesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!categorias.isEmpty()) {
+				this.attrs.put("categorias", categorias);
+        if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion"))) {
+				  this.attrs.put("idAgrupacion", UIBackingUtilities.toFirstKeySelectItem(categorias));
+          this.registroPersona.setIdAgrupacion((Long)this.attrs.get("idAgrupacion"));
+        } // if  
         else
-          this.attrs.put("idPuesto", puestos.get(puestos.indexOf(new UISelectItem(this.registroPersona.getIdPuesto()))));
+          this.attrs.put("idAgrupacion", categorias.get(categorias.indexOf(new UISelectItem(this.registroPersona.getIdAgrupacion()))));
 			} // if
+      this.toLoadPuestos();
     } // try
     catch (Exception e) {
       throw e;
@@ -226,7 +239,48 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-	} // loadPuestos
+	} 
+  
+	private void toLoadPuestos() {
+		List<UISelectItem> puestos= null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "cafu":
+          params.put("idAgrupacion", this.registroPersona.getIdAgrupacion());
+          puestos = UISelect.build("TcManticPuestosDto", "agrupacion", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+          break;
+        case "gylvi": 
+        case "triana":
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+          puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+          break;
+      } // swtich
+			if(!Objects.equals(puestos, null) && !puestos.isEmpty()) {
+				this.attrs.put("puestos", puestos);
+        if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion"))) {
+				  this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+          this.registroPersona.setIdPuesto((Long)this.attrs.get("idPuesto"));
+        } // if  
+        else {
+          int index= puestos.indexOf(new UISelectItem(this.registroPersona.getIdPuesto()));
+          if(index> 0)
+            this.attrs.put("idPuesto", puestos.get(index));
+          else {
+            this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+            this.registroPersona.setIdPuesto((Long)this.attrs.get("idPuesto"));
+          } // else
+        } // else  
+			} // if
+      this.toLoadDepartamentos();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
 	
 	private void loadEstadosCiviles() {
 		List<UISelectItem> civiles= null;
@@ -309,7 +363,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
 			this.registroPersona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
-      this.doLoadPuestos();
+      this.doLoadCategorias();
       this.loadContratistas();
 			this.doActualizaIconEstatus();
     } // try
@@ -1043,29 +1097,38 @@ public class Accion extends IBaseAttribute implements Serializable {
 			UIBackingUtilities.execute("refreshValidateNss();");
   } // onTabChange
 	
-	private void loadBitacora(){
-		List<Columna> campos     = null;
-		Map<String, Object>params= null;
+	private void loadBitacora() {
+		List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
 		try {
-			campos= new ArrayList<>();			
-			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			params= new HashMap<>();
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			params.put("idKey", this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());
 			params.put("proceso", "Empleados");
 			params.put("campo", "idActivo");			
-			this.lazyModelBitacora= new FormatLazyModel("TcKeetBitacorasDto", "bitacora", params, campos);
+			this.lazyModelBitacora= new FormatLazyModel("TcKeetBitacorasDto", "bitacora", params, columns);
 			UIBackingUtilities.resetDataTable("contenedorGrupos:tablaBitacora");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		finally{
-			Methods.clean(campos);
+		finally {
+			Methods.clean(columns);
 			Methods.clean(params);
 		} // finally
 	} 
   
+  public void doChangeCategoria() {
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        this.toLoadPuestos();
+        break;
+      case "gylvi": 
+      case "triana":
+        break;
+    } // swtich
+  }
+ 
   public void doChangePuesto() {
     if(!Objects.equals(this.getRegistroPersona().getIdPuesto(), 6L))
       this.getRegistroPersona().getEmpresaPersona().setIdPorDia(2L);
@@ -1086,7 +1149,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doUpdateSueldoSemanal() {
     try {      
-      Double sueldoImss= this.registroPersona.getEmpresaPersona().getSueldoImss();
+      Double sueldoImss = this.registroPersona.getEmpresaPersona().getSueldoImss();
       Double sobreSueldo= this.registroPersona.getEmpresaPersona().getSobreSueldo();
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":
