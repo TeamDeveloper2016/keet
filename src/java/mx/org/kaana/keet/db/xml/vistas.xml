@@ -7437,6 +7437,7 @@ select
   'EMPLEADO' as tipo,
   tr_mantic_empresa_personal.clave,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
+  tr_mantic_empresa_personal.factor_infonavit as infonavit,
   tr_mantic_empresa_personal.sueldo_semanal,
   tr_mantic_empresa_personal.sueldo_imss,
   tr_mantic_empresa_personal.sobre_sueldo,
@@ -7446,6 +7447,7 @@ select
   tc_mantic_puestos.id_puesto,
   tc_mantic_personas.id_persona,
   tc_mantic_puestos.nombre as puesto,					
+  tc_keet_agrupaciones.nombre as categoria,
   tc_keet_departamentos.nombre as departamento,
   ifnull(concat(tt_mantic_personas.nombres, ' ', ifnull(tt_mantic_personas.paterno, ''), ' ', ifnull(tt_mantic_personas.materno, '')), '') as contratista
 from
@@ -7462,6 +7464,8 @@ inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 inner join 
   tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_agrupaciones on tr_mantic_empresa_personal.id_agrupacion= tc_keet_agrupaciones.id_agrupacion
 left join 
   tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratistas_departamentos.id_empresa_persona
 left join 
@@ -7485,6 +7489,7 @@ select
   'SUBCONTRATISTA' as tipo,
   tc_mantic_proveedores.clave,
   tc_mantic_proveedores.razon_social as nombre_completo,
+  0 as infonavit,
   0 as sueldo_semanal,
   0 as sueldo_imss,
   0 as sobre_sueldo,
@@ -7494,6 +7499,7 @@ select
   -1 as id_puesto,
   tc_mantic_proveedores.id_proveedor as id_persona,
   'SUBCONTRATISTA' as puesto,					
+  'EXTERNOS' as categoria,
   tc_keet_departamentos.nombre as departamento,
   '' as contratista
 from

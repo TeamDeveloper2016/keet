@@ -194,11 +194,11 @@
 									</f:facet>
 									<h:outputText value="#{row['apodo']}"/>
 								</p:column>														
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}">
 									<f:facet name="header">
-										<h:outputText value="Importe"/>
+										<h:outputText value="Neto"/>
 									</f:facet>
-									<h:outputText value="#{row['importe']}"/>
+									<h:outputText value="#{row['neto']}"/>
 								</p:column>	
 								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-80">
 									<p:commandButton icon="fa fa-refresh" process="@this tabla" update="tabla @(.nominas)" action="#{keetNominasAccion.doAccion}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">

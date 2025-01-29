@@ -226,7 +226,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			params= this.toPrepare();
 			params.put("sortOrder", "order by tr_mantic_empresa_personal.clave");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PERSONAS.getProceso(), EExportacionXls.PERSONAS.getIdXml(), EExportacionXls.PERSONAS.getNombreArchivo()), EExportacionXls.PERSONAS, 
-				"SUCURSAL,CODIGO,RFC,NOMBRE,1ER APELLIDO,2DO APELLIDO,DEPARTAMENTO,PUESTO,CONTRATISTA,CONTRATACION,INGRESO,BAJA,ACTIVO,SEGURO,NSS,SUELDO SEMANAL,SUELDO IMSS,SOBRE SUELDO"));
+				"SUCURSAL,CODIGO,RFC,NOMBRE,1ER APELLIDO,2DO APELLIDO,CATEGORIA,PUESTO,DEPARTAMENTO,CONTRATISTA,CONTRATACION,INGRESO,BAJA,ACTIVO,SEGURO,NSS,INFONAVIT,SUELDO SEMANAL,SUELDO IMSS,SOBRE SUELDO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
 		} // try

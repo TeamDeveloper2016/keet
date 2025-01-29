@@ -340,7 +340,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by id_tipo_proceso, id_nomina, clave, nombre_completo");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nombre", "");
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA.getProceso(), EExportacionXls.NOMINA.getIdXml(), EExportacionXls.NOMINA.getNombreArchivo()), EExportacionXls.NOMINA, "SUCURSAL,NOMINA,CLAVE,NOMBRE_COMPLETO,PUESTO,DEPARTAMENTO,CONTRATISTA,SUELDO_SEMANAL,SUELDO_IMSS,SOBRE_SUELDO,SUBTOTAL,IVA,NETO"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA.getProceso(), EExportacionXls.NOMINA.getIdXml(), EExportacionXls.NOMINA.getNombreArchivo()), EExportacionXls.NOMINA, "SUCURSAL,NOMINA,CLAVE,NOMBRE_COMPLETO,CATEGORIA,PUESTO,DEPARTAMENTO,CONTRATISTA,INFONAVIT,SUELDO_SEMANAL,SUELDO_IMSS,SOBRE_SUELDO,SUBTOTAL,IVA,NETO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
