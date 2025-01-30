@@ -56,7 +56,7 @@
                 </p:column>   
               </p:selectOneMenu>                            
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosPersonalExportar.attrs.nombre}" completeMethod="#{keetCatalogosContratosPersonalExportar.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosPersonalExportar.attrs.nombre}" completeMethod="#{keetCatalogosContratosPersonalExportar.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
 							<p:calendar id="fechaInicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPersonalExportar.fechaInicio}" pattern="dd/MM/yyyy" locale="mx"/>							
               <p:outputLabel for="fechaFin" value="Vigencia termino:"/>
