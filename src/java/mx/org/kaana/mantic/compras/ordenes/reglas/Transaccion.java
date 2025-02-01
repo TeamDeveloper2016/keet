@@ -327,6 +327,7 @@ public class Transaccion extends Inventarios implements Serializable {
           params.put("idCliente", this.orden.getIdCliente());      
           params.put("idUsuario", JsfBase.getIdUsuario());      
           DaoFactory.getInstance().updateAll(sesion, TrKeetArticuloProveedorClienteDto.class, params, "precio");
+          DaoFactory.getInstance().updateAll(sesion, TcKeetArticulosProveedoresDto.class, params);
         } // if
       } // for
       if(this.ordenProcess!= null && this.ordenProcess.getOrdenCompra()!= null)

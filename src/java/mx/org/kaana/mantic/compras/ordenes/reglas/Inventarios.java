@@ -11,8 +11,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetBoletasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.keet.vales.beans.Vale;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
@@ -270,8 +272,20 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				for (Articulo articulo: todos) {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 					// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
-					if(articulo.getCantidad()> 0L)
+					if(articulo.getCantidad()> 0L) {
     		    this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota.getIdNotaEntrada(), item, articulo);
+            
+            // FALTA AQUI MODIFICAR EL PRECIO CONVENIO O EL PRECIO DE LISTA O EL PRECIO BASE
+//       			Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
+//      			double costo= descuentos.getFactor()== 0D? item.getCosto(): descuentos.toImporte();
+//            params.put("precio", Numero.toRedondearSat(costo));
+//            params.put("idUsuario", JsfBase.getIdUsuario());
+//            params.put("idArticulo", item.getIdArticulo());
+//            params.put("idProveedor", params.containsKey("idProveedor")? (Long)params.get("idProveedor"): -1L);
+//            params.put("idCliente", params.containsKey("idCliente")? (Long)params.get("idCliente"): -1L);
+//            DaoFactory.getInstance().updateAll(sesion, TrKeetArticuloProveedorClienteDto.class, params, "precio");
+//            DaoFactory.getInstance().updateAll(sesion, TcKeetArticulosProveedoresDto.class, params);
+          } // if  
 				} // for
 			} // if	
 		} // for

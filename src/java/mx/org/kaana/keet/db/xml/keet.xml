@@ -2596,6 +2596,17 @@ where
           id_caja_chica_cierre_bitacora = {idCajaChicaCierreBitacora}
       </select>
     </unit>		
+		<unit id="TcKeetGastosEstatusDto">
+			<select id="estatus">
+				select 
+				  id_gasto_estatus as id_key,
+					nombre
+				from 
+				  tc_keet_gastos_estatus
+				where 
+					{condicion}
+			</select>
+		</unit>
 		<unit id="TcKeetCajasChicasCierresEstatusDto">
 			<select id="estatus">
 				select 
@@ -2734,18 +2745,19 @@ where
           tc_keet_articulos_proveedores
 			</select>
 			<update id="rows">
-        update 
-          tc_keet_articulos_proveedores 
-        set
-          precio_base= {precio},
-          precio_lista= {precio},
-          precio_especial= {precio}
-        where 
-          id_proveedor= {idProveedor}
-          and id_articulo= {idArticulo}
+update 
+  tc_keet_articulos_proveedores 
+set
+  precio_base= {precio},
+  precio_lista= {precio},
+  precio_especial= {precio}
+  id_usuario= {idUsuario}
+where 
+  id_proveedor= {idProveedor}
+  and id_articulo= {idArticulo}
       </update>
 			<delete id="rows">
-        delete from tc_keet_articulos_proveedores where id_proveedor={idProveedor}
+delete from tc_keet_articulos_proveedores where id_proveedor={idProveedor}
       </delete>
     </unit>		
     <unit id="TrKeetArticuloProveedorClienteDto">
@@ -2783,21 +2795,21 @@ where
           tr_keet_articulo_proveedor_cliente
 			</select>
       <update id="precio">
-        update
-          tr_keet_articulo_proveedor_cliente
-        set 
-          precio_convenio= {precio},
-          precio_anterior= precio_convenio,
-          id_usuario= {idUsuario},
-          actualizado= current_timestamp
-        where      
-          id_proveedor= {idProveedor} 
-          and id_cliente = {idCliente} 
-          and id_articulo= {idArticulo}
-          and precio_convenio!= {precio}
+update
+  tr_keet_articulo_proveedor_cliente
+set 
+  precio_convenio= {precio},
+  precio_anterior= precio_convenio,
+  id_usuario= {idUsuario},
+  actualizado= current_timestamp
+where      
+  id_proveedor= {idProveedor} 
+  and id_cliente = {idCliente} 
+  and id_articulo= {idArticulo}
+  and precio_convenio!= {precio}
       </update>    
 			<delete id="rows">
-        delete from tr_keet_articulo_proveedor_cliente where id_proveedor={idProveedor}
+delete from tr_keet_articulo_proveedor_cliente where id_proveedor={idProveedor}
       </delete>
     </unit>		
 		<unit id="TcKeetTiposValesDto">

@@ -3,11 +3,9 @@ package mx.org.kaana.keet.cajachica.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -129,7 +127,7 @@ public class Acumulados extends IBaseFilter implements Serializable {
 		List<UISelectItem> allEstatus= null;
 		try {			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			allEstatus= UISelect.seleccione("TcKeetCajasChicasCierresEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			allEstatus= UISelect.seleccione("TcKeetGastosEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", UIBackingUtilities.toFirstKeySelectItem(allEstatus));
 		} // try
@@ -177,7 +175,7 @@ public class Acumulados extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.fechaFin))
   		sb.append("(date_format(tc_keet_cajas_chicas_cierres.termino, '%Y%m%d')<= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("', '%Y%m%d')) and ");			
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && !this.attrs.get("estatus").toString().equals("-1"))
-  		sb.append("(tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus= ").append(this.attrs.get("estatus")).append(") and ");
+  		sb.append("(tc_keet_gastos_estatus.id_gasto_estatus= ").append(this.attrs.get("estatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !((UISelectEntity)this.attrs.get("idEmpresa")).getKey().equals(-1L))
 		  sb.append("(tc_mantic_clientes.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");		
 		if(!Cadena.isVacio(this.attrs.get("desarrollo")) && !((UISelectEntity)this.attrs.get("desarrollo")).getKey().equals(-1L))
