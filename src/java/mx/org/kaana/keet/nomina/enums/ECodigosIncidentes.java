@@ -30,7 +30,9 @@ public enum ECodigosIncidentes {
   SOBRESUELDO(-1L, "AP1", Boolean.TRUE, -1),
   HORAS(22L, "AQ1|AR1|AS1|AT1|AU1|AV1", Boolean.TRUE, 6),
   MEDIODIA(23L, "BJ1|BK1|BL1|BM1|BN1|BO1", Boolean.TRUE, 6),
-  DOBLE(24L, "AW1|AX1", Boolean.FALSE, 2);
+  DOBLE(24L, "AW1|AX1", Boolean.FALSE, 2),
+	PENSION(-1L, "BP1|BQ1|BR1|BS1|BT1", Boolean.TRUE, 5),
+	INFONAVIT(-1L, "P1", Boolean.TRUE, 1);
 	
 	private Long idTipoIncidente;
 	private String codigos;

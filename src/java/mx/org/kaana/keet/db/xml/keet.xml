@@ -7,10 +7,60 @@
   </model>
 
   <dml>
-    <unit id="TcKeetPersonasPensionesDto">
+    <unit id="TcKeetIsrVigenciasDto">
       <select id="row">
 select      
   *
+from      
+  tc_keet_isr_vigencias
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_isr_vigencias
+where      
+  orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>    
+    <unit id="TcKeetIsrSemanalesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_isr_semanales
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+  select      
+    *
+  from      
+    tc_keet_isr_semanales
+  where      
+    id_isr_semanal = {idIsrSemanal}
+      </select>
+      <select id="limites">
+select      
+  tc_keet_isr_semanales.*
+from      
+  tc_keet_isr_semanales
+inner join        
+  tc_keet_isr_vigencias on tc_keet_isr_semanales.id_isr_vigencia= tc_keet_isr_vigencias.id_isr_vigencia
+where 
+  '{fecha}'&gt;= date_format(tc_keet_isr_vigencias.inicio, '%Y%m%d') 
+  and '{fecha}'&lt;= date_format(tc_keet_isr_vigencias.termino, '%Y%m%d')
+order by         
+  tc_keet_isr_semanales.inferior
+      </select>
+    </unit>    
+    <unit id="TcKeetPersonasPensionesDto">
+      <select id="row">
+select      
+  tc_keet_personas_pensiones.id_persona_pension as id_key,
+  tc_keet_personas_pensiones.*
 from      
   tc_keet_personas_pensiones
 where 
@@ -23,6 +73,18 @@ from
   tc_keet_personas_pensiones
 where      
   paterno = '{paterno}' and nombre = '{nombre}'
+      </select>
+      <select id="nomina">
+select      
+  tc_keet_personas_pensiones.id_persona_pension as id_key,
+  concat(tc_keet_personas_pensiones.nombre, ' ', tc_keet_personas_pensiones.paterno, ' ', ifnull(tc_keet_personas_pensiones.materno, '')) as nombre,
+  tc_keet_personas_pensiones.porcentaje
+from      
+  tc_keet_personas_pensiones
+where 
+  id_empresa_persona= {idEmpresaPersona}
+order by
+  registro        
       </select>
 			<select id="maximo">
 select      

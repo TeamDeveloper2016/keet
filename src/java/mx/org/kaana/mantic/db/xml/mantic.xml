@@ -3232,7 +3232,8 @@ delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
       <select id="sobreSueldo">
         select      
           tr_mantic_empresa_personal.id_empresa_persona as id_key,
-          sobre_sueldo
+          sobre_sueldo,
+          ifnull(factor_infonavit, 0) as factor_infonavit
         from      
           tr_mantic_empresa_personal
         where      

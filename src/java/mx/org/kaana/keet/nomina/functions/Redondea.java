@@ -14,14 +14,19 @@ import java.math.BigDecimal;
  */
 public class Redondea implements Function, Serializable {
 
+  private static final long serialVersionUID = 4459440093816607684L;
+
+  @Override
 	public String getName() {
 		return "ROUND";
 	}
 
+  @Override
 	public boolean isValidParameterCount(int parameterCount) {
 		return parameterCount==1; // At least one parameter
 	}
 
+  @Override
 	public Object computeFunction(Interpreter interpreter, Object[] parametersValue) {
 		double value=0;
 		if (parametersValue[0] instanceof Double)

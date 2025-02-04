@@ -29,6 +29,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.nomina.beans.Concepto;
 import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.EGrupoConceptos;
+import mx.org.kaana.keet.nomina.functions.Isr;
 import mx.org.kaana.keet.nomina.functions.Redondea;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -75,6 +76,7 @@ public class Nomina implements Serializable {
 		this.model  = new JeksTableModel(this.ROWS /*rows*/, this.COLUMNS /*columns*/);
     this.parser = new JeksExpressionParser(model);
     this.parser.addUserFunction(new Redondea());
+    this.parser.addUserFunction(new Isr(periodo.getInicio()));
     this.interprete= new JeksInterpreter();
 		this.load();
 	}
@@ -350,7 +352,7 @@ public class Nomina implements Serializable {
 
 	private void toLookUpConcepto(List<Concepto> particulares, ECodigosIncidentes concepto, Double value) throws CloneNotSupportedException {
 		// LOS CONCEPTOS DEL CONTRATISTA YA ESTAN CARGADOS SOLO ES ACTUALIZAR LOS VALORES
-		int index= -1;
+		int index;
     try {
       index= particulares.indexOf(new Concepto(concepto.codigos()));
       if(index>= 0) {
@@ -378,6 +380,50 @@ public class Nomina implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar;
+  }
+
+	private Double toInfonavitEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
+		Double regresar           = 0D;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
+			Value infonavit= (Value)DaoFactory.getInstance().toField(this.sesion, "TrManticEmpresaPersonalDto", "sobreSueldo", params, "factorInfonavit");
+      if(infonavit!= null && infonavit.getData()!= null) {
+        regresar= infonavit.toDouble();
+        this.toLookUpConcepto(particulares, ECodigosIncidentes.INFONAVIT, regresar);
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+
+	private void toPensionAlimentciaEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
+		Map<String, Object> params= new HashMap<>();
+		try {
+      int count= 0;
+			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
+			List<Entity> pensiones= (List<Entity>)DaoFactory.getInstance().toEntitySet(this.sesion, "TcKeetPersonasPensionesDto", "nomina", params);
+      if(pensiones!= null && !pensiones.isEmpty()) {
+        for (Entity item: pensiones) {
+          if(count< ECodigosIncidentes.PENSION.max()) {
+            int index= this.personales.indexOf(new Concepto(ECodigosIncidentes.PENSION.celdas()[count]));
+            // PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
+            if(index>= 0) {
+              Concepto concepto= (Concepto)this.personales.get(index).clone();
+              concepto.setNombre(concepto.getNombre().concat(" DE ").concat(item.toString("nombre")));
+              concepto.setFormula(concepto.getFormula().replace("{".concat(ECodigosIncidentes.PENSION.name()).concat("}"), item.toString("porcentaje")));
+              particulares.add(concepto);
+            } // if
+          } // if
+          count++;
+        } // for
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
   }
 
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
@@ -434,6 +480,9 @@ public class Nomina implements Serializable {
 		this.constants.put("SUELDO", sueldo);
 		Double sobreSueldo= this.toSobreSueldoEmpleado(particulares, empleado);
 		this.constants.put("SOBRESUELDO", sobreSueldo);
+		Double infonavit= this.toInfonavitEmpleado(particulares, empleado);
+		this.constants.put("INFONAVIT", infonavit);
+		this.toPensionAlimentciaEmpleado(particulares, empleado);
 		for (Concepto concepto: particulares) {
 			concepto.setFormula(this.transform(concepto.getFormula()));
  			this.addCell(concepto.getColumna(), concepto.getFormula());
