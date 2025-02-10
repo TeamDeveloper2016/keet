@@ -865,7 +865,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       ((OrdenCompra)this.getAdminOrden().getOrden()).getDetalles().clear();
 			this.doLoadContratos();
-      this.toLoadAlmacenistas();
+      // this.toLoadAlmacenistas();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1081,10 +1081,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<UISelectEntity> almacenistas= null;
 		Map<String, Object>params        = new HashMap<>();
 		try {
- 			params.put("campoLlave", "tc_mantic_personas.id_persona");
-			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
-			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_puesto= 1");
-  	  almacenistas= UIEntity.build("VistaContratosDto", "personalAsignado", params);
+// 			params.put("campoLlave", "tc_mantic_personas.id_persona");
+//			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
+//			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_puesto= 1");
+//  	  almacenistas= UIEntity.build("VistaContratosDto", "personalAsignado", params);
+			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_activo= 1");
+  	  almacenistas= UIEntity.build("TrManticEmpresaPersonalDto", "personas", params);
 			this.attrs.put("almacenistas", almacenistas);
       if(!almacenistas.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))

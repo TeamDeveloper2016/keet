@@ -2812,7 +2812,7 @@ update
 set
   precio_base= {precio},
   precio_lista= {precio},
-  precio_especial= {precio}
+  precio_especial= {precio},
   id_usuario= {idUsuario}
 where 
   id_proveedor= {idProveedor}

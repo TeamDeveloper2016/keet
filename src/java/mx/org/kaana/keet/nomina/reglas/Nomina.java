@@ -212,10 +212,12 @@ public class Nomina implements Serializable {
   private void toCalculateFaltas(Concepto concepto, TcManticIncidentesDto item) {
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
       case "cafu":
-        if(Objects.equals(item.getInicio().getDayOfWeek(), DayOfWeek.MONDAY))
-          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
-        else
-          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
+        // WENDY SOLICITO HACER EL AJUSTE EL DÍA 04/02/2025
+//        if(Objects.equals(item.getInicio().getDayOfWeek(), DayOfWeek.MONDAY))
+//          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
+//        else
+//          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
+        concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.66666667"));
         break;
       case "gylvi":
         concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));

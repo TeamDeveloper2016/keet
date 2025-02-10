@@ -3219,7 +3219,24 @@ delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
         from      
           tr_mantic_empresa_personal
         where      
-          id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
+          id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa = {idEmpresa}
+      </select>
+      <select id="personas">
+select      
+  tc_mantic_personas.id_persona as id_key,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+  tc_mantic_puestos.nombre as puesto
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+where 
+  tc_mantic_personas.id_tipo_persona!= 1
+  and {condicion} 
+order by
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)               
       </select>
       <select id="igual">
         select      
