@@ -41,7 +41,7 @@ import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
-@Named(value = "keetCatalogosContratosDestajosImportar")
+@Named(value= "keetCatalogosContratosDestajosImportar")
 @ViewScoped
 public class Importar extends IBaseImportar implements Serializable {
 
@@ -99,6 +99,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));
       this.attrs.put("contrato", JsfBase.getFlashAttribute("contrato"));
 			this.attrs.put("manzana", JsfBase.getFlashAttribute("manzana"));	
+			this.attrs.put("documentos", this.documentos.size());	
 			this.loadCatalogos();	
 			this.doLoad();
     } // try
@@ -172,10 +173,10 @@ public class Importar extends IBaseImportar implements Serializable {
           url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
           importado.put("url", new Value("url", url));
         } // for
-        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
       } // if 
       else
-        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
 			this.attrs.put("importados", importados);
 		} // try
 		catch (Exception e) {
@@ -224,8 +225,9 @@ public class Importar extends IBaseImportar implements Serializable {
   		this.attrs.put("file", this.getFile().getName());	
 			this.documentos.add(this.toDestajoArchivo(idArchivo, figura.toLong("tipo")));
       if(this.documentos!= null && !this.documentos.isEmpty()) {
-        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
       } // if
+      this.attrs.put("documentos", this.documentos.size());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

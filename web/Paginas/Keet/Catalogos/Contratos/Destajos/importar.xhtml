@@ -19,7 +19,8 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:observaciones': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
+				'contenedorGrupos\\:documentos'   : {validaciones: 'requerido|mayor-igual({"cuanto": 1})', mascara: 'libre', mensaje: 'Se requiere una fotografia'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};						
 			
 			function start() {
@@ -189,7 +190,10 @@
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   								
-								<p:column headerText="Nombre">
+								<p:column styleClass="documentos">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   																
 								<p:column headerText="Concepto">
@@ -199,6 +203,7 @@
 									<h:outputText value="#{row.especialidad}"/>
 								</p:column> 																								 
 							</p:dataTable>
+              <p:inputText id="documentos" value="#{keetCatalogosContratosDestajosImportar.attrs.documentos}" styleClass="importado janal-display-none" readonly="true"/>
 						</p:tab>
 					</p:tabView>
 				</div>
