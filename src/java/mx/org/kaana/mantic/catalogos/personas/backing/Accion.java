@@ -147,13 +147,21 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // swtich
 			this.attrs.put("departamentos", departamentos);
       if(!EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion"))) {       
-        this.registroPersona.setDepartamentos(new Object[this.registroPersona.getEspecialidades().size()]);
         int count= 0;
         for (Especialidad item: this.registroPersona.getEspecialidades()) {
           int index= departamentos.indexOf(new UISelectEntity(item.getIdDepartamento()));
           if(index>= 0)
-            this.registroPersona.getDepartamentos()[count++]= departamentos.get(index);
+            count++;
         } // for
+        if(count> 0) {
+          this.registroPersona.setDepartamentos(new Object[count]);
+          count= 0;
+          for (Especialidad item: this.registroPersona.getEspecialidades()) {
+            int index= departamentos.indexOf(new UISelectEntity(item.getIdDepartamento()));
+            if(index>= 0)
+              this.registroPersona.getDepartamentos()[count++]= departamentos.get(index);
+          } // for
+        } // if  
         if(count== 0)
           this.registroPersona.setDepartamentos(new Object[] {});
       } // if
@@ -316,6 +324,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         int index= contratistas.indexOf(new UISelectEntity(this.registroPersona.getIdContratista()));
         if(index>= 0)
           this.attrs.put("idContratista", contratistas.get(index));
+        else
+    			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
       } // if
 		} // try
 		catch (Exception e) {
@@ -1244,5 +1254,5 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
   } 
-  
+
 }

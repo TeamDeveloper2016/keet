@@ -459,7 +459,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
-      columns.add(new Columna("valor", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("valor", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
       UIBackingUtilities.resetDataTable("detalle");

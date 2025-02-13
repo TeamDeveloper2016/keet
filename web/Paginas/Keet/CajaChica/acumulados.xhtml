@@ -105,9 +105,16 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>								
+                <p:separator/>
+								<p:menuitem icon="fa fa-file-word-o" value="Detallado" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                  <p:fileDownload value="#{keetCajaChicaAcumulados.detallado}" />                  
+                </p:menuitem>
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Detallado" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                <p:fileDownload value="#{keetCajaChicaAcumulados.detallado}"/>
+              </p:commandButton>    
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">

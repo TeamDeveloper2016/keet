@@ -6173,6 +6173,7 @@ from (
     tc_mantic_puestos.id_puesto,
     tc_mantic_puestos.nombre as puesto,
     tr_mantic_empresa_personal.id_empresa_persona,
+    tc_keet_agrupaciones.nombre as categoria,
     tt_keet_departamentos.departamento,
     tr_mantic_empresa_personal.clave,
     concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
@@ -6180,7 +6181,9 @@ from (
     sum(round(tc_keet_contratos_destajos_contratistas.costo)) as percepciones,
     0 as deducciones,
     sum(round(tc_keet_contratos_destajos_contratistas.costo)) as neto,
-    sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos
+    sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos,
+    tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas         
   inner join
@@ -6199,6 +6202,8 @@ from (
     tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo         
   inner join
     tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona         
+  inner join 
+    tc_keet_agrupaciones on tr_mantic_empresa_personal.id_agrupacion= tc_keet_agrupaciones.id_agrupacion
   inner join
    (select
       tc_keet_contratistas_departamentos.id_empresa_persona,
@@ -6230,6 +6235,7 @@ from (
     tc_mantic_puestos.id_puesto,
     tc_mantic_puestos.nombre as puesto,
     tr_mantic_empresa_personal.id_empresa_persona,
+    tc_keet_agrupaciones.nombre as categoria,
     tt_keet_departamentos.departamento,
     tr_mantic_empresa_personal.clave,
     concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
@@ -6237,7 +6243,9 @@ from (
     tc_keet_nominas_personas.percepciones,
     tc_keet_nominas_personas.deducciones,
     tc_keet_nominas_personas.neto,
-    0 as anticipos
+    0 as anticipos,
+    tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas
   inner join 
@@ -6246,6 +6254,8 @@ from (
     tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
   inner join 
     tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+  inner join 
+    tc_keet_agrupaciones on tr_mantic_empresa_personal.id_agrupacion= tc_keet_agrupaciones.id_agrupacion
   inner join 
     tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
   inner join 
@@ -6408,121 +6418,131 @@ order by
   tt_keet_empleados.nombre        
       </select> 
 			<select id="exportarEmpleados">
-        select
-         tt_keet_empleados.*
-        from (
-          select
-            tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista as id_key,
-            concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
-            tc_keet_desarrollos.id_desarrollo,
-            tc_keet_desarrollos.nombres as desarrollo,
-            tc_mantic_puestos.id_puesto,
-            tc_mantic_puestos.nombre as puesto,
-            tr_mantic_empresa_personal.id_empresa_persona,
-            tt_keet_departamentos.departamento,
-            tr_mantic_empresa_personal.clave,
-            concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
-            tc_mantic_puestos.orden,
-            sum(round(tc_keet_contratos_destajos_contratistas.costo)) as percepciones,
-            0 as deducciones,
-            sum(round(tc_keet_contratos_destajos_contratistas.costo)) as neto,
-            sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos
-          from
-            tc_keet_nominas         
-          inner join
-            tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo         
-          inner join
-            tc_keet_contratos_destajos_contratistas on tc_keet_nominas.id_nomina= tc_keet_contratos_destajos_contratistas.id_nomina         
-          inner join
-            tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista         
-          inner join
-            tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote         
-          inner join
-            tc_keet_contratos on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato         
-          inner join
-            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto         
-          inner join
-            tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo         
-          inner join
-            tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona         
-          inner join
-           (select
-              tc_keet_contratistas_departamentos.id_empresa_persona,
-              concat('|',group_concat(tc_keet_departamentos.id_departamento separator '|'),'|') as id_departamentos,
-              group_concat(tc_keet_departamentos.nombre separator ', ') as departamento           
-            from
-              tc_keet_contratistas_departamentos           
-            inner join 
-              tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento           
-            group by
-              tc_keet_contratistas_departamentos.id_empresa_persona               
-            ) as tt_keet_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tt_keet_departamentos.id_empresa_persona          
-          inner join
-            tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona         
-          inner join
-            tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto         
-          where
-            tc_keet_nominas.id_nomina= {idNomina}         
-            and tc_mantic_puestos.id_puesto= 6
-          group by
-            tc_keet_desarrollos.id_desarrollo,
-            tr_mantic_empresa_personal.id_empresa_persona 
-          union all
-          select
-            tc_keet_nominas_personas.id_nomina_persona as id_key,
-            concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
-            tc_keet_desarrollos.id_desarrollo,
-            tc_keet_desarrollos.nombres as desarrollo,
-            tc_mantic_puestos.id_puesto,
-            tc_mantic_puestos.nombre as puesto,
-            tr_mantic_empresa_personal.id_empresa_persona,
-            tt_keet_departamentos.departamento,
-            tr_mantic_empresa_personal.clave,
-            concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
-            tc_mantic_puestos.orden,
-            tc_keet_nominas_personas.percepciones,
-            tc_keet_nominas_personas.deducciones,
-            tc_keet_nominas_personas.neto,
-            0 as anticipos
-          from
-            tc_keet_nominas
-          inner join 
-            tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-          inner join 
-            tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
-          inner join 
-            tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-          inner join 
-            tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-          inner join 
-            tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
-          inner join ( 
-            select 
-              tc_keet_contratistas_departamentos.id_empresa_persona,
-              concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
-              group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
-            from
-              tc_keet_contratistas_departamentos
-            inner join
-              tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
-            group by
-              tc_keet_contratistas_departamentos.id_empresa_persona				  
-          ) as tt_keet_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tt_keet_departamentos.id_empresa_persona	
-          inner join 
-            tc_keet_nominas_desarrollos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_desarrollos.id_empresa_persona and tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
-          inner join 
-            tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo and tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
-          where
-            tc_keet_nominas.id_nomina= {idNomina}
-            and tc_mantic_puestos.id_puesto!= 6
-          group by
-            tc_keet_desarrollos.id_desarrollo,
-            tr_mantic_empresa_personal.id_empresa_persona 
-        ) as tt_keet_empleados		
-        order by
-          tt_keet_empleados.desarrollo,
-          tt_keet_empleados.orden,
-          tt_keet_empleados.nombre        
+select
+ tt_keet_empleados.*
+from (
+  select
+    tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista as id_key,
+    concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+    tc_keet_desarrollos.id_desarrollo,
+    tc_keet_desarrollos.nombres as desarrollo,
+    tc_mantic_puestos.id_puesto,
+    tc_mantic_puestos.nombre as puesto,
+    tr_mantic_empresa_personal.id_empresa_persona,
+    tc_keet_agrupaciones.nombre as categoria,
+    tt_keet_departamentos.departamento,
+    tr_mantic_empresa_personal.clave,
+    concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
+    tc_mantic_puestos.orden,
+    sum(round(tc_keet_contratos_destajos_contratistas.costo)) as percepciones,
+    0 as deducciones,
+    sum(round(tc_keet_contratos_destajos_contratistas.costo)) as neto,
+    sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos,
+    tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sobre_sueldo
+  from
+    tc_keet_nominas         
+  inner join
+    tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo         
+  inner join
+    tc_keet_contratos_destajos_contratistas on tc_keet_nominas.id_nomina= tc_keet_contratos_destajos_contratistas.id_nomina         
+  inner join
+    tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista         
+  inner join
+    tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote         
+  inner join
+    tc_keet_contratos on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato         
+  inner join
+    tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto         
+  inner join
+    tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo         
+  inner join
+    tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona         
+  inner join 
+    tc_keet_agrupaciones on tr_mantic_empresa_personal.id_agrupacion= tc_keet_agrupaciones.id_agrupacion
+  inner join
+   (select
+      tc_keet_contratistas_departamentos.id_empresa_persona,
+      concat('|',group_concat(tc_keet_departamentos.id_departamento separator '|'),'|') as id_departamentos,
+      group_concat(tc_keet_departamentos.nombre separator ', ') as departamento           
+    from
+      tc_keet_contratistas_departamentos           
+    inner join 
+      tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento           
+    group by
+      tc_keet_contratistas_departamentos.id_empresa_persona               
+    ) as tt_keet_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tt_keet_departamentos.id_empresa_persona          
+  inner join
+    tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona         
+  inner join
+    tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto         
+  where
+    tc_keet_nominas.id_nomina= {idNomina}         
+    and tc_mantic_puestos.id_puesto= 6
+  group by
+    tc_keet_desarrollos.id_desarrollo,
+    tr_mantic_empresa_personal.id_empresa_persona 
+  union all
+  select
+    tc_keet_nominas_personas.id_nomina_persona as id_key,
+    concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+    tc_keet_desarrollos.id_desarrollo,
+    tc_keet_desarrollos.nombres as desarrollo,
+    tc_mantic_puestos.id_puesto,
+    tc_mantic_puestos.nombre as puesto,
+    tr_mantic_empresa_personal.id_empresa_persona,
+    tc_keet_agrupaciones.nombre as categoria,
+    tt_keet_departamentos.departamento,
+    tr_mantic_empresa_personal.clave,
+    concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
+    tc_mantic_puestos.orden,
+    tc_keet_nominas_personas.percepciones,
+    tc_keet_nominas_personas.deducciones,
+    tc_keet_nominas_personas.neto,
+    0 as anticipos,
+    tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sobre_sueldo
+  from
+    tc_keet_nominas
+  inner join 
+    tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+  inner join 
+    tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+  inner join 
+    tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+  inner join 
+    tc_keet_agrupaciones on tr_mantic_empresa_personal.id_agrupacion= tc_keet_agrupaciones.id_agrupacion
+  inner join 
+    tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+  inner join 
+    tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+  inner join ( 
+    select 
+      tc_keet_contratistas_departamentos.id_empresa_persona,
+      concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+      group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+    from
+      tc_keet_contratistas_departamentos
+    inner join
+      tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+    group by
+      tc_keet_contratistas_departamentos.id_empresa_persona				  
+  ) as tt_keet_departamentos on tr_mantic_empresa_personal.id_empresa_persona= tt_keet_departamentos.id_empresa_persona	
+  inner join 
+    tc_keet_nominas_desarrollos on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_desarrollos.id_empresa_persona and tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
+  inner join 
+    tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo and tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
+  where
+    tc_keet_nominas.id_nomina= {idNomina}
+    and tc_mantic_puestos.id_puesto!= 6
+  group by
+    tc_keet_desarrollos.id_desarrollo,
+    tr_mantic_empresa_personal.id_empresa_persona 
+) as tt_keet_empleados		
+order by
+  tt_keet_empleados.desarrollo,
+  tt_keet_empleados.orden,
+  tt_keet_empleados.nombre        
       </select> 
 			<select id="exportarEmpleadosPagos">
 select
@@ -14410,10 +14430,59 @@ inner join
 inner join 
   tc_mantic_empresas on tc_mantic_clientes.id_empresa= tc_mantic_empresas.id_empresa        
 where 
-  tc_keet_gastos_estatus.id_gasto_estatus in (2, 4)
-  and {condicion}
+  {condicion}
+group by
+  tc_keet_gastos.id_gasto
 order by 
   tc_keet_gastos.consecutivo desc
+      </select>  
+			<select id="detallado">
+select 
+  tc_keet_gastos.id_gasto as id_key,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_gastos.consecutivo, 
+  tc_keet_desarrollos.nombres as desarrollo,
+  concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+  concat(tc_keet_cajas_chicas_cierres.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
+  tc_keet_gastos_estatus.nombre as estatus,
+  tc_mantic_articulos.nombre as gasto,
+  tc_keet_gastos.articulos as productos,
+  round(tc_keet_gastos.importe, 2) as total,
+  round(tc_keet_gastos_detalles.cantidad, 2) as cantidad,
+  tc_keet_gastos_detalles.nombre as concepto,
+  round(tc_keet_gastos_detalles.importe, 2) as importe,
+  date_format(tc_keet_gastos.registro, '%d/%m/%Y') as fecha
+from 
+  tc_keet_gastos
+inner join 		
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+inner join 		
+  tc_mantic_articulos on tc_keet_gastos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join 
+  tr_mantic_empresa_personal on tc_keet_gastos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join 
+  tc_keet_gastos_estatus on tc_keet_gastos.id_gasto_estatus= tc_keet_gastos_estatus.id_gasto_estatus
+inner join 
+  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+inner join
+  tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join
+  tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica= tc_keet_cajas_chicas_cierres.id_caja_chica
+inner join
+  tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_cajas_chicas.id_desarrollo
+inner join 
+  tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
+inner join 
+  tc_mantic_empresas on tc_mantic_clientes.id_empresa= tc_mantic_empresas.id_empresa        
+where 
+  {condicion}
+group by
+  tc_keet_gastos_detalles.id_gasto_detalle              
+order by 
+  tc_keet_gastos.consecutivo desc,
+  tc_mantic_articulos.id_articulo
       </select>  
 			<select id="exportar">
 select 

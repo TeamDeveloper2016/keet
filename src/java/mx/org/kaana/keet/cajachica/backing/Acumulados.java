@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.cajachica.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,10 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -25,13 +30,18 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetCajaChicaAcumulados")
 @ViewScoped
 public class Acumulados extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428331L;	
-
+	private static final String DATA_FILE_DETALLADO= "EMPRESA,CONSECUTIVO,DESARROLLO,SEMANA,RESIDENTE,ESTATUS,GASTO,PRODUCTOS,TOTAL,CONCEPTO,CANTIDAD,IMPORTE,FECHA";
+  
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 
@@ -51,6 +61,32 @@ public class Acumulados extends IBaseFilter implements Serializable {
 		this.fechaFin = fechaFin;
 	}
 	
+  public StreamedContent getDetallado() {
+		StreamedContent regresar = null;		
+		Map<String, Object>params= null;
+		Xls xls                  = null;
+    String template          = "CCHD";
+		try {
+      params= this.toPrepare();
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaCierresCajasChicasDto", "detallado", template), DATA_FILE_DETALLADO);	
+			if(xls.procesar()) { 
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} 
+  
   @PostConstruct
   @Override
   protected void init() {

@@ -217,7 +217,7 @@ public class Nomina implements Serializable {
 //          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
 //        else
 //          concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
-        concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.66666667"));
+        concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.166666667"));
         break;
       case "gylvi":
         concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
