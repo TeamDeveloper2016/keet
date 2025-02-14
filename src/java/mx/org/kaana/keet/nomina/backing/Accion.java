@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -65,15 +66,26 @@ public class Accion extends IBaseFilter implements Serializable {
 	
 	@PostConstruct
   @Override
-  protected void init() {		
-		this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-		this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")== null? -1L: JsfBase.getFlashAttribute("idNomina"));
-		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-		this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		this.attrs.put("nomina", new Nomina());
-		this.attrs.put("tuplas", 0L);
-    this.attrs.put("idNominaEstatus", 10L);
-		this.toLoadCatalogos();
+  protected void init() {	
+    Monitoreo monitoreo= JsfBase.getAutentifica().progreso("NOMINA");
+    try {
+      if(monitoreo.isCorriendo()) 
+        UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
+      else
+        JsfBase.getAutentifica().clean("NOMINA");
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+      this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")== null? -1L: JsfBase.getFlashAttribute("idNomina"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("nomina", new Nomina());
+      this.attrs.put("tuplas", 0L);
+      this.attrs.put("idNominaEstatus", 10L);
+      this.toLoadCatalogos();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
   } // init
   
 	public void doTabChange(TabChangeEvent event) {

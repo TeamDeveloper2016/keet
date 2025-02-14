@@ -186,7 +186,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= Boolean.TRUE;
+		boolean regresar   = Boolean.TRUE;
+    Monitoreo monitoreo= null;
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina";
 			if(!accion.equals(EAccion.COMPLEMENTAR)) {
@@ -273,10 +274,18 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           this.notificarCorreo(sesion);
 					break;
 				case MOVIMIENTOS:
+          monitoreo= this.autentifica.progreso("NOMINA");
+          monitoreo.setTotal(1000L);
           this.notificarResidentes(sesion);
+          monitoreo.terminar();
+          this.autentifica.clean("NOMINA");
 					break;
 				case RESTAURAR:
+          monitoreo= this.autentifica.progreso("NOMINA");
+          monitoreo.setTotal(1000L);
           this.notificarResumenDestajos(sesion);
+          monitoreo.terminar();
+          this.autentifica.clean("NOMINA");
 					break;
 				case ACTIVAR:
   				// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 

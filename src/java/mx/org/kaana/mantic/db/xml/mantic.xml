@@ -3636,6 +3636,23 @@ order by
 				where 
 					id_imagen= {idImagen}
 			</select>
+      <select id="gastos">
+select      
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.*
+from      
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where      
+  tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+  and tc_mantic_articulos_codigos.codigo like 'CAJA%'
+group by
+  tc_mantic_articulos.id_articulo        
+order by
+  tc_mantic_articulos.nombre
+      </select>
 			<update id="rows">
 				update 
 				  tc_mantic_articulos

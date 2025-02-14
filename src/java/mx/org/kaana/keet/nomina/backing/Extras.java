@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -68,35 +69,41 @@ public class Extras extends IBaseFilter implements Serializable {
 
 	@Override
   public void doLoad() {
-    List<Columna> columns    = new ArrayList<>();
-		Map<String, Object>params= null;
+    List<Columna> columns       = new ArrayList<>();
+		Map<String, Object>params   = null;
   	List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
   	UISelectEntity item         = (UISelectEntity)this.attrs.get("idNomina");
+    Monitoreo monitoreo         = JsfBase.getAutentifica().progreso("NOMINA");
     try {
-      int index= nominas.indexOf(item);
-      if(index> 0)
-        this.attrs.put("idNomina", nominas.get(index));
-      else
-        this.attrs.put("idNomina", nominas.get(0));
-      params= this.toPrepare();	
-      Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
-      if(Objects.equals(idNomina, -1L)) {
-        params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina is null)");
-        params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null)");
-      } // if  
+      if(monitoreo.isCorriendo()) 
+        UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
       else {
-        params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina= "+ idNomina+ ")");
-        params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina= "+ idNomina+ ")");
+        JsfBase.getAutentifica().clean("NOMINA");
+        int index= nominas.indexOf(item);
+        if(index> 0)
+          this.attrs.put("idNomina", nominas.get(index));
+        else
+          this.attrs.put("idNomina", nominas.get(0));
+        params= this.toPrepare();	
+        Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
+        if(Objects.equals(idNomina, -1L)) {
+          params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina is null)");
+          params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina is null)");
+        } // if  
+        else {
+          params.put("contratistas", "(tc_keet_contratos_destajos_contratistas.id_nomina= "+ idNomina+ ")");
+          params.put("subcontratistas", "(tc_keet_contratos_destajos_proveedores.id_nomina= "+ idNomina+ ")");
+        } // if  
+        params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.id_desarrollo, tt_keet_temporal.clave, tt_keet_temporal.lote, tt_keet_temporal.codigo");
+        columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+        this.lazyModel = new FormatCustomLazy("VistaNominaDto", "extras", params, columns);
+        UIBackingUtilities.resetDataTable();
       } // if  
-			params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.id_desarrollo, tt_keet_temporal.clave, tt_keet_temporal.lote, tt_keet_temporal.codigo");
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaNominaDto", "extras", params, columns);
-      UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

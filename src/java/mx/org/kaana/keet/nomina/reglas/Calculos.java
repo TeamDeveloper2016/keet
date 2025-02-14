@@ -89,7 +89,7 @@ public final class Calculos extends IBaseTnx {
   			  monitoreo.setTotal(this.tuplas);
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
           if(regresar) {
-            puente  = new Puente(this.nomina, autentifica, this.idNotificar, this.realPath, this.automatico);
+            puente  = new Puente(this.nomina, this.autentifica, this.idNotificar, this.realPath, this.automatico);
             regresar= puente.ejecutar(EAccion.NOTIFICAR);
           } // if  
           break;
@@ -118,14 +118,12 @@ public final class Calculos extends IBaseTnx {
     Puente puente             = null;
     Monitoreo monitoreo       = this.autentifica.progreso("NOMINA");
 		try {
-			monitoreo.comenzar(0L);
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> todos= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "general", params, Constantes.SQL_TODOS_REGISTROS);
 			if(todos!= null && !todos.isEmpty()) {
-        if(Objects.equals(this.tuplas, -1L))
-  			  monitoreo.setTotal(new Long(todos.size()));
+  			monitoreo.comenzar(Objects.equals(this.tuplas, -1L)? new Long(todos.size()): this.tuplas);
 				if(this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey()) 
           this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
   		  this.empleado      = new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));

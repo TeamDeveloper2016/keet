@@ -22,6 +22,7 @@ import mx.org.kaana.libs.archivo.XlsBase;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +49,7 @@ public class Empleados extends XlsBase implements Serializable {
   protected WritableCellFormat number;
   protected WritableCellFormat value;
   protected WritableCellFormat total;
+  protected Boolean isCafu;
           
   public Empleados(Long idNomina) throws Exception {
     this.idNomina  = idNomina;
@@ -75,6 +77,15 @@ public class Empleados extends XlsBase implements Serializable {
     this.subTotales.put("anticipos", 0D);
     this.subTotales.put("adelantado", 0D);
     this.subTotales.put("total", 0D);
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "cafu":
+        this.isCafu= Boolean.TRUE;
+        break;
+      case "gylvi":
+      case "triana":
+        this.isCafu= Boolean.FALSE;
+        break;
+    } // swtich
   }
 
   @Override
@@ -232,8 +243,10 @@ public class Empleados extends XlsBase implements Serializable {
         this.toAddView(6, 15);
         this.toAddView(7, 13);
         this.toAddView(8, 13);
-        this.toAddView(9, 13);
-        this.toAddView(10, 17);
+        if(this.isCafu) {
+          this.toAddView(9, 13);
+          this.toAddView(10, 17);
+        } // if  
       } // if  
     } // try
     catch (Exception e) {
@@ -278,8 +291,10 @@ public class Empleados extends XlsBase implements Serializable {
     this.addCell(this.posicionColumna+ 6, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 7, this.posicionFila, "ANTICIPOS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 8, this.posicionFila, "NETO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 9, this.posicionFila, "SUELDO IMSS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 10, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    if(this.isCafu) {
+      this.addCell(this.posicionColumna+ 9, this.posicionFila, "SUELDO IMSS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addCell(this.posicionColumna+ 10, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    } // if  
   }
 
   protected void toAddTitulosProveedor() throws Exception {
@@ -301,8 +316,10 @@ public class Empleados extends XlsBase implements Serializable {
     this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
     this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("anticipos")), this.total);
     this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
-    this.addNumber(this.posicionColumna+ 9, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
-    this.addNumber(this.posicionColumna+ 10, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
+    if(this.isCafu) {
+      this.addNumber(this.posicionColumna+ 9, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
+      this.addNumber(this.posicionColumna+ 10, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
+    } // if  
     this.totales.put(desarrollo, this.subTotales.get("neto"));
   }
   
@@ -325,8 +342,10 @@ public class Empleados extends XlsBase implements Serializable {
       this.addNumber(this.posicionColumna+ 6, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.number);
       this.addNumber(this.posicionColumna+ 7, this.posicionFila, Numero.toRedondearSat(item.toDouble("anticipos")), this.number);
       this.addNumber(this.posicionColumna+ 8, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")- item.toDouble("anticipos")), this.number);
-      this.addNumber(this.posicionColumna+ 9, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.number);
-      this.addNumber(this.posicionColumna+ 10, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.number);
+      if(this.isCafu) {
+        this.addNumber(this.posicionColumna+ 9, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.number);
+        this.addNumber(this.posicionColumna+ 10, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.number);
+      } // if  
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
@@ -365,7 +384,7 @@ public class Empleados extends XlsBase implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    Empleados corte= new Empleados(226L);
+    Empleados corte= new Empleados(169L);
     LOG.info(corte.local());
   }
   

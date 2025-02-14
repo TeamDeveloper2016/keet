@@ -94,7 +94,6 @@ public class Personas extends Empleados implements Serializable {
         this.addCellColor(this.posicionColumna, this.posicionFila, "LA NOMINA NO TIENE EMPLEADOS", jxl.format.Colour.BLUE);
         this.toAddView(0, 80);
       } // else
-      
       this.posicionFila++;
       desarrollo= "";
       this.totales.clear();
@@ -130,8 +129,10 @@ public class Personas extends Empleados implements Serializable {
         this.toAddView(13, 15);
         this.toAddView(14, 15);
         this.toAddView(15, 15);
-        this.toAddView(16, 15);
-        this.toAddView(17, 15);
+        if(this.isCafu) {
+          this.toAddView(16, 15);
+          this.toAddView(17, 15);
+        } // if  
       } // if  
     } // try
     catch (Exception e) {
@@ -165,8 +166,10 @@ public class Personas extends Empleados implements Serializable {
     this.addCell(this.posicionColumna+ 13, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 14, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 15, this.posicionFila, "NETO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 16, this.posicionFila, "SUELDO IMSS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 17, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    if(this.isCafu) {
+      this.addCell(this.posicionColumna+ 16, this.posicionFila, "SUELDO IMSS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addCell(this.posicionColumna+ 17, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    } // if  
   }
   
   @Override
@@ -184,8 +187,10 @@ public class Personas extends Empleados implements Serializable {
       this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
       this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
       this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")), this.number);
-      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.value);
-      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.value);
+      if(this.isCafu) {
+        this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.value);
+        this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.value);
+      } // if  
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
@@ -221,8 +226,10 @@ public class Personas extends Empleados implements Serializable {
     this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
     this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
     this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
-    this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
-    this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
+    if(this.isCafu) {
+      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
+      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
+    } // if  
     this.totales.put(desarrollo, this.subTotales.get("neto"));
   }
   
@@ -253,7 +260,7 @@ public class Personas extends Empleados implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    Personas corte= new Personas(225L);
+    Personas corte= new Personas(169L);
     LOG.info(corte.local());
   }
   

@@ -273,4 +273,22 @@ public class Acumulados extends IBaseFilter implements Serializable {
     } // if
   }
   
+  public void toLoadGastos() {
+    List<Columna> columns      = new ArrayList<>();
+    Map<String, Object> params = new HashMap<>();
+    List<UISelectEntity> gastos= null;
+    try {      
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      params.put("idArticuloTipo", 3L);
+      gastos= UIEntity.seleccione("TcManticArticulosDto", "gastos", params, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
+      this.attrs.put("gastos", gastos);
+      this.attrs.put("idGasto", UIBackingUtilities.toFirstKeySelectEntity(gastos));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch
+  } 
+  
 }

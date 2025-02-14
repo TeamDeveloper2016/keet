@@ -84,6 +84,16 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCajaChicaAcumulados.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCajaChicaAcumulados.fechaFin}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx"/>
+              <p:outputLabel for="idGasto" value="Gasto:"/>
+              <p:selectOneMenu id="idGasto" value="#{keetCajaChicaAcumulados.attrs.idGasto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCajaChicaAcumulados.attrs.gastos}"  var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Codigo">
+                  <h:outputText value="#{item.codigo}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>                   
+              </p:selectOneMenu>
               <p:outputLabel for="estatus" value="Estatus:"/>
               <p:selectOneMenu id="estatus" value="#{keetCajaChicaAcumulados.attrs.estatus}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetCajaChicaAcumulados.attrs.allEstatus}"/>                

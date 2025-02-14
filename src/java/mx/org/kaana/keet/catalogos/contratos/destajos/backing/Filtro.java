@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -91,7 +92,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   protected void init() {		
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
+    Monitoreo monitoreo      = JsfBase.getAutentifica().progreso("NOMINA");
     try {
+      if(monitoreo.isCorriendo()) 
+        UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
+      else
+        JsfBase.getAutentifica().clean("NOMINA");
 			this.initBase();
       this.costoTotal   = "$ 0.00";
       this.costoAnticipo= "$ 0.00";
