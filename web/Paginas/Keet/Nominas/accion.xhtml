@@ -117,14 +117,14 @@
                   <p:outputLabel for="inicio" value="Inicio:"/>
                   <p:outputLabel for="termino" value="Término:"/>
                   <p:inputText id="inicio" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.inicio)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
-                  <p:inputText id="termino" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.termino)}" styleClass="janal-column-center janal-wid-100-txt nominas"  readonly="true"/>
+                  <p:inputText id="termino" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.termino)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
                 </p:panelGrid>
 								<p:outputLabel for="observaciones" value="Observaciones:"/>
 								<p:inputTextarea id="observaciones" value="#{keetNominasAccion.attrs.nomina.observaciones}" rows="2" styleClass="janal-wid-100-txt nominas"/>
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra">
                 <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasAccion.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
-                <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{applicationScope.monitoreoGlobal.progreso['NOMINA'].progreso}" global="true">
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{jsfUtilities.monitor.progreso('NOMINA').progreso}" global="true">
                   <p:ajax event="complete" listener="#{keetNominasAccion.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>

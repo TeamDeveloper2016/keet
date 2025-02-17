@@ -36,9 +36,9 @@ public class ContextListener implements ServletContextListener {
     ServletContext context  = event.getServletContext();
     UsuariosEnLinea usuarios= null;
     this.progreso           = new ProgressMonitor();
-    LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
     try {
       this.setInitialAttribute(context, "nombreAplicacion", Constantes.NOMBRE_DE_APLICACION);
+      LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
       System.setProperty("java.awt.headless", "true");
       this.toLoadEditors();
       usuarios= new UsuariosEnLinea();

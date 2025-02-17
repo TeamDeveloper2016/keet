@@ -105,7 +105,7 @@ public final class Calculos extends IBaseTnx {
 		} // catch		
 		finally {
       monitoreo.terminar();
-      this.autentifica.clean("NOMINA");
+      JsfBase.toProgressMonitor().clean("NOMINA");
 			this.nomina= null;
       puente     = null;
 		} // finally

@@ -19,6 +19,7 @@ import mx.org.kaana.libs.Constantes;
 import static mx.org.kaana.libs.pagina.UIMessage.toMessage;
 import mx.org.kaana.kajool.enums.EBrowser;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.seguridad.listeners.ProgressMonitor;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -335,4 +336,8 @@ public class JsfUtilities {
     } // while
   }
 
+  public ProgressMonitor getMonitor() {
+    return (ProgressMonitor)getApplication().getAttribute(Constantes.ATRIBUTO_MONITOREO_GLOBAL);
+  }
+  
 }
