@@ -100,8 +100,18 @@ public class Accion extends IBaseFilter implements Serializable {
 	} // doTabChange		
 	
 	public String doCancelar() {   
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doCancelar
+    String regresar    = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    Monitoreo monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
+    try {
+      if(monitoreo.isCorriendo()) 
+        regresar= "avance".concat(Constantes.REDIRECIONAR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  } 
 
 	public void doAceptar() {
 		Calculos calculos= null;

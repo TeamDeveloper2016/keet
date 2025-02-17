@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Monitoreo del proceso de nómina"/>
+  <ui:define name="librerias">
+		<meta id="refresh" http-equiv="#{keetNominasAvance.attrs.cancelar? 'refresh': 'description'}" content="120"/>
+		<script type="text/javascript">
+      function cancel() {
+				janal.console('cancel: Se terminó el proceso de nómina');
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        clearInterval(window['progress']);
+				window.stop();
+      }
+      
+      function startTask() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start(parseInt($('#registros').html(), 10));
+      }			
+		</script>	
+	</ui:define>	
+  <ui:define name="contenido">
+    <p:poll autoStart="true" interval="1" global="true" process="@this" update="@(.filas)" listener="#{keetNominasAvance.doProgreso}" stop="#{not keetNominasAvance.attrs.cancelar}"/>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:outputLabel value="Tiempo transcurrido:"/>
+        </div>
+        <div id="collpse-acontent" class="ui-grid-col-6 janal-column-center">
+					<p:outputLabel value="Tiempo restante:"/>
+        </div>
+      </div>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:inputText readonly="true" value="#{keetNominasAvance.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-100-txt filas"/>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:inputText readonly="true" value="#{keetNominasAvance.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-100-txt filas"/>
+        </div>
+      </div>
+  		<br/>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+          <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasAvance.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
+          <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{jsfUtilities.monitor.progreso('NOMINA').progreso}" global="true"/>
+        </div>
+				<p:outputLabel id="registros" value="#{keetNominasAvance.attrs.tuplas}" styleClass="importado" style="display: none"/>
+      </div>
+    </div>		   
+		<br/>
+  </ui:define>   
+  <ui:define name="acciones">
+  	<div class="lg-pantalla">
+	  	<p:commandButton id="cancelar" value="Cancelar" process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doCancelar}" style="display: #{keetNominasAvance.attrs.cancelar? '': 'none'}"/>
+		</div>
+  	<div class="xs-pantalla">
+	  	<p:commandButton title="Cancelar" process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doCancelar}" style="display: #{keetNominasAvance.attrs.cancelar? '': 'none'}"/>
+		</div>		
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="cancelar"/>
+</ui:composition>

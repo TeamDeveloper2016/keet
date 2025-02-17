@@ -76,11 +76,11 @@ public class Elapsed implements Serializable {
 	}
 	
 	public String getFormatElapsed() {
-	  return Fecha.toFormatSecondsToHour((long)(this.elapsed/ 1000))+ " Hrs.";
+	  return Fecha.toFormatSecondsToHour((long)(this.elapsed/ 1000));
 	}
 	
 	public String getFormatMissing() {
-	  return Fecha.toFormatSecondsToHour((long)(this.missing/ 1000))+ " Hrs.";
+	  return Fecha.toFormatSecondsToHour((long)(this.missing/ 1000));
 	}
 	
 	public static void main(String ... agrs) {
