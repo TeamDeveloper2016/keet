@@ -73,12 +73,12 @@ public class Extras extends IBaseFilter implements Serializable {
 		Map<String, Object>params   = null;
   	List<UISelectEntity> nominas= (List<UISelectEntity>)this.attrs.get("nominas");
   	UISelectEntity item         = (UISelectEntity)this.attrs.get("idNomina");
-    Monitoreo monitoreo         = JsfBase.getAutentifica().progreso("NOMINA");
+    Monitoreo monitoreo         = JsfBase.toProgressMonitor().progreso("NOMINA");
     try {
       if(monitoreo.isCorriendo()) 
         UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
       else {
-        JsfBase.getAutentifica().clean("NOMINA");
+        JsfBase.toProgressMonitor().clean("NOMINA");
         int index= nominas.indexOf(item);
         if(index> 0)
           this.attrs.put("idNomina", nominas.get(index));

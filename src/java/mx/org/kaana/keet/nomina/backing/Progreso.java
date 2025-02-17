@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.beans.Nomina;
+import mx.org.kaana.keet.nomina.reglas.Calculos;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
@@ -38,21 +39,25 @@ public class Progreso extends IBaseAttribute implements Serializable {
 
 	private Monitoreo monitoreo;	
 	private EAccion accion;	
-	
+
+	public Monitoreo getMonitoreo() {
+		return monitoreo;
+	}
+  
   @PostConstruct
   @Override
   protected void init() {
     Map<String, Object> params= new HashMap<>();
     try {
-      params= new HashMap<>(); 
-			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
-			// this.accion  = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-			this.accion  = EAccion.AGREGAR;
+			Long idNomina = (Long)JsfBase.getFlashAttribute("idNomina");
+			this.accion   = (EAccion)JsfBase.getFlashAttribute("accion");
+			this.monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
 			this.attrs.put("idNomina", idNomina);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
+      this.attrs.put("nomina", JsfBase.getFlashAttribute("nomina"));
+      this.attrs.put("tuplas", JsfBase.getFlashAttribute("tuplas"));
       this.attrs.put("value", "0");
-      this.attrs.put("cancelar", false);
+      this.attrs.put("cancelar", Boolean.FALSE);
 			if(!Cadena.isVacio(idNomina)) {
 				params.put("idNomina", idNomina);
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -60,6 +65,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
 				Value value= DaoFactory.getInstance().toField("VistaNominaDto", Objects.equals(nomina.getIdTipoNomina(), 1L)? "ordinaria": "complementaria", params, "tuplas");
 				if(value!= null && value.getData()!= null)
 					this.attrs.put("tuplas", value.toLong());
+        this.attrs.put("nomina", nomina);
 				UIBackingUtilities.execute("procesar();");
 			} // if
 			else 
@@ -74,10 +80,6 @@ public class Progreso extends IBaseAttribute implements Serializable {
     } // finally
   } // init
 
-	public Monitoreo getMonitoreo() {
-		return monitoreo;
-	}
- 
 	public void doCancelar() {
 		this.monitoreo.terminar();
     this.attrs.put("cancelar", this.monitoreo.isCorriendo());
@@ -96,14 +98,16 @@ public class Progreso extends IBaseAttribute implements Serializable {
 	}	
 	
   public void doAceptar() {
-		Transaccion transaccion= null;
+		Calculos calculos= null;
 		try {		
-			Long idNomina= (Long)this.attrs.get("idNomina");
- 			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
-			if(transaccion.ejecutar(this.accion))
-				JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+      if(!this.monitoreo.isCorriendo()) {
+        Long idNomina= (Long)this.attrs.get("idNomina");
+        calculos     = new Calculos(idNomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar(), (Long)this.attrs.get("tuplas"));
+        if(calculos.ejecutar(this.accion))
+          JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -34,7 +34,6 @@ import mx.org.kaana.libs.recurso.Configuracion;
 @ApplicationScoped
 public class JsfUtilities {
 
-	
   public static FacesContext getFacesContext() {
     return FacesContext.getCurrentInstance();
   }

@@ -1,10 +1,8 @@
 package mx.org.kaana.keet.nomina.reglas;
 
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
-import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import org.hibernate.Session;
 
 /**

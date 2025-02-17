@@ -114,11 +114,15 @@ public final class Constantes {
   public static final String SEPARADOR_PROPIEDADES   = ".";
 
   public static final String MENSAJE_SISTEMA = "Mensaje del sistema";
-  //Atributo autentifica
+  // Atributo autentifica
   public static final String ATRIBUTO_AUTENTIFICA     = "autentifica";
-  //Atributo para usuarios del sitio
+  
+  // Atributo para usuarios del sitio
   public static final String ATRIBUTO_USUARIOS_SITIO  = "usuariosSitio";
   public static final String ATRIBUTO_BLOQUEO_USUARIOS= "bloqueoUsuario";
+  public static final String ATRIBUTO_MONITOREO_GLOBAL= "monitoreoGlobal";
+  public static final String DEFAULT_MONITOR          = "IMOX_PROGRESS";
+
 
   //Atributos utilizados para las tablas en las paginas de filtro
   public static final String NO_EXISTEN_REGISTROS = "No existen registros";

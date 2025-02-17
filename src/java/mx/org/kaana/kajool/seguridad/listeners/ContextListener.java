@@ -3,10 +3,13 @@ package mx.org.kaana.kajool.seguridad.listeners;
 import java.beans.PropertyEditorManager;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
@@ -16,6 +19,7 @@ import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.kajool.seguridad.init.Loader;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,20 +27,24 @@ import org.apache.commons.logging.LogFactory;
 @WebListener("Monitoreo del sitio web")
 public class ContextListener implements ServletContextListener {
 
-  private static final Log LOG = LogFactory.getLog(ContextListener.class);
+  private static final Log LOG= LogFactory.getLog(ContextListener.class);
+  
+  private ProgressMonitor progreso;
 
   @Override
   public void contextInitialized(ServletContextEvent event) {
-    ServletContext context = event.getServletContext();
-    setInitialAttribute(context, "nombreAplicacion", Constantes.NOMBRE_DE_APLICACION);
+    ServletContext context  = event.getServletContext();
     UsuariosEnLinea usuarios= null;
-    System.setProperty("java.awt.headless", "true");
+    this.progreso           = new ProgressMonitor();
     LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
     try {
+      this.setInitialAttribute(context, "nombreAplicacion", Constantes.NOMBRE_DE_APLICACION);
+      System.setProperty("java.awt.headless", "true");
       this.toLoadEditors();
       usuarios= new UsuariosEnLinea();
       context.setAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO, usuarios);
       context.setAttribute(Constantes.ATRIBUTO_BLOQUEO_USUARIOS, new LockUser());
+      context.setAttribute(Constantes.ATRIBUTO_MONITOREO_GLOBAL, this.progreso);
       LOG.info("[+CONTROL DE USUARIOS] ".concat(Fecha.formatear(Fecha.FECHA_HORA, usuarios.getHora())));
       pathLoadFile(context);
       setJasperTempPath(context);
@@ -57,8 +65,10 @@ public class ContextListener implements ServletContextListener {
     UsuariosEnLinea usuarios= (UsuariosEnLinea) context.getAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
     LOG.info("[-CONTROL DE USUARIOS] ".concat("\n\n").concat(usuarios.toString()));
     LOG.info("[-SISTEMA]".concat((String) context.getAttribute("nombreAplicacion")));
-    context.removeAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
+    context.removeAttribute(Constantes.ATRIBUTO_MONITOREO_GLOBAL);
     context.removeAttribute(Constantes.ATRIBUTO_BLOQUEO_USUARIOS);
+    context.removeAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
+    Methods.clean(this.progreso);
   } // contextDestroyed
 
   private void toLoadEditors() {

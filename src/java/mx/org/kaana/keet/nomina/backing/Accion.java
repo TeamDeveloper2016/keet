@@ -67,12 +67,12 @@ public class Accion extends IBaseFilter implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {	
-    Monitoreo monitoreo= JsfBase.getAutentifica().progreso("NOMINA");
+    Monitoreo monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
     try {
       if(monitoreo.isCorriendo()) 
         UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
       else
-        JsfBase.getAutentifica().clean("NOMINA");
+        JsfBase.toProgressMonitor().clean("NOMINA");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
       this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina")== null? -1L: JsfBase.getFlashAttribute("idNomina"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -490,5 +490,22 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} 
+
+  public String doProgreso() {
+    String regresar= "progreso".concat(Constantes.REDIRECIONAR);
+    Long idNomina  = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
+    try {      
+      JsfBase.setFlashAttribute("idNomina", idNomina);
+      JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
+      JsfBase.setFlashAttribute("retorno", "filtro");
+      JsfBase.setFlashAttribute("nomina", this.attrs.get("nomina"));
+      JsfBase.setFlashAttribute("tuplas", this.attrs.get("tuplas"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
   
 }

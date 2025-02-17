@@ -14411,6 +14411,8 @@ select
   tc_keet_gastos.registro as fecha
 from 
   tc_keet_gastos
+inner join 		
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
 inner join 
   tr_mantic_empresa_personal on tc_keet_gastos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
 inner join 

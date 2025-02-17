@@ -95,7 +95,8 @@ public class Acumulados extends IBaseFilter implements Serializable {
       this.fechaFin   = LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+ 1, 1);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());   
-			this.toLoadCatalogos();      
+			this.toLoadCatalogos();  
+      this.toLoadGastos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -212,10 +213,12 @@ public class Acumulados extends IBaseFilter implements Serializable {
   		sb.append("(date_format(tc_keet_cajas_chicas_cierres.termino, '%Y%m%d')<= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("', '%Y%m%d')) and ");			
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && !this.attrs.get("estatus").toString().equals("-1"))
   		sb.append("(tc_keet_gastos_estatus.id_gasto_estatus= ").append(this.attrs.get("estatus")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !((UISelectEntity)this.attrs.get("idEmpresa")).getKey().equals(-1L))
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()> 0L)
 		  sb.append("(tc_mantic_clientes.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");		
-		if(!Cadena.isVacio(this.attrs.get("desarrollo")) && !((UISelectEntity)this.attrs.get("desarrollo")).getKey().equals(-1L))
+		if(!Cadena.isVacio(this.attrs.get("desarrollo")) && ((UISelectEntity)this.attrs.get("desarrollo")).getKey()> 0L)
 		  sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("desarrollo")).getKey()).append(") and ");		
+		if(!Cadena.isVacio(this.attrs.get("idGasto")) && ((UISelectEntity)this.attrs.get("idGasto")).getKey()> 0L)
+		  sb.append("(tc_keet_gastos_detalles.id_articulo= ").append(((UISelectEntity)this.attrs.get("idGasto")).getKey()).append(") and ");		
 		if(!Cadena.isVacio(this.attrs.get("nombre")) && !this.attrs.get("nombre").equals("-1"))
 		  sb.append("(tc_keet_gastos.id_empresa_persona= ").append(this.attrs.get("nombre")).append(") and ");
     else

@@ -25,12 +25,11 @@ import org.apache.commons.logging.LogFactory;
 
 public class Autentifica implements Serializable {
 
-  private static final long serialVersionUID = 8226041225011231930L;
-  private static final Log LOG = LogFactory.getLog(Autentifica.class);
-	private static final String ADMIN= "ADMINISTRADOR";
-  private static final String GERENTE= "GERENTE";
+  private static final long serialVersionUID  = 8226041225011231930L;
+  private static final Log LOG                = LogFactory.getLog(Autentifica.class);
+	private static final String ADMIN           = "ADMINISTRADOR";
+  private static final String GERENTE         = "GERENTE";
   private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
-  private static final String DEFAULT_MONITOR = "IMOX_PROGRESS";
   
   private Persona persona;
   private Monitoreo monitoreo;
@@ -62,7 +61,7 @@ public class Autentifica implements Serializable {
     this.credenciales = credenciales;
     this.paginaActual = paginaActual;
     this.progreso     = new HashMap<>();
-    this.progreso.put(DEFAULT_MONITOR, new Monitoreo(DEFAULT_MONITOR));
+    this.progreso.put(Constantes.DEFAULT_MONITOR, new Monitoreo(Constantes.DEFAULT_MONITOR));
   }	// Autentifica
 
   public Sucursal getEmpresa() {
@@ -453,7 +452,7 @@ public class Autentifica implements Serializable {
 	} 
 
   public Monitoreo progreso() {
-    return this.progreso(DEFAULT_MONITOR);
+    return this.progreso(Constantes.DEFAULT_MONITOR);
   }
   
   public Monitoreo progreso(String id) {

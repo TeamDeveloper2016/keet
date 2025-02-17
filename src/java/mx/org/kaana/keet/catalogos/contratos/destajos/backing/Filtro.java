@@ -92,12 +92,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   protected void init() {		
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
-    Monitoreo monitoreo      = JsfBase.getAutentifica().progreso("NOMINA");
+    Monitoreo monitoreo      = JsfBase.toProgressMonitor().progreso("NOMINA");
     try {
       if(monitoreo.isCorriendo()) 
         UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar con sus actividades !')");
       else
-        JsfBase.getAutentifica().clean("NOMINA");
+        JsfBase.toProgressMonitor().clean("NOMINA");
 			this.initBase();
       this.costoTotal   = "$ 0.00";
       this.costoAnticipo= "$ 0.00";
