@@ -114,18 +114,23 @@ public class Accion extends IBaseFilter implements Serializable {
   } 
 
 	public void doAceptar() {
-		Calculos calculos= null;
-    Long idNomina    = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
-		try {		
-      if(!Objects.equals(idNomina, null) && idNomina> 0L) {
-        calculos= new Calculos(idNomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar(), (Long)this.attrs.get("tuplas"));
-        if(calculos.ejecutar(EAccion.PROCESAR))
-          JsfBase.addMessage(calculos.isCancelo()? "Se canceló la nómina, por favor verificar": "Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+		Calculos calculos  = null;
+    Long idNomina      = ((UISelectEntity)this.attrs.get("idNomina")).getKey();
+    Monitoreo monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
+		try {	
+      if(!monitoreo.isCorriendo()) {
+        if(!Objects.equals(idNomina, null) && idNomina> 0L) {
+          calculos= new Calculos(idNomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar(), (Long)this.attrs.get("tuplas"));
+          if(calculos.ejecutar(EAccion.PROCESAR))
+            JsfBase.addMessage(calculos.isCancelo()? "Se canceló la nómina, por favor verificar": "Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+          else
+            JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+        } // if
         else
-          JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
+          JsfBase.addMessage("Seleccione una semana por favor !", ETipoMensaje.ALERTA);	
       } // if
       else
-        JsfBase.addMessage("Seleccione una semana por favor !", ETipoMensaje.ALERTA);	
+        UIBackingUtilities.execute("janal.isPostBack('cancelar'); janal.alert('La nómina se esta ejecutando [ "+ monitoreo.getPorcentaje()+ "% ], tiene que esperar a que termine ese proceso para continuar !')");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
