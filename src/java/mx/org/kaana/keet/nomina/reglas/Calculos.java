@@ -49,6 +49,7 @@ public final class Calculos extends IBaseTnx {
   private String realPath;
   private String[] idNotificar;  
   private Boolean automatico;
+  private Boolean cancelo;
   private Long tuplas;
   
 	public Calculos(Long idNomina, Autentifica autentifica, String[] idNotificar, Long tuplas) {
@@ -65,11 +66,16 @@ public final class Calculos extends IBaseTnx {
     this.idNotificar= idNotificar;
     this.automatico = automatico;
     this.tuplas     = tuplas;
+    this.cancelo    = Boolean.FALSE;
     this.setRealPath(realPath);
   } 
   
   public void setRealPath(String realPath) {
     this.realPath= realPath;
+  }
+  
+  public Boolean isCancelo() {
+    return this.cancelo;
   }
   
 	@Override
@@ -86,12 +92,14 @@ public final class Calculos extends IBaseTnx {
       } // if  
 			switch(accion) {
 				case PROCESAR:
+          LOG.error("LANZO EL PROCESO DE NOMINA <<<< ".concat(this.autentifica.getPersona().getNombreCompleto()).concat(" >>>>>"));
   			  monitoreo.setTotal(this.tuplas);
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
-          if(regresar) {
+          if(regresar && !monitoreo.isCancelo()) {
             puente  = new Puente(this.nomina, this.autentifica, this.idNotificar, this.realPath, this.automatico);
             regresar= puente.ejecutar(EAccion.NOTIFICAR);
           } // if  
+          this.cancelo= monitoreo.isCancelo();
           break;
       } // switch
     } // try

@@ -22,6 +22,7 @@ public class Monitoreo implements Serializable {
 	private Long total;
 	private Long progreso;
 	private boolean corriendo;
+	private boolean cancelo;
 	private List<String> messages;
 	
 	private Calendar start;
@@ -41,6 +42,7 @@ public class Monitoreo implements Serializable {
 		this.corriendo= false;
 		this.start   = Calendar.getInstance();
 		this.finished= Calendar.getInstance();
+    this.cancelo = Boolean.FALSE;
 	}
 
 	public String getId() {
@@ -84,6 +86,10 @@ public class Monitoreo implements Serializable {
 		return elapsed;
 	}
 
+  public boolean isCancelo() {
+    return cancelo;
+  }
+
 	public void comenzar(Long total) {
 		this.setTotal(total);
 	}
@@ -92,10 +98,16 @@ public class Monitoreo implements Serializable {
 		this.corriendo= true;
 		this.progreso = 0L;
 		this.messages.clear();
-		this.start   = Calendar.getInstance();
-		this.finished= Calendar.getInstance();
+		this.start    = Calendar.getInstance();
+		this.finished = Calendar.getInstance();
+    this.cancelo  = Boolean.FALSE;
 	}
 	
+	public void cancelar() {
+    this.cancelo= Boolean.TRUE;
+    this.terminar();
+  }
+  
 	public void terminar() {
 		this.corriendo= false;		
 		if(this.total== null || this.total<= 0)

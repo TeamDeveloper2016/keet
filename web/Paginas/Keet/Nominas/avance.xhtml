@@ -57,11 +57,18 @@
   </ui:define>   
   <ui:define name="acciones">
   	<div class="lg-pantalla">
-	  	<p:commandButton id="cancelar" value="Cancelar" process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doCancelar}" style="display: #{keetNominasAvance.attrs.cancelar? '': 'none'}"/>
+      <p:commandButton id="aceptar"  value="Cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" styleClass="filas" oncomplete="PF('dialogoConfirmacion').show()" style="display: #{keetNominasAvance.admin? '': 'none'}"/>
+	  	<p:commandButton id="cancelar" value="Regresar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doRegresar}"/>
 		</div>
   	<div class="xs-pantalla">
-	  	<p:commandButton title="Cancelar" process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doCancelar}" style="display: #{keetNominasAvance.attrs.cancelar? '': 'none'}"/>
+  		<p:commandButton title="Cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" styleClass="filas" oncomplete="PF('dialogoConfirmacion').show()" style="display: #{keetNominasAvance.admin? '': 'none'}"/>
+	  	<p:commandButton title="Regresar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" styleClass="filas" action="#{keetNominasAvance.doRegresar}"/>
 		</div>		
   </ui:define>   
   <ui:param name="componenteBloqueo" value="cancelar"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de cancelar la nómina ?" />
+  <ui:param name="accionConfirmacion" value="#{keetNominasAvance}"/>
+  <ui:param name="updateComponent" value="@(.filas)"/>
+  <ui:param name="eventoConfirmacion" value="doCancelar"/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
 </ui:composition>

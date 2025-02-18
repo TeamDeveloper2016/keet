@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.nomina.backing;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -33,6 +34,18 @@ public class Avance extends IBaseAttribute implements Serializable {
 	public Monitoreo getMonitoreo() {
 		return monitoreo;
 	}
+
+  public Boolean getAdmin() {
+    Boolean regresar= Boolean.TRUE;
+    try {      
+      regresar= JsfBase.isAdmin() && !Objects.equals(this.monitoreo, null) && this.monitoreo.isCorriendo();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  } 
   
   @PostConstruct
   @Override
@@ -41,7 +54,7 @@ public class Avance extends IBaseAttribute implements Serializable {
 			this.monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
       this.attrs.put("tuplas", this.monitoreo.getTotal());
       if(this.monitoreo.isCorriendo())
-        UIBackingUtilities.execute("startTask();");
+        UIBackingUtilities.execute("startTask()");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -53,11 +66,23 @@ public class Avance extends IBaseAttribute implements Serializable {
     String regresar= "filtro";
     try {      
       if(this.monitoreo.isCorriendo()) {
-        this.monitoreo.terminar();
+        this.monitoreo.cancelar();
         this.attrs.put("cancelar", this.monitoreo.isCorriendo());
-        UIBackingUtilities.execute("cancel();");
+        UIBackingUtilities.execute("cancel()");
         LOG.error("SE CANCELO LA NOMINA POR <<<< ".concat(JsfBase.getAutentifica().getPersona().getNombreCompleto()).concat(" >>>>>"));
       } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar.concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doRegresar() {
+    String regresar= "filtro";
+    try {      
+      
     } // try
     catch (Exception e) {
       Error.mensaje(e);

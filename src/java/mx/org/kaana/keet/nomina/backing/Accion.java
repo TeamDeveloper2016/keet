@@ -120,7 +120,7 @@ public class Accion extends IBaseFilter implements Serializable {
       if(!Objects.equals(idNomina, null) && idNomina> 0L) {
         calculos= new Calculos(idNomina, JsfBase.getAutentifica(), ((Nomina)this.attrs.get("nomina")).getIdNotificar(), (Long)this.attrs.get("tuplas"));
         if(calculos.ejecutar(EAccion.PROCESAR))
-          JsfBase.addMessage("Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage(calculos.isCancelo()? "Se canceló la nómina, por favor verificar": "Se procesó la nómina con éxito", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("Ocurrió un error en el proceso de nómina", ETipoMensaje.ALERTA);	
       } // if
