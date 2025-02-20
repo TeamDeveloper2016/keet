@@ -65,8 +65,10 @@
 				'contenedorGrupos\\:nombreP'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:paternoP'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:maternoP'     : {validaciones: 'libre', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},				
-				'contenedorGrupos\\:porcentajeP'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:porcentajeP'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre', grupo: 'alimenticia'},
 				'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:puntualidad'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre'},
+				'contenedorGrupos\\:asistencia'   : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre'},
 			};					
 			
 			fieldsDialog= {
@@ -249,6 +251,21 @@
 								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" onblur="$('#contenedorGrupos\\:infonavit').val().trim().length> 0? janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'requerido', mascara: 'libre'}): janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'libre', mascara: 'libre'});" />
 								<p:outputLabel for="factorInfonavit" value="Importe:"/>								
 								<p:inputNumber id="factorInfonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}"/>                    
+								<p:spacer height="2px"/>
+								<p:outputLabel value="Bonos" styleClass="janal-color-blue FontBold"/>
+								<p:separator/>
+								<p:outputLabel for="puntualidad" value="puntualidad:"/>
+                <p:selectOneMenu id="puntualidad" styleClass="janal-wid-100-txt contacto" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.puntualidad}" converter="javax.faces.Long">
+                  <f:selectItem itemLabel="Cero" itemValue="0"/>
+                  <f:selectItem itemLabel="2%" itemValue="2"/>
+                  <f:selectItem itemLabel="10%" itemValue="10"/>								
+                </p:selectOneMenu>
+								<p:outputLabel for="asistencia" value="Asistencia:"/>								
+                <p:selectOneMenu id="asistencia" styleClass="janal-wid-100-txt contacto" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.asistencia}" converter="javax.faces.Long">
+                  <f:selectItem itemLabel="Cero" itemValue="0"/>
+                  <f:selectItem itemLabel="2%" itemValue="2"/>
+                  <f:selectItem itemLabel="10%" itemValue="10"/>								
+                </p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">

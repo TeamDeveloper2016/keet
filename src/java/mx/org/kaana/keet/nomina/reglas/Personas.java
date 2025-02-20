@@ -129,9 +129,10 @@ public class Personas extends Empleados implements Serializable {
         this.toAddView(13, 15);
         this.toAddView(14, 15);
         this.toAddView(15, 15);
+        this.toAddView(16, 15);
         if(this.isCafu) {
-          this.toAddView(16, 15);
           this.toAddView(17, 15);
+          this.toAddView(18, 15);
         } // if  
       } // if  
     } // try
@@ -165,10 +166,11 @@ public class Personas extends Empleados implements Serializable {
     this.addCell(this.posicionColumna+ 12, this.posicionFila, "SAB", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 13, this.posicionFila, "PERCEPCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     this.addCell(this.posicionColumna+ 14, this.posicionFila, "DEDUCCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-    this.addCell(this.posicionColumna+ 15, this.posicionFila, "NETO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 15, this.posicionFila, "RETENCIONES", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+    this.addCell(this.posicionColumna+ 16, this.posicionFila, "NETO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     if(this.isCafu) {
-      this.addCell(this.posicionColumna+ 16, this.posicionFila, "SUELDO IMSS", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
-      this.addCell(this.posicionColumna+ 17, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addCell(this.posicionColumna+ 17, this.posicionFila, "SUELDO DIARIO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
+      this.addCell(this.posicionColumna+ 18, this.posicionFila, "SOBRE SUELDO", Alignment.CENTRE, Colour.YELLOW, Colour.BLACK, Boolean.FALSE);
     } // if  
   }
   
@@ -186,13 +188,15 @@ public class Personas extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 5, this.posicionFila, item.toString("nombre"));
       this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(item.toDouble("percepciones")), this.value);
       this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(item.toDouble("deducciones")), this.value);
-      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")), this.number);
+      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("aportaciones")), this.value);
+      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("neto")), this.number);
       if(this.isCafu) {
-        this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.value);
-        this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.value);
+        this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(item.toDouble("sueldoImss")), this.value);
+        this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(item.toDouble("sobreSueldo")), this.value);
       } // if  
       this.subTotales.put("percepciones", this.subTotales.get("percepciones")+ item.toDouble("percepciones"));
       this.subTotales.put("deducciones", this.subTotales.get("deducciones")+ item.toDouble("deducciones"));
+      this.subTotales.put("aportaciones", this.subTotales.get("aportaciones")+ item.toDouble("aportaciones"));
       this.subTotales.put("cajaChica", this.subTotales.get("cajaChica")+ cajaChica);
       this.subTotales.put("neto", this.subTotales.get("neto")+ item.toDouble("neto"));
       this.subTotales.put("sueldoImss", this.subTotales.get("sueldoImss")+ item.toDouble("sueldoImss"));
@@ -225,10 +229,11 @@ public class Personas extends Empleados implements Serializable {
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
     this.addNumber(this.posicionColumna+ 13, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("percepciones")), this.total);
     this.addNumber(this.posicionColumna+ 14, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("deducciones")), this.total);
-    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
+    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("aportaciones")), this.total);
+    this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("neto")), this.total);
     if(this.isCafu) {
-      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
-      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
+      this.addNumber(this.posicionColumna+ 17, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sueldoImss")), this.total);
+      this.addNumber(this.posicionColumna+ 18, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("sobreSueldo")), this.total);
     } // if  
     this.totales.put(desarrollo, this.subTotales.get("neto"));
   }
@@ -242,7 +247,7 @@ public class Personas extends Empleados implements Serializable {
       this.addCell(this.posicionColumna+ 2, this.posicionFila, "SUB CONTRATISTA");
       this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("departamento"));
       this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("nombre"));
-      this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
+      this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(item.toDouble("total")), this.number);
       this.subTotales.put("total", this.subTotales.get("total")+ item.toDouble("total"));
     } // try
     catch (Exception e) {
@@ -255,12 +260,12 @@ public class Personas extends Empleados implements Serializable {
     this.posicionFila++;
     for (int x= 0; x < 15; x++) 
       this.addNumber(this.posicionColumna+ x, this.posicionFila, 0D, this.total);
-    this.addNumber(this.posicionColumna+ 15, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
+    this.addNumber(this.posicionColumna+ 16, this.posicionFila, Numero.toRedondearSat(this.subTotales.get("total")), this.total);
     this.totales.put(desarrollo, this.subTotales.get("total"));
   }
   
   public static void main(String ... args) throws Exception {
-    Personas corte= new Personas(169L);
+    Personas corte= new Personas(226L);
     LOG.info(corte.local());
   }
   

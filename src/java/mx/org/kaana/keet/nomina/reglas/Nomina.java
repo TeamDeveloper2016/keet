@@ -8,7 +8,6 @@ import com.eteks.parser.CompilationException;
 import com.eteks.parser.CompiledExpression;
 import mx.org.kaana.libs.formato.Error;
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
@@ -367,38 +365,33 @@ public class Nomina implements Serializable {
     } // catch
 	}
 	
-	private Double toSobreSueldoEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
-		Double regresar           = 0D;
+	private void toPrestacionesEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
 		Map<String, Object> params= new HashMap<>();
+    Double sobreSueldo= 0D;
+    Double infonavit  = 0D;
+    Double puntualidad= 0D;
+    Double asistencia = 0D;
 		try {
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
-			Value sobreSueldo= (Value)DaoFactory.getInstance().toField(this.sesion, "TrManticEmpresaPersonalDto", "sobreSueldo", params, "sobreSueldo");
-      if(sobreSueldo!= null && sobreSueldo.getData()!= null) {
-        regresar= sobreSueldo.toDouble();
-        this.toLookUpConcepto(particulares, ECodigosIncidentes.SOBRESUELDO, regresar);
+			Entity prestaciones= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "TrManticEmpresaPersonalDto", "prestaciones", params);
+      if(!Objects.equals(prestaciones, null) && !prestaciones.isEmpty()) {
+        sobreSueldo= prestaciones.toDouble("sobreSueldo");
+        infonavit  = prestaciones.toDouble("factorInfonavit");
+        puntualidad= prestaciones.toDouble("puntualidad");
+        asistencia = prestaciones.toDouble("asistencia");
 			} // if
+      this.toLookUpConcepto(particulares, ECodigosIncidentes.SOBRESUELDO, sobreSueldo);
+      this.toLookUpConcepto(particulares, ECodigosIncidentes.INFONAVIT, infonavit);
+      this.toLookUpConcepto(particulares, ECodigosIncidentes.PUNTUALIDAD, puntualidad);
+      this.toLookUpConcepto(particulares, ECodigosIncidentes.ASISTENCIA, asistencia);
+      this.constants.put("SOBRESUELDO", sobreSueldo);
+      this.constants.put("INFONAVIT", infonavit);
+      this.constants.put("PUNTUALIDAD", puntualidad);
+      this.constants.put("ASISTENCIA", asistencia);
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
-		return regresar;
-  }
-
-	private Double toInfonavitEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
-		Double regresar           = 0D;
-		Map<String, Object> params= new HashMap<>();
-		try {
-			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
-			Value infonavit= (Value)DaoFactory.getInstance().toField(this.sesion, "TrManticEmpresaPersonalDto", "sobreSueldo", params, "factorInfonavit");
-      if(infonavit!= null && infonavit.getData()!= null) {
-        regresar= infonavit.toDouble();
-        this.toLookUpConcepto(particulares, ECodigosIncidentes.INFONAVIT, regresar);
-			} // if
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
   }
 
 	private void toPensionAlimentciaEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
@@ -480,10 +473,7 @@ public class Nomina implements Serializable {
 		// FIJAR EL SUELDO BASE DEPENDIENDO SI ES O NO CONTRATISTA
 		Double sueldo= this.toSueldoContratista(particulares, empleado);
 		this.constants.put("SUELDO", sueldo);
-		Double sobreSueldo= this.toSobreSueldoEmpleado(particulares, empleado);
-		this.constants.put("SOBRESUELDO", sobreSueldo);
-		Double infonavit= this.toInfonavitEmpleado(particulares, empleado);
-		this.constants.put("INFONAVIT", infonavit);
+    this.toPrestacionesEmpleado(particulares, empleado);
 		this.toPensionAlimentciaEmpleado(particulares, empleado);
 		for (Concepto concepto: particulares) {
 			concepto.setFormula(this.transform(concepto.getFormula()));

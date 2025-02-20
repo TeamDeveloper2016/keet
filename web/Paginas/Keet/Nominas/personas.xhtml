@@ -166,13 +166,13 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('LISTADO_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
 							<f:facet name="header">
 								<h:outputText value="Sucursal"/>
 							</f:facet>
 							<h:outputText value="#{row['nombreEmpresa']}"/>
 						</p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nomina}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.nomina}">
 							<f:facet name="header">
 								<h:outputText value="Nomina"/>
 							</f:facet>
@@ -215,19 +215,25 @@
 							</f:facet>
 							<h:outputText value="#{row['apodo']}"/>
 						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.percepciones}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.percepciones}">
 							<f:facet name="header">
 								<h:outputText value="Percepciones"/>
 							</f:facet>
 							<h:outputText value="#{row['percepciones']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.deducciones}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.deducciones}">
 							<f:facet name="header">
 								<h:outputText value="Deducciones"/>
 							</f:facet>
 							<h:outputText value="#{row['deducciones']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.neto}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.aportaciones}">
+							<f:facet name="header">
+								<h:outputText value="Retenciones"/>
+							</f:facet>
+							<h:outputText value="#{row['aportaciones']}"/>
+						</p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}">
 							<f:facet name="header">
 								<h:outputText value="Neto"/>
 							</f:facet>

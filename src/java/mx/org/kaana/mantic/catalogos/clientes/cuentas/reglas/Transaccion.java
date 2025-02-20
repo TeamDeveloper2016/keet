@@ -532,9 +532,8 @@ public class Transaccion extends Facturama {
 	
 	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			
 			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro asc");
@@ -622,10 +621,9 @@ public class Transaccion extends Facturama {
 	} // toDeleteAll
 	
 	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
-		List<Nombres> regresar= null;
-		Map<String, Object> params=null;
+		List<Nombres> regresar    = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params  = new HashMap<>();
 			params.put("idTipoArchivo", idTipoArchivo);
 			params.put("ruta", tmp.getRuta());
 			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticClientesPagosArchivosDto", "listado", params);
@@ -642,9 +640,8 @@ public class Transaccion extends Facturama {
 	
 	private Siguiente toSiguiente(Session sesion, Long idCliente) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -661,10 +658,9 @@ public class Transaccion extends Facturama {
 	} // toSiguiente
 	
 	private Boolean toDeletePagos(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    Map<String, Object> params = null;
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idClientePagoControl", this.idClientePago);      
       List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "eliminarPagos", params);
       if(items!= null && !items.isEmpty()) {
@@ -717,10 +713,9 @@ public class Transaccion extends Facturama {
   }
  
   private Boolean toDeleteCuenta(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    Map<String, Object> params = null;
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idClienteDeuda", this.idClientePago);      
       TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.idClientePago);
       deuda.setIdClienteDeudaEstatus(EEstatusClientes.CANCELADA.getIdEstatus());
@@ -767,10 +762,9 @@ public class Transaccion extends Facturama {
   } 
   
   public void toAffectAlmacenes(Session sesion, TcManticVentasDto venta) throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
       Double stock= null;
-      params = new HashMap<>();      
       params.put("idVenta", venta.getIdVenta());      
       List<TcManticVentasDetallesDto> items= (List<TcManticVentasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticVentasDetallesDto.class, "TcManticVentasDetallesDto", "detalle", params);
       if(items!= null && !items.isEmpty()) {
@@ -818,10 +812,9 @@ public class Transaccion extends Facturama {
   }
 
   private boolean toUpdateVencimiento(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    Map<String, Object> params = null;
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idClienteDeuda", this.idClientePago);      
       TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.idClientePago);
       deuda.setLimite(this.limite);
@@ -837,8 +830,8 @@ public class Transaccion extends Facturama {
   }
 	 
 	public boolean procesarComplementoPago(Session sesion, List<Documento> documentos) throws Exception {		
-		boolean regresar         = true;
-		Map<String, Object>params= null;
+		boolean regresar         = Boolean.TRUE;
+		Map<String, Object>params= new HashMap<>();
 		try {
       DaoFactory.getInstance().insert(sesion, this.control);
       this.pago.setIdClientePagoControl(this.control.getIdClientePagoControl());
@@ -847,7 +840,6 @@ public class Transaccion extends Facturama {
         if(deuda!= null && !deuda.isEmpty()) {
           Long idEstatus= cuenta.getInsoluto()<= 0D? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus();
           if(this.registrarPago(sesion, deuda, cuenta.getPagado(), -1L, "COMPLEMENTO")) {
-            params= new HashMap<>();
             params.put("saldo", cuenta.getInsoluto());
             params.put("idClienteDeudaEstatus", idEstatus);
             DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
@@ -868,9 +860,8 @@ public class Transaccion extends Facturama {
  
 	private Entity toDeudaParticular(Session sesion, Long idVenta) throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put("idVenta", idVenta);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in(1, 2)");			

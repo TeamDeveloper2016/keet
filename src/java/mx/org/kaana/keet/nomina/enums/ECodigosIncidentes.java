@@ -14,7 +14,7 @@ public enum ECodigosIncidentes {
   // PRESTAMO(18L, "AK1|AL1", Boolean.TRUE, 6), 
   // ABONO(19L, "BD1|BE1|BF1|BG1|BH1|BI1", Boolean.TRUE, 6),
   
-	FALTA(1L, "AY1|AZ1|BA1|BB1|BC1", Boolean.FALSE, 3), 
+	FALTA(1L, "BW1|BX1|BY1|BZ1|CA1", Boolean.FALSE, 3), 
   DIAFESTIVO(15L, "AB1|AC1|AD1", Boolean.FALSE, 3), 
   EXCEDENTE(16L, "AF1|AG1|AH1|AI1|AJ1", Boolean.TRUE, 5), 
   TRIPLE(17L, "AE1", Boolean.FALSE, 1), 
@@ -32,7 +32,9 @@ public enum ECodigosIncidentes {
   MEDIODIA(23L, "BJ1|BK1|BL1|BM1|BN1|BO1", Boolean.TRUE, 6),
   DOBLE(24L, "AW1|AX1", Boolean.FALSE, 2),
 	PENSION(-1L, "BP1|BQ1|BR1|BS1|BT1", Boolean.TRUE, 5),
-	INFONAVIT(-1L, "P1", Boolean.TRUE, 1);
+	INFONAVIT(-1L, "P1", Boolean.TRUE, 1),
+	PUNTUALIDAD(-1L, "S1", Boolean.TRUE, 1),
+	ASISTENCIA(-1L, "T1", Boolean.TRUE, 1);
 	
 	private Long idTipoIncidente;
 	private String codigos;

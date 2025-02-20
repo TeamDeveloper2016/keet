@@ -88,17 +88,21 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private Long idTipoMedioPago;
 	@Column (name="id_agrupacion")
   private Long idAgrupacion;
+	@Column (name="puntualidad")
+  private Double puntualidad;
+	@Column (name="asistencia")
+  private Double asistencia;
 
   public TrManticEmpresaPersonalDto() {
     this(new Long(-1L));
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, 2L, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L, 0D, 1L, 2L, 1L, 1L);
+    this(null, null, 2L, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L, 0D, 1L, 2L, 1L, 1L, 0D, 0D);
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate contratacion, LocalDate baja, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate ingreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro, Double sobreSueldo, Long idLimpiar, Long idPorDia, Long idTipoMedioPago, Long idAgrupacion) {
+  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate contratacion, LocalDate baja, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate ingreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro, Double sobreSueldo, Long idLimpiar, Long idPorDia, Long idTipoMedioPago, Long idAgrupacion, Double puntualidad, Double asistencia) {
     setClave(clave);
     setIdPuesto(idPuesto);
     setIdContrato(idContrato);
@@ -128,6 +132,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     this.idPorDia= idPorDia;
     this.idTipoMedioPago= idTipoMedioPago;
     this.idAgrupacion= idAgrupacion;
+    this.puntualidad= puntualidad;
+    this.asistencia= asistencia;
   }
 	
   public void setClave(String clave) {
@@ -362,6 +368,22 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     this.idAgrupacion = idAgrupacion;
   }
 
+  public Double getPuntualidad() {
+    return puntualidad;
+  }
+
+  public void setPuntualidad(Double puntualidad) {
+    this.puntualidad = puntualidad;
+  }
+
+  public Double getAsistencia() {
+    return asistencia;
+  }
+
+  public void setAsistencia(Double asistencia) {
+    this.asistencia = asistencia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -434,6 +456,10 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(getIdTipoMedioPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAgrupacion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPuntualidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAsistencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -470,13 +496,15 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.put("idPorDia", getIdPorDia());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idAgrupacion", getIdAgrupacion());
+		regresar.put("puntualidad", getPuntualidad());
+		regresar.put("asistencia", getAsistencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getContratacion(), getBaja(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro(), getSobreSueldo(), getIdLimpiar(), getIdPorDia(), getIdTipoMedioPago(), getIdAgrupacion()
+			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getContratacion(), getBaja(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro(), getSobreSueldo(), getIdLimpiar(), getIdPorDia(), getIdTipoMedioPago(), getIdAgrupacion(), getPuntualidad(), getAsistencia()
     };
     return regresar;
   }

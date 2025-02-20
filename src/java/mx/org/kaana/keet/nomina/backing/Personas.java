@@ -135,6 +135,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			params.put("sortOrder", "order by nomina desc, desarrollo, nombre_completo");
       columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("aportaciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
       Long idNominaEstatus= ((UISelectEntity)this.attrs.get("idNomina")).toLong("idNominaEstatus");
       if(Objects.equals(idNominaEstatus, -1L) || Objects.equals(idNominaEstatus, ENominaEstatus.TERMINADA))

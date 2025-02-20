@@ -634,7 +634,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             Double sueldo= 0D;
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
-                sueldo= persona.toDouble("sueldoImss");
+                //sueldo= persona.toDouble("sueldoImss");
+                 sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
               case "triana":

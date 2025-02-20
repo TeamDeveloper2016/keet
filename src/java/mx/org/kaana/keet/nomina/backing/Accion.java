@@ -89,10 +89,10 @@ public class Accion extends IBaseFilter implements Serializable {
   } // init
   
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Detalle")) 
+		if(event.getTab().getTitle().equals("Movimientos")) 
 			this.doLoad();
     else
-		  if(event.getTab().getTitle().equals("Movimientos")) 
+		  if(event.getTab().getTitle().equals("Destajos")) 
 			  this.doMovimientos();
       else
 		    if(event.getTab().getTitle().equals("Extras")) 
@@ -277,9 +277,13 @@ public class Accion extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-			params.put("sortOrder", "order by nomina, clave");
-      columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazyModel = new FormatCustomLazy("VistaNominaDto", "detalle", params, columns);
+      if(!Cadena.isVacio(this.attrs.get("nombre"))) {
+        params.put("sortOrder", "order by nomina, clave");
+        columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
+        this.lazyModel= new FormatCustomLazy("VistaNominaDto", "detalle", params, columns);
+      } // if
+      else 
+        this.lazyModel= null;
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -293,10 +297,10 @@ public class Accion extends IBaseFilter implements Serializable {
 	}
 	
 	private Map<String, Object> toPrepare() {
-	  Map<String, Object> regresar  = new HashMap<>();	
+	  Map<String, Object> regresar= new HashMap<>();	
 		regresar.put("idNomina", ((Nomina)this.attrs.get("nomina")).getIdNomina());
 		regresar.put("nombre", "");
-		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
+		if(!Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		regresar.put("nombre", nombre);
 		} // if
@@ -401,15 +405,15 @@ public class Accion extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-			params.put("sortOrder", "order by nomina, clave");
+      params.put("sortOrder", "order by nomina, clave");
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyMovimientos = new FormatCustomLazy("VistaNominaDto", "movimientos", params, columns);
-      UIBackingUtilities.resetDataTable();
+      this.lazyMovimientos= new FormatCustomLazy("VistaNominaDto", "movimientos", params, columns);
+      UIBackingUtilities.resetDataTable("movimientos");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -442,7 +446,7 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyExtras= new FormatCustomLazy("VistaNominaDto", "extras", params, columns);
-      UIBackingUtilities.resetDataTable();
+      UIBackingUtilities.resetDataTable("extras");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

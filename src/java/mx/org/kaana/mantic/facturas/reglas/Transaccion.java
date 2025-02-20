@@ -135,14 +135,13 @@ public class Transaccion extends Facturama {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar             = false;
-		Map<String, Object> params   = null;
+		Map<String, Object> params   = new HashMap<>();
 		Long idEstatusFactura        = null;
 		TcManticFacturasDto factura  = null;
 		TcManticFicticiasDto ficticia= null;
 		Long idFactura               = -1L;
 		try {
 			idEstatusFactura= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
-			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idFicticia", this.orden.getIdFicticia());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
@@ -211,8 +210,7 @@ public class Transaccion extends Facturama {
 					regresar= this.agregarContacto(sesion);
 					break;
 				case DEPURAR:
-					this.messageError= "Ocurrio un error al cancelar la factura.";
-					params= new HashMap<>();
+					this.messageError= "Ocurrio un error al cancelar la factura";
 					params.put("idFactura", this.orden.getIdFactura());
 					factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 					if(factura!= null && factura.getIdFacturama()!= null) {
@@ -275,10 +273,10 @@ public class Transaccion extends Facturama {
 	}	// ejecutar
 	
 	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception {
-		boolean regresar         = false;
-		Siguiente consecutivo    = null;
-		Siguiente cuenta         = null;
-		Long idFactura           = -1L;
+		boolean regresar     = false;
+		Siguiente consecutivo= null;
+		Siguiente cuenta     = null;
+		Long idFactura       = -1L;
 		try {									
 			idFactura= this.registrarFactura(sesion);										
 			if(idFactura>= 1L) {
@@ -310,12 +308,11 @@ public class Transaccion extends Facturama {
 	
 	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
 		boolean regresar           = false;
-		Map<String, Object>params  = null;
+		Map<String, Object>params  = new HashMap<>();
 		TcManticFacturasDto factura= null;
 		try {						
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			params= new HashMap<>();
 			params.put("idVenta", this.orden.getIdVenta());
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 			factura.setObservaciones(this.justificacion);
@@ -395,9 +392,8 @@ public class Transaccion extends Facturama {
   
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -418,9 +414,8 @@ public class Transaccion extends Facturama {
 	
 	private Siguiente toSiguienteCuenta(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
@@ -464,18 +459,18 @@ public class Transaccion extends Facturama {
 	
 	private boolean agregarContacto(Session sesion) throws Exception{
 		boolean regresar                       = true;
-		List<ClienteTipoContacto> correos      = null;
+		List<ClienteTipoContacto> emails       = null;
 		TrManticClienteTipoContactoDto contacto= null;
 		int count                              = 0;
 		Long records                           = 1L;
 		try {
-			correos= toClientesTipoContacto(sesion);
-			if(!correos.isEmpty()) {
-				for(ClienteTipoContacto tipoContacto: correos) {
+			emails= toClientesTipoContacto(sesion);
+			if(!emails.isEmpty()) {
+				for(ClienteTipoContacto tipoContacto: emails) {
 					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
 						count++;
 				} // for				
-				records= correos.size() + 1L;
+				records= emails.size() + 1L;
 			} // if
 			if(count== 0) {
 				contacto= new TrManticClienteTipoContactoDto();
@@ -495,9 +490,8 @@ public class Transaccion extends Facturama {
 	
 	public List<ClienteTipoContacto> toClientesTipoContacto(Session sesion) throws Exception {
 		List<ClienteTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -552,9 +546,8 @@ public class Transaccion extends Facturama {
 	private boolean checkTotal(Session sesion) throws Exception {
 		boolean regresar= false;
 		Double value    = 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idVenta", this.orden.getIdFicticia());
 			Value detalle= null;
       if(Objects.equals(this.orden.getIdTipoComprobante(), ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
@@ -577,9 +570,8 @@ public class Transaccion extends Facturama {
 	
 	private boolean toClonarFiciticia(Session sesion, Long idEstatusFicticia) throws Exception { 
 		boolean regresar          = false;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			Siguiente cuenta     = this.toSiguienteCuenta(sesion);			
 			Siguiente consecutivo= this.toSiguiente(sesion);			
 			params.put("idVenta", this.orden.getKey());
@@ -699,9 +691,8 @@ public class Transaccion extends Facturama {
 	private Long toIdDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{
 		Long regresar            = null;
     Entity item              = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idLocalidad", contratoDomicilio.getIdLocalidad().getKey());
 			params.put("codigoPostal", contratoDomicilio.getCodigoPostal());
 			params.put("calle", contratoDomicilio.getCalle());
@@ -721,9 +712,8 @@ public class Transaccion extends Facturama {
 	} // toDomicilio
   
   private void checkComplementoPago(Session sesion) throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params= new HashMap<>();
     try {  
-      params = new HashMap<>();      
       if(this.orden.getDocumentos()!= null && !this.orden.getDocumentos().isEmpty())
         for (IActions item: this.orden.getDocumentos()) {
           if(item instanceof Insert) {
@@ -776,10 +766,9 @@ public class Transaccion extends Facturama {
   }
   
   public void cancelDocumentosPagos(Session sesion) throws Exception {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
   	CFDIGestor gestor         = null;
     try {
-      params= new HashMap<>();      
       params.put("idVenta", this.orden.getIdVenta());      
       params.put("idVentaEstatus", EEstatusFicticias.CANCELADA.getIdEstatusFicticia());      
       params.put("observaciones", "CANCELADA "+ Global.format(EFormatoDinamicos.FECHA_HORA, LocalDateTime.now())+ " POR ["+ JsfBase.getAutentifica().getCredenciales().getCuenta()+ "]");
