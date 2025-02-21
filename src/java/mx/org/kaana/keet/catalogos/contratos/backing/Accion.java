@@ -224,7 +224,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // for
 			if(count== 0) {
 				this.attrs.put("renderedDomicilio", false);
-				this.attrs.put("mensajeDomicilio", "Un DOMICILIO registrado.");								
+				this.attrs.put("mensajeDomicilio", "Un DOMICILIO registrado");								
 			} // if
 		} // try
 		catch (Exception e) {
@@ -916,7 +916,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // toLoadBancos  
   
   public void doCalculateAnticipo(Boolean porcentaje) {
-    if(this.contrato.getContrato().getCosto()> 0D) {
+    if(!Objects.equals(this.contrato.getContrato().getCosto(), null) && this.contrato.getContrato().getCosto()> 0D) {
       if(porcentaje) 
         this.contrato.getContrato().setAnticipo(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeAnticipo()/ 100* this.contrato.getContrato().getCosto()));
       else
@@ -933,7 +933,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
  
   public void doCalculateFondoGarantia(Boolean porcentaje) {
-    if(this.contrato.getContrato().getCosto()> 0D) {
+    if(!Objects.equals(this.contrato.getContrato().getCosto(), null) && this.contrato.getContrato().getCosto()> 0D) {
       if(porcentaje)
         this.contrato.getContrato().setFondoGarantia(Numero.toRedondearSat(this.contrato.getContrato().getPorcentajeFondo()/ 100* this.contrato.getContrato().getCosto()));
       else
@@ -1014,7 +1014,7 @@ public class Accion extends IBaseAttribute implements Serializable {
             this.contrato.getContrato().getIndirecto()+ 
             this.contrato.getContrato().getUtilidad();
     this.attrs.put("total", total);
-    this.attrs.put("diferencia", total- this.contrato.getContrato().getCosto());
+    this.attrs.put("diferencia", total- (Objects.equals(this.contrato.getContrato().getCosto(), null)? 0D: this.contrato.getContrato().getCosto()));
   }
   
 }

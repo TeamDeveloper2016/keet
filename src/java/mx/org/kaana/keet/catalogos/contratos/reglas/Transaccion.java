@@ -119,7 +119,7 @@ public class Transaccion extends IBaseTnx {
           if(this.contrato.getContrato().getIdBanco()<= 0L)
             this.contrato.getContrato().setIdBanco(null);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
-					for(Lote item:this.contrato.getContrato().getLotes())
+					for(Lote item: this.contrato.getContrato().getLotes())
 						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
           this.toFillRetenciones(sesion);

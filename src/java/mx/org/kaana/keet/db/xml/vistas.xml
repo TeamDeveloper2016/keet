@@ -1771,447 +1771,453 @@ order by
           tc_keet_contratos.id_contrato
       </select>
       <select id="clientes">
-        select
-          tc_mantic_clientes.id_cliente as id_key,
-          tc_keet_proyectos.id_cliente,
-          tc_mantic_clientes.razon_social,
-          count(*) as contratos,
-          sum(tc_keet_contratos.costo) as total,
-          sum(tc_keet_contratos.anticipo) as anticipo,
-          ifnull(tt_keet_estimaciones.importe, 0) as estimaciones,
-          abs(sum(tc_keet_contratos.costo)- ifnull(tt_keet_estimaciones.importe, 0)) as saldo,
-          ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
-          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
-          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones
-        from
-          tc_mantic_clientes         
-        inner join
-          tc_keet_proyectos on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente         
-        inner join
-          tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto         
-        inner join 
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        left join (
-          select
-            tc_mantic_clientes.id_cliente,    
-            sum(tc_keet_estimaciones.importe) as importe,
-            sum(tc_keet_estimaciones.saldo) as saldo
-         from    
-           tc_keet_estimaciones 
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        group by
-           tc_mantic_clientes.id_cliente
-        ) as tt_keet_estimaciones on tc_mantic_clientes.id_cliente= tt_keet_estimaciones.id_cliente
-        left join (
-        select
-          tc_mantic_clientes.id_cliente,    
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-        from    
-          tc_keet_estimaciones 
-        inner join
-          tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        group by
-           tc_mantic_clientes.id_cliente
-        ) tt_keet_retenciones on tc_mantic_clientes.id_cliente= tt_keet_retenciones.id_cliente
-        where
-          tc_keet_contratos.id_empresa in ({idEmpresa})
-          and {condicion}
-        group by
-          tc_keet_proyectos.id_cliente        
+select
+  tc_mantic_clientes.id_cliente as id_key,
+  tc_keet_proyectos.id_cliente,
+  tc_mantic_clientes.razon_social,
+  count(*) as contratos,
+  sum(tc_keet_contratos.costo) as total,
+  sum(tc_keet_contratos.anticipo) as anticipo,
+  ifnull(tt_keet_estimaciones.importe, 0) as estimaciones,
+  abs(sum(tc_keet_contratos.costo)- ifnull(tt_keet_estimaciones.importe, 0)) as saldo,
+  ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
+  ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+  ifnull(tt_keet_retenciones.retenciones, 0) as retenciones
+from
+  tc_mantic_clientes         
+inner join
+  tc_keet_proyectos on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente         
+inner join
+  tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto         
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+left join (
+  select
+    tc_mantic_clientes.id_cliente,    
+    sum(tc_keet_estimaciones.importe) as importe,
+    sum(tc_keet_estimaciones.saldo) as saldo
+ from    
+   tc_keet_estimaciones 
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+group by
+   tc_mantic_clientes.id_cliente
+) as tt_keet_estimaciones on tc_mantic_clientes.id_cliente= tt_keet_estimaciones.id_cliente
+left join (
+select
+  tc_mantic_clientes.id_cliente,    
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+from    
+  tc_keet_estimaciones 
+inner join
+  tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+group by
+   tc_mantic_clientes.id_cliente
+) tt_keet_retenciones on tc_mantic_clientes.id_cliente= tt_keet_retenciones.id_cliente
+where
+  tc_keet_contratos.id_empresa in ({idEmpresa})
+  and {condicion}
+group by
+  tc_keet_proyectos.id_cliente        
       </select>
       <select id="contratos">
-        select
-          tc_keet_contratos.id_contrato as id_key,
-          tc_keet_contratos.id_contrato,
-          tc_keet_proyectos.id_cliente,
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_contratos.clave,
-          tc_keet_contratos.nombre,
-          tc_keet_contratos.id_contrato_estatus,
-          sum(tc_keet_contratos.costo) as total,
-          sum(tc_keet_contratos.anticipo) as anticipo,
-          ifnull(tt_keet_estimaciones.importe, 0) as estimaciones,
-          abs(sum(tc_keet_contratos.costo)- ifnull(tt_keet_estimaciones.importe, 0)) as saldo,
-          ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
-          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
-          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
-          tc_keet_contratos.registro
-        from
-          tc_keet_contratos
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        inner join 
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        left join (
-          select
-            tc_keet_contratos.id_contrato,    
-            sum(tc_keet_estimaciones.importe) as importe,
-            sum(tc_keet_estimaciones.saldo) as saldo
-         from    
-           tc_keet_estimaciones 
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        where
-          tc_mantic_clientes.id_cliente= {idCliente}
-        group by
-           tc_keet_contratos.id_contrato
-        ) as tt_keet_estimaciones on tc_keet_contratos.id_contrato= tt_keet_estimaciones.id_contrato
-        left join (
-        select
-          tc_keet_contratos.id_contrato,    
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-        from    
-          tc_keet_estimaciones 
-        inner join
-          tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        where
-          tc_mantic_clientes.id_cliente= {idCliente}
-        group by
-           tc_keet_contratos.id_contrato
-        ) tt_keet_retenciones on tc_keet_contratos.id_contrato= tt_keet_retenciones.id_contrato
-        where
-          tc_keet_contratos.id_empresa in ({idEmpresa})
-          and tc_mantic_clientes.id_cliente= {idCliente}
-          and {condicion}
-        group by
-         tc_keet_contratos.id_contrato,
-         tc_mantic_clientes.id_cliente
-        {sortOrder}     
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.id_contrato,
+  tc_keet_proyectos.id_cliente,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre,
+  tc_keet_contratos.id_contrato_estatus,
+  sum(tc_keet_contratos.costo) as total,
+  sum(tc_keet_contratos.anticipo) as anticipo,
+  ifnull(tt_keet_estimaciones.importe, 0) as estimaciones,
+  abs(sum(tc_keet_contratos.costo)- ifnull(tt_keet_estimaciones.importe, 0)) as saldo,
+  ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
+  ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+  ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+  tc_keet_contratos.registro
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+left join (
+  select
+    tc_keet_contratos.id_contrato,    
+    sum(tc_keet_estimaciones.importe) as importe,
+    sum(tc_keet_estimaciones.saldo) as saldo
+ from    
+   tc_keet_estimaciones 
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+where
+  tc_mantic_clientes.id_cliente= {idCliente}
+group by
+   tc_keet_contratos.id_contrato
+) as tt_keet_estimaciones on tc_keet_contratos.id_contrato= tt_keet_estimaciones.id_contrato
+left join (
+select
+  tc_keet_contratos.id_contrato,    
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+from    
+  tc_keet_estimaciones 
+inner join
+  tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+where
+  tc_mantic_clientes.id_cliente= {idCliente}
+group by
+   tc_keet_contratos.id_contrato
+) tt_keet_retenciones on tc_keet_contratos.id_contrato= tt_keet_retenciones.id_contrato
+where
+  tc_keet_contratos.id_empresa in ({idEmpresa})
+  and tc_mantic_clientes.id_cliente= {idCliente}
+  and {condicion}
+group by
+  tc_keet_contratos.id_contrato,
+  tc_mantic_clientes.id_cliente
+{sortOrder}     
       </select>
       <select id="estimacion">
-			  select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_keet_estimaciones.id_estimacion,
-          tc_keet_proyectos.id_cliente,
-          tc_keet_estimaciones.consecutivo,
-          tc_keet_nominas_periodos.inicio,
-          tc_keet_nominas_periodos.termino,
-          concat(tc_keet_series.clave, tc_mantic_facturas.folio) as folio,
-          tc_mantic_ventas.total as factura,
-          tc_keet_estimaciones.facturar,
-          sum(tc_keet_estimaciones.importe) as total,
-          sum(tc_keet_estimaciones.saldo) as saldo,
-          ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
-          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
-          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
-          tc_keet_estimaciones.id_estimacion_estatus
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        left join
-          tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
-        left join
-          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
-        left join
-          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
-        left join (
-          select
-            tc_keet_estimaciones.id_estimacion, 
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-          from    
-            tc_keet_estimaciones 
-          inner join
-            tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-          where
-            tc_keet_estimaciones.id_contrato= {idContrato}
-          group by
-            tc_keet_estimaciones.id_estimacion
-         ) tt_keet_retenciones on tc_keet_estimaciones.id_estimacion= tt_keet_retenciones.id_estimacion
-         where
-           tc_keet_estimaciones.id_empresa in ({idEmpresa})
-           and tc_keet_estimaciones.id_contrato= {idContrato}
-         group by
-           tc_keet_estimaciones.registro desc        
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_keet_estimaciones.id_estimacion,
+  tc_keet_proyectos.id_cliente,
+  tc_keet_estimaciones.consecutivo,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino,
+  concat(tc_keet_series.clave, tc_mantic_facturas.folio) as folio,
+  tc_mantic_ventas.total as factura,
+  tc_keet_estimaciones.facturar,
+  sum(tc_keet_estimaciones.importe) as total,
+  sum(tc_keet_estimaciones.saldo) as saldo,
+  ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
+  ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+  ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+  tc_keet_estimaciones.id_estimacion_estatus
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+left join
+  tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
+left join
+  tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+left join
+  tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+left join (
+  select
+    tc_keet_estimaciones.id_estimacion, 
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+  from    
+    tc_keet_estimaciones 
+  inner join
+    tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+  where
+    tc_keet_estimaciones.id_contrato= {idContrato}
+  group by
+    tc_keet_estimaciones.id_estimacion
+ ) tt_keet_retenciones on tc_keet_estimaciones.id_estimacion= tt_keet_retenciones.id_estimacion
+ where
+   tc_keet_estimaciones.id_empresa in ({idEmpresa})
+   and tc_keet_estimaciones.id_contrato= {idContrato}
+ group by
+   tc_keet_estimaciones.registro desc        
       </select>
       <select id="saldos">
-			  select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_mantic_clientes.id_cliente,
-          tc_mantic_clientes.razon_social,
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_contratos.id_contrato,
-          tc_keet_contratos.nombre as contrato,
-          tc_keet_contratos.costo,
-          tc_keet_contratos.anticipo,
-          tc_keet_contratos.fondo_garantia as fondo,
-          tc_keet_estimaciones.id_estimacion,
-          tc_keet_estimaciones.consecutivo,
-          tc_keet_nominas_periodos.inicio,
-          tc_keet_nominas_periodos.termino,
-          concat(tc_keet_series.clave, tc_mantic_facturas.folio) as folio,
-          tc_mantic_ventas.total as factura,
-          tc_keet_estimaciones.facturar,
-          sum(tc_keet_estimaciones.importe) as estimado,
-          sum(tc_keet_estimaciones.saldo) as saldo,
-          ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
-          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
-          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
-          tc_keet_estimaciones.id_estimacion_estatus
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
-        inner join
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        left join
-          tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
-        left join
-          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
-        left join
-          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
-        left join (
-          select
-            tc_keet_estimaciones.id_estimacion,    
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-          from    
-            tc_keet_estimaciones 
-          inner join
-            tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-          group by
-            tc_keet_estimaciones.id_estimacion
-        ) tt_keet_retenciones on tc_keet_estimaciones.id_estimacion= tt_keet_retenciones.id_estimacion
-        where
-          tc_keet_estimaciones.id_empresa in ({idEmpresa})
-          and {condicion}
-        group by
-          tc_mantic_clientes.id_cliente,
-          tc_keet_contratos.id_contrato,
-          tc_keet_estimaciones.id_estimacion
-        {sortOrder}        
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_mantic_clientes.id_cliente,
+  tc_mantic_clientes.razon_social,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.costo,
+  tc_keet_contratos.anticipo,
+  tc_keet_contratos.fondo_garantia as fondo,
+  tc_keet_estimaciones.id_estimacion,
+  tc_keet_estimaciones.consecutivo,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino,
+  concat(tc_keet_series.clave, tc_mantic_facturas.folio) as folio,
+  tc_mantic_ventas.total as factura,
+  tc_keet_estimaciones.facturar,
+  sum(tc_keet_estimaciones.importe) as estimado,
+  sum(tc_keet_estimaciones.saldo) as saldo,
+  ifnull(tt_keet_retenciones.amortizacion, 0) as amortizacion,
+  ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+  ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+  tc_keet_estimaciones.id_estimacion_estatus
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente = tc_mantic_clientes.id_cliente
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+left join
+  tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
+left join
+  tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+left join
+  tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+left join (
+  select
+    tc_keet_estimaciones.id_estimacion,    
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as amortizacion,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+  from    
+    tc_keet_estimaciones 
+  inner join
+    tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+  group by
+    tc_keet_estimaciones.id_estimacion
+) tt_keet_retenciones on tc_keet_estimaciones.id_estimacion= tt_keet_retenciones.id_estimacion
+where
+  tc_keet_estimaciones.id_empresa in ({idEmpresa})
+  and {condicion}
+group by
+  tc_mantic_clientes.id_cliente,
+  tc_keet_contratos.id_contrato,
+  tc_keet_estimaciones.id_estimacion
+{sortOrder}        
       </select>
       <select id="garantias">
-        select
-          tc_keet_contratos.id_contrato as id_key, 
-          tc_keet_contratos.id_contrato, 
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_contratos.clave, 
-          tc_keet_contratos.nombre, 
-          tc_keet_contratos.etapa,
-          tc_keet_contratos.fondo_garantia,
-          tc_keet_contratos.inicio,
-          tc_keet_contratos.termino,
-          tc_keet_contratos.vence
-        from
-          tc_keet_contratos
-        inner join 
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join 
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
-        left join
-          tc_keet_contratos_vecimientos on tc_keet_contratos.id_contrato= tc_keet_contratos_vecimientos.id_contrato
-        where
-          date_format(tc_keet_contratos.vence, '%Y%m%d')&lt;= '{fecha}'
-          and tc_keet_contratos_vecimientos.id_contrato_vencimiento is null
-        order by
-          tc_keet_contratos.registro desc
+select
+  tc_keet_contratos.id_contrato as id_key, 
+  tc_keet_contratos.id_contrato, 
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.clave, 
+  tc_keet_contratos.nombre, 
+  tc_keet_contratos.etapa,
+  tc_keet_contratos.fondo_garantia,
+  tc_keet_contratos.inicio,
+  tc_keet_contratos.termino,
+  tc_keet_contratos.vence
+from
+  tc_keet_contratos
+inner join 
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join 
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+left join
+  tc_keet_contratos_vecimientos on tc_keet_contratos.id_contrato= tc_keet_contratos_vecimientos.id_contrato
+where
+  date_format(tc_keet_contratos.vence, '%Y%m%d')&lt;= '{fecha}'
+  and tc_keet_contratos_vecimientos.id_contrato_vencimiento is null
+order by
+  tc_keet_contratos.registro desc
       </select>
       <select id="semana">
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_keet_estimaciones.id_estimacion,
-          tc_keet_estimaciones.importe,
-          tc_keet_estimaciones.facturar,
-          (tc_keet_estimaciones.importe- sum(tc_keet_estimaciones_detalles.importe)) as estimado,
-          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
-          tc_keet_nominas_periodos.inicio,
-          tc_keet_nominas_periodos.termino,
-          if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_anticipo,
-          if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_fondo,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-          sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        inner join
-          tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-        inner join (
-          select
-            max(tc_keet_estimaciones.id_estimacion) as id_estimacion
-          from
-            tc_keet_estimaciones
-          where
-            tc_keet_estimaciones.id_contrato= {idContrato}
-        ) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion
-        where  
-          tc_keet_estimaciones.id_contrato= {idContrato}
-        group by
-          tc_keet_estimaciones.id_estimacion
-        order by
-          tc_keet_nominas_periodos.id_nomina_periodo desc
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_keet_estimaciones.id_estimacion,
+  tc_keet_estimaciones.importe,
+  tc_keet_estimaciones.facturar,
+  (tc_keet_estimaciones.importe- sum(tc_keet_estimaciones_detalles.importe)) as estimado,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino,
+  if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_anticipo,
+  if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.porcentaje, 0) as porcentaje_fondo,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+  sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join
+  tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+inner join (
+  select
+    max(tc_keet_estimaciones.id_estimacion) as id_estimacion
+  from
+    tc_keet_estimaciones
+  where
+  	tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
+    and tc_keet_estimaciones.id_extra= 1
+    and tc_keet_estimaciones.id_contrato= {idContrato}
+) as tt_keet_periodos on tc_keet_estimaciones.id_estimacion= tt_keet_periodos.id_estimacion
+where  
+	tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
+  and tc_keet_estimaciones.id_extra= 1
+  and tc_keet_estimaciones.id_contrato= {idContrato}
+group by
+  tc_keet_estimaciones.id_contrato 
+order by
+  tc_keet_nominas_periodos.id_nomina_periodo desc
       </select>  
       <select id="semanas">  
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_keet_estimaciones.id_estimacion,
-          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
-          tc_keet_nominas_periodos.inicio,
-          tc_keet_nominas_periodos.termino,
-          tc_keet_estimaciones.importe as estimado,
-          tc_keet_estimaciones.facturar as facturado,
-          sum(tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo) as pagado
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        left join
-          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
-        where  
-          tc_keet_estimaciones.id_contrato= {idContrato}
-        group by
-          tc_keet_estimaciones.id_estimacion
-        order by
-          tc_keet_nominas_periodos.id_nomina_periodo desc        
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_keet_estimaciones.id_estimacion,
+  concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as semana,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino,
+  tc_keet_estimaciones.importe as estimado,
+  tc_keet_estimaciones.facturar as facturado,
+  sum(tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo) as pagado
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+left join
+  tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+where  
+  tc_keet_estimaciones.id_contrato= {idContrato}
+group by
+  tc_keet_estimaciones.id_estimacion
+order by
+  tc_keet_nominas_periodos.id_nomina_periodo desc        
       </select>  
       <select id="acumulado">  
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_keet_estimaciones.id_estimacion,
-          tc_keet_estimaciones.id_contrato,
-          tc_keet_contratos.costo,
-          sum(tc_keet_estimaciones.importe) as estimado,
-          (tc_keet_contratos.costo- sum(tc_keet_estimaciones.importe)- ifnull(tt_keet_retenciones.anticipo, 0)- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_estimar,
-          round(sum(tc_keet_estimaciones.importe)* 100/ tc_keet_contratos.costo, 2) as porcentaje_estimado,
-          sum(tc_keet_estimaciones.facturar) as facturado,
-          ifnull(tt_keet_retenciones.anticipo, 0) as anticipo,
-          (tc_keet_contratos.anticipo- ifnull(tt_keet_retenciones.anticipo, 0)) as por_anticipo,
-          round(ifnull(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2), 0) as porcentaje_anticipado,
-          ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
-          (tc_keet_contratos.fondo_garantia- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_fondo,
-          round(ifnull(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2), 0) as porcentaje_fondeado,
-          ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
-          sum(ifnull(tc_mantic_clientes_deudas.importe, 0)- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as pagado
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join (
-					select
-            tc_keet_estimaciones.id_contrato, 
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
-            sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
-          from    
-            tc_keet_estimaciones 
-          inner join
-            tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
-          where
-            tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
-            and tc_keet_estimaciones.id_contrato= {idContrato}
-          group by
-            tc_keet_estimaciones.id_contrato
-         ) tt_keet_retenciones on tc_keet_estimaciones.id_contrato= tt_keet_retenciones.id_contrato 
-        left join
-          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
-        where  
-          tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
-          and tc_keet_estimaciones.id_contrato= {idContrato}
-        group by
-          tc_keet_estimaciones.id_contrato
-        order by
-          tc_keet_estimaciones.registro         
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_keet_estimaciones.id_estimacion,
+  tc_keet_estimaciones.id_contrato,
+  tc_keet_contratos.costo,
+  sum(tc_keet_estimaciones.importe) as estimado,
+  (tc_keet_contratos.costo- sum(tc_keet_estimaciones.importe)- ifnull(tt_keet_retenciones.anticipo, 0)- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_estimar,
+  round(sum(tc_keet_estimaciones.importe)* 100/ tc_keet_contratos.costo, 2) as porcentaje_estimado,
+  sum(tc_keet_estimaciones.facturar) as facturado,
+  ifnull(tt_keet_retenciones.anticipo, 0) as anticipo,
+  (tc_keet_contratos.anticipo- ifnull(tt_keet_retenciones.anticipo, 0)) as por_anticipo,
+  round(ifnull(ifnull(tt_keet_retenciones.anticipo, 0)* 100/ tc_keet_contratos.anticipo, 2), 0) as porcentaje_anticipado,
+  ifnull(tt_keet_retenciones.fondo_garantia, 0) as fondo_garantia,
+  (tc_keet_contratos.fondo_garantia- ifnull(tt_keet_retenciones.fondo_garantia, 0)) as por_fondo,
+  round(ifnull(ifnull(tt_keet_retenciones.fondo_garantia, 0)* 100/ tc_keet_contratos.fondo_garantia, 2), 0) as porcentaje_fondeado,
+  ifnull(tt_keet_retenciones.retenciones, 0) as retenciones,
+  sum(ifnull(tc_mantic_clientes_deudas.importe, 0)- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as pagado
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join (
+  select
+    tc_keet_estimaciones.id_contrato, 
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 1, tc_keet_estimaciones_detalles.importe, 0)) as anticipo,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion= 2, tc_keet_estimaciones_detalles.importe, 0)) as fondo_garantia,
+    sum(if(tc_keet_estimaciones_detalles.id_tipo_retencion!= 1 and tc_keet_estimaciones_detalles.id_tipo_retencion!= 2, tc_keet_estimaciones_detalles.importe, 0)) as retenciones 
+  from    
+    tc_keet_estimaciones 
+  inner join
+    tc_keet_estimaciones_detalles on tc_keet_estimaciones.id_estimacion= tc_keet_estimaciones_detalles.id_estimacion
+  where
+    tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
+    and tc_keet_estimaciones.id_extra= 1
+    and tc_keet_estimaciones.id_contrato= {idContrato}
+  group by
+    tc_keet_estimaciones.id_contrato
+ ) as tt_keet_retenciones on tc_keet_estimaciones.id_contrato= tt_keet_retenciones.id_contrato 
+left join
+  tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+where  
+  tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
+  and tc_keet_estimaciones.id_extra= 1
+  and tc_keet_estimaciones.id_contrato= {idContrato}
+group by
+  tc_keet_estimaciones.id_contrato
+order by
+  tc_keet_estimaciones.registro         
       </select>  
       <select id="pagado">  
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          'FACTURADO' as category,
-          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
-          tc_keet_estimaciones.facturar as value
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        where  
-          tc_keet_estimaciones.id_contrato= {idContrato}
-        union all  
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          'PAGADO' as category,
-          concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
-          (tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo) as value
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
-        inner join
-          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-        left join
-          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
-        where  
-          tc_keet_estimaciones.id_contrato= {idContrato}
-        order by
-          category,
-          serie        
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  'FACTURADO' as category,
+  concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
+  tc_keet_estimaciones.facturar as value
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+where  
+  tc_keet_estimaciones.id_contrato= {idContrato}
+union all  
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  'PAGADO' as category,
+  concat(tc_keet_nominas_periodos.orden, '-', tc_keet_nominas_periodos.ejercicio) as serie,
+  (tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo) as value
+from
+  tc_keet_estimaciones
+inner join
+  tc_keet_nominas on tc_keet_estimaciones.id_nomina= tc_keet_nominas.id_nomina
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+left join
+  tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+where  
+  tc_keet_estimaciones.id_contrato= {idContrato}
+order by
+  category,
+  serie        
       </select>  
       <select id="vencido">  
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          sum(tc_mantic_clientes_deudas.saldo) as vencido
-        from
-          tc_keet_estimaciones
-        left join
-          tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
-        left join
-          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
-        left join
-          tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
-        where  
-          tc_keet_estimaciones.id_contrato= {idContrato}
-          and (datediff(now(), tc_mantic_facturas.timbrado)+ 1)&gt; 11        
-          and tc_mantic_clientes_deudas.saldo&gt; 0
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  sum(tc_mantic_clientes_deudas.saldo) as vencido
+from
+  tc_keet_estimaciones
+left join
+  tc_mantic_ventas on tc_keet_estimaciones.id_venta= tc_mantic_ventas.id_venta
+left join
+  tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+left join
+  tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta
+where  
+  tc_keet_estimaciones.id_contrato= {idContrato}
+  and (datediff(now(), tc_mantic_facturas.timbrado)+ 1)&gt; 11        
+  and tc_mantic_clientes_deudas.saldo&gt; 0
       </select>  
 			<select id="importados">
 select
@@ -5139,32 +5145,32 @@ order by
 				  tc_keet_nominas.id_tipo_nomina, tc_keet_nominas_periodos.ejercicio desc, tc_keet_nominas_periodos.orden desc				
 			</select>
 			<select id="persona">
-				select
-				  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
-				  '{nomina}' as nomina,
-				  '{nombreCompleto}' as "nombre completo",
-					tc_keet_nominas_conceptos.id_tipo_concepto,
-				  tc_keet_tipos_conceptos.nombre as concepto,
-					tc_keet_nominas_conceptos.orden,
-					tc_keet_nominas_detalles.clave,
-					tc_keet_nominas_detalles.nombre,
-					tc_keet_nominas_detalles.nombre as detalle,
-					tc_keet_nominas_detalles.formula,
-					tc_keet_nominas_detalles.valor,
-				  tc_keet_nominas_detalles.fecha
-				from
-					tc_keet_nominas_detalles
-				inner join
-					tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
-				inner join
-					tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
-				inner join
-					tc_keet_tipos_conceptos on tc_keet_nominas_conceptos.id_tipo_concepto = tc_keet_tipos_conceptos.id_tipo_concepto
-				where
-					tc_keet_nominas_personas.id_nomina= {idNomina}
-					and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
-          and tc_keet_nominas_detalles.valor!= 0
-				{sortOrder}				
+select
+  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
+  '{nomina}' as nomina,
+  '{nombreCompleto}' as "nombre completo",
+  tc_keet_nominas_conceptos.id_tipo_concepto,
+  tc_keet_tipos_conceptos.nombre as concepto,
+  tc_keet_nominas_conceptos.orden,
+  tc_keet_nominas_detalles.clave,
+  tc_keet_nominas_detalles.nombre,
+  tc_keet_nominas_detalles.nombre as detalle,
+  tc_keet_nominas_detalles.formula,
+  tc_keet_nominas_detalles.valor,
+  tc_keet_nominas_detalles.fecha
+from
+  tc_keet_nominas_detalles
+inner join
+  tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
+inner join
+  tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
+inner join
+  tc_keet_tipos_conceptos on tc_keet_nominas_conceptos.id_tipo_concepto = tc_keet_tipos_conceptos.id_tipo_concepto
+where
+  tc_keet_nominas_personas.id_nomina= {idNomina}
+  and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
+  and tc_keet_nominas_detalles.valor!= 0
+{sortOrder}				
 			</select>			
 			<select id="proveedor">
 				select
@@ -6188,6 +6194,8 @@ from (
     sum(round(tc_keet_contratos_destajos_contratistas.costo)) as neto,
     sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos,
     tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sueldo_semanal,
+    tr_mantic_empresa_personal.sueldo_mensual,
     tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas         
@@ -6251,6 +6259,8 @@ from (
     tc_keet_nominas_personas.neto,
     0 as anticipos,
     tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sueldo_semanal,
+    tr_mantic_empresa_personal.sueldo_mensual,
     tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas
@@ -6446,6 +6456,8 @@ from (
     sum(round(tc_keet_contratos_destajos_contratistas.costo)) as neto,
     sum(round(tc_keet_contratos_destajos_contratistas.anticipo)) as anticipos,
     tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sueldo_semanal,
+    tr_mantic_empresa_personal.sueldo_mensual,
     tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas         
@@ -6509,6 +6521,8 @@ from (
     tc_keet_nominas_personas.neto,
     0 as anticipos,
     tr_mantic_empresa_personal.sueldo_imss,
+    tr_mantic_empresa_personal.sueldo_semanal,
+    tr_mantic_empresa_personal.sueldo_mensual,
     tr_mantic_empresa_personal.sobre_sueldo
   from
     tc_keet_nominas
@@ -6863,103 +6877,103 @@ order by
   tc_keet_contratos.id_contrato        
 			</select>
 			<select id="listado">
-        select
-          tt_keet_contratos.id_key,
-          tt_keet_contratos.id_nomina,
-          tt_keet_contratos.id_desarrollo,
-          tt_keet_contratos.desarrollo,
-          tt_keet_contratos.id_contrato,
-          tt_keet_contratos.clave,
-  				tt_keet_contratos.contrato,
-	  			tt_keet_contratos.etapa,
-          sum(tt_keet_contratos.costo- tt_keet_contratos.anticipo) as costo,
-          tt_keet_contratos.total,
-          tt_keet_contratos.destajos,
-          tt_keet_contratos.subcontratados,
-          tt_keet_contratos.por_el_dia  
-       from (        
-          select 
-            tc_keet_contratos.id_contrato as id_key,
-            tc_keet_desarrollos.id_desarrollo,
-            tc_keet_contratos_destajos_contratistas.id_nomina,
-            tc_keet_desarrollos.nombres as desarrollo,
-            tc_keet_contratos.id_contrato,
-            tc_keet_contratos.id_empresa,
-            tc_keet_contratos.ejercicio,
-            tc_keet_contratos.orden,
-            tc_keet_contratos.clave,
-						tc_keet_contratos.nombre as contrato,
-						tc_keet_contratos.etapa,
-            sum(tc_keet_contratos_destajos_contratistas.costo) as costo, 
-            sum(tc_keet_contratos_destajos_contratistas.anticipo) as anticipo,
-            tc_keet_contratos.costo as total,
-            tc_keet_contratos.destajos,
-            tc_keet_contratos.subcontratados,
-            tc_keet_contratos.por_el_dia  
-          from
-            tc_keet_contratos_destajos_contratistas 
-          inner join
-            tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista     
-          inner join
-            tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     
-          inner join
-            tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
-          inner join
-            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-          inner join
-            tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-          where 
-            tc_keet_contratos_destajos_contratistas.id_nomina{operador}= {idNomina}
-            and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
-            and tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
-            and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
-          group by
-            tc_keet_contratos_lotes.id_contrato
-          union all  
-          select 
-            tc_keet_contratos.id_contrato as id_key,
-            tc_keet_desarrollos.id_desarrollo,
-            tc_keet_contratos_destajos_proveedores.id_nomina,
-            tc_keet_desarrollos.nombres as desarrollo,
-            tc_keet_contratos.id_contrato,
-            tc_keet_contratos.id_empresa,
-            tc_keet_contratos.ejercicio,
-            tc_keet_contratos.orden,
-            tc_keet_contratos.clave,
-						tc_keet_contratos.nombre as contrato,
-						tc_keet_contratos.etapa,
-            sum(tc_keet_contratos_destajos_proveedores.costo) as costo, 
-            sum(tc_keet_contratos_destajos_proveedores.anticipo) as anticipo,
-            tc_keet_contratos.costo as total,
-            tc_keet_contratos.destajos,
-            tc_keet_contratos.subcontratados,
-            tc_keet_contratos.por_el_dia  
-          from
-            tc_keet_contratos_destajos_proveedores 
-          inner join
-            tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
-          inner join
-            tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
-          inner join
-            tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
-          inner join
-            tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-          inner join
-            tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-          where 
-            tc_keet_contratos_destajos_proveedores.id_nomina{operador}= {idNomina}
-            and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
-            and tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
-            and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
-          group by
-            tc_keet_contratos_lotes.id_contrato
-        ) as tt_keet_contratos
-        group by
-          id_desarrollo,
-          id_contrato
-        order by
-          id_desarrollo,
-          id_contrato        
+select
+  tt_keet_contratos.id_key,
+  tt_keet_contratos.id_nomina,
+  tt_keet_contratos.id_desarrollo,
+  tt_keet_contratos.desarrollo,
+  tt_keet_contratos.id_contrato,
+  tt_keet_contratos.clave,
+  tt_keet_contratos.contrato,
+  tt_keet_contratos.etapa,
+  sum(tt_keet_contratos.costo- tt_keet_contratos.anticipo) as costo,
+  tt_keet_contratos.total,
+  tt_keet_contratos.destajos,
+  tt_keet_contratos.subcontratados,
+  tt_keet_contratos.por_el_dia  
+from (        
+  select 
+    tc_keet_contratos.id_contrato as id_key,
+    tc_keet_desarrollos.id_desarrollo,
+    tc_keet_contratos_destajos_contratistas.id_nomina,
+    tc_keet_desarrollos.nombres as desarrollo,
+    tc_keet_contratos.id_contrato,
+    tc_keet_contratos.id_empresa,
+    tc_keet_contratos.ejercicio,
+    tc_keet_contratos.orden,
+    tc_keet_contratos.clave,
+    tc_keet_contratos.nombre as contrato,
+    tc_keet_contratos.etapa,
+    sum(tc_keet_contratos_destajos_contratistas.costo) as costo, 
+    sum(tc_keet_contratos_destajos_contratistas.anticipo) as anticipo,
+    tc_keet_contratos.costo as total,
+    tc_keet_contratos.destajos,
+    tc_keet_contratos.subcontratados,
+    tc_keet_contratos.por_el_dia  
+  from
+    tc_keet_contratos_destajos_contratistas 
+  inner join
+    tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista     
+  inner join
+    tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     
+  inner join
+    tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+  inner join
+    tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+  inner join
+    tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+  where 
+    tc_keet_contratos_destajos_contratistas.id_nomina{operador}= {idNomina}
+    and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
+    and tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+    and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+  group by
+    tc_keet_contratos_lotes.id_contrato
+  union all  
+  select 
+    tc_keet_contratos.id_contrato as id_key,
+    tc_keet_desarrollos.id_desarrollo,
+    tc_keet_contratos_destajos_proveedores.id_nomina,
+    tc_keet_desarrollos.nombres as desarrollo,
+    tc_keet_contratos.id_contrato,
+    tc_keet_contratos.id_empresa,
+    tc_keet_contratos.ejercicio,
+    tc_keet_contratos.orden,
+    tc_keet_contratos.clave,
+    tc_keet_contratos.nombre as contrato,
+    tc_keet_contratos.etapa,
+    sum(tc_keet_contratos_destajos_proveedores.costo) as costo, 
+    sum(tc_keet_contratos_destajos_proveedores.anticipo) as anticipo,
+    tc_keet_contratos.costo as total,
+    tc_keet_contratos.destajos,
+    tc_keet_contratos.subcontratados,
+    tc_keet_contratos.por_el_dia  
+  from
+    tc_keet_contratos_destajos_proveedores 
+  inner join
+    tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+  inner join
+    tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+  inner join
+    tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+  inner join
+    tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+  inner join
+    tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+  where 
+    tc_keet_contratos_destajos_proveedores.id_nomina{operador}= {idNomina}
+    and tc_keet_contratos.id_contrato_estatus&lt;= {idContratoEstatus}
+    and tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+    and (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= -1)
+  group by
+    tc_keet_contratos_lotes.id_contrato
+) as tt_keet_contratos
+group by
+  id_desarrollo,
+  id_contrato
+order by
+  id_desarrollo,
+  id_contrato        
 			</select>
 			<select id="estimados">
 select
@@ -7153,38 +7167,38 @@ order by
   tc_keet_estaciones.clave
       </select>  
 			<select id="lazy">
-				select
-					tc_keet_nominas.id_nomina as id_key,
-					tc_keet_nominas.id_nomina,
-					tc_mantic_empresas.nombre as nombre_empresa,  
-          tc_keet_nominas_periodos.ejercicio,
-					tc_keet_nominas_periodos.inicio,
-					tc_keet_nominas_periodos.termino,
-					tc_keet_nominas_periodos.orden as semana,
-					tc_keet_tipos_nominas.nombre as tipo,
-					tc_keet_nominas_periodos.corte,
-					tc_keet_nominas.id_nomina_estatus,
-					tc_keet_nominas_estatus.nombre as estatus,
-					tc_keet_nominas.proveedores,
-					tc_keet_nominas.total,
-					tc_keet_nominas.personas,
-					tc_keet_nominas.neto,
-				  (tc_keet_nominas.neto+ tc_keet_nominas.total) as global,
-				  tc_keet_nominas_estatus.estatus_asociados
-				from
-					tc_keet_nominas
-				inner join 
-					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
-				inner join 
-					tc_keet_tipos_nominas on tc_keet_nominas.id_tipo_nomina= tc_keet_tipos_nominas.id_tipo_nomina
-				inner join 
-					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
-				inner join 
-					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
-				where
-				  tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
-				  and {condicion}
-				{sortOrder}
+select
+  tc_keet_nominas.id_nomina as id_key,
+  tc_keet_nominas.id_nomina,
+  tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_keet_nominas_periodos.ejercicio,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino,
+  tc_keet_nominas_periodos.orden as semana,
+  tc_keet_tipos_nominas.nombre as tipo,
+  tc_keet_nominas_periodos.corte,
+  tc_keet_nominas.id_nomina_estatus,
+  tc_keet_nominas_estatus.nombre as estatus,
+  tc_keet_nominas.proveedores,
+  tc_keet_nominas.total,
+  tc_keet_nominas.personas,
+  tc_keet_nominas.neto,
+  (tc_keet_nominas.neto+ tc_keet_nominas.total) as global,
+  tc_keet_nominas_estatus.estatus_asociados
+from
+  tc_keet_nominas
+inner join 
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+inner join 
+  tc_keet_tipos_nominas on tc_keet_nominas.id_tipo_nomina= tc_keet_tipos_nominas.id_tipo_nomina
+inner join 
+  tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+inner join 
+  tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+where
+  tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
+  and {condicion}
+{sortOrder}
 			</select>
 			<select id="movimientos">
         select
@@ -7467,6 +7481,7 @@ select
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
   tr_mantic_empresa_personal.factor_infonavit as infonavit,
   tr_mantic_empresa_personal.sueldo_semanal,
+  tr_mantic_empresa_personal.sueldo_mensual,
   tr_mantic_empresa_personal.sueldo_imss,
   tr_mantic_empresa_personal.sobre_sueldo,
   0 as subtotal,
@@ -7521,6 +7536,7 @@ select
   tc_mantic_proveedores.razon_social as nombre_completo,
   0 as infonavit,
   0 as sueldo_semanal,
+  0 as sueldo_mensual,
   0 as sueldo_imss,
   0 as sobre_sueldo,
   tc_keet_nominas_proveedores.subtotal,
@@ -7635,23 +7651,25 @@ group by
 					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
 			</select>
 			<select id="todos">
-				select
-					tr_mantic_empresa_personal.id_empresa_persona,
-					tr_mantic_empresa_personal.clave,
-				  tr_mantic_empresa_personal.sueldo_semanal
-				from
-					tr_mantic_empresa_personal
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				where
-					tr_mantic_empresa_personal.id_empresa in ({sucursales})
-					and tr_mantic_empresa_personal.id_activo= 1
-					and tc_mantic_personas.id_tipo_persona!= 1
-          and tc_mantic_personas.id_tipo_persona!= 2
-          and {condicion}
-				order by
-					tr_mantic_empresa_personal.id_empresa, 
-          tr_mantic_empresa_personal.id_empresa_persona
+select
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tr_mantic_empresa_personal.clave,
+  tr_mantic_empresa_personal.sueldo_semanal,
+  tr_mantic_empresa_personal.sueldo_mensual,
+  tr_mantic_empresa_personal.sueldo_imss
+from
+  tr_mantic_empresa_personal
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_personas.id_tipo_persona!= 1
+  and tc_mantic_personas.id_tipo_persona!= 2
+  and {condicion}
+order by
+  tr_mantic_empresa_personal.id_empresa, 
+  tr_mantic_empresa_personal.id_empresa_persona
 			</select>
 			<select id="general">
 select
@@ -7693,29 +7711,31 @@ group by
   tc_mantic_proveedores.id_proveedor  
 			</select>
 			<select id="algunos">
-        select
-					tr_mantic_empresa_personal.id_empresa_persona,
-					tr_mantic_empresa_personal.clave,
-					tr_mantic_empresa_personal.sueldo_semanal
-				from
-					tr_mantic_empresa_personal
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				where
-					tr_mantic_empresa_personal.id_empresa in ({sucursales})
-					and tr_mantic_empresa_personal.id_activo= 1
-					and tc_mantic_personas.id_tipo_persona!= 1
-          and tc_mantic_personas.id_tipo_persona!= 2
-				  and tr_mantic_empresa_personal.id_empresa_persona not in (
-				    select
-				      tc_keet_nominas_personas.id_empresa_persona
-				    from 
-				      tc_keet_nominas_personas 
-				    where
-				      tc_keet_nominas_personas.id_nomina= {idNomina}
-				 )
-				order by
-					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave	
+select
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tr_mantic_empresa_personal.clave,
+  tr_mantic_empresa_personal.sueldo_semanal,
+  tr_mantic_empresa_personal.sueldo_mensual,
+  tr_mantic_empresa_personal.sueldo_imss
+from
+  tr_mantic_empresa_personal
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_personas.id_tipo_persona!= 1
+  and tc_mantic_personas.id_tipo_persona!= 2
+  and tr_mantic_empresa_personal.id_empresa_persona not in (
+    select
+      tc_keet_nominas_personas.id_empresa_persona
+    from 
+      tc_keet_nominas_personas 
+    where
+      tc_keet_nominas_personas.id_nomina= {idNomina}
+ )
+order by
+  tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave	
 			</select>
 			<select id="persona">
 select
@@ -7972,21 +7992,21 @@ order by
 					tc_keet_contratos_lotes_proveedores.id_proveedor
 			</select>
 			<select id="proveedores">
-				select
-					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
-          tc_mantic_proveedores.fondo_garantia,
-				  tc_mantic_proveedores.clave
-				from
-					tc_keet_contratos_destajos_proveedores
-				inner join
-					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
-				inner join
-				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
-				where
-					(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina})
-          and tc_keet_contratos_destajos_proveedores.costo> 0
-				order by
-					tc_keet_contratos_lotes_proveedores.id_proveedor
+select
+  distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
+  tc_mantic_proveedores.fondo_garantia,
+  tc_mantic_proveedores.clave
+from
+  tc_keet_contratos_destajos_proveedores
+inner join
+  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+inner join
+  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+where
+  (tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina})
+  and tc_keet_contratos_destajos_proveedores.costo> 0
+order by
+  tc_keet_contratos_lotes_proveedores.id_proveedor
 			</select>
       <select id="incidentes">
 select
@@ -8868,6 +8888,9 @@ where
 					tc_keet_contratos_estatus.id_contrato_estatus,
 					tc_keet_contratos_estatus.nombre as estatus,
 					tc_keet_contratos_estatus.estatus_asociados,
+          ifnull(tc_keet_contratos.costo, 0) as costo,
+          ifnull(tt_keet_contratos_retenciones.importe, 0) as anticipo,
+          ifnull(tc_keet_contratos_retenciones.importe, 0) as fondo_garantia,
 					tc_keet_contratos.registro,
 				  tc_keet_proyectos.clave proyecto,
           tc_keet_desarrollos.nombres as desarrollo
@@ -8881,8 +8904,14 @@ where
 					tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
         inner join
           tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
+        left join
+          tc_keet_contratos_retenciones on tc_keet_contratos.id_contrato= tc_keet_contratos_retenciones.id_contrato and tc_keet_contratos_retenciones.id_tipo_retencion= 2
+        left join
+          tc_keet_contratos_retenciones as tt_keet_contratos_retenciones on tc_keet_contratos.id_contrato= tt_keet_contratos_retenciones.id_contrato and tt_keet_contratos_retenciones.id_tipo_retencion= 1
         where
           {condicion}
+        group by
+          tc_keet_contratos.id_contrato
 				{sortOrder}
 			</select>	
       <select id="detalle">

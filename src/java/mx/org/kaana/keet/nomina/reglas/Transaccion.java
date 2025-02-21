@@ -87,13 +87,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	
 	private Long idNomina;
-	private Autentifica autentifica;
 	private Long idEmpresaPersona;
 	private Long idProveedor;
 	protected String messageError;
 	protected TcKeetNominasDto nomina;
 	protected Nomina calculos;
 	protected Factura factura;
+	protected Autentifica autentifica;
 	private TcKeetNominasBitacoraDto bitacora;
 	private Long idFigura;
 	private Long idTipoFigura;
@@ -274,18 +274,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           this.notificarCorreo(sesion);
 					break;
 				case MOVIMIENTOS:
-          monitoreo= this.autentifica.progreso("NOMINA");
-          monitoreo.setTotal(1000L);
           this.notificarResidentes(sesion);
-          monitoreo.terminar();
-          this.autentifica.clean("NOMINA");
 					break;
 				case RESTAURAR:
-          monitoreo= this.autentifica.progreso("NOMINA");
-          monitoreo.setTotal(1000L);
           this.notificarResumenDestajos(sesion);
-          monitoreo.terminar();
-          this.autentifica.clean("NOMINA");
 					break;
 				case ACTIVAR:
   				// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
@@ -315,9 +307,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 
 	private TcKeetNominasPersonasDto existPersona(Session sesion, Long idEmpresaPersona) throws Exception {
 		TcKeetNominasPersonasDto regresar= null;
-    Map<String, Object> params= null;
+    Map<String, Object> params       = new HashMap<>();
 		try {		
-			params= new HashMap<>();
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			regresar= (TcKeetNominasPersonasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPersonasDto.class, "TcKeetNominasPersonasDto", "identically", params);
@@ -438,8 +429,19 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				for (Entity persona: personal) {
 					empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 					if(empleado== null) {
+            Double sueldo= 0D;
+            switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+              case "cafu":
+                 // sueldo= persona.toDouble("sueldoImss");
+                 sueldo= persona.toDouble("sueldoMensual");
+                break;
+              case "gylvi": 
+              case "triana":
+                sueldo= persona.toDouble("sueldoSemanal");
+                break;
+            } // swtich
 						empleado= new TcKeetNominasPersonasDto(
-							persona.toDouble("sueldoSemanal"), // Double neto, 
+							sueldo, // Double neto, 
 							persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
 							0D, // Double deducciones,
 							-1L, // Long idNominaPersona, 
@@ -495,8 +497,19 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				for (Entity persona: personal) {
 					empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 					if(empleado== null) {
+            Double sueldo= 0D;
+            switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+              case "cafu":
+                 // sueldo= persona.toDouble("sueldoImss");
+                 sueldo= persona.toDouble("sueldoMensual");
+                break;
+              case "gylvi": 
+              case "triana":
+                sueldo= persona.toDouble("sueldoSemanal");
+                break;
+            } // swtich
 						empleado= new TcKeetNominasPersonasDto(
-							persona.toDouble("sueldoSemanal"), // Double neto, 
+							sueldo, // Double neto, 
 							persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
 							0D, // Double deducciones,
 							-1L, // Long idNominaPersona, 
@@ -634,7 +647,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             Double sueldo= 0D;
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
-                //sueldo= persona.toDouble("sueldoImss");
+                 // sueldo= persona.toDouble("sueldoImss");
                  sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
@@ -1276,12 +1289,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new HashMap<>();
     String desarrollo               = "";
+    Monitoreo monitoreo             = this.autentifica.progreso("RESIDENTES");
 		try {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
       if(items!= null && !items.isEmpty()) {
+        monitoreo.setTotal(new Long(items.size()));
         UIBackingUtilities.toFormatEntitySet(items, columns);
         Long idDesarrollo= -1L;
         jasper           = new Reporte();	
@@ -1320,6 +1335,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
                 celular= telefono.toString("valor");
             } // for
           contratistas.put(item.toString("contratista"), this.toSendMessage(sesion, jasper, celular, item));
+          monitoreo.incrementar();
+ 					if(!monitoreo.isCorriendo())
+						break;
         } // for
         // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
         this.toNotificarResidentes(sesion, residentes, contratistas, items.get(0), desarrollo);
@@ -1334,6 +1352,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       Methods.clean(contratistas);
       Methods.clean(residentes);
       jasper= null;
+      monitoreo.terminar();
+      this.autentifica.clean("RESIDENTES");
     } // finally
   }
 
@@ -1600,13 +1620,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new LinkedHashMap<>();
     Map<String, String> empleados   = new HashMap<>();
-    Monitoreo monitoreo             = this.autentifica.progreso("NOMINA");
+    Monitoreo monitoreo             = this.autentifica.progreso("RESUMEN");
 		try {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
       if(items!= null && !items.isEmpty()) {
+        monitoreo.setTotal(new Long(items.size()));
         UIBackingUtilities.toFormatEntitySet(items, columns);
         Long idDesarrollo= -1L;
         jasper           = new Reporte();	
@@ -1634,6 +1655,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       Methods.clean(columns);
       Methods.clean(contratistas);
       jasper= null;
+      monitoreo.terminar();
+      this.autentifica.clean("RESUMEN");
     } // finally
   }
 

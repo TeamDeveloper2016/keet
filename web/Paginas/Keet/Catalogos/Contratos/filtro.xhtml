@@ -180,6 +180,24 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Costo" />
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.anticipo}">
+              <f:facet name="header">
+                <h:outputText value="Anticipo" />
+              </f:facet>
+              <h:outputText value="#{row['anticipo']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.fondoGarantia}">
+              <f:facet name="header">
+                <h:outputText value="Fondo garantía" />
+              </f:facet>
+              <h:outputText value="#{row['fondoGarantia']}"/>
+            </p:column>
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro" />

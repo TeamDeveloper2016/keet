@@ -38,10 +38,6 @@
         'contenedorGrupos\\:asentamiento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:entreCalle'     : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:otraCalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:porcentajeAnticipo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
-				'contenedorGrupos\\:anticipo'       : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
-				'contenedorGrupos\\:porcentajeFondo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
-				'contenedorGrupos\\:fondoGarantia'  : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'libre', mascara: 'libre'},
         'contenedorGrupos\\:deposito'       : {validaciones: 'fecha', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:pagare'         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -466,44 +462,35 @@
               <p:remoteCommand name="reloadMunicipio" process="@this" update="contenedorGrupos:municipio"/>
               <p:remoteCommand name="reloadLocalidad" process="@this" update="contenedorGrupos:localidad"/>
             </p:tab>  
-						<p:tab id="tabAnticipo" title="Anticipo">	
+						<p:tab id="tabRetenciones" title="Retenciones">	
 							<p:panelGrid id="anticipos" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
- 							  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
-                  <p:fieldset legend="Importe del anticipo:">
-                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
-                      <p:inputNumber id="porcentajeAnticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeAnticipo}" inputStyleClass="janal-wid-100-txt janal-column-center anticipo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" emptyValue="zero" symbol=" %" symbolPosition="s">
-                        <p:ajax event="change" process="@this contenedorGrupos:costo" update="contenedorGrupos:anticipo @(.anticipo)" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo(true)}"/>
-                      </p:inputNumber>  
-                      <p:inputNumber id="anticipo" value="#{keetCatalogosContratosAccion.contrato.contrato.anticipo}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue anticipo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
-                        <p:ajax event="change" process="@this contenedorGrupos:porcentajeAnticipo" update="contenedorGrupos:porcentajeAnticipo @(.anticipo)" listener="#{keetCatalogosContratosAccion.doCalculateAnticipo(false)}"/>
-                      </p:inputNumber>  
-                    </p:panelGrid>  
-                  </p:fieldset>
-                  <p:fieldset legend="Fondo de garantía:">
-                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
-                      <p:inputNumber id="porcentajeFondo" value="#{keetCatalogosContratosAccion.contrato.contrato.porcentajeFondo}" inputStyleClass="janal-wid-100-txt janal-column-center fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" maxValue="100" emptyValue="zero" symbol=" %" symbolPosition="s">
-                        <p:ajax event="change" process="@this contenedorGrupos:fondoGarantia" update="contenedorGrupos:fondoGarantia @(.fondo)" listener="#{keetCatalogosContratosAccion.doCalculateFondoGarantia(true)}"/>
-                      </p:inputNumber>  
-                      <p:inputNumber id="fondoGarantia" value="#{keetCatalogosContratosAccion.contrato.contrato.fondoGarantia}" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue fondo" converter="javax.faces.Double" decimalPlaces="2" minValue="0" decimalSeparator="." thousandSeparator="," emptyValue="zero" symbol="$ " symbolPosition="p">
-                        <p:ajax event="change" process="@this contenedorGrupos:porcentajeFondo" update="contenedorGrupos:porcentajeFondo  @(.fondo)" listener="#{keetCatalogosContratosAccion.doCalculateFondoGarantia(false)}"/>
-                      </p:inputNumber>  
-                    </p:panelGrid>  
-                  </p:fieldset>
+  							<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-40">
+    							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="vence" value="Vencimiento fondo de garantía:"/>
+                    <p:calendar id="vence" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.vence}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="deposito" value="Fecha de deposito:"/>
+                    <p:calendar id="deposito" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.deposito}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="pagare" value="No pagare:" styleClass="janal-color-blue"/>
+                    <p:inputText id="pagare" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.pagare}" />
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                    <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" process="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCheckMedioPago}" update="contenedorGrupos:anticipos @(.banco)"/>
+                      <f:selectItems value="#{keetCatalogosContratosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>  
                 </p:panelGrid>  
-                <p:separator/>
-                <p:outputLabel for="vence" value="Vencimiento del fondo de garantía:"/>
-                <p:calendar id="vence" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.vence}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
-                <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
-                <p:selectOneMenu id="idTipoMedioPago" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this contenedorGrupos:costo" listener="#{keetCatalogosContratosAccion.doCheckMedioPago}" update="contenedorGrupos:anticipos @(.banco)"/>
-                  <f:selectItems value="#{keetCatalogosContratosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                     <p:outputLabel for="idBanco" value="Banco:" styleClass="banco" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
@@ -521,18 +508,8 @@
                     <p:outputLabel for="referencia" value="Referencia:" styleClass="banco" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
                     <p:inputText id="referencia" styleClass="janal-wid-100-txt banco" value="#{keetCatalogosContratosAccion.contrato.contrato.referencia}" rendered="#{keetCatalogosContratosAccion.attrs.mostrarBanco}"/>
                   </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                    <p:outputLabel for="deposito" value="Fecha de deposito:"/>
-                    <p:calendar id="deposito" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.deposito}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode"/>
-                  </p:panelGrid>  
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                    <p:outputLabel for="pagare" value="No pagare:" styleClass="janal-color-blue"/>
-                    <p:inputText id="pagare" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.pagare}" />
-                  </p:panelGrid>  
                 </p:panelGrid>  
               </p:panelGrid>  
-            </p:tab>  
-						<p:tab id="tabRetenciones" title="Retenciones">	
               <p:dataTable id="tabla" widgetVar="tabla" var="row" value="#{keetCatalogosContratosAccion.contrato.contrato.retenciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetCatalogosContratosAccion.contrato.contrato.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContratoRetencion}" style="#{keetCatalogosContratosAccion.contrato.contrato.retenciones ne null and keetCatalogosContratosAccion.contrato.contrato.retenciones.size() gt 0}">
                 <f:facet name="header">
                   <div style="display: flex;">
