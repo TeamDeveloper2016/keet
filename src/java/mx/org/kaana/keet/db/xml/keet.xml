@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetIsrSubsidiosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_isr_subsidios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_isr_subsidios
+where      
+  subsidio = {subsidio} and sueldo_diario = {sueldoDiario}
+      </select>
+    </unit>    
     <unit id="TcKeetIsrVigenciasDto">
       <select id="row">
 select      

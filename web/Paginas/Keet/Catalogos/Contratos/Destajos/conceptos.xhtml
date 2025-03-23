@@ -159,8 +159,8 @@
                 Concepto agregados como extras por especialidad
               </div>  
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
-								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>								
-								<p:separator/>
+								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}"/>
+								<p:separator rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}"/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'tablaExtras')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>							
@@ -211,7 +211,7 @@
               </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idNomina eq '-1' ? 'circulo-rojo': 'circulo-verde'}.png" title="#{row.idNomina eq '-1'? 'NO PAGADO': 'FINALIZADO'}"/>
 						</p:column>
-            <p:column class="janal-wid-col-116 janal-column-center" exportable="false">							
+            <p:column class="janal-wid-col-116 janal-column-center" exportable="false" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}">
               <f:facet name="header">
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
               </f:facet>

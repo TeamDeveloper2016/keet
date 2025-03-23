@@ -43,6 +43,8 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   private Double percepciones;
   @Column (name="id_nomina")
   private Long idNomina;
+  @Column (name="id_deposito")
+  private Long idDeposito;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -51,11 +53,11 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasPersonasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKeetNominasPersonasDto(Double neto, Long idEmpresaPersona, Double deducciones, Long idNominaPersona, Double aportaciones, Double percepciones, Long idNomina) {
+  public TcKeetNominasPersonasDto(Double neto, Long idEmpresaPersona, Double deducciones, Long idNominaPersona, Double aportaciones, Double percepciones, Long idNomina, Long idDeposito) {
     setNeto(neto);
     setIdEmpresaPersona(idEmpresaPersona);
     setDeducciones(deducciones);
@@ -63,6 +65,7 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
     setAportaciones(aportaciones);
     setPercepciones(percepciones);
     setIdNomina(idNomina);
+    setIdDeposito(idDeposito);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -122,6 +125,14 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
     return idNomina;
   }
 
+  public Long getIdDeposito() {
+    return idDeposito;
+  }
+
+  public void setIdDeposito(Long idDeposito) {
+    this.idDeposito = idDeposito;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -159,6 +170,8 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNomina());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDeposito());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -174,14 +187,15 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 		regresar.put("aportaciones", getAportaciones());
 		regresar.put("percepciones", getPercepciones());
 		regresar.put("idNomina", getIdNomina());
+		regresar.put("idDeposito", getIdDeposito());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getNeto(), getIdEmpresaPersona(), getDeducciones(), getIdNominaPersona(), getAportaciones(), getPercepciones(), getIdNomina(), getRegistro()
+    Object[] regresar = new Object[] {
+      getNeto(), getIdEmpresaPersona(), getDeducciones(), getIdNominaPersona(), getAportaciones(), getPercepciones(), getIdNomina(), getIdDeposito(), getRegistro()
     };
     return regresar;
   }

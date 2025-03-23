@@ -223,7 +223,7 @@ public final class Archivo {
 			writer.setOutput(ios);
 			ImageWriteParam param = writer.getDefaultWriteParam();
 			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			param.setCompressionQuality(0.05f);
+			param.setCompressionQuality(1F);
 			writer.write(null, new IIOImage(ImageIO.read(is), null, null), param);
 			os.close();
 			ios.close();

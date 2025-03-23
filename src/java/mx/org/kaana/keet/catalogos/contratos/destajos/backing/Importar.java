@@ -93,7 +93,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-      int index= this.pathImage.indexOf(JsfBase.getContext())< 0? this.pathImage.length()- 1: this.pathImage.indexOf(JsfBase.getContext());
+      int index= !this.pathImage.contains(JsfBase.getContext())? this.pathImage.length()- 1: this.pathImage.indexOf(JsfBase.getContext());
       this.pathImage= this.pathImage.substring(0, index).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
       this.attrs.put("idContratoArchivo", -1L);
 			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));

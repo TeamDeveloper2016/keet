@@ -63,7 +63,7 @@
 								<p:outputLabel for="idPrincipal" value="Principal:"/>
 								<p:inputSwitch id="idPrincipal" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.idPrincipal}" offLabel="NO" onLabel="SI"/>                
                 <p:outputLabel for="responsable" value="Responsable:"/>
-								<p:selectOneMenu id="responsable" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.idResponsable}" styleClass="janal-wid-100-txt" >									
+								<p:selectOneMenu id="responsable" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.idResponsable}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.responsables}"/>
 								</p:selectOneMenu>								
               </p:panelGrid>

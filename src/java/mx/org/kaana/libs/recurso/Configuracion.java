@@ -165,7 +165,7 @@ public class Configuracion {
   }	// getPropiedadServidor
 	
 	public String getVersion() {
-	  return Configuracion.getInstance().getPropiedad("sistema.version");
+	  return this.getPropiedad("sistema.version");
 	} // getVersion
 	
 	public EEtapaServidor getEtapaServidor() {
@@ -233,8 +233,8 @@ public class Configuracion {
   } // isEtapaCapacitacion
 
   public boolean isFreeAccess() {
-    LOG.warn("Acceso libre [".concat(String.valueOf(Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no"))).concat("]"));
-    return Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no");
+    LOG.warn("Acceso libre [".concat(String.valueOf(this.getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no"))).concat("]"));
+    return this.getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no");
   } // isFreeAccess
 
   public String getEmpresa(String id) {

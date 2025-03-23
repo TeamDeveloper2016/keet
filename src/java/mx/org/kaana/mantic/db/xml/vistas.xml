@@ -2526,18 +2526,8 @@
 					and {condicion}
 				group by
 					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_venta,
-			  	tc_mantic_ventas.ticket,
-					tc_mantic_empresas.clave,  
-					tc_mantic_empresas.nombre,  
-					tc_mantic_ventas.id_factura,
-					tc_mantic_ventas.id_facturar,
 					tc_mantic_facturas.folio,
-					tc_mantic_clientes.id_cliente,  
-					tc_mantic_clientes.razon_social,
-				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.registro
+					tc_mantic_clientes.id_cliente
 				{sortOrder}
 			</select>	
 			<select id="movimientos">
@@ -5206,98 +5196,100 @@ where
 				{sortOrder}  
 			</select>              
 			<select id="autoCompletar">
-				select 
-				  tr_mantic_empresa_personal.id_empresa_persona as id_key,
-				  tr_mantic_empresa_personal.id_empresa_persona,
-				  tc_mantic_personas.nombres,
-				  tc_mantic_personas.paterno,
-				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
-				  tc_mantic_personas.rfc,
-				  tc_mantic_personas.curp,
-				  tc_mantic_personas.fecha_nacimiento,
-				  tc_mantic_tipos_personas.nombre as tipo_persona,
-				  tc_janal_tipos_sexos.id_tipo_sexo,
-		 		  tc_janal_tipos_sexos.nombre as sexo,
-				  tc_janal_tipos_sexos.nombre,
-				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre as sucursal,
-					tc_mantic_puestos.nombre as puesto,
-					tr_mantic_persona_tipo_contacto.valor as contacto
-				from 
-					tc_mantic_personas
-				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-				inner join 
-					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
-				inner join
-					tc_mantic_tipos_personas on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
-				inner join
-					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
-				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
-				left join 
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
-				where 
-          tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
-          and (concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '{nombreEmpleado}.*')
+select 
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  tc_mantic_personas.fecha_nacimiento,
+  tc_mantic_tipos_personas.nombre as tipo_persona,
+  tc_janal_tipos_sexos.id_tipo_sexo,
+  tc_janal_tipos_sexos.nombre as sexo,
+  tc_janal_tipos_sexos.nombre,
+  tc_mantic_personas.cuenta,
+  tc_mantic_empresas.nombre as sucursal,
+  tc_mantic_puestos.nombre as puesto,
+  tr_mantic_persona_tipo_contacto.valor as contacto
+from 
+  tc_mantic_personas
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+inner join
+  tc_mantic_tipos_personas on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+inner join
+  tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+left join
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+left join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+where 
+  tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+  and (concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '{nombreEmpleado}.*')
+group by
+  tr_mantic_empresa_personal.id_empresa_persona
 			</select>              
 			<select id="autoCompletarAccion">
-				select 
-				  tc_mantic_personas.id_persona as id_key,
-				  tc_mantic_personas.nombres,
-				  tc_mantic_personas.paterno,
-				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
-				  tc_mantic_personas.rfc,
-				  tc_mantic_personas.curp,
-				  tc_mantic_personas.fecha_nacimiento,
-				  tc_mantic_tipos_personas.nombre as tipo_persona,
-				  tc_janal_tipos_sexos.id_tipo_sexo,
-		 		  tc_janal_tipos_sexos.nombre as sexo,
-				  tc_janal_tipos_sexos.nombre,
-				  tc_mantic_personas.cuenta,
-					tc_mantic_empresas.nombre sucursal,
-					tc_mantic_puestos.nombre puesto,
-					tr_mantic_persona_tipo_contacto.valor contacto
-				from 
-					tc_mantic_personas
-				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-				inner join 
-					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
-				inner join
-					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
-				inner join
-					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
-				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
-				left join 
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
-				where 
-					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
-				  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
-				  or tc_mantic_personas.materno  like '%{nombreEmpleado}%'
-				  or tc_mantic_personas.id_persona = {idPersona})
-				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+select 
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  tc_mantic_personas.fecha_nacimiento,
+  tc_mantic_tipos_personas.nombre as tipo_persona,
+  tc_janal_tipos_sexos.id_tipo_sexo,
+  tc_janal_tipos_sexos.nombre as sexo,
+  tc_janal_tipos_sexos.nombre,
+  tc_mantic_personas.cuenta,
+  tc_mantic_empresas.nombre sucursal,
+  tc_mantic_puestos.nombre puesto,
+  tr_mantic_persona_tipo_contacto.valor contacto
+from 
+  tc_mantic_personas
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+inner join
+  tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+inner join
+  tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+left join
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+left join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+where 
+  (tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
+  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+  or tc_mantic_personas.materno  like '%{nombreEmpleado}%'
+  or tc_mantic_personas.id_persona = {idPersona})
+  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
 			</select>              
 			<select id="tipoPersona">
-				select 
-          tc_mantic_personas.id_persona as id_key,
-					tc_mantic_personas.*
-				from
-					tc_mantic_personas
-				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-				where 
-					tc_mantic_personas.id_tipo_persona= {idTipoPersona}
-				  and tr_mantic_empresa_personal.id_empresa= {idEmpresa}
-				order by
-					paterno,materno,nombres
+select 
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.*
+from
+  tc_mantic_personas
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+where 
+  (tc_mantic_personas.id_tipo_persona= {idTipoPersona} or 4= {idTipoPersona})
+  and tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+order by
+  paterno, materno, nombres
 			</select>
 			<select id="exportar">
 select
@@ -8645,62 +8637,62 @@ group by
 					tc_mantic_empresas.id_empresa in ({idEmpresa})
       </select>	
       <select id="datosAlmacen">
-        select
-					tc_mantic_almacenes.id_almacen,
-        	tc_mantic_almacenes.clave,
-					domicilio_almacen.numero_interior,
-					concat(domicilio_almacen.calle, case  when domicilio_almacen.numero_exterior is null then ' ' else concat(' # ',domicilio_almacen.numero_exterior) end, case  when domicilio_almacen.numero_interior is null then ' ' else concat(' INT. ',domicilio_almacen.numero_interior) end) as almacen_direccion,	
-          domicilio_almacen.codigo_postal,
-					domicilio_almacen.asentamiento as colonia,
-				  (select 
-					  group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') as tels 
-					 from 
-					   tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 1 and 8 
-					 where 
-        		 tc_mantic_almacenes.id_almacen) telefonos_almacen,
-        	(select 
-					  group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') as emails 
-					 from 
-					   tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 9 and 11 
-					 where 
-        	tc_mantic_almacenes.id_almacen) emails_almacen,
-        	concat(responsable_almacen.nombres,' ' ,responsable_almacen.paterno,' ',responsable_almacen.materno) as responsable_almacen,
-          responsable_almacen.rfc rfc_almacen,
-	        concat(replace(replace(upper(municipio_almacen.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_almacen.descripcion),', ',upper(pais_almacen.descripcion)) as almacen_region,
-          (select 
-					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') as emails 
-					 from 
-					   tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 9 and 11 
-					 where 
-        		 tc_mantic_personas.id_persona= responsable_almacen.id_persona) as emails_contacto,
-          (select 
-            group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') as tels 
-          from 
-            tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 1 and 8 
-          where 
-            tc_mantic_personas.id_persona= responsable_almacen.id_persona) as telefonos_contacto
-				from 
-					tc_mantic_almacenes 
-				inner join 
-					tr_mantic_almacen_domicilio  on tc_mantic_almacenes.id_almacen= tr_mantic_almacen_domicilio.id_almacen
-				inner join 
-					tc_mantic_domicilios  domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
-				inner join 
-					tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
-				inner join
-          tc_janal_municipios municipio_almacen on localidad_almacen.id_municipio = municipio_almacen.id_municipio
-        inner join
-					tc_janal_entidades  entidad_almacen on municipio_almacen.id_entidad = entidad_almacen.id_entidad
-				inner join
-					tc_janal_paises  pais_almacen on entidad_almacen.id_pais = pais_almacen.id_pais
-				left join 
-					tc_mantic_personas responsable_almacen on tc_mantic_almacenes.id_responsable = responsable_almacen.id_persona
-				left join 
-					tr_mantic_persona_tipo_contacto telefono on responsable_almacen.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
-				left join 
-					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
-				where
-					tc_mantic_almacenes.id_almacen in ({idAlmacen})
+select
+  tc_mantic_almacenes.id_almacen,
+  tc_mantic_almacenes.clave,
+  domicilio_almacen.numero_interior,
+  concat(domicilio_almacen.calle, case  when domicilio_almacen.numero_exterior is null then ' ' else concat(' # ',domicilio_almacen.numero_exterior) end, case  when domicilio_almacen.numero_interior is null then ' ' else concat(' INT. ',domicilio_almacen.numero_interior) end) as almacen_direccion,	
+  domicilio_almacen.codigo_postal,
+  domicilio_almacen.asentamiento as colonia,
+  (select 
+    group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') as tels 
+   from 
+     tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 1 and 8 
+   where 
+     tc_mantic_almacenes.id_almacen in ({idAlmacen})) as telefonos_almacen,
+  (select 
+    group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') as emails 
+   from 
+     tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 9 and 11 
+   where 
+     tc_mantic_almacenes.id_almacen in ({idAlmacen})) as emails_almacen,
+  concat(responsable_almacen.nombres,' ' ,responsable_almacen.paterno,' ',responsable_almacen.materno) as responsable_almacen,
+  responsable_almacen.rfc rfc_almacen,
+  concat(replace(replace(upper(municipio_almacen.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_almacen.descripcion),', ',upper(pais_almacen.descripcion)) as almacen_region,
+  (select 
+    group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') as emails 
+   from 
+     tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 9 and 11 
+   where 
+     tc_mantic_personas.id_persona= responsable_almacen.id_persona) as emails_contacto,
+  (select 
+    group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') as tels 
+  from 
+    tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 1 and 8 
+  where 
+    tc_mantic_personas.id_persona= responsable_almacen.id_persona) as telefonos_contacto
+from 
+  tc_mantic_almacenes 
+inner join 
+  tr_mantic_almacen_domicilio  on tc_mantic_almacenes.id_almacen= tr_mantic_almacen_domicilio.id_almacen
+inner join 
+  tc_mantic_domicilios  domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
+inner join 
+  tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
+inner join
+  tc_janal_municipios municipio_almacen on localidad_almacen.id_municipio = municipio_almacen.id_municipio
+inner join
+  tc_janal_entidades  entidad_almacen on municipio_almacen.id_entidad = entidad_almacen.id_entidad
+inner join
+  tc_janal_paises  pais_almacen on entidad_almacen.id_pais = pais_almacen.id_pais
+left join 
+  tc_mantic_personas responsable_almacen on tc_mantic_almacenes.id_responsable = responsable_almacen.id_persona
+left join 
+  tr_mantic_persona_tipo_contacto telefono on responsable_almacen.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
+left join 
+  tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+where
+  tc_mantic_almacenes.id_almacen in ({idAlmacen})
       </select>
       <select id="datosProveedor">
         select

@@ -432,8 +432,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             Double sueldo= 0D;
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
-                 // sueldo= persona.toDouble("sueldoImss");
-                 sueldo= persona.toDouble("sueldoMensual");
+                 // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
+                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 // sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
               case "triana":
@@ -442,12 +443,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             } // swtich
 						empleado= new TcKeetNominasPersonasDto(
 							sueldo, // Double neto, 
-							persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
+							persona.toLong("idEmpresaPersona"), // Long idEmpresaPersona, 
 							0D, // Double deducciones,
 							-1L, // Long idNominaPersona, 
 							0D, // Double aportaciones, 
 							0D, // Double percepciones, 
-							this.idNomina // Long idNomina
+							this.idNomina, // Long idNomina,
+              persona.toLong("idNomina") // Long idDeposito
 						);
 						this.calculos(sesion, monitoreo, empleado);
 					} // if
@@ -500,8 +502,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             Double sueldo= 0D;
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
-                 // sueldo= persona.toDouble("sueldoImss");
-                 sueldo= persona.toDouble("sueldoMensual");
+                // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
+                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 //sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
               case "triana":
@@ -515,7 +518,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							-1L, // Long idNominaPersona, 
 							0D, // Double aportaciones, 
 							0D, // Double percepciones, 
-							this.idNomina // Long idNomina
+							this.idNomina, // Long idNomina,
+              persona.toLong("idNomina") // Long idDeposito
 						);
 						this.calculos(sesion, monitoreo, empleado);
 						// 
@@ -647,8 +651,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             Double sueldo= 0D;
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
-                 // sueldo= persona.toDouble("sueldoImss");
-                 sueldo= persona.toDouble("sueldoMensual");
+                // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
+                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 // sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
               case "triana":
@@ -662,7 +667,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							-1L, // Long idNominaPersona, 
 							0D, // Double aportaciones, 
 							0D, // Double percepciones, 
-							this.idNomina // Long idNomina
+							this.idNomina, // Long idNomina,
+              persona.toLong("idNomina") // Long idDeposito, 
 						);
 						this.calculos(sesion, empleado);
 					} // if

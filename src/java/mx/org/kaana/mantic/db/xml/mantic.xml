@@ -3249,6 +3249,7 @@ order by
       <select id="prestaciones">
         select      
           tr_mantic_empresa_personal.id_empresa_persona as id_key,
+          if(sueldo_imss&lt;=0 or sueldo_imss&gt; sueldo_semanal, 0, sueldo_semanal- sueldo_imss) as sueldo_adicional,
           sobre_sueldo,
           ifnull(factor_infonavit, 0) as factor_infonavit,
           puntualidad,

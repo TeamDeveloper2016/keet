@@ -35,6 +35,8 @@ import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosProveedoresAccion")
@@ -42,6 +44,8 @@ import org.primefaces.event.SelectEvent;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+  private static final Log LOG = LogFactory.getLog(Accion.class);
+  
   protected RegistroProveedor registroProveedor;
 	protected UISelectEntity domicilioBusqueda;
 
@@ -515,8 +519,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doActualizaMunicipios() {
     try {
-      loadMunicipios();
-      loadLocalidades();      
+      this.loadMunicipios();
+      this.loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -526,7 +530,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaLocalidades() {
     try {
-      loadLocalidades();      
+      this.loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -536,7 +540,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaCodigosPostales() {
     try {
-      loadCodigosPostales();
+      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -876,6 +880,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} 
+  } 
+  
+  public void doUpdateChange() {
+    LOG.info(this.registroProveedor.getProveedoresDomicilio().size());
+  } 
    
 }

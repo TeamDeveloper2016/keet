@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -735,8 +736,8 @@ public class RegistroProveedor implements Serializable{
 	public void doEliminarAgente() {
 		try {
 			if(this.personasTiposContacto.remove(this.personaTipoContacto)) {
-				if(!this.personaTipoContacto.getNuevo())
-					addDeleteList(this.personaTipoContactoSeleccion);
+				if(!this.personaTipoContacto.getNuevo() && !Objects.equals(this.personaTipoContacto, null))
+					addDeleteList(this.personaTipoContacto);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else

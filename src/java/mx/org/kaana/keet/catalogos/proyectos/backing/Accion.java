@@ -141,10 +141,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	protected void toLoadEmpresas() {
 		Map<String, Object>params= new HashMap<>();
-		List<Columna> columns    = null;
+		List<Columna> columns    = new ArrayList<>();
 		try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			columns= new ArrayList<>();		
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -186,7 +185,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadClientes() {
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("sucursales", this.proyecto.getProyecto().getIkEmpresa().getKey());
   		List<UISelectEntity> clientes= UIEntity.build("TcManticClientesDto", "sucursales", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("clientes", clientes);
       if(clientes!= null && !clientes.isEmpty()) {

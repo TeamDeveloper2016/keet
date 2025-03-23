@@ -941,16 +941,18 @@ public class Transaccion extends IBaseTnx {
 				params.put("idEstacionEstatus", EEstacionesEstatus.CANCELADO.getKey());
 				params.put("idPuntoPaquete", puntoRevision.getKey());
 				dto     = (TcKeetContratosDestajosProveedoresDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDestajosProveedoresDto.class, "VistaCapturaDestajosDto", "evidenciaDestajoProveedor", params);
-				costo   = dto.getCosto()!= null? dto.getCosto(): 0D;				
-				anticipo= dto.getAnticipo()!= null? dto.getAnticipo(): 0D;				
-				if(processRechazosSubContratistas(sesion, idUsuario, puntoRevision, dto.getIdContratoDestajoProveedor(), Boolean.FALSE)) {
-					estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());					
-					if(this.actualizaEstacionPadre(sesion, estacion, costo, anticipo, dto.getSemana().toString(), Boolean.FALSE, this.revision.getIdContratoLote())) {
-						if(DaoFactory.getInstance().delete(sesion, dto)>= 1L) {			
-							regresar= DaoFactory.getInstance().delete(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion())>= 1L;
-						} // if
-					} // if
-				} // if
+        if(!Objects.equals(dto, null)) {
+          costo   = dto.getCosto()!= null? dto.getCosto(): 0D;				
+          anticipo= dto.getAnticipo()!= null? dto.getAnticipo(): 0D;				
+          if(processRechazosSubContratistas(sesion, idUsuario, puntoRevision, dto.getIdContratoDestajoProveedor(), Boolean.FALSE)) {
+            estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());					
+            if(this.actualizaEstacionPadre(sesion, estacion, costo, anticipo, dto.getSemana().toString(), Boolean.FALSE, this.revision.getIdContratoLote())) {
+              if(DaoFactory.getInstance().delete(sesion, dto)>= 1L) {			
+                regresar= DaoFactory.getInstance().delete(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion())>= 1L;
+              } // if
+            } // if
+          } // if
+        } // if  
 			} // for
 		} // try
 		catch (Exception e) {			

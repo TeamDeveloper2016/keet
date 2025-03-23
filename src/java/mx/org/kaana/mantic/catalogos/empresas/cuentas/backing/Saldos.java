@@ -373,7 +373,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Entity seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 		try {
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
-			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
+			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toLong("idEmpresa"));
 			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
 			regresar= "abono".concat(Constantes.REDIRECIONAR);
 		} // try
@@ -496,7 +496,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Entity seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 		try {
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
-			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
+			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toLong("idEmpresa"));
 			regresar= "estructura".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {

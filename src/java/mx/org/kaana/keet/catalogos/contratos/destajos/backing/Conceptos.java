@@ -115,8 +115,16 @@ public class Conceptos extends IBaseFilter implements Serializable {
   public void doLoad() {
 		Map<String, Object>params= null;
     List<Columna> columns    = new ArrayList<>();				
+    UISelectEntity figura    = (UISelectEntity)this.attrs.get("figura");
     try {      			
 			params= this.toPrepare();
+      params.put("idProveedor", -1L);
+      params.put("idEmpresaPersona", -1L);
+      if(figura!= null)
+        if(Objects.equals(figura.toLong("tipo"), 1L))
+          params.put("idEmpresaPersona", new Long(figura.getKey().toString().substring(4)));
+        else
+          params.put("idProveedor", new Long(figura.getKey().toString().substring(4)));      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  

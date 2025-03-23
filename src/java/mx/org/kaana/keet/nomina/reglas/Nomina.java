@@ -375,7 +375,8 @@ public class Nomina implements Serializable {
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
 			Entity prestaciones= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "TrManticEmpresaPersonalDto", "prestaciones", params);
       if(!Objects.equals(prestaciones, null) && !prestaciones.isEmpty()) {
-        sobreSueldo= prestaciones.toDouble("sobreSueldo");
+        // sobreSueldo= prestaciones.toDouble("sobreSueldo")+ prestaciones.toDouble("sueldoAdicional");
+        sobreSueldo= prestaciones.toDouble("sobreSueldo")+ prestaciones.toDouble("sueldoAdicional");
         infonavit  = prestaciones.toDouble("factorInfonavit");
         puntualidad= prestaciones.toDouble("puntualidad");
         asistencia = prestaciones.toDouble("asistencia");
