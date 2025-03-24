@@ -367,24 +367,27 @@ public class Nomina implements Serializable {
 	
 	private void toPrestacionesEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
 		Map<String, Object> params= new HashMap<>();
-    Double sobreSueldo= 0D;
-    Double infonavit  = 0D;
-    Double puntualidad= 0D;
-    Double asistencia = 0D;
+    Double sueldoSemanal= 0D;
+    Double sobreSueldo  = 0D;
+    Double infonavit    = 0D;
+    Double puntualidad  = 0D;
+    Double asistencia   = 0D;
 		try {
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
 			Entity prestaciones= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "TrManticEmpresaPersonalDto", "prestaciones", params);
       if(!Objects.equals(prestaciones, null) && !prestaciones.isEmpty()) {
         // sobreSueldo= prestaciones.toDouble("sobreSueldo")+ prestaciones.toDouble("sueldoAdicional");
-        sobreSueldo= prestaciones.toDouble("sobreSueldo")+ prestaciones.toDouble("sueldoAdicional");
-        infonavit  = prestaciones.toDouble("factorInfonavit");
-        puntualidad= prestaciones.toDouble("puntualidad");
-        asistencia = prestaciones.toDouble("asistencia");
+        sueldoSemanal= prestaciones.toDouble("sueldoSemanal");
+        sobreSueldo  = prestaciones.toDouble("sobreSueldo");
+        infonavit    = prestaciones.toDouble("factorInfonavit");
+        puntualidad  = prestaciones.toDouble("puntualidad");
+        asistencia   = prestaciones.toDouble("asistencia");
 			} // if
       this.toLookUpConcepto(particulares, ECodigosIncidentes.SOBRESUELDO, sobreSueldo);
       this.toLookUpConcepto(particulares, ECodigosIncidentes.INFONAVIT, infonavit);
       this.toLookUpConcepto(particulares, ECodigosIncidentes.PUNTUALIDAD, puntualidad);
       this.toLookUpConcepto(particulares, ECodigosIncidentes.ASISTENCIA, asistencia);
+      this.constants.put("SEMANAL", sueldoSemanal);
       this.constants.put("SOBRESUELDO", sobreSueldo);
       this.constants.put("INFONAVIT", infonavit);
       this.constants.put("PUNTUALIDAD", puntualidad);
