@@ -1164,11 +1164,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doUpdateSueldoSemanal() {
     try {      
-      Double sueldoImss = this.registroPersona.getEmpresaPersona().getSueldoImss();
-      Double sobreSueldo= this.registroPersona.getEmpresaPersona().getSobreSueldo();
+      // Double sueldoImss = this.registroPersona.getEmpresaPersona().getSueldoImss();
+      // Double sobreSueldo= this.registroPersona.getEmpresaPersona().getSobreSueldo();
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "cafu":
-          this.registroPersona.getEmpresaPersona().setSueldoSemanal(sueldoImss+ sobreSueldo); 
+          // this.registroPersona.getEmpresaPersona().setSueldoSemanal(sueldoImss+ sobreSueldo); 
           break;
         case "gylvi": 
         case "triana":

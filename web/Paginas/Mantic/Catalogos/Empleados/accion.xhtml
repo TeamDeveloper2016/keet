@@ -224,9 +224,9 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}"/>
-								<p:outputLabel for="sueldoSemanal" value="Deposito semanal:"/>								
+								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:"/>								
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" readonly="#{manticCatalogosPersonasAccion.habilitar}"/>
-								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
+								<p:outputLabel for="mensualImss" value="Sueldo diario:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}">
                   <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doUpdateSueldoSemanal}" process="@this sobreSueldo" update="sueldoSemanal"/>
                 </p:inputNumber>  

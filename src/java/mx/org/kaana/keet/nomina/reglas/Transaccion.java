@@ -433,7 +433,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
                  // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
-                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 sueldo= persona.toDouble("sueldoImss");
                  // sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
@@ -503,7 +503,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
                 // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
-                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 sueldo= persona.toDouble("sueldoImss");
                  //sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
@@ -652,7 +652,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
               case "cafu":
                 // ESTO ES TEMPORAL EN LO QUE SE CAPTURA EL SUELDO DIARIO
-                 sueldo= persona.toDouble("sueldoImss")/ 7;
+                 sueldo= persona.toDouble("sueldoImss");
                  // sueldo= persona.toDouble("sueldoMensual");
                 break;
               case "gylvi": 
