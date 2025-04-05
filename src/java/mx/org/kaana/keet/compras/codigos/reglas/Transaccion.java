@@ -4,7 +4,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetOrdenesCodigosDto;
-import mx.org.kaana.libs.formato.Error;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -100,7 +99,7 @@ public class Transaccion extends IBaseTnx {
 		int lenght = (int)(Math.random()*(8- 7+ 1)+ 7);
 		//Generamos palabra
     int character= 48;
-		for (int i=0; i<lenght; i++){
+		for (int i=0; i<lenght; i++) {
       if(word.length()%2== 0)
 			  character= (int)Math.floor(Math.random()*(122- 97)+ 97);
       else

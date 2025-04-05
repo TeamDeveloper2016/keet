@@ -37,6 +37,7 @@
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {font-size: 30px !important; font-weight: bold !important; font-style: italic;}			
+      #contenedorGrupos\:parche_panel {width: #{kajoolUtilAplicacion.isMobile? '200': '400'}px !important}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -137,7 +138,7 @@
 						<p:tab title="Articulos">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                 <h:outputText value="Articulo:"/>
-                <p:autoComplete id="parche" widgetVar="parche" var="parche" itemLabel="#{parche.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt key-down-event attached" itemValue="#{parche}" value="#{manticComprasRequisicionesAccion.attrs.articulo}" completeMethod="#{manticComprasRequisicionesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+                <p:autoComplete id="parche" widgetVar="parche" var="parche" itemLabel="#{parche.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-99 key-down-event attached" itemValue="#{parche}" value="#{manticComprasRequisicionesAccion.attrs.articulo}" completeMethod="#{manticComprasRequisicionesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
                   <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.attached(); $('#contenedorGrupos\\:parche_input').val('');"/>
                   <f:facet name="itemtip">
                     <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
@@ -148,6 +149,8 @@
                       <h:outputText value="#{parche.propio}" />
                       <h:outputText value="Nombre:" />
                       <h:outputText value="#{parche.nombre}" />
+                      <h:outputText value="Unidad medida:" />
+                      <h:outputText value="#{parche.unidadMedida}" />
                     </h:panelGrid>
                   </f:facet>
                 </p:autoComplete>												
@@ -186,6 +189,8 @@
                               <h:outputText value="#{custom.propio}" />
                               <h:outputText value="Nombre:" />
                               <h:outputText value="#{custom.nombre}" />
+                              <h:outputText value="Unidad medida:" />
+                              <h:outputText value="#{custom.unidadMedida}" />
                             </h:panelGrid>
                           </f:facet>
                         </p:autoComplete>												
@@ -207,7 +212,7 @@
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
-									<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+									<h:outputText id="nombres" value="#{row['nombre']} #{kajoolUtilAplicacion.isMobile? row['unidadMedida']: ''}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 								</p:column>		
 								<p:column styleClass="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-40': 'janal-wid-10'}">
 									<f:facet name="header">

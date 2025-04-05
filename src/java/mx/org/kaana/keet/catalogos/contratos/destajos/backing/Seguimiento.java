@@ -88,13 +88,11 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-    List<Columna> columns    = null;		
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();		
+		Map<String, Object>params= new HashMap<>();
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
       this.toLoadContratos();

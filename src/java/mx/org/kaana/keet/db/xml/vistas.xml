@@ -4,6 +4,142 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaCostosContratosDto">
+      <select id="row">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.costo as presupuesto,
+  count(*) as total,
+  sum(if(tc_keet_estimaciones.id_extra= 2, 1, 0)) as cuantos,
+  sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.facturar, 0)) as normales,
+  sum(if(tc_keet_estimaciones.id_extra= 2, abs(tc_mantic_clientes_deudas.saldo- tc_mantic_clientes_deudas.importe), 0)) as cobrado,
+  ifnull((sum(if(tc_keet_estimaciones.id_extra= 2, abs(tc_mantic_clientes_deudas.saldo- tc_mantic_clientes_deudas.importe), 0))* 100/ sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.facturar, 0))), 100) as uno,
+  sum(if(tc_keet_estimaciones.id_extra= 1, 1, 0)) as cuales,
+  sum(if(tc_keet_estimaciones.id_extra= 1, tc_keet_estimaciones.facturar, 0)) as extras,
+  sum(if(tc_keet_estimaciones.id_extra= 1, abs(tc_mantic_clientes_deudas.saldo- tc_mantic_clientes_deudas.importe), 0)) as recuperado,
+  ifnull((sum(if(tc_keet_estimaciones.id_extra= 1, abs(tc_mantic_clientes_deudas.saldo- tc_mantic_clientes_deudas.importe), 0))* 100/ sum(if(tc_keet_estimaciones.id_extra= 1, tc_keet_estimaciones.facturar, 0))), 100) as dos,
+  ifnull((sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.facturar, 0))* 100/ tc_keet_contratos.costo), 100) as tres,
+  (tc_keet_contratos.costo- sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.facturar, 0))) as faltante
+from
+  tc_keet_contratos
+inner join
+  tc_keet_estimaciones on tc_keet_contratos.id_contrato= tc_keet_estimaciones.id_contrato and tc_keet_estimaciones.id_estimacion_estatus in (2, 3, 5)
+inner join
+  tc_mantic_clientes_deudas on tc_keet_estimaciones.id_venta= tc_mantic_clientes_deudas.id_venta and tc_mantic_clientes_deudas.id_cliente_deuda_estatus!= 5
+where
+  tc_keet_contratos.id_contrato in ({contratos})
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc
+      </select>
+      <select id="ordenesCompra">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.costo as presupuesto,
+  ifnull(count(*), 0) as cantidad,
+  ifnull(sum(tc_mantic_ordenes_compras.total), 0) as compras,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 1, tc_mantic_ordenes_compras.total, 0)), 0) as ordinarias,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden!= 1, tc_mantic_ordenes_compras.total, 0)), 0) as otras,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 2, tc_mantic_ordenes_compras.total, 0)), 0) as extras,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 3, tc_mantic_ordenes_compras.total, 0)), 0) as reposiciones,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 4, tc_mantic_ordenes_compras.total, 0)), 0) as garantias,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 5, tc_mantic_ordenes_compras.total, 0)), 0) as especiales,
+  tc_keet_contratos.registro
+from
+  tc_keet_contratos
+left join  
+  tc_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tc_mantic_ordenes_compras.id_contrato and tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)
+left join  
+  tc_keet_tipos_ordenes on tc_mantic_ordenes_compras.id_tipo_orden= tc_keet_tipos_ordenes.id_tipo_orden
+where
+  tc_keet_contratos.id_contrato in ({contratos})
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
+      <select id="contratistas">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  ifnull(sum(tc_keet_contratos_destajos_contratistas.costo), 0) as destajos,
+  ifnull(sum(tc_keet_contratos_destajos_contratistas.costo), 0) as contratistas
+from
+  tc_keet_contratos
+left join   
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+left join   
+  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote= tc_keet_contratos_lotes_contratistas.id_contrato_lote
+left join   
+  tc_keet_contratos_destajos_contratistas on tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista= tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista
+where
+  tc_keet_contratos.id_contrato in ({contratos})
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
+      <select id="proveedores">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  ifnull(sum(tc_keet_contratos_destajos_proveedores.costo* 1.16), 0) as proveedores
+from
+  tc_keet_contratos
+left join   
+  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+left join   
+  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote= tc_keet_contratos_lotes_proveedores.id_contrato_lote
+left join   
+  tc_keet_contratos_destajos_proveedores on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor
+where
+  tc_keet_contratos.id_contrato in ({contratos})
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
+      <select id="empleados">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  ifnull(sum(tc_keet_nominas_contratos_costos.por_dia+ tc_keet_nominas_contratos_costos.por_obra), 0) as personal,
+  ifnull(sum(tc_keet_nominas_contratos_costos.por_dia), 0) as por_dia,
+  ifnull(sum(tc_keet_nominas_contratos_costos.por_obra), 0) as por_obra
+from
+  tc_keet_contratos
+left join  
+  tc_keet_nominas_contratos_costos on tc_keet_contratos.id_contrato= tc_keet_nominas_contratos_costos.id_contrato
+where
+  tc_keet_contratos.id_contrato in ({contratos}) 
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
+      <select id="cajaChica">
+select
+  tc_keet_proyectos.id_desarrollo as id_key,
+  ifnull(sum(tc_keet_gastos.importe), 0) as caja_chica
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+left join  
+  tc_keet_cajas_chicas on tc_keet_proyectos.id_desarrollo= tc_keet_cajas_chicas.id_desarrollo
+left join  
+  tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica= tc_keet_cajas_chicas_cierres.id_caja_chica
+left join  
+  tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre and tc_keet_gastos.id_gasto_estatus in (2, 4)
+where
+  tc_keet_contratos.id_contrato in ({contratos})
+  and tc_keet_gastos.registro&gt;= tc_keet_contratos.registro
+group by
+  tc_keet_proyectos.id_desarrollo
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
+    </unit>  
     <unit id="VistaReportesDto">
 			<select id="lazy">
 select 
@@ -3717,22 +3853,25 @@ from (
           tc_keet_estaciones.clave
       </select>  
       <select id="contratos">
-        select
-          tc_keet_contratos.id_contrato as id_key,
-          tc_keet_contratos.id_contrato,
-          tc_keet_contratos.id_empresa,
-          tc_keet_contratos.ejercicio,
-          tc_keet_contratos.clave,
-          tc_keet_contratos.nombre,
-          tc_keet_contratos.orden
-        from
-          tc_keet_contratos
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        where
-          tc_keet_proyectos.id_desarrollo= {idDesarrollo}
-        order by
-          tc_keet_contratos.clave desc       
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos.id_empresa,
+  tc_keet_contratos.ejercicio,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre,
+  tc_keet_contratos.orden,
+  tc_keet_contratos_estatus.nombre as estatus
+from
+  tc_keet_contratos
+inner join
+  tc_keet_contratos_estatus on tc_keet_contratos.id_contrato_estatus= tc_keet_contratos_estatus.id_contrato_estatus
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+where
+  tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+order by
+  tc_keet_contratos.clave desc       
       </select>  
       <select id="unicas">
         select

@@ -25,7 +25,6 @@ import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -109,13 +108,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void toLoadCatalogos() throws Exception {
-    List<Columna> columns    = null;		
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();		
+		Map<String, Object>params= new HashMap<>();
 		try {
-      columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
       this.toLoadContratos();
@@ -127,10 +124,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	} // toLadCatalogos	
 	
 	private void toLoadContratos() {
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {      
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
@@ -147,12 +143,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadManzanas() {
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectEntity> manzanas= null;
     try {      
       if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
         this.attrs.put("casa", new UISelectEntity(-1L));
-      params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
@@ -170,12 +165,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
   public void doLoadManzanas() {
-    List<UISelectEntity> contratos= null;    
-		UISelectEntity contrato       = null;
+    List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");    
+		UISelectEntity item           = (UISelectEntity)this.attrs.get("contrato");
     try {   
-			contratos= (List<UISelectEntity>)this.attrs.get("contratos");
-			contrato = (UISelectEntity)this.attrs.get("contrato");
-      int index= contratos.indexOf(contrato);
+      int index= contratos.indexOf(item);
       if(index>= 0)
         this.attrs.put("contrato", contratos.get(index));
       this.attrs.put("manzana", new UISelectEntity(-1L));
@@ -188,11 +181,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
   public void doLoadCasas() {
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		List<UISelectEntity> casas= null;
     try {   
       this.attrs.put("casa", new UISelectEntity(-1L));
-      params  = new HashMap<>();
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
       casas= UIEntity.seleccione("VistaGeoreferenciaLotesDto", "lotesTodos", params, Constantes.SQL_TODOS_REGISTROS, "codigo");
@@ -256,14 +248,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;		
+    List<Columna> columns       = new ArrayList<>();		
+		Map<String, Object>params   = new HashMap<>();
 		List<UISelectEntity> casas  = null;
     try {   
-      params = new HashMap<>();
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
@@ -291,12 +281,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doLoad	
 	
 	private void toEstatusManzanaLote() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity estatus           = null;
 		String color             = "rojo";
     Integer porcentaje       = 0;
 		try {
-			params= new HashMap<>();
 			for(Entity mzaLote: this.lotes) {
 		    color     = "rojo";
         porcentaje= 0;
@@ -399,7 +388,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
-    Map<String, Object>params    = null;
+    Map<String, Object>params    = new HashMap<>();
     UISelectEntity figura        = null;
     Parametros comunes           = null;
     boolean isCompleto           = false;
@@ -409,7 +398,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       int index= figuras.indexOf((UISelectEntity) this.attrs.get("figura"));
       if(index>= 0) {
         figura= figuras.get(index);			
-        params = new HashMap<>();  
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         parametros= comunes.getComunes();
         if(isCompleto) {
@@ -462,12 +450,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	}
  
   public void doWhatsup() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     String contratista        = null;
     UISelectEntity figura     = null;
     UISelectEntity semana     = null;  
     try {      
-      params = new HashMap<>();      
       List<UISelectEntity> figuras= (List<UISelectEntity>)this.attrs.get("figuras");
       int index= figuras.indexOf((UISelectEntity)this.attrs.get("figura"));
       if(index>= 0) {
@@ -532,15 +519,13 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		List<Entity> items        = null;
 		Marker marker             = null;
 		String icon               = null;
-		Map<String, Object> params= null;
-		List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.model= new DefaultMapModel();
 			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
-			params= new HashMap<>();
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
         params.put("contrato", this.contrato.toString("nombreContrato"));
@@ -573,12 +558,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		String regresar          = null;
 		String imagen            = null;
 		String color             = "red";
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity estatus           = null;
     Integer porcentaje       = 0;
 		try {
 			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
-			params= new HashMap<>();			
       String clave= Cadena.rellenar(mzaLote.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(mzaLote.toLong("ordenContrato").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("orden").toString(), 3, '0', true);
 			params.put("clave", clave);
 			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);

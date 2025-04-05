@@ -37,7 +37,7 @@
 				'contenedorGrupos\\:factorInfonavit': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
 				// 'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
-				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:mensualImss'  : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:sobreSueldo'  : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idLimpiar'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -66,9 +66,9 @@
 				'contenedorGrupos\\:paternoP'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:maternoP'     : {validaciones: 'libre', mascara: 'libre', grupo: 'alimenticia', formatos: 'cambiar-mayusculas'},				
 				'contenedorGrupos\\:porcentajeP'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre', grupo: 'alimenticia'},
-				'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:puntualidad'  : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre'},
-				'contenedorGrupos\\:asistencia'   : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre'},
+				'contenedorGrupos\\:asistencia'   : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor({\"cuanto\":100})', mascara: 'libre'}
 			};					
 			
 			fieldsDialog= {
@@ -225,7 +225,7 @@
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}"/>
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:"/>								
-								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" readonly="#{manticCatalogosPersonasAccion.habilitar}"/>
+								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>
 								<p:outputLabel for="mensualImss" value="Sueldo diario:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}">
                   <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doUpdateSueldoSemanal}" process="@this sobreSueldo" update="sueldoSemanal"/>
