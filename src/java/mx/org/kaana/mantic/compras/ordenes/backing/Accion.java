@@ -976,7 +976,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           else
             this.getAdminOrden().toStartCalculate();
           if(!this.accion.equals(EAccion.CONSULTAR)) 
-            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
+            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
           // VERIFICAR SI YA ESTAN COMPLETA LAS REQUISICIONES Y CAMBIARLES EL ESTATUS A COTIZADAS
           transaccion.ejecutar(EAccion.RESTAURAR);
           this.toLoadDetalle(Boolean.FALSE);

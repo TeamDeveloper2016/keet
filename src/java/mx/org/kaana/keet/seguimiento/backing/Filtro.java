@@ -2,6 +2,7 @@ package mx.org.kaana.keet.seguimiento.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   private List<Entity> rowsModel;
   private List<Entity> egresosModel;
+  private Map<Long, Entity> ponderadores;
 
   public List<Entity> getRowsModel() {
     return rowsModel;
@@ -44,10 +46,16 @@ public class Filtro extends IBaseFilter implements Serializable {
     return egresosModel;
   }
   
+  public Collection<Entity> getPonderados() {
+    return ponderadores.values();
+  }
+  
   @PostConstruct
   @Override
   protected void init() {		
     try {
+      this.ponderadores= new HashMap<>();
+      this.attrs.put("ponderados", Boolean.FALSE);
       this.toLoadCatalogos();
     } // try 
     catch (Exception e) {
@@ -73,6 +81,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       else
         sb.append("63, 61, 58");
       if(sb.length()> 0) {
+        this.toLoadPonderadores();
         params.put("contratos", sb.toString());
         columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));                  
         columns.add(new Columna("presupuesto", EFormatoDinamicos.MILES_CON_DECIMALES));                  
@@ -118,10 +127,8 @@ public class Filtro extends IBaseFilter implements Serializable {
           this.rowsModel.add(totales);
           // CALCULAR LA PROPORCION QUE REPRESENTA CADA CONTRATO CON RESPECTO AL TOTAL GENERAL
           for (Entity item: this.rowsModel) {
-            if(total> 0D)
-              item.add("proporcion", new Value("proporcion", item.toDouble("presupuesto")* 100/ total));
-            else
-              item.add("proporcion", new Value("proporcion", 0D));
+            Double ponderado= this.ponderadores.containsKey(item.getKey())? this.ponderadores.get(item.getKey()).toDouble("ponderado"): 0D;
+            item.add("proporcion", new Value("proporcion", ponderado));
           } // for
           UIBackingUtilities.toFormatEntitySet(this.rowsModel, columns);
         } // if  
@@ -157,6 +164,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       else
         sb.append("63, 61, 58");
       if(sb.length()> 0) {
+        params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
         params.put("contratos", sb.toString());
         columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));                  
         columns.add(new Columna("presupuesto", EFormatoDinamicos.MILES_CON_DECIMALES));                  
@@ -191,8 +199,8 @@ public class Filtro extends IBaseFilter implements Serializable {
           // AGREGAR LA COLUMNA DE TOTAL POR CONTRARO Y SU PORCENTAJE
           Entity totales= new Entity(0L);
           for (Entity item: this.egresosModel) {
-            Double proporcion= total<= 0D? 0D: item.toDouble("presupuesto")/ total;
-            item.put("cajaChica", new Value("total", proporcion* cajaChica));
+            Double ponderado= this.ponderadores.containsKey(item.getKey())? this.ponderadores.get(item.getKey()).toDouble("ponderado"): 0D;
+            item.put("cajaChica", new Value("total", (ponderado/ 100)* cajaChica));
             Double destajos  = item.toDouble("destajos")+ item.toDouble("proveedores");
             item.get("destajos").setData(destajos);
             Double value     = item.toDouble("compras")+ item.toDouble("destajos")+ item.toDouble("personal")+ item.toDouble("cajaChica");
@@ -386,5 +394,52 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String doRowTinte(Entity row) {
 	  return Objects.equals(row.toString("contrato"), "TOTAL:")? "janal-tr-yellow janal-font-bold": "";
 	} 
+
+  private void toLoadPonderadores() {
+    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns     = new ArrayList<>();		
+    try { 
+      this.ponderadores.clear();
+      params.put("idDesarrollo", ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey());
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));                  
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));                  
+      List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosContratosDto", "ponderadores", params);
+      // CALCULAR LOS PONDERADORES DE TODOS LOS CONTRATOS
+      if(!Objects.equals(contratos, null) && !contratos.isEmpty()) {
+        Double total= 0D;
+        for (Entity item: contratos) 
+          total+= item.toDouble("presupuesto");
+        for (Entity item: contratos) {
+          item.put("ponderado", new Value("ponderado", total<= 0 || item.toDouble("presupuesto")<= 0? 0D: item.toDouble("presupuesto")* 100/ total));
+          item.put("porcentaje", new Value("porcentaje", total<= 0 || item.toDouble("presupuesto")<= 0? 0D: item.toDouble("presupuesto")* 100/ total));
+        } // for
+        UIBackingUtilities.toFormatEntitySet(contratos, columns);
+        for (Entity item: contratos) 
+          this.ponderadores.put(item.getKey(), item);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+  }
+ 
+  public void doView() {
+    this.attrs.put("ponderados", Boolean.TRUE);
+  }
+  
+  public void doHide() {
+    this.attrs.put("ponderados", Boolean.FALSE);
+  }
+  
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize(); 
+    Methods.clean(this.ponderadores);
+  }
   
 }

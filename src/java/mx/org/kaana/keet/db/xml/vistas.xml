@@ -34,6 +34,23 @@ group by
 order by
   tc_keet_contratos.id_contrato desc
       </select>
+      <select id="ponderadores">
+select
+  tc_keet_contratos.id_contrato as id_key,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.costo as total,
+  tc_keet_contratos.costo as presupuesto
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto 
+where
+  tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+group by
+  tc_keet_contratos.id_contrato
+order by
+  tc_keet_contratos.id_contrato desc        
+      </select>
       <select id="ordenesCompra">
 select
   tc_keet_contratos.id_contrato as id_key,
@@ -42,11 +59,13 @@ select
   ifnull(count(*), 0) as cantidad,
   ifnull(sum(tc_mantic_ordenes_compras.total), 0) as compras,
   ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 1, tc_mantic_ordenes_compras.total, 0)), 0) as ordinarias,
-  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden!= 1, tc_mantic_ordenes_compras.total, 0)), 0) as otras,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_ordenin (2, 3, 4, 5), tc_mantic_ordenes_compras.total, 0)), 0) as otras,
   ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 2, tc_mantic_ordenes_compras.total, 0)), 0) as extras,
   ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 3, tc_mantic_ordenes_compras.total, 0)), 0) as reposiciones,
   ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 4, tc_mantic_ordenes_compras.total, 0)), 0) as garantias,
   ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 5, tc_mantic_ordenes_compras.total, 0)), 0) as especiales,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 6, tc_mantic_ordenes_compras.total, 0)), 0) as maquinarias,
+  ifnull(sum(if(tc_mantic_ordenes_compras.id_tipo_orden= 7, tc_mantic_ordenes_compras.total, 0)), 0) as herramientas,
   tc_keet_contratos.registro
 from
   tc_keet_contratos
@@ -132,8 +151,7 @@ left join
 left join  
   tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre and tc_keet_gastos.id_gasto_estatus in (2, 4)
 where
-  tc_keet_contratos.id_contrato in ({contratos})
-  and tc_keet_gastos.registro&gt;= tc_keet_contratos.registro
+  tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 group by
   tc_keet_proyectos.id_desarrollo
 order by
