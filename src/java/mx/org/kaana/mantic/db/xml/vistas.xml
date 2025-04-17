@@ -6171,40 +6171,53 @@ order by
   tc_mantic_articulos.nombre
       </select> 
       <select id="comprasProveedores">
-        select
-          tc_mantic_ordenes_compras.ejercicio,
-          tc_mantic_empresas.nombre as empresa,
-          tc_keet_contratos.nombre as contrato,
-          tc_keet_contratos.costo as presupuesto,
-          tc_keet_contratos.materiales,
-          tc_mantic_proveedores.razon_social as proveedor,
-          tc_mantic_ordenes_estatus.nombre as estatus,
-          count(*) as ordenes,
-          sum(tc_mantic_ordenes_compras.total) as total
-        from
-          tc_mantic_ordenes_compras
-        inner join
-          tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
-        inner join
-          tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
-        inner join
-          tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
-        where
-          tc_mantic_ordenes_estatus.id_orden_estatus in (3, 4, 5, 6, 7)
-        group by
-          tc_mantic_ordenes_compras.ejercicio,
-          tc_mantic_ordenes_compras.id_empresa,
-          tc_keet_contratos.nombre,
-          tc_mantic_ordenes_compras.id_proveedor,
-          tc_mantic_ordenes_compras.id_orden_estatus
-        order by  
-          tc_mantic_ordenes_compras.ejercicio,
-          tc_mantic_ordenes_compras.id_empresa,
-          tc_keet_contratos.nombre,
-          tc_mantic_ordenes_compras.id_proveedor,
-          tc_mantic_ordenes_compras.id_orden_estatus
+select
+  tc_mantic_ordenes_compras.ejercicio,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.costo as presupuesto,
+  tc_keet_contratos.materiales,
+  tc_mantic_proveedores.razon_social as proveedor,
+  tc_mantic_ordenes_estatus.nombre as estatus,
+  count(*) as ordenes,
+  sum(tc_mantic_ordenes_compras.total) as total,
+  tt_keet_ordenes_codigos.codigo as codigo      
+from
+  tc_mantic_ordenes_compras
+inner join
+  tc_keet_contratos on tc_mantic_ordenes_compras.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join
+  tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+inner join
+  tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+left join (
+  select
+    tc_keet_ordenes_codigos.id_orden_compra,
+    tc_keet_ordenes_codigos.codigo
+  from
+    tc_keet_ordenes_codigos 
+  where
+    tc_keet_ordenes_codigos.codigo is not null
+    and tc_keet_ordenes_codigos.id_orden_compra is not null
+  group by
+    tc_keet_ordenes_codigos.id_orden_compra
+) as tt_keet_ordenes_codigos on tc_mantic_ordenes_compras.id_orden_compra= tt_keet_ordenes_codigos.id_orden_compra
+where
+  tc_mantic_ordenes_estatus.id_orden_estatus in (3, 4, 5, 6, 7)
+group by
+  tc_mantic_ordenes_compras.ejercicio,
+  tc_mantic_ordenes_compras.id_empresa,
+  tc_keet_contratos.nombre,
+  tc_mantic_ordenes_compras.id_proveedor,
+  tc_mantic_ordenes_compras.id_orden_estatus
+order by  
+  tc_mantic_ordenes_compras.ejercicio,
+  tc_mantic_ordenes_compras.id_empresa,
+  tc_keet_contratos.nombre,
+  tc_mantic_ordenes_compras.id_proveedor,
+  tc_mantic_ordenes_compras.id_orden_estatus
       </select>  
       <select id="precios">
         select
