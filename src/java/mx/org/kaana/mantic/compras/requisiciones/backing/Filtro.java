@@ -372,14 +372,16 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity row= (Entity)this.attrs.get("seleccionado");
 		Transaccion transaccion= null;
 		try {
-			transaccion= new Transaccion(row.toLong("idRequisicion"));
-			if(transaccion.ejecutar(EAccion.GENERAR)) {
-				JsfBase.addMessage("Clonar", "Se realizó la copia correctamente", ETipoMensaje.INFORMACION);
-        this.attrs.put("idRequisicion", transaccion.getIdRequisicion());
-        this.doLoad();
+      if(!Objects.equals(row, null)) {
+        transaccion= new Transaccion(row.toLong("idRequisicion"));
+        if(transaccion.ejecutar(EAccion.GENERAR)) {
+          JsfBase.addMessage("Clonar", "Se realizó la copia correctamente", ETipoMensaje.INFORMACION);
+          this.attrs.put("idRequisicion", transaccion.getIdRequisicion());
+          this.doLoad();
+        } // if  
+        else
+          JsfBase.addMessage("Clonar", "Ocurrio un error al copiar la requisición", ETipoMensaje.ERROR);
       } // if  
-			else
-				JsfBase.addMessage("Clonar", "Ocurrio un error al copiar la requisición", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

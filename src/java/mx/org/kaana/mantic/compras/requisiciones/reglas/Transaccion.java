@@ -173,15 +173,15 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean actualizarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
 		boolean regresar         = false;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {						
 			this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);						
 			regresar= DaoFactory.getInstance().update(sesion, this.requisicion.getRequisicion())>= 1L;
 			if(registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, "")){
-				params= new HashMap<>();
 				params.put("idRequisicion", this.requisicion.getRequisicion().getIdRequisicion());
 				registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticRequisicionesDetallesDto.class, params)>= 1;
+				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticRequisicionesProveedoresDto.class, params)>= 1;
 				toFillArticulos(sesion);
 			} // if
 		} // try
@@ -252,17 +252,17 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		try {
 			if(!this.requisicion.getProveedores().isEmpty()){
-				for(RequisicionProveedor requisicionProveedor: this.requisicion.getProveedores()){
+				for(RequisicionProveedor requisicionProveedor: this.requisicion.getProveedores()) {
 					requisicionProveedor.setIdRequisicion(idRequisicion);				
 					dto= (TcManticRequisicionesProveedoresDto) requisicionProveedor;				
 					sqlAccion= requisicionProveedor.getSqlAccion();
 					switch(sqlAccion){
 						case INSERT:
 							dto.setIdRequisicionProveedor(-1L);
-							validate= registrar(sesion, dto);
+							validate= this.registrar(sesion, dto);
 							break;
 						case UPDATE:
-							validate= actualizar(sesion, dto);
+							validate= this.actualizar(sesion, dto);
 							break;
 					} // switch
 					if(validate)
@@ -289,39 +289,40 @@ public class Transaccion extends IBaseTnx {
 	} // actualizar
 
 	private Boolean toClonar(Session sesion) throws Exception {
-		Boolean regresar= Boolean.FALSE;
-		Siguiente consecutivo= null;
+		Boolean regresar          = Boolean.FALSE;
+		Siguiente consecutivo     = null;
 		Map<String, Object> params= new HashMap<>();
 		try {
+      this.requisicion= new RegistroRequisicion(this.idRequisicion);
 			consecutivo= this.toSiguiente(sesion);
-      TcManticRequisicionesDto item= (TcManticRequisicionesDto)DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.idRequisicion);
       TcManticRequisicionesDto clon= new TcManticRequisicionesDto(
-        item.getDescuentos(), //  Double descuentos, 
-        item.getIdProveedor(), // Long idProveedor, 
-        item.getIdDesarrollo(), // Long idDesarrollo, 
-        item.getDescuento(), // String descuento, 
+        this.requisicion.getRequisicion().getDescuentos(), //  Double descuentos, 
+        this.requisicion.getRequisicion().getIdProveedor(), // Long idProveedor, 
+        this.requisicion.getRequisicion().getIdDesarrollo(), // Long idDesarrollo, 
+        this.requisicion.getRequisicion().getDescuento(), // String descuento, 
         1L, // Long idRequisicionEstatus, 
         -1L, // Long idRequisicion, 
-        item.getIdSolicita(), // Long idSolicita, 
+        this.requisicion.getRequisicion().getIdSolicita(), // Long idSolicita, 
         new Long(this.getCurrentYear()), // Long ejercicio, 
         consecutivo.getConsecutivo(), // String consecutivo, 
-        item.getFechaPedido(), // LocalDate fechaPedido, 
-        item.getTotal(), // Double total, 
+        this.requisicion.getRequisicion().getFechaPedido(), // LocalDate fechaPedido, 
+        this.requisicion.getRequisicion().getTotal(), // Double total, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
-        item.getImpuestos(), // Double impuestos, 
-        item.getSubTotal(), // Double subTotal, 
-        item.getObservaciones(), // String observaciones, 
-        item.getIdEmpresa(), // Long idEmpresa, 
-        item.getFechaEntregada(), // LocalDate fechaEntregada, 
+        this.requisicion.getRequisicion().getImpuestos(), // Double impuestos, 
+        this.requisicion.getRequisicion().getSubTotal(), // Double subTotal, 
+        this.requisicion.getRequisicion().getObservaciones(), // String observaciones, 
+        this.requisicion.getRequisicion().getIdEmpresa(), // Long idEmpresa, 
+        this.requisicion.getRequisicion().getFechaEntregada(), // LocalDate fechaEntregada, 
         consecutivo.getOrden(), // Long orden, 
-        item.getIdContrato(), // Long idContrato, 
-        item.getIdPrototipo(), // Long idPrototipo, 
-        item.getIdEnviar() //  Long idEnviar      
+        this.requisicion.getRequisicion().getIdContrato(), // Long idContrato, 
+        this.requisicion.getRequisicion().getIdPrototipo(), // Long idPrototipo, 
+        this.requisicion.getRequisicion().getIdEnviar() //  Long idEnviar      
       );
       regresar= DaoFactory.getInstance().insert(sesion, clon)> 0L;
 			params.put("idRequisicion", this.idRequisicion);
 			params.put("idClon", clon.getIdRequisicion());
       DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesDetallesDto", "row", params);
+      DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesProvedoresDto", "row", params);
       this.idRequisicion= clon.getIdRequisicion();
 		} // try
 		catch (Exception e) {			

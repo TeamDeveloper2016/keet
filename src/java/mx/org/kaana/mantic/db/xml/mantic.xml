@@ -1956,11 +1956,25 @@ where
           id_requisicion = {idRequisicion}
       </select>
 			<select id="maximo">
-        select      
-          max(id_requisicion_proveedor) maximo
-        from      
-          tc_mantic_requisiciones_proveedores
+select      
+  max(id_requisicion_proveedor) maximo
+from      
+  tc_mantic_requisiciones_proveedores
       </select>
+			<insert id="row">
+insert into tc_mantic_requisiciones_proveedores(id_requisicion, id_proveedor, registro)
+select
+  {idClon} as id_requisicion,
+	tc_mantic_requisiciones_proveedores.id_proveedor, 
+	current_timestamp() as registro
+from
+  tc_mantic_requisiciones_proveedores
+where
+  tc_mantic_requisiciones_proveedores.id_requisicion= {idRequisicion}
+      </insert>  
+			<delete id="rows">
+delete from tc_mantic_requisiciones_proveedores where id_requisicion= {idRequisicion}
+			</delete>
     </unit>
 		<unit id="TcManticRequisicionesDetallesDto">       
       <select id="row">
