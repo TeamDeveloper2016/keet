@@ -399,7 +399,6 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doLoadDetalle() {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
-    StringBuilder sb          = new StringBuilder();
     try {
       Periodo periodo= new Periodo();
       periodo.addMeses(-3);
