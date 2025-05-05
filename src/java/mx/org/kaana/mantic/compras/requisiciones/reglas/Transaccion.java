@@ -53,7 +53,7 @@ public class Transaccion extends IBaseTnx {
   
 	public Transaccion(TcManticRequisicionesBitacoraDto bitacora) {
 		this.bitacora= bitacora;
-	} // Transaccion
+	} 
 	
 	public Transaccion(RegistroRequisicion requisicion) {
 		this(requisicion, "");
@@ -61,7 +61,7 @@ public class Transaccion extends IBaseTnx {
 	
 	public Transaccion(RegistroRequisicion requisicion, String justificacion) {
 		this(requisicion, new ArrayList<Articulo>(), justificacion);
-	} // Transaccion
+	} 
 
 	public Transaccion(RegistroRequisicion requisicion, List<Articulo> articulos) {
 		this(requisicion, articulos, "");
@@ -143,7 +143,7 @@ public class Transaccion extends IBaseTnx {
 		if(this.requisicion!= null)
 			LOG.info("Se genero de forma correcta la requsición: "+ this.requisicion.getRequisicion().getConsecutivo());
 		return regresar;
-	}	// ejecutar
+	}	
 
 	private boolean registrarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
 		boolean regresar     = false;
@@ -169,7 +169,7 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch				
 		return regresar;
-	} // registrarVenta
+	} 
 	
 	private boolean actualizarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
 		boolean regresar         = false;
@@ -205,7 +205,7 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch		
 		return regresar;
-	} // registrarBitacora
+	} 
 	
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticRequisicionesDetallesDto", "detalle", this.requisicion.getRequisicion().toMap());
@@ -242,7 +242,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toSiguiente
+	} 
 	
 	private boolean registraRequisicionProveedor(Session sesion, Long idRequisicion) throws Exception {
 		TcManticRequisicionesProveedoresDto dto= null;
@@ -282,11 +282,11 @@ public class Transaccion extends IBaseTnx {
 	
 	private Boolean registrar(Session sesion, IBaseDto dto) throws Exception {
 		return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
-	} // registrar
+	} 
 	
 	private Boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
 		return DaoFactory.getInstance().update(sesion, dto) >= 1L;
-	} // actualizar
+	} 
 
 	private Boolean toClonar(Session sesion) throws Exception {
 		Boolean regresar          = Boolean.FALSE;
@@ -322,7 +322,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("idRequisicion", this.idRequisicion);
 			params.put("idClon", clon.getIdRequisicion());
       DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesDetallesDto", "row", params);
-      DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesProvedoresDto", "row", params);
+      DaoFactory.getInstance().execute(ESql.INSERT, sesion, "TcManticRequisicionesProveedoresDto", "row", params);
       this.idRequisicion= clon.getIdRequisicion();
 		} // try
 		catch (Exception e) {			
@@ -333,6 +333,5 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} 
-
   
 } 

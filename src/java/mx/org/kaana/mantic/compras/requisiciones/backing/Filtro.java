@@ -20,11 +20,13 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -47,9 +49,14 @@ import mx.org.kaana.mantic.enums.EReportes;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
+  private FormatLazyModel detalles;
 	private Reporte reporte;
+
+  public FormatLazyModel getDetalles() {
+    return detalles;
+  }
 	
-	public Reporte getReporte() {
+  public Reporte getReporte() {
 		return reporte;
 	}	
 	
@@ -388,5 +395,36 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
   }
-  
+
+  public void doLoadDetalle() {
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
+    try {
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-3);
+      params.put("sortOrder", "order by tc_mantic_requisiciones.id_requisicion desc, tc_mantic_requisiciones_detalles.id_requisicion_detalle");
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("fecha", periodo.toString());
+      if(!JsfBase.isAdmin())
+        params.put(Constantes.SQL_CONDICION, "(tc_mantic_requisiciones.id_usuario= "+ JsfBase.getIdUsuario()+ ")");
+      else
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      this.detalles= new FormatCustomLazy("VistaRequisicionesDto", "consulta", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  }
+
+	public String toColor(Entity row) {
+		return Objects.equals(row.toLong("idOrdenCompra"), -1L)? "janal-tr-diferencias": Objects.equals(row.toLong("idEliminado"), 1L)? "janal-tr-error": "";
+	} 
+
 }

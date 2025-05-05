@@ -1269,7 +1269,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     UISelectEntity residente  = (UISelectEntity)this.attrs.get("idResidente");
     StringBuilder sb          = new StringBuilder();
     try {
-      params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_orden_compra is null, tc_mantic_requisiciones_detalles.id_requisicion_detalle");
+      params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_orden_compra desc, tc_mantic_requisiciones_detalles.id_requisicion_detalle");
       params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
       params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());

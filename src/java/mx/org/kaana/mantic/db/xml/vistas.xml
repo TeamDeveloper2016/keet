@@ -9322,6 +9322,47 @@ group by
   tc_mantic_requisiciones_detalles.id_requisicion_detalle 
 {sortOrder}               
       </select>  
+			<select id="consulta">
+select
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,
+  tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_mantic_requisiciones.consecutivo,
+  tc_keet_contratos.nombre as contrato,
+  tc_mantic_requisiciones.fecha_pedido,
+  date_format(tc_mantic_requisiciones.fecha_entregada, '%d/%m/%Y') as entrega,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as residente,
+  tc_mantic_requisiciones_detalles.nombre,
+  round(tc_mantic_requisiciones_detalles.cantidad, 2) as cantidad,
+  ifnull(tc_keet_requisiciones_ordenes.id_eliminado, 2) as id_eliminado,
+  ifnull(tc_keet_requisiciones_ordenes.id_orden_compra, -1) as id_orden_compra,
+  tc_keet_requisiciones_ordenes.registro,
+  ifnull(tc_mantic_ordenes_compras.consecutivo, '') as folio,
+  tc_mantic_ordenes_estatus.nombre estatus
+from 
+  tc_mantic_requisiciones				
+inner join 
+  tc_keet_contratos on tc_mantic_requisiciones.id_contrato= tc_keet_contratos.id_contrato
+inner join 
+  tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
+left join 
+  tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+left join 
+  tc_mantic_ordenes_compras on tc_keet_requisiciones_ordenes.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+left join 
+  tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus        
+where
+  tc_mantic_requisiciones.id_empresa in ({sucursales})
+  and tc_mantic_requisiciones.id_requisicion_estatus in (2, 5)
+  and date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '{fecha}'
+  and {condicion}
+group by
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle 
+{sortOrder}               
+      </select>  
 			<select id="igual">
 select
   tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,

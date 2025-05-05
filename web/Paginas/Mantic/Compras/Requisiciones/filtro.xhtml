@@ -4,6 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Requisiciones de materiales" />
   <ui:define name="librerias">
@@ -33,7 +34,10 @@
 				} // if
 				return ok;
 			} // validaJustificacion
-			
+
+      function pregunta() {
+        return confirm('Esta seguro que desea clonar la requisición ?')
+      }
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -118,22 +122,25 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasRequisicionesFiltro.lazyModel.rowCount gt manticComprasRequisicionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasRequisicionesFiltro.lazyModel.rowCount gt manticComprasRequisicionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
+              <p:outputLabel value="Listado de requisiciones" styleClass="janal-text-white janal-float-left"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem value="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:separator rendered="false"/>
-								<p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+								<p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+                <p:menuitem icon="fa fa-rupee" value="Consulta" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticComprasRequisicionesFiltro.doLoadDetalle()}" oncomplete="janal.desbloquear();" update="detalle"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-rupee" title="Consulta" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticComprasRequisicionesFiltro.doLoadDetalle()}" oncomplete="janal.desbloquear();" update="detalle"/>
             </f:facet>	            
             <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
@@ -217,7 +224,7 @@
               <p:commandButton icon="fa fa-edit" title="Modificar" action="#{manticComprasRequisicionesFiltro.doAccion('MODIFICAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla" rendered="#{row.idRequisicionEstatus eq '1'}">
                 <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
               </p:commandButton>  
-              <p:commandButton icon="fa fa-copy" title="Clonar" action="#{manticComprasRequisicionesFiltro.doClonar()}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla" rendered="#{row.idRequisicionEstatus ne '1'}">
+              <p:commandButton icon="fa fa-copy" title="Clonar" action="#{manticComprasRequisicionesFiltro.doClonar()}" onstart="return pregunta()" process="@this" oncomplete="janal.desbloquear()" update="tabla" rendered="#{false and row.idRequisicionEstatus ne '1'}">
                 <f:setPropertyActionListener value="#{row}" target="#{manticComprasRequisicionesFiltro.attrs.seleccionado}"/>
               </p:commandButton>  
               <p:commandButton icon="fa fa-search" title="Consultar" action="#{manticComprasRequisicionesFiltro.doAccion('CONSULTAR')}" onstart="return janal.bloquear()" process="@this" oncomplete="janal.desbloquear()" update="tabla">
@@ -237,7 +244,7 @@
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
             <p:separator rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>					
             <p:menuitem value="Reporte" icon="fa fa-file-word-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />					
-            <p:menuitem value="Clonar" icon="fa fa-copy" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doClonar()}" oncomplete="janal.desbloquear();" update="tabla" />
+            <p:menuitem value="Clonar" icon="fa fa-copy" onstart="return pregunta()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doClonar()}" oncomplete="janal.desbloquear();" update="tabla" />
             <p:menuitem value="Proveedores" icon="fa fa-file-word-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
           </p:contextMenu>
  					<p:fieldset legend="Semaforo">
@@ -260,6 +267,76 @@
               </p:panelGrid>  
             </p:panelGrid>
           </p:fieldset>
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{manticComprasRequisicionesFiltro.detalles}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasRequisicionesFiltro.attrs.detalle}" selectionMode="single" paginator="true" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{manticComprasRequisicionesFiltro.toColor(row)}" styleClass="display:#{manticComprasRequisicionesFiltro.detalles eq null? 'janal-display-none': ''}" reflow="true">
+            <f:facet name="header">
+              <p:outputLabel value="Listado de materiales por orden de compra" styleClass="janal-text-white janal-float-left"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+            </f:facet>	            
+            <p:column styleClass="MarAuto Responsive janal-fix-3 janal-view-normal #{kajoolUtilAplicacion.isMobile? 'janal-display-none': ''}">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center janal-view-normal" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Requisición"/>
+              </f:facet>
+              <p:outputLabel value="#{row['consecutivo']}"/>
+            </p:column>											
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center janal-view-normal" sortBy="#{row.contrato}">
+              <f:facet name="header">
+                <h:outputText value="Contrato"/>
+              </f:facet>
+              <p:outputLabel value="#{row['contrato']}"/>
+            </p:column>											
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-view-normal">
+              <f:facet name="header">
+                <h:outputText value="Residente"/>
+              </f:facet>
+              <p:outputLabel value="#{row['residente']}"/>
+            </p:column>											
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 janal-view-normal" sortBy="#{row.entrega}">
+              <f:facet name="header">
+                <h:outputText value="Entrega"/>
+              </f:facet>
+              <p:outputLabel value="#{row['entrega']}"/>
+            </p:column>											
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Articulo"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8 janal-view-normal" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <p:outputLabel value="Cantidad"/>
+              </f:facet>
+              <p:outputLabel value="#{row['cantidad']}"/>
+            </p:column>																				
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 janal-view-normal" sortBy="#{row.folio}">
+              <f:facet name="header">
+                <p:outputLabel value="Orden"/>
+              </f:facet>
+              <p:outputLabel value="#{row['folio']}"/>
+            </p:column>																				
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8 janal-view-normal" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <p:outputLabel value="Estatus"/>
+              </f:facet>
+              <p:outputLabel value="#{row['estatus']}"/>
+            </p:column>																				
+            <f:facet name="footer">
+              <p:outputLabel value="Las filas en verde aun no solicitadas y las narajna son eliminadas" styleClass="janal-float-left"/>
+              <p:outputLabel value="Total [#{manticComprasRequisicionesFiltro.detalles== null? 0: manticComprasRequisicionesFiltro.detalles.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>	
         </div>
       </div>
     </div>		    
