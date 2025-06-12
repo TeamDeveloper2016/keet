@@ -18,8 +18,8 @@
 		 <clase expresion="0 0 8 1/1 * ? *"    id="garantias"   description="fondos de garantias"     load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Garantias</clase>		 
 		 <clase expresion="0 0 17 ? * FRI *"   id="balance"     description="estados de cuenta"       load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Balance</clase>		 
 		 <clase expresion="0 0 8 ? * SAT *"    id="cierre"      description="cierre de nómina gilvy"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
-		 <clase expresion="0 30 12 ? * THU *"  id="corrida"     description="corrida de nómina cafu"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Apertura</clase>		 
-		 <clase expresion="0 30 14 ? * THU *"  id="anticipada"  description="cierre de nómina cafu"   load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
-		 <clase expresion="0 0 6 1/1 * ? *"    id="contratos"   description="activar contratos"       load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Contratos</clase>
+		 <clase expresion="0 00 10 ? * THU *"  id="corrida"     description="corrida de nómina cafu"  load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Apertura</clase>		 
+		 <clase expresion="0 30 15 ? * THU *"  id="anticipada"  description="cierre de nómina cafu"   load="true"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Cierre</clase>		 
+		 <clase expresion="0 0 6 1/1 * ? *"    id="contratos"   description="activar contratos"       load="false"  pruebas="*" produccion="*" >mx.org.kaana.jobs.Contratos</clase>
    </tarea>      	        
 </tareas>

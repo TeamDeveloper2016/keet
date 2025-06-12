@@ -573,7 +573,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 					if(result.exists())
 					  result.delete();
 				} // if
-        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), masivo.getRuta(), path.toString(), nameFile, 2L));
+        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), masivo.getRuta(), path.toString(), nameFile, 1L));
         masivo.setNombre(this.xls.getName());
 				masivo.setAlias(path.toString());
 				masivo.setTamanio(event.getFile().getSize());

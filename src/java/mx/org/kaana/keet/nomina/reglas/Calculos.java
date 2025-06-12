@@ -83,7 +83,7 @@ public final class Calculos extends IBaseTnx {
     Boolean regresar   = Boolean.FALSE;
     Puente puente      = null;
     this.messageError  = "Ocurrio un error en calculo de la nómina";
-		Monitoreo monitoreo= JsfBase.toProgressMonitor().progreso("NOMINA");
+		Monitoreo monitoreo= this.automatico? new Monitoreo("nomina"): JsfBase.toProgressMonitor().progreso("NOMINA");
     try {
       this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(sesion, TcKeetNominasDto.class, this.idNomina);
       if(this.automatico) {
@@ -113,7 +113,8 @@ public final class Calculos extends IBaseTnx {
 		} // catch		
 		finally {
       monitoreo.terminar();
-      JsfBase.toProgressMonitor().clean("NOMINA");
+      if(!this.automatico)
+        JsfBase.toProgressMonitor().clean("NOMINA");
 			this.nomina= null;
       puente     = null;
 		} // finally
@@ -124,7 +125,7 @@ public final class Calculos extends IBaseTnx {
     Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
     Puente puente             = null;
-    Monitoreo monitoreo       = JsfBase.toProgressMonitor().progreso("NOMINA");
+    Monitoreo monitoreo       = this.automatico? new Monitoreo("nomina"): JsfBase.toProgressMonitor().progreso("NOMINA");
 		try {
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);

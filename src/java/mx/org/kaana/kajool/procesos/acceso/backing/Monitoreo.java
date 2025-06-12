@@ -110,7 +110,7 @@ public class Monitoreo extends Respaldos implements Serializable {
   @Override
   protected void init() {
     try {      
-      this.fechaPivote= LocalDate.now();
+      this.fechaPivote    = LocalDate.now();
       this.residentePivote= 0;
       this.attrs.put("nombreResidentePivote", "");
       this.attrs.put("hoy", Fecha.getHoyCorreo());
@@ -534,12 +534,11 @@ public class Monitoreo extends Respaldos implements Serializable {
   }
   
   private void toLoadLotes() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         this.attrs.put("nombreContrato", (String)this.contrato.toString("serie"));
         String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true);
-        params = new HashMap<>();      
         params.put("clave", clave);     
         Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "avance", params)));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
@@ -574,10 +573,9 @@ public class Monitoreo extends Respaldos implements Serializable {
   }
   
   private void toLoadHorarios() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
-        params = new HashMap<>();      
 //        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaPivote));   
 //        if(JsfBase.isResidente())
 //          params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
@@ -625,6 +623,9 @@ public class Monitoreo extends Respaldos implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
   public void doUpdateDesarrolloSelect(SelectEvent event) {  
@@ -667,11 +668,9 @@ public class Monitoreo extends Respaldos implements Serializable {
 
 	public void doRefreshEChartWith(ItemSelected itemSelected) {
 		LOG.info(itemSelected);
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {  
-      columns = new ArrayList<>();
-      params = new HashMap<>();
       switch(itemSelected.getChart()) {
         case "contratos": 
           params.put("desarrollo", this.contrato.toString("desarrollo"));
@@ -740,15 +739,13 @@ public class Monitoreo extends Respaldos implements Serializable {
 		List<Entity> lotes        = null;
 		Marker marker             = null;
 		String icon               = null;
-		Map<String, Object> params= null;
-		List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.model= new DefaultMapModel();
 			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
-			params= new HashMap<>();
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
         params.put("contrato", this.contrato.toString("serie"));
@@ -838,16 +835,14 @@ public class Monitoreo extends Respaldos implements Serializable {
   } // onMarkerSelect
   
 	private void loadEvidencias(Entity seleccionado) {
-		List<Columna> columns    = null;
-		Map<String, Object>params= null;
+		List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
 		try {
 			this.attrs.put("loteSeleccionado", seleccionado);
-			columns= new ArrayList<>();
       columns.add(new Columna("nombrePersona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));						
-			params= new HashMap<>();
 			params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 			params.put("idContratoLote", seleccionado.getKey());
 		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", "allImportadosContratoLote", params, columns));
@@ -887,10 +882,9 @@ public class Monitoreo extends Respaldos implements Serializable {
 	
 	private void loadAvances(Entity seleccionado) {
 		Map<String, Object>params= null;
-    List<Columna> columns    = null;				
+    List<Columna> columns    = new ArrayList<>();				
     try {      			
 			params = this.toPrepare(seleccionado);
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
@@ -908,9 +902,8 @@ public class Monitoreo extends Respaldos implements Serializable {
 	} // loadAvances
 
 	private Map<String, Object> toPrepare(Entity seleccionado) {
-		Map<String, Object> regresar= null;
+		Map<String, Object> regresar= new HashMap<>();
 		try {
-			regresar= new HashMap<>();			
 			regresar.put("clave", this.toClaveEstacion(seleccionado));
 			regresar.put("estatus", EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());						
 		} // try
@@ -961,10 +954,9 @@ public class Monitoreo extends Respaldos implements Serializable {
 	} // doCapturaAvances
 
   private String toLoadDesarrollosResidentes() {
-    StringBuilder regresar= new StringBuilder();
-    Map<String, Object> params = null;
+    StringBuilder regresar    = new StringBuilder();
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());      
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "residenteDesarrollo", params);
       if(items!= null && !items.isEmpty())
@@ -1167,9 +1159,8 @@ public class Monitoreo extends Respaldos implements Serializable {
     String icon  = null;
     Entity marker= null;
 		String imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
-    Map<String, Object> params = null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       for (Marker item: this.model.getMarkers()) {
         marker= (Entity)item.getData();
   			params.put("color", marker.toString("color"));

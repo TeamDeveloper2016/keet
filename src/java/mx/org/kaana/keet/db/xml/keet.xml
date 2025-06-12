@@ -5180,6 +5180,38 @@ delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresa
         where 
           id_contrato= {idContrato}
       </select>
+			<select id="parche">
+select
+  tc_keet_estaciones.id_estacion as id_key,
+  tc_keet_estaciones.id_estacion,
+  tc_keet_estaciones.nombre,
+  tc_keet_estaciones.codigo,
+  tc_keet_estaciones.id_estacion_estatus,
+  tc_keet_estaciones.costo,
+  tc_keet_estaciones.registro
+from
+  tc_keet_estaciones
+inner join (  
+	select
+		tc_keet_estaciones.codigo
+	from
+		tc_keet_estaciones
+	where
+		tc_keet_estaciones.clave like '{clave}%'   
+		and tc_keet_estaciones.id_estacion_estatus in (1, 2, 3)   
+	group by
+		tc_keet_estaciones.codigo
+	having	
+		count(*)&gt; 1
+) as tt_keet_estaciones on tc_keet_estaciones.codigo= tt_keet_estaciones.codigo
+where
+	tc_keet_estaciones.clave like '{clave}%'   
+	and tc_keet_estaciones.nivel!= 0
+order by
+  tc_keet_estaciones.clave,
+  tc_keet_estaciones.codigo,
+  tc_keet_estaciones.id_estacion_estatus desc
+      </select>  
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

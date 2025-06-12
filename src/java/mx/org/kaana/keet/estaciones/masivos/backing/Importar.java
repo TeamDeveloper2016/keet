@@ -112,9 +112,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doTabChange		
 	
 	protected void doLoadArhivos(String proceso, String idXml, Map<String, Object> params) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -332,11 +331,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doDetalles	
 
 	private void toLoadContratosLotes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -364,10 +362,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 	
 	private void toLoadPrototipos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -386,14 +383,13 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 	
   public void toLoadProveedores() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap();
     try {
       Entity entity= new Entity(Constantes.TOP_OF_ITEMS);
       entity.add("clave", "TODOS");
       entity.add("rfc", "TODOS");
       entity.add("razonSocial", "TODOS");
       UISelectEntity todos= new UISelectEntity(entity);
-      params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(this.attrs.get("proveedores")== null) {
         List<UISelectEntity> proveedores= UIEntity.build("TcManticProveedoresDto", "sucursales", params);
@@ -412,14 +408,13 @@ public class Importar extends IBaseImportar implements Serializable {
   } // doLoadProveedores	
 	
 	public void toLoadClientes() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		try {
       Entity entity= new Entity(Constantes.TOP_OF_ITEMS);
       entity.add("clave", "TODOS");
       entity.add("rfc", "TODOS");
       entity.add("razonSocial", "TODOS");
       UISelectEntity todos= new UISelectEntity(entity);
-      params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(this.attrs.get("clientes")== null) {
         List<UISelectEntity> clientes= UIEntity.seleccione("TcManticClientesDto", "sucursales", params, "clave");
@@ -440,16 +435,14 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doExportar() {
 		String regresar                = null;
 		String nivlePrototipo          = null;
-		Map<String, Object> params     = null;
-		Estaciones estaciones          = null;
+		Map<String, Object> params     = new HashMap<>();
+		Estaciones estaciones          = new Estaciones();
 		List<UISelectEntity> plantillas= null;
 		List<UISelectEntity> lotes     = null;
 		UISelectEntity idContratoLote  = null;
 		UISelectEntity prototipo       = null;
 		Object[] items                 = null; 
 		try {
-			params    = new HashMap<>();
-			estaciones= new Estaciones();
 			switch (this.categoria) {
 				case ESTACIONES:
 					lotes= (List<UISelectEntity>)this.attrs.get("lotes");
@@ -547,11 +540,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 
   public void doLoadLotes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> lotes= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());

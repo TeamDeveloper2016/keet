@@ -172,7 +172,7 @@ public class Xls extends XlsBase {
 	@Override
   public boolean generarRegistros(boolean titulo) throws Exception {
     boolean termino	= true; 			
-		int top					= new Long(Constantes.SQL_TOPE_REGISTROS).intValue();
+		int top					= new Long(Constantes.TOP_OF_ITEMS).intValue();
     try {			
 			PageRecords pages= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), 0, top);
 			if ((pages!= null) && (!pages.getList().isEmpty())) {				
@@ -183,14 +183,14 @@ public class Xls extends XlsBase {
 				if (!isAlgunos())
 					this.campos= getNombresColumnas();		
 				if (titulo)
-					procesarEncabezado(this.campos);   
+					this.procesarEncabezado(this.campos);   
 				this.setTotalColumnas();
 				pages.calculate(true);
 				List<LinkPage> list= pages.getPages();								
 				detail((List)pages.getList());
 				for(LinkPage page: list) {
 					PageRecords values= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), (int)(page.getIndex()* top), top);
-					detail((List)values.getList());
+					this.detail((List)values.getList());
 				} // for				
 			} // if
     } // try
