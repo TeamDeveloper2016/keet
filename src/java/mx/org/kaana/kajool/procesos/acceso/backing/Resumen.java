@@ -213,6 +213,7 @@ public class Resumen extends Respaldos implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Entity acumulado          = null;
     try {
+      params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());      
 			columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("facturado", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -222,7 +223,10 @@ public class Resumen extends Respaldos implements Serializable {
 			columns.add(new Columna("porEstimar", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("porAnticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("porFondo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());      
+			columns.add(new Columna("porcentajeEstimado", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("porcentajeAnticipado", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("porcentajeFondeado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      
       Value vencido= (Value)DaoFactory.getInstance().toField("VistaEstimacionesDto", "vencido", params, "vencido");
       if(vencido== null || vencido.getData()== null)
         vencido= new Value("vencido", 0D);
@@ -242,7 +246,45 @@ public class Resumen extends Respaldos implements Serializable {
 			Methods.clean(columns);
     } // finally
   }
-  
+
+  private void toLoadViviendas() {
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    Entity viviendas          = null;
+    try {
+      params.put(Constantes.SQL_CONDICION, ((UISelectEntity)this.attrs.get("idContrato")).getKey());      
+			columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("estimaciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
+			columns.add(new Columna("estimado", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("extras", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      
+			columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("desviacion", EFormatoDinamicos.MILES_CON_DECIMALES));
+      
+			columns.add(new Columna("iniciadas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+			columns.add(new Columna("enProceso", EFormatoDinamicos.MILES_SIN_DECIMALES));
+			columns.add(new Columna("terminadas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+			columns.add(new Columna("otros", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      viviendas= (Entity)DaoFactory.getInstance().toEntity("VistaCostosDto", "lazy", params);
+      if(viviendas!= null && !viviendas.isEmpty()) 
+        UIBackingUtilities.toFormatEntity(viviendas, columns);
+      this.attrs.put("viviendas", viviendas);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+			Methods.clean(columns);
+    } // finally
+  }
+
 	public void doLoadDataConfronta() {
     String contrato           = "";
     Map<String, Object> params= new HashMap<>();
@@ -259,6 +301,7 @@ public class Resumen extends Respaldos implements Serializable {
       UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {contrato: '".concat(contrato).concat("'}}});"));
       this.toLoadNomina();
       this.toLoadAcumulado();
+      this.toLoadViviendas();
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEstimacionesDto", "pagado", params));
       if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
      		BarModel model= new BarModel(new Title(), multiple);

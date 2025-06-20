@@ -25,6 +25,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import static mx.org.kaana.libs.pagina.JsfUtilities.getApplication;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -103,7 +104,7 @@ public class Envio implements Serializable {
   private  void envia(String de, String para, String conCopia, ByteArrayOutputStream anexo, String asunto, String contenido, List<String> adjunto, boolean textoHTML, String formato, String[] rutasInLine) {
     Properties properties             = null;
     Session session                   = null;
-    MimeMessage mimemessage           = null;
+    MimeMessage message               = null;
     InternetAddress internetaddressDe = null;
     StringTokenizer st                = null;
     StringTokenizer stCc              = null;
@@ -114,18 +115,24 @@ public class Envio implements Serializable {
     List<BodyPart> listaArchivos      = null;
     String path                       = null;
     try {
-      properties = new Properties();
+      properties = System.getProperties();
       //properties.put("mail.smtp.host", "10.1.8.102");
 			//properties.put("mail.smtp.localhost", Configuracion.getInstance().getPropiedadServidor("domain.mail.server"));
       //properties.put("mail.smtp.starttls.enable", "true");
       //properties.put("mail.smtp.port", "465");			
-      properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.put("mail.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-			session = Session.getInstance(properties, this.autenticar);            
-      mimemessage = new MimeMessage(session);
+      properties.put("mail.smtp.ssl.enable", "true");
+      properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
+      properties.put("mail.smtp.ssl.trust", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.1 TLSv1.2");
+      LOG.info("AUTENTICACION EN EL SERVIDOR DE CORREOS");
+			session= Session.getDefaultInstance(properties, null);
+      session.setDebug(true);
+      message = new MimeMessage(session);
       internetaddressDe = new InternetAddress(de);
-      mimemessage.setFrom(internetaddressDe);
+      message.setFrom(internetaddressDe);
       // SI SON VARIOS CORREOS TIENEN QUE ESTAR SEPARADOS POR COMAS Y SIN ESPACIOS EN BLANCO
       st   = new StringTokenizer(para, ",");     
       stCc = new StringTokenizer(conCopia, ",");
@@ -142,10 +149,10 @@ public class Envio implements Serializable {
           internetaddressCc[++contador]= new InternetAddress(value);
         }  
       } // while
-      mimemessage.addRecipients(javax.mail.Message.RecipientType.TO,internetaddressPara);
+      message.addRecipients(javax.mail.Message.RecipientType.TO,internetaddressPara);
       if (internetaddressCc.length>0)
-        mimemessage.addRecipients(javax.mail.Message.RecipientType.BCC,internetaddressCc);
-      mimemessage.setSubject(asunto);
+        message.addRecipients(javax.mail.Message.RecipientType.BCC,internetaddressCc);
+      message.setSubject(asunto);
       if (anexo== null) {
         if (textoHTML) {           
 					if(rutasInLine!= null) {
@@ -162,13 +169,13 @@ public class Envio implements Serializable {
               mbp1.setHeader("Content-ID","<".concat(item.split("¬")[1]).concat(">"));
               multipart.addBodyPart(mbp1);               
 						}// if rutas                           
-						mimemessage.setContent(multipart);   
+						message.setContent(multipart);   
 					} //if rutasInLine
 					else
-						mimemessage.setContent(Cadena.toCharSet(contenido), "text/html");
+						message.setContent(Cadena.toCharSet(contenido), "text/html");
 				} // if
         else 
-          mimemessage.setText(contenido);
+          message.setText(contenido);
       } // if
       else {
         path = getApplication().getRealPath(Constantes.PROPIEDAD_TEMPORALES);
@@ -194,9 +201,17 @@ public class Envio implements Serializable {
         for(BodyPart bp: listaArchivos) {
           multipart.addBodyPart(bp);
         } // for        
-        mimemessage.setContent(multipart);
+        message.setContent(multipart);
       } // if
-      Transport.send(mimemessage);
+      Transport transport= session.getTransport("smtp");
+      transport.connect(
+        Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass")
+      );
+      transport.sendMessage(message, message.getAllRecipients());
+      transport.close();      
+      // Transport.send(message);
 			LOG.info("Correo enviado: "+ para);
     }
     catch (Exception e) {
@@ -207,8 +222,8 @@ public class Envio implements Serializable {
         properties = null;
       if(session!= null)
         session = null;
-      if(mimemessage != null)
-        mimemessage = null;
+      if(message != null)
+        message = null;
       if(internetaddressDe != null)
         internetaddressDe = null;
       if(st != null)

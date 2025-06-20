@@ -1101,13 +1101,13 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     Parametros comunes           = null;
     try {
       seleccion = EReportes.LISTADO_NOMINA_CALCULADA;  
-      comunes= new Parametros(this.autentifica.getEmpresa().getIdEmpresa());
+      comunes   = new Parametros(this.autentifica.getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("REPORTE_ICON", this.getRealPath().concat("resources/iktan/icon/acciones/"));	
-      parametros.put("REPORTE_ICON", this.getRealPath().concat("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_ICON", this.getRealPath().concat("resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by nombre_empresa, nomina, desarrollo, puesto, nombre_completo asc");
       params.put(Constantes.SQL_CONDICION, "tc_keet_nominas.id_nomina= "+  this.idNomina+ " and tc_keet_contratos_personal.id_desarrollo="+ figura.toLong("idDesarrollo"));
@@ -1143,7 +1143,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("ENCUESTA", this.autentifica.getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
-      parametros.put("REPORTE_ICON", this.getRealPath().concat("/resources/janal/img/sistema/"));
+      parametros.put("REPORTE_ICON", this.getRealPath().concat("resources/janal/img/sistema/"));
       parametros.put("REPORTE_EMPRESA_LOGO", this.toLookForEmpresaLogo(this.autentifica.getEmpresa().getIdEmpresa()));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       params.put("loNuevo", "");

@@ -152,7 +152,7 @@ public class Xls extends XlsBase {
 			for (IBaseDto registro: registros) {
         columna= this.convertirHashMap(registro);
         for (int x= 0; x < columna.size(); x++) {
-          LOG.info("[detail]  registro: "+ fila+ " celda: "+ columna.get("col"+ String.valueOf(x)));
+          LOG.debug("[detail]  registro: "+ fila+ " celda: "+ columna.get("col"+ String.valueOf(x)));
           Label label= new Label(getPosicionColumna()+ x, getPosicionFila()+ fila, columna.get("col"+String.valueOf(x))== null? "": columna.get("col"+ String.valueOf(x)).toString());         
           this.hoja.addCell(label);
         } // for x

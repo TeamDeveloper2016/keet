@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.compras.requisiciones.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,21 +11,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Periodo;
@@ -43,23 +51,71 @@ import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticComprasRequisicionesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONTRATO,CONSECUTIVO,ESTATUS,REGISTRO,OBSERVACIONES,PEDIDO,ENTREGA,NOMBRE,CODIGO,ARTICULO,CANTIDAD,ELIMINADO,ORDEN,ESTADO";  
+  
   private FormatLazyModel detalles;
+	private LocalDate fechaInicio;
+	private LocalDate fechaTermino;
 	private Reporte reporte;
 
   public FormatLazyModel getDetalles() {
     return detalles;
+  }
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
+  }
+
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
   }
 	
   public Reporte getReporte() {
 		return reporte;
 	}	
 	
+  public StreamedContent getEspecial() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		Map<String, Object>params= this.toPrepare();
+		String template          = "ESPECIAL";
+		try {
+      params.put("sortOrder", "order by tc_mantic_requisiciones.registro desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaRequisicionesDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -146,6 +202,13 @@ public class Filtro extends IBaseFilter implements Serializable {
         sb.append("(tc_mantic_requisiciones.id_requisicion=").append(this.attrs.get("idRequisicion")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("consecutivo")))
         sb.append("(tc_mantic_requisiciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+				sb.append("tc_mantic_requisiciones_detalles.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+  		else 
+	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+		  		sb.append("(tc_mantic_requisiciones_detalles.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_requisiciones_detalles.descripcion regexp '.*").append(nombre).append(".*') and ");				
+				} // if	
       if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
         sb.append("(date_format(tc_mantic_requisiciones.fecha_pedido, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
       if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -426,4 +489,34 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return Objects.equals(row.toLong("idOrdenCompra"), -1L)? "janal-tr-diferencias": Objects.equals(row.toLong("idEliminado"), 1L)? "janal-tr-error": "";
 	} 
 
+  public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> articulos= null;
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= query; 
+			if(!Cadena.isVacio(search)) 
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);			        
+      params.put("idArticuloTipo", "1");	      
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      this.attrs.put("articulosFiltro", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+	}	
+  
 }

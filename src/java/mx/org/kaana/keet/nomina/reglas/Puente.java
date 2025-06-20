@@ -50,7 +50,8 @@ public class Puente extends Transaccion {
 					break;
       } // switch
 		} // try
-		catch (Exception e) {			
+		catch (Exception e) {		
+      regresar= Boolean.FALSE;
       if(e!= null)
         if(e.getCause()!= null)
           this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());

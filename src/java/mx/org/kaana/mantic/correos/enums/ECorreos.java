@@ -67,11 +67,11 @@ public enum ECorreos {
     empresas.put("gylvi.facturacion.email", "facturas@gylvi.com");  
     empresas.put("gylvi.facturacion.backup", "");  
     empresas.put("gylvi.cotizaciones.email", "ventas@gylvi.com");  
-    empresas.put("gylvi.cotizaciones.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.cotizaciones.backup", "compras@gylvi.com");  
     empresas.put("gylvi.ordenes_compra.email", "compras@gylvi.com");  
-    empresas.put("gylvi.ordenes_compra.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.ordenes_compra.backup", "compras@gylvi.com");  
     empresas.put("gylvi.ordenes_cancel.email", "compras@gylvi.com");  
-    empresas.put("gylvi.ordenes_cancel.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.ordenes_cancel.backup", "compras@gylvi.com");  
     empresas.put("gylvi.cuentas.email", "ventas@gylvi.com");  
     empresas.put("gylvi.cuentas.backup", "");  
     empresas.put("gylvi.ventas.email", "ventas@gylvi.com");  

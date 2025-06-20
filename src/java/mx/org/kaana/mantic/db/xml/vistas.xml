@@ -9446,6 +9446,53 @@ group by
   tc_mantic_requisiciones.id_requisicion
 {sortOrder}
 			</select>
+			<select id="especial">
+select
+  tc_mantic_requisiciones.id_requisicion as id_key,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_contratos.nombre as contrato,
+  tc_mantic_requisiciones.consecutivo,  															
+  tc_mantic_requisiciones_estatus.nombre as estatus,
+  tc_mantic_requisiciones.registro,
+  tc_mantic_requisiciones.observaciones,
+  tc_mantic_requisiciones.fecha_pedido as pedido,
+  tc_mantic_requisiciones.fecha_entregada as entrega,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  ifnull(if(tc_keet_requisiciones_ordenes.id_eliminado= 1, 'SI', 'NO'), 'NO') as eliminado,
+  tc_mantic_requisiciones_detalles.codigo,
+  tc_mantic_requisiciones_detalles.nombre as articulo,
+  tc_mantic_requisiciones_detalles.cantidad,
+  ifnull(tc_mantic_ordenes_compras.consecutivo, ' ') as orden,
+  ifnull(tc_mantic_ordenes_estatus.nombre, ' ') as estado
+from 
+  tc_mantic_requisiciones				
+inner join 
+  tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_desarrollos on tc_mantic_requisiciones.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join 
+  tc_keet_contratos on tc_mantic_requisiciones.id_contrato= tc_keet_contratos.id_contrato
+inner join 
+  tc_mantic_requisiciones_detalles on tc_mantic_requisiciones.id_requisicion= tc_mantic_requisiciones_detalles.id_requisicion
+inner join 
+  tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus=tc_mantic_requisiciones_estatus.id_requisicion_estatus				
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
+left join 
+  tc_keet_requisiciones_ordenes on tc_mantic_requisiciones_detalles.id_requisicion_detalle= tc_keet_requisiciones_ordenes.id_requisicion_detalle
+left join 
+  tc_mantic_ordenes_compras on tc_keet_requisiciones_ordenes.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+left join 
+  tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+where
+  tc_mantic_requisiciones.id_empresa in ({idEmpresa})
+  and {condicion}
+group by
+  tc_mantic_requisiciones.id_requisicion,
+  tc_mantic_requisiciones_detalles.id_requisicion_detalle
+{sortOrder}        
+			</select>
 			<select id="faltantes">
 select
   tc_mantic_requisiciones_detalles.id_requisicion_detalle as id_key,

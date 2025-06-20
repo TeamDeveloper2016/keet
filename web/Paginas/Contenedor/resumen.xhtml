@@ -164,7 +164,7 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="No. viviendas:"/>
-                      <p:inputText value="#{kajoolResumen.attrs.idContrato.noViviendas} viviendas" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idContrato.noViviendas}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
                   <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-fix-94, janal-fix-3 janal-column-center, janal-fix-3 janal-column-center">
@@ -195,11 +195,11 @@
                 </div>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                   <p:outputLabel value="Contratado:"/>
-                  <p:inputText value="$ #{kajoolResumen.attrs.idContrato.costo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                  <p:inputText value="#{kajoolResumen.attrs.idContrato.costo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="(-) Anticipo:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idContrato.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idContrato.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="."/>
@@ -209,7 +209,7 @@
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Fondo garantía:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idContrato.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idContrato.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="."/>
@@ -217,7 +217,7 @@
                     </p:panelGrid>  
                   </p:panelGrid>  
                   <p:outputLabel value="Total a estimar:"/>
-                  <p:inputText value="$ #{kajoolResumen.attrs.idContrato.total}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                  <p:inputText value="#{kajoolResumen.attrs.idContrato.total}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                   <p:inputText value="Vence el fondo de garantía: #{kajoolResumen.attrs.idContrato.vence}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                 </p:panelGrid>  
               </p:panel>						
@@ -243,7 +243,7 @@
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="(-) Amortización de anticipo:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idNomina.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idNomina.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="."/>
@@ -253,7 +253,7 @@
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="(-) Retención del fondo garantía:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idNomina.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idNomina.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="."/>
@@ -263,14 +263,14 @@
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Importe de esta estimación:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idNomina.importe}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idNomina.importe}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Total estimado de la semana #{kajoolResumen.attrs.idNomina.semana}:" styleClass="contrato"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.idNomina.estimado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.idNomina.estimado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
-                  <p:inputText value="Otras retenciones: $ #{kajoolResumen.attrs.idNomina.retenciones}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                  <p:inputText value="Otras retenciones: #{kajoolResumen.attrs.idNomina.retenciones}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                 </p:panelGrid>  
               </p:panel>			
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
@@ -290,7 +290,7 @@
                   <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-wid-45, janal-wid-10, janal-wid-45">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Estimado:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.estimado}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.estimado}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% estimado:" escape="false"/>
@@ -298,11 +298,11 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por estimar&lt;/strong&gt;:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porEstimar}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porEstimar}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Amortizado de anticipo:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.anticipo}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% anticipado:" escape="false"/>
@@ -310,12 +310,12 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por amortizar&lt;/strong&gt; anticipo:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porAnticipo}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porAnticipo}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                      <p:outputLabel value="Retenido fondo garantía:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
+                      <p:outputLabel value="Fondo garantía retenido:"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.fondoGarantia}" styleClass="janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="% retenido:" escape="false"/>
@@ -323,21 +323,21 @@
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="&lt;strong class='janal-color-blue'&gt;Por retener&lt;/strong&gt; fondo:" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.porFondo}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.porFondo}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
                   <p:panelGrid columns="3" styleClass="janal-wid-100-txt">
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Total facturado:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.facturado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.facturado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Total pagado:"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.pagado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.pagado}" styleClass="janal-color-black janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                       <p:outputLabel value="Total vencido: &lt;span class='lg-pantalla'&gt;(facturas con más de 11 días calendario)&lt;/span&gt;" styleClass="janal-color-red" escape="false"/>
-                      <p:inputText value="$ #{kajoolResumen.attrs.acumulado.vencido}" styleClass="janal-color-red janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                      <p:inputText value="#{kajoolResumen.attrs.acumulado.vencido}" styleClass="janal-color-red janal-column-center janal-wid-100-txt contrato" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
                 </p:panelGrid>  
@@ -406,6 +406,85 @@
             </div>  
           </div>  
         </div>  
+      </div>  
+      <div class="ContainerIndent">        
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Estatus de los lote(s)
+                </div>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel value="Vivienda(s):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.noViviendas}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Iniciada(s):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.iniciadas}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="En proceso:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.enProceso}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Termianda(s):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.terminadas}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Otro(s):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.otros}" styleClass="janal-column-center janal-wid-100-txt contrato" readonly="true"/>
+                </p:panelGrid>
+              </p:panel>
+            </div>
+          </div>   
+        </div>    
+        <div class="Container40 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Costos del contrato
+                </div>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel value="Costo:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.costo}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Estimacion(es):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.estimaciones}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt">
+                    <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                      <p:outputLabel value="Normal:"/>
+                      <p:inputText value="#{kajoolResumen.attrs.viviendas.estimado}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                    </p:panelGrid>  
+                    <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                      <p:outputLabel value="Extra:"/>
+                      <p:inputText value="#{kajoolResumen.attrs.viviendas.extras}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                    </p:panelGrid>  
+                  </p:panelGrid>  
+                  <p:outputLabel value="Total estimado:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.total}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Retenciones:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.retenciones}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                </p:panelGrid>
+              </p:panel>
+            </div>
+          </div>   
+        </div>    
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Gastos del contrato
+                </div>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:outputLabel value="Total:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.egresos}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Material(es):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.materiales}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Destajo(s):"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.destajos}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Por el día:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.porElDia}" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                  <p:outputLabel value="Desviación:"/>
+                  <p:inputText value="#{kajoolResumen.attrs.viviendas.desviacion}%" styleClass="janal-column-right janal-wid-100-txt contrato" readonly="true"/>
+                </p:panelGrid>
+              </p:panel>
+            </div>
+          </div>   
+        </div>    
       </div>  
     </div>		
     <div class="janal-line-button">
