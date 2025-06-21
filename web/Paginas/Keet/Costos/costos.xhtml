@@ -51,13 +51,16 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idCliente" value="Clientes:"/>
               <p:selectOneMenu id="idCliente" value="#{keetCostosCostos.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetCostosCostos.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato @(.contrato)" oncomplete="reloadDesarrollos()"/>
+                <p:ajax event="change" listener="#{keetCostosCostos.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato tabla @(.contrato)" oncomplete="reloadDesarrollos()"/>
                 <f:selectItems value="#{keetCostosCostos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty elementrazonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
                 <p:column headerText="Clave" styleClass="janal-fix-10 janal-column-center">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
-                <p:column headerText="Razón social" styleClass="janal-fix-90">
+                <p:column headerText="Razón social" styleClass="janal-fix-80">
                   <h:outputText value="#{item.razonSocial}"/>
+                </p:column>   
+                <p:column headerText="Razón social" styleClass="janal-column-right janal-fix-10">
+                  <h:outputText value="#{item.contratos}"/>
                 </p:column>   
               </p:selectOneMenu>
             </p:panelGrid>  
@@ -163,9 +166,9 @@
               </f:facet>
               <h:outputText value="#{row['estimado']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8 janal-view-normal">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-5 janal-view-normal">
               <f:facet name="header">
-                <h:outputText value="% Estimado"/>
+                <h:outputText value="%"/>
               </f:facet>
               <h:outputText value="#{row['porcentaje']} %"/>
             </p:column>							
@@ -187,38 +190,44 @@
               </f:facet>
               <h:outputText value="#{row['egresos']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8 janal-view-normal">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6 janal-view-normal">
               <f:facet name="header">
                 <h:outputText value="Desviación"/>
               </f:facet>
               <h:outputText value="#{row['desviacion']} %"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-3 janal-view-normal">
               <f:facet name="header">
                 <h:outputText value="Viv"/>
               </f:facet>
               <h:outputText value="#{row['noViviendas']}"/>
             </p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-3 janal-view-normal">
               <f:facet name="header">
                 <i class="fa fa-home janal-color-blue" title="Iniciadas"></i>
               </f:facet>
               <h:outputText value="#{row['iniciadas']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-3 janal-view-normal">
               <f:facet name="header">
                 <i class="fa fa-home janal-color-yellow" title="En proceso"></i>
               </f:facet>
               <h:outputText value="#{row['enProceso']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-3 janal-view-normal">
               <f:facet name="header">
                 <i class="fa fa-home janal-color-green" title="Terminadas"></i>
               </f:facet>
               <h:outputText value="#{row['terminadas']}"/>
             </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Pagado"/>
+              </f:facet>
+              <h:outputText value="#{row['pagado']}" title="#{row['calculo']} %"/>
+            </p:column>
 						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
-							<p:commandButton icon="fa fa-search" process="@this" update="detalle manoObra @(.detalle) @(.manoObra)" action="#{keetCostosCostos.doLoadDetalle(row)}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
+							<p:commandButton icon="fa fa-search" process="@this" update="detalle @(.detalle)" action="#{keetCostosCostos.doLoadDetalle(row)}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
 								<f:setPropertyActionListener value="#{row}" target="#{keetCostosCostos.attrs.seleccionado}" />
 							</p:commandButton>
             </p:column>
@@ -259,6 +268,9 @@
               <p:column styleClass="janal-column-right MarAuto Responsive janal-view-normal">
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].terminadas}" styleClass="janal-text-white"/>
               </p:column>
+              <p:column styleClass="janal-column-right MarAuto Responsive janal-view-normal">
+                <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].pagado}" styleClass="janal-text-white"/>
+              </p:column>
             </p:summaryRow>      
             <p:columnGroup type="footer">
               <p:row>
@@ -274,6 +286,7 @@
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.iniciadas}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.enProceso}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.terminadas}" />
+                <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.pagado}" />
               </p:row>
             </p:columnGroup>            
             <f:facet name="footer">
@@ -291,42 +304,42 @@
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasXls', 'detalle')" oncomplete="janal.desbloquear()"/>
-						</f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-4 janal-view-normal">
-              <f:facet name="header">
-                <h:outputText value="Clave"/>
-              </f:facet>
+						</f:facet>	
+            <p:columnGroup type="header">
+              <p:row>
+                <p:column rowspan="2" headerText="Clave" styleClass="MarAuto Responsive janal-wid-4 janal-view-normal"/>
+                <p:column rowspan="2" headerText="Nombre" styleClass="MarAuto Responsive"/>
+                <p:column rowspan="2" headerText="Viv" styleClass="MarAuto Responsive janal-wid-4 janal-view-normal"/>
+                <p:column rowspan="2" headerText="Materiales" styleClass="MarAuto Responsive janal-wid-8"/>
+                <p:column colspan="3" headerText="Mano de obra" styleClass="MarAuto Responsive janal-wid-25"/>
+              </p:row>
+              <p:row>
+                <p:column headerText="Total" styleClass="MarAuto Responsive janal-wid-8"/>
+                <p:column headerText="Destajos" styleClass="MarAuto Responsive janal-wid-8"/>
+                <p:column headerText="Por el día" styleClass="MarAuto Responsive janal-wid-8"/>
+              </p:row>
+            </p:columnGroup> 
+            <p:column class="janal-column-center">
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="MarAuto Responsive">
-              <f:facet name="header">
-                <h:outputText value="Contrato"/>
-              </f:facet>
+            <p:column>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
-              <f:facet name="header">
-                <h:outputText value="Viv"/>
-              </f:facet>
+            <p:column class="janal-column-right">
               <h:outputText value="#{row['noViviendas']}"/>
             </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-              <f:facet name="header">
-                <h:outputText value="Materiales"/>
-              </f:facet>
+            <p:column class="janal-column-right">
               <h:outputText value="#{row['materiales']}"/>
             </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-              <f:facet name="header">
-                <h:outputText value="Mano de obra"/>
-              </f:facet>
-              <h:outputText value="#{row['destajos']}"/>
+            <p:column class="janal-column-right">
+              <h:outputText value="#{row['manoDeObra']}"/>
             </p:column>						
-						<p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
-							<p:commandButton icon="fa fa-search" process="@this" update="manoObra @(.manoObra)" action="#{keetCostosCostos.doLoadManoObra(row)}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">
-								<f:setPropertyActionListener value="#{row}" target="#{keetCostosCostos.attrs.renglon}" />
-							</p:commandButton>
-            </p:column>
+            <p:column class="janal-column-right">
+              <h:outputText value="#{row['destajo']}"/>
+            </p:column>						
+            <p:column class="janal-column-right">
+              <h:outputText value="#{row['porElDia']}"/>
+            </p:column>						
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCostosCostos.lazyModel== null? 0: keetCostosCostos.lazyModel.rowCount}] registros"/>
 						</f:facet>
@@ -337,58 +350,6 @@
           <h:commandLink id="datasXls">
             <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
           </h:commandLink>	
-          
-          <p:dataTable lazy="true" id="manoObra" widgetVar="kajoolManoObra" var="row" value="#{keetCostosCostos.lazyManoObra}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCostosCostos.lazyManoObra.rowCount gt keetCostosCostos.lazyManoObra.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCostosCostos.attrs.manoObra? '': 'none'}">
-						<f:facet name="header">
-							<p:outputLabel value="Mano de obra [#{keetCostosCostos.attrs.renglon.nombre}]" styleClass="janal-text-white manoObra" style="float: left; text-align: left;"/>
-							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasManoPdf', 'manoObra')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasManoXls', 'manoObra')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('datasManoPdf', 'manoObra')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('datasManoXls', 'manoObra')" oncomplete="janal.desbloquear()"/>
-						</f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-4 janal-view-normal">
-              <f:facet name="header">
-                <h:outputText value="Clave"/>
-              </f:facet>
-              <h:outputText value="#{row['clave']}"/>
-            </p:column>														
-            <p:column class="MarAuto Responsive">
-              <f:facet name="header">
-                <h:outputText value="Contrato"/>
-              </f:facet>
-              <h:outputText value="#{row['nombre']}"/>
-            </p:column>						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4 janal-view-normal">
-              <f:facet name="header">
-                <h:outputText value="Viv"/>
-              </f:facet>
-              <h:outputText value="#{row['noViviendas']}"/>
-            </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-              <f:facet name="header">
-                <h:outputText value="Por el día"/>
-              </f:facet>
-              <h:outputText value="#{row['porElDia']}"/>
-            </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-              <f:facet name="header">
-                <h:outputText value="Destajos"/>
-              </f:facet>
-              <h:outputText value="#{row['destajos']}"/>
-            </p:column>						
-						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetCostosCostos.lazyManoObra== null? 0: keetCostosCostos.lazyManoObra.rowCount}] registros"/>
-						</f:facet>
-					</p:dataTable>	  
-          <h:commandLink id="datasManoPdf">
-            <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="manoObra" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
-          </h:commandLink>
-          <h:commandLink id="datasManoXls">
-            <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="manoObra" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-          </h:commandLink>	
-          
         </div>
       </div>
       <div class="ui-grid-row janal-grid-row">

@@ -162,7 +162,7 @@ public class IBaseMail implements Serializable {
       properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.1 TLSv1.2");
       LOG.info("AUTENTICACION EN EL SERVIDOR DE CORREOS");
 			session= Session.getDefaultInstance(properties, null);
-      session.setDebug(true);
+      session.setDebug(false);
       message= new MimeMessage(session);
       LOG.error("alias: ".concat(this.alias).concat("> from: ").concat(this.from).concat("> to: ").concat(this.to));
 			if(Cadena.isVacio(this.alias))
