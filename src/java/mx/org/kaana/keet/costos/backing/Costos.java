@@ -439,6 +439,7 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("manoDeObra", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -487,11 +488,10 @@ public class Costos extends IBaseFilter implements Serializable {
  
 	public void doReporte() throws Exception {
 		Parametros comunes           = null;
-		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = EReportes.ANALISIS_COSTOS;
 		try{		
-      params.put(Constantes.SQL_CONDICION, this.seguimiento.toString());
       comunes     = new Parametros(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       parametros  = comunes.getComunes();
       this.reporte= JsfBase.toReporte();	

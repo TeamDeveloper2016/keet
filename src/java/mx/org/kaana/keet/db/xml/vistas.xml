@@ -565,6 +565,7 @@ select
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre,
   tc_keet_contratos.no_viviendas,
+  ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia,	0)+ ifnull(tt_mantic_ordenes_compras.materiales, 0) as egresos,
   ifnull(tt_mantic_ordenes_compras.materiales, 0) as materiales,
 	ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia,	0) as mano_de_obra, 
 	ifnull(tt_keet_destajos_realizados.destajos, 0) as destajos,
