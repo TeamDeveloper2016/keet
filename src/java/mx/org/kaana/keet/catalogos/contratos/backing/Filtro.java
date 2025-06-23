@@ -96,7 +96,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("anticipo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("subcontratados", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("administrativos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("maquinaria", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("indirecto", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaContratosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

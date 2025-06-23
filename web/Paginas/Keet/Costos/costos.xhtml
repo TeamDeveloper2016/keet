@@ -189,7 +189,7 @@
               <f:facet name="header">
                 <h:outputText value="Egresos"/>
               </f:facet>
-              <h:outputText value="#{row['egresos']}"/>
+              <h:outputText value="#{row['egresos']}" styleClass="janal-color-blue"/>
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-6 janal-view-normal">
               <f:facet name="header">
@@ -372,4 +372,5 @@
       </div>
     </div>		           				
   </ui:define>    
+  <ui:param name="componenteBloqueo" value="idEmpresa idCliente idDesarrollo idEstatus idContrato"/>
 </ui:composition>

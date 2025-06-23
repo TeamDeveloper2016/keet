@@ -9020,6 +9020,13 @@ where
           ifnull(tc_keet_contratos.costo, 0) as costo,
           ifnull(tt_keet_contratos_retenciones.importe, 0) as anticipo,
           ifnull(tc_keet_contratos_retenciones.importe, 0) as fondo_garantia,
+          ifnull(tc_keet_contratos.materiales, 0) as materiales,
+          ifnull(tc_keet_contratos.destajos, 0) as destajos,
+          ifnull(tc_keet_contratos.subcontratados, 0) as subcontratados,
+          ifnull(tc_keet_contratos.por_el_dia, 0) as por_el_dia,
+          ifnull(tc_keet_contratos.administrativos, 0) as administrativos,
+          ifnull(tc_keet_contratos.maquinaria, 0) as maquinaria,
+          ifnull(tc_keet_contratos.indirecto, 0) as indirecto,
 					tc_keet_contratos.registro,
 				  tc_keet_proyectos.clave proyecto,
           tc_keet_desarrollos.nombres as desarrollo

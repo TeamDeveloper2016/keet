@@ -144,7 +144,7 @@
 								<p:fileDownload value="#{keetCatalogosContratosFiltro.globalEstimados}" />
 							</p:commandButton>
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
@@ -156,7 +156,7 @@
               </f:facet>
               <h:outputText value="#{row['desarrollo']}"/>
             </p:column>
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombre}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
@@ -168,37 +168,79 @@
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.noViviendas}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.noViviendas}">
               <f:facet name="header">
-                <h:outputText value="Viviendas" />
+                <h:outputText value="Viv" />
               </f:facet>
               <h:outputText value="#{row['noViviendas']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus" />
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.costo}">
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo" />
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.anticipo}">
+						<p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.materiales}">
+              <f:facet name="header">
+                <h:outputText value="Materiales" />
+              </f:facet>
+              <h:outputText value="#{row['materiales']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.destajos}">
+              <f:facet name="header">
+                <h:outputText value="Destajos" />
+              </f:facet>
+              <h:outputText value="#{row['destajos']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Anticipo" />
               </f:facet>
               <h:outputText value="#{row['anticipo']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.fondoGarantia}">
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Fondo garantía" />
               </f:facet>
               <h:outputText value="#{row['fondoGarantia']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Sub contratos" />
+              </f:facet>
+              <h:outputText value="#{row['subcontratados']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Por el día" />
+              </f:facet>
+              <h:outputText value="#{row['porElDia']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Administrativos" />
+              </f:facet>
+              <h:outputText value="#{row['administrativos']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Maquinaria" />
+              </f:facet>
+              <h:outputText value="#{row['maquinaria']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-2 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Indirecto" />
+              </f:facet>
+              <h:outputText value="#{row['indirecto']}"/>
+            </p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro" />
               </f:facet>
