@@ -615,7 +615,7 @@ left join (
 	from
 		tc_mantic_ordenes_compras
 	where
-		tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,6,7)
+		tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)
 	group by  
 		tc_mantic_ordenes_compras.id_contrato
 ) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato
@@ -635,6 +635,162 @@ group by
 order by
   tc_keet_desarrollos.id_desarrollo,
   tc_keet_contratos.clave desc
+      </select>
+      <select id="salida">
+select
+  tc_keet_desarrollos.id_desarrollo as id_key,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.clave,
+  tc_keet_desarrollos.nombres as nombre,
+  sum(tc_keet_contratos.no_viviendas) as no_viviendas,
+  sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)+ ifnull(tt_mantic_ordenes_compras.materiales, 0)) as egresos,
+  sum(ifnull(tt_mantic_ordenes_compras.materiales, 0)) as materiales,
+  sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as mano_de_obra, 
+  sum(ifnull(tt_keet_destajos_realizados.destajos,0)) as destajos,
+  sum(ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as por_el_dia  
+from
+  tc_keet_contratos
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+left join (
+	select
+		tt_keet_contratos_destajos.id_contrato,
+		sum(tt_keet_contratos_destajos.destajos) as destajos
+	from (
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_contratistas.costo) as destajos
+		from
+			tc_keet_contratos_destajos_contratistas
+		inner join
+			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+		union all   
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_proveedores.costo) as destajos
+		from
+			tc_keet_contratos_destajos_proveedores
+		inner join
+			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+	) as tt_keet_contratos_destajos
+	group by 
+		tt_keet_contratos_destajos.id_contrato
+) as tt_keet_destajos_realizados on tc_keet_contratos.id_contrato= tt_keet_destajos_realizados.id_contrato        
+left join (
+	select
+		tc_mantic_ordenes_compras.id_contrato,
+		sum(tc_mantic_ordenes_compras.total) as materiales
+	from
+		tc_mantic_ordenes_compras
+	where
+		tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)
+	group by  
+		tc_mantic_ordenes_compras.id_contrato
+) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato
+left join (
+	select
+		tc_keet_nominas_contratos.id_contrato,
+		sum(tc_keet_nominas_contratos.total) as por_el_dia
+	from
+		tc_keet_nominas_contratos
+	group by  
+		tc_keet_nominas_contratos.id_contrato
+) as tt_keet_nominas_contratos on tc_keet_contratos.id_contrato= tt_keet_nominas_contratos.id_contrato
+where
+  tc_keet_desarrollos.id_desarrollo in ({idDesarrollo})
+  and {condicion}
+group by 
+  tc_keet_desarrollos.id_desarrollo
+order by
+  tc_keet_desarrollos.id_desarrollo
+      </select>
+      <select id="general">
+select
+  tc_mantic_empresas.id_empresa as id_key,
+  tc_mantic_empresas.id_empresa,
+  tc_mantic_empresas.clave,
+  tc_mantic_empresas.nombre as nombre,
+  sum(tc_keet_contratos.no_viviendas) as no_viviendas,
+  sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)+ ifnull(tt_mantic_ordenes_compras.materiales, 0)) as egresos,
+  sum(ifnull(tt_mantic_ordenes_compras.materiales, 0)) as materiales,
+  sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as mano_de_obra, 
+  sum(ifnull(tt_keet_destajos_realizados.destajos,0)) as destajos,
+  sum(ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as por_el_dia  
+from
+  tc_keet_contratos
+inner join
+  tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+left join (
+	select
+		tt_keet_contratos_destajos.id_contrato,
+		sum(tt_keet_contratos_destajos.destajos) as destajos
+	from (
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_contratistas.costo) as destajos
+		from
+			tc_keet_contratos_destajos_contratistas
+		inner join
+			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+		union all   
+		select
+			tc_keet_contratos_lotes.id_contrato,
+			sum(tc_keet_contratos_destajos_proveedores.costo) as destajos
+		from
+			tc_keet_contratos_destajos_proveedores
+		inner join
+			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+		inner join
+			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		group by 
+			 tc_keet_contratos_lotes.id_contrato
+	) as tt_keet_contratos_destajos
+	group by 
+		tt_keet_contratos_destajos.id_contrato
+) as tt_keet_destajos_realizados on tc_keet_contratos.id_contrato= tt_keet_destajos_realizados.id_contrato        
+left join (
+	select
+		tc_mantic_ordenes_compras.id_contrato,
+		sum(tc_mantic_ordenes_compras.total) as materiales
+	from
+		tc_mantic_ordenes_compras
+	where
+		tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)
+	group by  
+		tc_mantic_ordenes_compras.id_contrato
+) as tt_mantic_ordenes_compras on tc_keet_contratos.id_contrato= tt_mantic_ordenes_compras.id_contrato
+left join (
+	select
+		tc_keet_nominas_contratos.id_contrato,
+		sum(tc_keet_nominas_contratos.total) as por_el_dia
+	from
+		tc_keet_nominas_contratos
+	group by  
+		tc_keet_nominas_contratos.id_contrato
+) as tt_keet_nominas_contratos on tc_keet_contratos.id_contrato= tt_keet_nominas_contratos.id_contrato
+where
+  tc_mantic_empresas.id_empresa in ({idEmpresa})
+  and {condicion}
+group by 
+  tc_mantic_empresas.id_empresa
+order by
+  tc_mantic_empresas.id_empresa
       </select>
 			<select id="desarrollos">
 select 

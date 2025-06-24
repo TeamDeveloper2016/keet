@@ -107,9 +107,10 @@ public class Costos extends IBaseFilter implements Serializable {
       } // if  
       this.subTotales= new ArrayList<>();
       this.totales   = null;
-      this.model= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "lazy", params, Constantes.SQL_TODOS_REGISTROS);
+      this.model     = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "lazy", params, Constantes.SQL_TODOS_REGISTROS);
       if(!Objects.equals(this.model, null) && !this.model.isEmpty()) {
         UIBackingUtilities.toFormatEntitySet(this.model, columns);
+        this.toDefineDesarrollos();
         this.toAcumularDesarrollos();
         UIBackingUtilities.toFormatEntitySet(this.subTotales, columns);
         UIBackingUtilities.toFormatEntity(this.totales, columns);
@@ -130,22 +131,33 @@ public class Costos extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
+  private void toDefineDesarrollos() {
+    try {      
+      this.fraccionamientos.clear();
+      for (Entity desarrollo: this.model) {
+        if(!Objects.equals(desarrollo.toLong("idDesarrollo"), -1L) && fraccionamientos.indexOf(desarrollo.toLong("idDesarrollo"))< 0) 
+          this.fraccionamientos.add(desarrollo.toLong("idDesarrollo"));
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
-		  sb.append("tc_mantic_empresas.id_empresa=").append(this.attrs.get("idEmpresa")).append(" and ");
-		else
-		  sb.append("tc_mantic_empresas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(") and ");
+    sb.append("tc_mantic_empresas.id_empresa=").append(this.attrs.get("idEmpresa")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !Objects.equals(((UISelectEntity)this.attrs.get("idCliente")).getKey(), -1L))
 		  sb.append("tc_keet_proyectos.id_cliente= ").append(this.attrs.get("idCliente")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !Objects.equals(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), -1L))
 		  sb.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrollo")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
 		  sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
-		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L))
+		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
 		  sb.append("tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -246,14 +258,11 @@ public class Costos extends IBaseFilter implements Serializable {
 			columns.add(new Columna("fondoGarantia", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
-      this.fraccionamientos.clear();
       if(Objects.equals(desarrollo.getKey(), -1L)) {
         StringBuilder sb= new StringBuilder();
         for (UISelectEntity item: desarrollos) {
-          if(!Objects.equals(item.getKey(), -1L)) {
+          if(!Objects.equals(item.getKey(), -1L)) 
             sb.append(item.getKey()).append(", "); 
-            this.fraccionamientos.add(item.getKey());
-          } // if  
         } // for
         if(sb.length()> 2) 
           sb.delete(sb.length()- 2, sb.length());
@@ -261,10 +270,8 @@ public class Costos extends IBaseFilter implements Serializable {
           sb.append("-1");
         params.put("idDesarrollo", sb.toString());
       } // if  
-      else {
+      else 
         params.put("idDesarrollo", desarrollo.getKey());
-        this.fraccionamientos.add(desarrollo.getKey());        
-      } // if  
       params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus<= "+ EContratosEstatus.TERMINADO.getKey()+ " and tc_keet_contratos.id_empresa= "+ empresa.getKey());
       contratos= (List<UISelectEntity>) UIEntity.seleccione("VistaCostosDto", "desarrollos", params, columns, "clave");
       this.attrs.put("contratos", contratos);
@@ -319,10 +326,7 @@ public class Costos extends IBaseFilter implements Serializable {
 			estatus= (List<UISelectEntity>)UIEntity.build("TcKeetContratosEstatusDto", params);			
 			this.attrs.put("estatus", estatus);
       if(!Objects.equals(estatus, null) && !estatus.isEmpty()) {
-        UISelectEntity item= new UISelectEntity(98L);
-        item.put("nombre", new Value("nombre", "INDIVIDUAL"));
-        estatus.add(item);
-        item= new UISelectEntity(99L);
+        UISelectEntity item= new UISelectEntity(99L);
         item.put("nombre", new Value("nombre", "TODOS"));
         estatus.add(item);
 			  this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));		
@@ -445,6 +449,73 @@ public class Costos extends IBaseFilter implements Serializable {
       columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel= new FormatCustomLazy("VistaCostosDto", "egresos", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+      this.attrs.put("detalle", Boolean.TRUE);
+    }  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void doLoadDetalle(Long idDesarrollo) {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+		StringBuilder sb         = new StringBuilder();
+    try {
+      params.put("idDesarrollo", idDesarrollo);
+      sb.append("tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(" and ");
+  		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
+        sb.append("tc_keet_contratos.id_contrato_estatus= ").append(((UISelectEntity)this.attrs.get("idEstatus")).getKey()).append(" and ");
+      if(sb.length()== 0)
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        params.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("manoDeObra", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "salida", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+      this.attrs.put("detalle", Boolean.TRUE);
+    }  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void doLoadGeneral() {
+    List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
+    Long idEmpresa           = ((UISelectEntity)this.attrs.get("idEmpresa")).getKey();
+    try {
+      params.put("idEmpresa", idEmpresa);
+  		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
+        params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus= "+ ((UISelectEntity)this.attrs.get("idEstatus")).getKey());
+      else
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("manoDeObra", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porElDia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "general", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("detalle", Boolean.TRUE);
     }  
