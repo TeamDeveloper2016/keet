@@ -196,12 +196,11 @@ public class Exportar extends IBaseFilter implements Serializable {
 	}	// doCompleteNombreEmpleado
 	
 	public void doUpdateProveedor() {
-		List<Columna> columns       = null;
+		List<Columna> columns       = new ArrayList<>();
     Map<String, Object> params  = new HashMap<>();
 		List<UISelectEntity> nombres= null;		
     try {
-			columns= new ArrayList<>();      
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
 			String nombreEmpleado= (String)this.attrs.get("razonSocial"); 
 			nombreEmpleado= !Cadena.isVacio(nombreEmpleado) ? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

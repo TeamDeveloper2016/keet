@@ -128,7 +128,7 @@
 							</p:selectOneMenu>																
 							<p:outputLabel for="contratista" value="Contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{keetNominasPersonas.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{keetNominasPersonas.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+								<f:selectItems value="#{keetNominasPersonas.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombres}"/>
 								<p:column headerText="Departamento">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column> 

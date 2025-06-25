@@ -3880,24 +3880,49 @@ order by
 			</select>
 		</unit>
 		<unit id="VistaProveedoresDto">
+			<select id="subcontratistas">
+select 
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_empresas.nombre as sucursal,
+  tc_mantic_proveedores.rfc,
+  tc_mantic_proveedores.clave,
+  tc_mantic_proveedores.razon_social,
+  tc_mantic_proveedores.nombre_comercial,
+  group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ') as nombre
+from 
+  tc_mantic_proveedores
+inner join 
+  tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+inner join 
+  tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+where 
+  tc_mantic_proveedores.id_activo= 1	
+  and tc_mantic_proveedores.id_subcontratista= 1
+group by  
+  tc_mantic_proveedores.id_proveedor      
+order by         
+  tc_mantic_proveedores.razon_social
+			</select>          
 			<select id="autoCompletar">
-				select 
-				  tc_mantic_proveedores.id_provedor as id_key,
-				  tc_mantic_proveedores.clave,
-				  tc_mantic_proveedores.grupo,
-				  tc_mantic_proveedores.razon_social,
-				  tc_mantic_proveedores.nombre_comercial,
-				  tc_mantic_proveedores.rfc,
-					tc_mantic_empresas.nombre as sucursal
-				from 
-					tc_mantic_proveedores
-				inner join 
-					tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
-				where 
-					(tc_mantic_proveedores.razon_social like '%{razonSocial}%')
-				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})	
-          and tc_mantic_proveedores.id_activo= 1	
-          and tc_mantic_proveedores.id_subcontratista= 1
+select 
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.clave,
+  tc_mantic_proveedores.grupo,
+  tc_mantic_proveedores.razon_social,
+  tc_mantic_proveedores.nombre_comercial,
+  tc_mantic_proveedores.rfc,
+  tc_mantic_empresas.nombre as sucursal
+from 
+  tc_mantic_proveedores
+inner join 
+  tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
+where 
+  (tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+  and tc_mantic_empresas.id_empresa in ({idEmpresa})	
+  and tc_mantic_proveedores.id_activo= 1	
+  and tc_mantic_proveedores.id_subcontratista= 1
 			</select>          
 			<select id="lazy">
 select 
@@ -4009,9 +4034,9 @@ group by
 				 from   
 					 tc_mantic_proveedores
 				 inner join
-					 tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+					 tc_mantic_tipos_proveedores on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
 				 inner  join
-					 tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
 				 where
 					 upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
 					or
@@ -4035,17 +4060,17 @@ group by
 					tc_mantic_tipos_formas_pagos on tc_mantic_tipos_formas_pagos.id_tipo_medio_pago=tc_mantic_tipos_pagos.id_tipo_medio_pago              
 			</select>  
 			 <select id="direccionProveedor">
-				select 
+			select 
 				tc_janal_entidades.id_entidad,tc_janal_municipios.id_municipio,tc_janal_localidades.id_localidad, tc_janal_entidades.id_entidad as id_key
 			from 
 				tc_janal_entidades 
 			inner join
-				tc_janal_municipios  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+				tc_janal_municipios on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
 			inner join    
 				tc_janal_localidades on tc_janal_localidades.id_municipio=tc_janal_municipios.id_municipio
-			 inner join
-				tc_mantic_domicilios on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
-			 where 
+			inner join
+			  tc_mantic_domicilios on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
+			where 
 				tc_mantic_domicilios.id_domicilio={idDomicilio}
 			</select>            
 		</unit> 
@@ -5029,28 +5054,28 @@ where
 {sortOrder}  
 			</select>  
 			<select id="contratistas">
-				select 
-					tr_mantic_empresa_personal.id_empresa_persona as id_key,
-					concat(nombres, ' ', paterno, ' ', materno) as nombres,  
-					group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ') as nombre,
-				  tc_mantic_puestos.nombre as puesto
-				from 
-					tc_mantic_personas 
-				inner join 
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
-  			inner join 
-					tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona
-  		  inner join 
-				  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
-				inner join 
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
-				where 
-					tc_mantic_puestos.nombre= 'CONTRATISTA'
-				  and tr_mantic_empresa_personal.id_activo= 1
-				group by  
-				  tr_mantic_empresa_personal.id_empresa_persona
-			  order by
-				  tc_mantic_puestos.nombre
+select 
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  concat(nombres, ' ', paterno, ' ', materno) as nombres,  
+  group_concat(tc_keet_departamentos.nombre order by tc_keet_departamentos.nombre asc separator ', ') as nombre,
+  tc_mantic_puestos.nombre as puesto
+from 
+  tc_mantic_personas 
+inner join 
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+inner join 
+  tc_keet_contratistas_departamentos on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratistas_departamentos.id_empresa_persona
+inner join 
+  tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+inner join 
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+where 
+  tc_mantic_puestos.nombre= 'CONTRATISTA'
+  and tr_mantic_empresa_personal.id_activo= 1
+group by  
+  tr_mantic_empresa_personal.id_empresa_persona
+order by
+  tc_mantic_puestos.nombre
 			</select>
 			<select id="row">
 select 

@@ -184,6 +184,22 @@ public final class Catalogos {
     } // finally
 	} // toLoadPuestos
 	
+	private static void toContratistasLaboral(List<UISelectEntity> regresar, Boolean seleccione) throws Exception {
+    if(regresar!= null) {
+      Entity sinContratista=  new Entity(999L);
+      sinContratista.put("nombre", new Value("nombre", "POR EL DIA"));
+      sinContratista.put("nombres", new Value("nombres", "SIN CONTRATISTA"));
+      sinContratista.put("puesto", new Value("puesto", "POR EL DIA"));
+      if(regresar.size()<= 0)
+        regresar.add(new UISelectEntity(sinContratista));
+      else
+        if(seleccione)
+          regresar.add(1, new UISelectEntity(sinContratista));
+        else
+          regresar.add(new UISelectEntity(sinContratista));
+    } // if
+	}
+
 	public static List<UISelectEntity> toContratistasPorElDia(boolean seleccione) throws Exception {
 		List<Columna> columns        = new ArrayList<>();
 		List<UISelectEntity> regresar= null;
@@ -191,23 +207,9 @@ public final class Catalogos {
 			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       if(seleccione) 
-		    regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
+		    regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombres");
       else
 		    regresar= UIEntity.build("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS);
-      if(regresar!= null) {
-        Entity sinContratista=  new Entity(999L);
-        sinContratista.put("nombre", new Value("nombre", "POR EL DIA"));
-        sinContratista.put("nombres", new Value("nombres", "SIN CONTRATISTA"));
-        sinContratista.put("puesto", new Value("puesto", "POR EL DIA"));
-        // sinContratista
-        if(regresar.size()<= 0)
-          regresar.add(new UISelectEntity(sinContratista));
-        else
-          if(seleccione)
-            regresar.add(1, new UISelectEntity(sinContratista));
-          else
-            regresar.add(new UISelectEntity(sinContratista));
-      } // if
 		} // try
 		finally {
 			Methods.clean(columns);
@@ -216,13 +218,45 @@ public final class Catalogos {
 	}
 
 	public static List<UISelectEntity> toContratistasPorElDia() throws Exception {
-		return toContratistasPorElDia(Boolean.TRUE);
+    List<UISelectEntity> regresar= toContratistasPorElDia(Boolean.TRUE);
+    toContratistasLaboral(regresar, Boolean.TRUE);
+		return regresar;
 	}
 
 	public static void toLoadContratistas(Map<String, Object> attrs) throws Exception {
-		List<UISelectEntity>contratistas= toContratistasPorElDia();
+		List<UISelectEntity>contratistas= toContratistasPorElDia(Boolean.TRUE);
+    toContratistasLaboral(contratistas, Boolean.TRUE);
 		attrs.put("contratistas", contratistas);
 		attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+  }
+  
+	public static void toLoadContratistas(Map<String, Object> attrs, Boolean seleccione) throws Exception {
+		List<UISelectEntity>contratistas= toContratistasPorElDia(seleccione);
+		attrs.put("contratistas", contratistas);
+		attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+	}
+
+	public static List<UISelectEntity> toLoadSubContratistas(Boolean seleccione) throws Exception {
+		List<Columna> columns        = new ArrayList<>();
+		List<UISelectEntity> regresar= null;
+		try {
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      if(seleccione) 
+		    regresar= UIEntity.seleccione("VistaProveedoresDto", "subcontratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "razonSocial");
+      else
+		    regresar= UIEntity.build("VistaProveedoresDto", "subcontratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		finally {
+			Methods.clean(columns);
+		} // finally
+		return regresar;
+	}
+  
+	public static void toLoadSubContratistas(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>subContratistas= toLoadSubContratistas(Boolean.TRUE);
+		attrs.put("subContratistas", subContratistas);
+		attrs.put("idSubcontratista", UIBackingUtilities.toFirstKeySelectEntity(subContratistas));
 	}
 
 	public static void toLoadDesarrollos(Map<String, Object> attrs) throws Exception {
