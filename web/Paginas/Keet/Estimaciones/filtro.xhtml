@@ -89,7 +89,7 @@
               </p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
               <p:selectOneMenu id="idContrato" value="#{keetEstimacionesFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetEstimacionesFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{keetEstimacionesFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -176,12 +176,6 @@
               </f:facet>
               <h:outputText value="#{row['folio']}"/>
             </p:column>	
-						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
-              <f:facet name="header">
-                <h:outputText value="Clave"/>
-              </f:facet>
-              <h:outputText value="#{row['clave']}"/>
-            </p:column>	
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
               <f:facet name="header">
                 <h:outputText value="Contrato"/>
@@ -219,6 +213,7 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
+              <p:outputLabel style="float: left;" value="#{keetEstimacionesFiltro.general}" styleClass="detalle" escape="false"/>
               <p:outputLabel value="Total [#{keetEstimacionesFiltro.lazyModel== null? 0: keetEstimacionesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>

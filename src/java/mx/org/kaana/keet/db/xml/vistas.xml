@@ -2155,46 +2155,69 @@ order by
     </unit>  
 		<unit id="VistaEstimacionesDto">
       <select id="lazy">
-        select
-          tc_keet_estimaciones.id_estimacion as id_key,
-          tc_keet_estimaciones.id_estimacion,
-          tc_keet_estimaciones.id_empresa,
-          tc_keet_desarrollos.id_desarrollo,
-          tc_keet_desarrollos.nombres as desarrollo,
-          tc_mantic_clientes.id_cliente,
-          tc_keet_contratos.id_contrato,
-          tc_keet_contratos.clave,
-          tc_keet_contratos.nombre as contrato,
-          tc_keet_contratos.etapa,
-          tc_keet_estimaciones.consecutivo,
-          tc_keet_estimaciones.folio,
-          tc_keet_estimaciones.importe as total,
-          tc_keet_estimaciones.saldo,
-          tc_keet_estimaciones_estatus.id_estimacion_estatus,
-          tc_mantic_empresas.nombre as empresa,
-          tc_mantic_clientes.razon_social,
-          tc_keet_estimaciones_estatus.nombre as estatus,
-          tc_keet_estimaciones_estatus.estatus_asociados,
-          tc_keet_estimaciones.registro,
-          tc_keet_estimaciones.id_venta
-        from
-          tc_keet_estimaciones
-        inner join
-          tc_mantic_empresas on tc_keet_estimaciones.id_empresa= tc_mantic_empresas.id_empresa
-        inner join
-          tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
-        inner join
-          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
-        inner join
-          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
-        inner join
-          tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
-        inner join
-          tc_keet_estimaciones_estatus on tc_keet_estimaciones.id_estimacion_estatus= tc_keet_estimaciones_estatus.id_estimacion_estatus
-        where
-          tc_mantic_empresas.id_empresa in ({idEmpresa})
-				  and {condicion}
-        {sortOrder}
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  tc_keet_estimaciones.id_estimacion,
+  tc_keet_estimaciones.id_empresa,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_mantic_clientes.id_cliente,
+  tc_keet_contratos.id_contrato,
+  tc_keet_contratos.clave,
+  tc_keet_contratos.nombre as contrato,
+  tc_keet_contratos.etapa,
+  tc_keet_estimaciones.consecutivo,
+  tc_keet_estimaciones.folio,
+  tc_keet_estimaciones.importe as total,
+  tc_keet_estimaciones.saldo,
+  tc_keet_estimaciones_estatus.id_estimacion_estatus,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_clientes.razon_social,
+  tc_keet_estimaciones_estatus.nombre as estatus,
+  tc_keet_estimaciones_estatus.estatus_asociados,
+  tc_keet_estimaciones.registro,
+  tc_keet_estimaciones.id_venta
+from
+  tc_keet_estimaciones
+inner join
+  tc_mantic_empresas on tc_keet_estimaciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
+inner join
+  tc_keet_estimaciones_estatus on tc_keet_estimaciones.id_estimacion_estatus= tc_keet_estimaciones_estatus.id_estimacion_estatus
+where
+  tc_mantic_empresas.id_empresa in ({idEmpresa})
+  and {condicion}
+{sortOrder}
+      </select>
+      <select id="totales">
+select
+  tc_keet_estimaciones.id_estimacion as id_key,
+  ifnull(sum(tc_keet_estimaciones.importe), 0) as total,
+  ifnull(sum(tc_keet_estimaciones.saldo), 0) as saldo
+from
+  tc_keet_estimaciones
+inner join
+  tc_mantic_empresas on tc_keet_estimaciones.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_keet_contratos on tc_keet_estimaciones.id_contrato= tc_keet_contratos.id_contrato
+inner join
+  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+inner join
+  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join
+  tc_mantic_clientes on tc_keet_proyectos.id_cliente= tc_mantic_clientes.id_cliente
+inner join
+  tc_keet_estimaciones_estatus on tc_keet_estimaciones.id_estimacion_estatus= tc_keet_estimaciones_estatus.id_estimacion_estatus
+where
+  tc_mantic_empresas.id_empresa in ({idEmpresa})
+  and {condicion}
       </select>
       <select id="anticipo">
         select

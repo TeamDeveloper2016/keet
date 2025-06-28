@@ -17,7 +17,6 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -73,7 +72,7 @@ public class Destajos extends IBaseFilter implements Serializable {
     String contratos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("contratos"));
     String costos   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
     String destajos = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("destajos"));
-    return "Contratos: <strong>"+ contratos+ "</strong>  | suma costos: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
+    return "Suma costos: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -85,7 +84,7 @@ public class Destajos extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
+      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -326,9 +325,9 @@ public class Destajos extends IBaseFilter implements Serializable {
   
   private Entity toEmptyTotales() {
     Entity regresar= new Entity(-1L);
-    regresar.put("contratos", new Value("contratos", 0D));
-    regresar.put("costos", new Value("costos", 0D));
-    regresar.put("destajos", new Value("destajos", 0D));
+    regresar.addField("contratos", 0D);
+    regresar.addField("costos", 0D);
+    regresar.addField("destajos", 0D);
     return regresar;
   }
 

@@ -244,6 +244,7 @@
                 <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticComprasOrdenesFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
               <f:facet name="footer">
+                <p:outputLabel style="float: left;" value="#{manticComprasOrdenesFiltro.general}" styleClass="detalle" escape="false"/>
                 <p:outputLabel value="Total [#{manticComprasOrdenesFiltro.lazyModel== null? 0: manticComprasOrdenesFiltro.lazyModel.rowCount}] registros"/>
               </f:facet>
             </p:dataTable>

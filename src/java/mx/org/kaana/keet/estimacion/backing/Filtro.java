@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -31,6 +33,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.estimacion.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetEstimacionesBitacoraDto;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "keetEstimacionesFiltro")
@@ -57,6 +60,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void setFechaTermino(LocalDate fechaTermino) {
     this.fechaTermino = fechaTermino;
   }
+
+  public String getGeneral() {
+    String total= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    String saldo= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("saldo"));
+    return "Suma importe: <strong>"+ total+ "</strong>";  
+  }
   
   @PostConstruct
   @Override
@@ -64,6 +73,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEstimacion", JsfBase.getFlashAttribute("idEstimacion"));
+      this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalog();
       if(this.attrs.get("idEstimacion")!= null) 
 			  this.doLoad();
@@ -90,6 +100,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaEstimacionesDto", params, columns);
+      this.attrs.put("general", this.toTotales("VistaEstimacionesDto", "totales", params));
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idEstimacion", null);
     } // try
@@ -157,6 +168,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
         sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idContrato")) && !this.attrs.get("idContrato").toString().equals("-1"))
+        sb.append("(tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("consecutivo")))
         sb.append("(tc_keet_estimaciones.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
       if(!Cadena.isVacio(this.attrs.get("folio")))
@@ -373,6 +386,27 @@ public class Filtro extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("idCliente", ((Entity) this.attrs.get("seleccionado")).toLong("idCliente"));
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estimaciones/filtro");
     return "/Paginas/Keet/Catalogos/Contratos/extras".concat(Constantes.REDIRECIONAR);
+  }
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.addField("saldo", 0D);
+    regresar.addField("total", 0D);
+    return regresar;
   }
   
 }

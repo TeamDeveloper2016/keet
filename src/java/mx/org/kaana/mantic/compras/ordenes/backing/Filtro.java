@@ -32,6 +32,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -229,6 +230,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   }
   
+  public String getGeneral() {
+    String partidas= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("partidas"));
+    String total   = Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    return "Suma importe: <strong>"+ total+ "</strong> | partidas: <strong>"+ partidas+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -237,6 +244,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalog();
       if(this.attrs.get("idOrdenCompra")!= null) {
         params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
@@ -269,6 +277,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", params, columns);
+      this.attrs.put("general", this.toTotales("VistaOrdenesComprasDto", "totales", params));
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idOrdenCompra", null);
       this.lazyDetalle= null;
@@ -835,7 +844,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(columns);
 		} // finally
   }
-    
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.addField("partidas", 0D);
+    regresar.addField("total", 0D);
+    return regresar;
+  }
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();
