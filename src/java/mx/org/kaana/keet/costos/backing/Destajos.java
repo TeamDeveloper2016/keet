@@ -47,7 +47,7 @@ public class Destajos extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Destajos.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;

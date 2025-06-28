@@ -154,7 +154,7 @@ public class Costos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !Objects.equals(((UISelectEntity)this.attrs.get("idCliente")).getKey(), -1L))
 		  sb.append("tc_keet_proyectos.id_cliente= ").append(this.attrs.get("idCliente")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !Objects.equals(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), -1L))
-		  sb.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrollo")).append(" and ");
+		  sb.append("tc_keet_proyectos.id_desarrollo=").append(this.attrs.get("idDesarrollo")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
 		  sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
@@ -499,14 +499,8 @@ public class Costos extends IBaseFilter implements Serializable {
   
   public void doLoadGeneral() {
     List<Columna> columns    = new ArrayList<>();
-		Map<String, Object>params= new HashMap<>();
-    Long idEmpresa           = ((UISelectEntity)this.attrs.get("idEmpresa")).getKey();
+		Map<String, Object>params= this.toPrepare();
     try {
-      params.put("idEmpresa", idEmpresa);
-  		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
-        params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato_estatus= "+ ((UISelectEntity)this.attrs.get("idEstatus")).getKey());
-      else
-        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));

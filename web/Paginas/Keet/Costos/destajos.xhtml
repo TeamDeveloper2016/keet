@@ -124,6 +124,7 @@
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
                   <p:menuitem icon="fa fa-file-code-o" value="Especial XLS" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
                     <p:fileDownload value="#{keetCostosDestajos.especial}" />
                   </p:menuitem>
