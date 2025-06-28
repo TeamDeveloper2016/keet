@@ -471,6 +471,8 @@ public class Costos extends IBaseFilter implements Serializable {
       sb.append("tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(" and ");
   		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
         sb.append("tc_keet_contratos.id_contrato_estatus= ").append(((UISelectEntity)this.attrs.get("idEstatus")).getKey()).append(" and ");
+      if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
+        sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
       if(sb.length()== 0)
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       else	
