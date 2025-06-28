@@ -199,9 +199,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(this.attrs.get("idContratoProcess")!= null)
 			sb.append("tc_keet_contratos.id_contrato=").append(this.attrs.get("idContratoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
-			sb.append("(tc_mantic_clientes.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+			sb.append("(tc_mantic_empresas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
-			sb.append("(tc_mantic_clientes.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+			sb.append("(tc_mantic_empresas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_keet_contratos.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))

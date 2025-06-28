@@ -148,48 +148,41 @@
                 </f:facet>
                 <h:outputText value="#{row['empresa']}" title="Cliente: #{row.cliente}"/>
               </p:column>
-              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreDesarrollo}">
+              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.desarrollo}">
                 <f:facet name="header">
                   <h:outputText value="Desarrollo"/>
                 </f:facet>
-                <h:outputText value="#{row['nombreDesarrollo']}" title="Cliente: #{row.cliente}"/>
+                <h:outputText value="#{row['desarrollo']}" title="Cliente: #{row.cliente}"/>
               </p:column>	
-              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreContrato}">
+              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
                 <f:facet name="header">
                   <h:outputText value="Contrato"/>
                 </f:facet>
-                <h:outputText value="#{row['nombreContrato']}"/>
+                <h:outputText value="#{row['contrato']}"/>
               </p:column>	
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
                 <f:facet name="header">
-                  <h:outputText value="No orden"/>
+                  <h:outputText value="Costo"/>
                 </f:facet>
-                <h:outputText value="#{row['consecutivo']}" title="Cliente: #{row.cliente}"/>
+                <h:outputText value="#{row['costo']}"/>
               </p:column>		
-              <p:column class="MarAuto Responsive" sortBy="#{row.proveedor}">
+              <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contratista}">
                 <f:facet name="header">
-                  <h:outputText value="Proveedor"/>
+                  <h:outputText value="Contratista"/>
                 </f:facet>
-                <h:outputText value="#{row['proveedor']}" title="Cliente: #{row.cliente}"/>
+                <h:outputText value="#{row['contratista']}"/>
               </p:column>		
-              <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
+              <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
                 <f:facet name="header">
-                  <h:outputText value="Importe"/>
+                  <h:outputText value="Nombre"/>
                 </f:facet>
-                <h:outputText value="#{row['total']}"/>
+                <h:outputText value="#{row['razonSocial']}"/>
               </p:column>		
-              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+              <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.destajos}">
                 <f:facet name="header">
-                  <h:outputText value="Estatus"/>
+                  <h:outputText value="Destajo"/>
                 </f:facet>
-                <h:outputText value="#{row['estatus']}"/>
-                <i class="fa fa-fw fa-user janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
-              </p:column>		
-              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
-                <f:facet name="header">
-                  <h:outputText value="Tipo"/>
-                </f:facet>
-                <h:outputText value="#{row['tipo']}"/>
+                <h:outputText value="#{row['destajos']}"/>
               </p:column>		
               <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.registro}">
                 <f:facet name="header">
@@ -197,13 +190,8 @@
                 </f:facet>
                 <h:outputText value="#{row['registro']}"/>
               </p:column>		
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-6">
-                <f:facet name="header">
-                  <h:outputText value="Partidas"/>
-                </f:facet>
-                <h:outputText value="#{row['partidas']}"/>
-              </p:column>		
               <f:facet name="footer">
+                <p:outputLabel style="float: left;" value="#{keetCostosDestajos.general}" styleClass="detalle" escape="false"/>
                 <p:outputLabel value="Total [#{keetCostosDestajos.lazyModel== null? 0: keetCostosDestajos.lazyModel.rowCount}] registros"/>
               </f:facet>
             </p:dataTable>

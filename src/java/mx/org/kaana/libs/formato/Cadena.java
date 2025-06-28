@@ -598,7 +598,7 @@ public final class Cadena {
     StringBuilder regresar = new StringBuilder();
     if (name != null && name.length() > 0) {
       int start = 0;
-      if (start < name.length() - 1) {
+      if (start< name.length() - 1) {
         for (int x = start; x < name.length(); x++) {
           if (name.charAt(x) != '_') {
             regresar.append(Character.toLowerCase(name.charAt(x)));

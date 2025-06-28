@@ -10,6 +10,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.dto.IValue;
+import mx.org.kaana.libs.formato.Cadena;
 
 /**
  *
@@ -268,6 +269,10 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     for (String key : entity.keySet()) {
       this.put(key, entity.get(key));
     }
+  }
+
+  public void addField(String key, Object value) {
+    this.put(Cadena.toBeanName(key), new Value(key, value));
   }
   
 }
