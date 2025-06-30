@@ -98,10 +98,9 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	
 	@Override
 	public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));

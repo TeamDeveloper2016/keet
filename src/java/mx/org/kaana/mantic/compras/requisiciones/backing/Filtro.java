@@ -489,7 +489,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return Objects.equals(row.toLong("idOrdenCompra"), -1L)? "janal-tr-diferencias": Objects.equals(row.toLong("idEliminado"), 1L)? "janal-tr-error": "";
 	} 
 
-  public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
+  public List<UISelectEntity> doCompleteArticulo(String query) {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
@@ -516,7 +516,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+		return articulos;
 	}	
   
 }

@@ -17,7 +17,6 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
@@ -319,7 +318,7 @@ public class Costos extends IBaseFilter implements Serializable {
 	} 
  
 	private void toLoadEstatus() {
-		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>params   = new HashMap<>();
 		List<UISelectEntity> estatus= null;		
 		try {
 			params.put(Constantes.SQL_CONDICION, "id_contrato_estatus in (5, 6, 7, 8, 9, 10)");
@@ -327,7 +326,7 @@ public class Costos extends IBaseFilter implements Serializable {
 			this.attrs.put("estatus", estatus);
       if(!Objects.equals(estatus, null) && !estatus.isEmpty()) {
         UISelectEntity item= new UISelectEntity(99L);
-        item.put("nombre", new Value("nombre", "TODOS"));
+        item.addField("nombre", "TODOS");
         estatus.add(item);
 			  this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));		
       } // if
@@ -341,7 +340,7 @@ public class Costos extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadEstatus
+	} 
   
   public void doCalcular() {
  		UISelectEntity idEstatus      = (UISelectEntity)this.attrs.get("idEstatus");

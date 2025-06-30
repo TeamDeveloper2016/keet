@@ -103,7 +103,7 @@
               <p:outputLabel for="consecutivo" value="No. requisición:"/>
               <p:inputText id="consecutivo" value="#{manticComprasRequisicionesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
 							<p:outputLabel for="nombre" value="Material:"/>							
-							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticComprasRequisicionesFiltro.attrs.nombre}" completeMethod="#{manticComprasRequisicionesFiltro.doCompleteArticuloFiltro}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticComprasRequisicionesFiltro.attrs.nombre}" completeMethod="#{manticComprasRequisicionesFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
