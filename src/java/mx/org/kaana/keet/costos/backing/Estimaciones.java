@@ -24,7 +24,6 @@ import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
-import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Xls;
@@ -41,11 +40,11 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@Named(value = "keetCostosDestajos")
+@Named(value = "keetCostosEstimaciones")
 @ViewScoped 
-public class Destajos extends IBaseFilter implements Serializable {
+public class Estimaciones extends IBaseFilter implements Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Destajos.class);
+	private static final Log LOG              = LogFactory.getLog(Estimaciones.class);
   private static final long serialVersionUID= 8793667741599428332L;
   private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
   
@@ -69,10 +68,11 @@ public class Destajos extends IBaseFilter implements Serializable {
   }
 	
   public String getGeneral() {
-    String contratos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("contratos"));
-    String costos   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
-    String destajos = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("destajos"));
-    return "Suma contratos: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
+    String estimaciones= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("estimaciones"));
+    String costos      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
+    String total       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    String pagos       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagos"));
+    return "Suma contratos: <strong>"+ costos+ "</strong>  |  estimaciones: <strong> "+ estimaciones+ "</strong>  |  total: <strong> "+ total+ "</strong>  |  pagos: <strong> "+ pagos+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -125,17 +125,23 @@ public class Destajos extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave desc");
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("estimaciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("normal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("extras", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("facturado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("calculo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaCostosDto", "destajistas", params, columns);
-      this.attrs.put("general", this.toTotales("VistaCostosDto", "totales", params));
+      this.lazyModel = new FormatCustomLazy("VistaCostosDto", "estimados", params, columns);
+      this.attrs.put("general", this.toTotales("VistaCostosDto", "sumatoria", params));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -158,35 +164,9 @@ public class Destajos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && ((UISelectEntity)this.attrs.get("idContrato")).getKey()>= 1L)
   		sb.append("(tc_keet_contratos.id_contrato=").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idContratista")) && !this.attrs.get("idContratista").toString().equals("-1"))
-      if(Objects.equals(((UISelectEntity)this.attrs.get("idContratista")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  regresar.put("contratistas", Constantes.SQL_FALSO);
-      else
-  		  regresar.put("contratistas", "tc_keet_contratos_lotes_contratistas.id_empresa_persona= "+ ((UISelectEntity)this.attrs.get("idContratista")).getKey());
-    else
-      if(!Cadena.isVacio(JsfBase.getParametro("idContratatista_input"))) {
-        String codigo= (String)this.attrs.get("idContratatista_input");
-        codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");
-        regresar.put("contratistas", "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*') and "));
-      } // if
-      else
-        regresar.put("contratistas", Constantes.SQL_VERDADERO);
-    if(!Cadena.isVacio(this.attrs.get("idSubcontratista")) && !this.attrs.get("idSubcontratista").toString().equals("-1"))
-      if(Objects.equals(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  regresar.put("subContratistas", Constantes.SQL_FALSO);
-      else
-  		regresar.put("subContratistas", "tc_keet_contratos_lotes_proveedores.id_proveedor="+ ((UISelectEntity)this.attrs.get("idSubcontratista")).getKey());
-    else
-      if(!Cadena.isVacio(JsfBase.getParametro("idSubcontratatista_input"))) {
-        String codigo= (String)this.attrs.get("idSubcontratatista_input");
-  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");
-		    regresar.put("subContratistas", "(tc_mantic_proveedores.razon_social regexp '.*".concat(codigo).concat(".*') and "));
-      } // if
-      else
-  		  regresar.put("subContratistas", Constantes.SQL_VERDADERO);
+		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !this.attrs.get("idEstatus").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
     if(sb.length()== 0)
@@ -212,20 +192,6 @@ public class Destajos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			columns.remove(0);
 			this.doLoadDesarrollos();
-   		Catalogos.toLoadContratistas(this.attrs, Boolean.TRUE);
-      if(!Objects.equals((List<UISelectEntity>)this.attrs.get("contratistas"), null)) {
-        UISelectEntity item= new UISelectEntity(Constantes.TOP_OF_ITEMS);
-        item.addField("nombre", "NINGUNO");
-        item.addField("nombres", "NINGUNO");
-        ((List<UISelectEntity>)this.attrs.get("contratistas")).add(item);
-      } // if
-   		Catalogos.toLoadSubContratistas(this.attrs);
-      if(!Objects.equals((List<UISelectEntity>)this.attrs.get("subContratistas"), null)) {
-        UISelectEntity item= new UISelectEntity(Constantes.TOP_OF_ITEMS);
-        item.addField("nombre", "NINGUNO");
-        item.addField("razon_social", "NINGUNO");
-        ((List<UISelectEntity>)this.attrs.get("subContratistas")).add(item);
-      } // if
       this.toLoadEstatus();
     } // try
     catch (Exception e) {
@@ -302,9 +268,10 @@ public class Destajos extends IBaseFilter implements Serializable {
   
   private Entity toEmptyTotales() {
     Entity regresar= new Entity(-1L);
-    regresar.addField("contratos", 0D);
+    regresar.addField("estimaciones", 0D);
     regresar.addField("costos", 0D);
-    regresar.addField("destajos", 0D);
+    regresar.addField("total", 0D);
+    regresar.addField("pagos", 0D);
     return regresar;
   }
 

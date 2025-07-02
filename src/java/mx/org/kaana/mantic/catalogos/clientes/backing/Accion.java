@@ -790,7 +790,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idTipoRegimenPersona", "1, 2");                  
+      params.put("idTipoCliente", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			this.attrs.put("regimenesFiscales", (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo"));

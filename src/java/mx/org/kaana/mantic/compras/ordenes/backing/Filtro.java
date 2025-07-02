@@ -232,7 +232,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public String getGeneral() {
     String partidas= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("partidas"));
-    String total   = Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    String total   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
     return "Suma importe: <strong>"+ total+ "</strong> | partidas: <strong>"+ partidas+ "</strong>";  
   }
   
@@ -464,7 +464,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte
+  } 
 	
 	public void doVerificarReporte() {
 		if(this.reporte.getTotal()> 0L)
@@ -473,7 +473,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			UIBackingUtilities.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
-	} // doVerificarReporte		
+	} 
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
@@ -494,7 +494,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadEstatus
+	} 
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion            = null;
@@ -550,7 +550,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	}	// doActualizaEstatus
+	}	
 	
 	public String doDiferencias() {
 		JsfBase.setFlashAttribute("idOrdenCompra",((Entity)this.attrs.get("seleccionado")).getKey());
@@ -600,7 +600,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doLoadMails
+	} 
 	
   public void doLoadPhones() {
 		Entity seleccionado= null;
@@ -624,7 +624,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(contactos);
     } // finally
-	} // doLoadPhones
+	} 
 	  
 	public void doAgregarCorreo() {
 		Entity seleccionado    = null;
@@ -666,7 +666,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doAgregarCelular
+	} 
   
 	public void doEnviarCorreoOrden() {
 		StringBuilder sb= new StringBuilder("");
@@ -737,7 +737,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(files);
 		} // finally
-	} // doEnviarCorreoOrden
+	} 
   
   public void doSendWhatsup() {
     StringBuilder sb= new StringBuilder();

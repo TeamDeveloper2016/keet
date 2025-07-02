@@ -33,8 +33,8 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_regimen_fiscal")
   private Long idRegimenFiscal;
-  @Column (name="id_tipo_regimen_persona")
-  private Long idTipoRegimenPersona;
+  @Column (name="id_tipo_cliente")
+  private Long idTipoCliente;
   @Column (name="codigo")
   private String codigo;
   @Column (name="nombre")
@@ -51,10 +51,10 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticRegimenesFiscalesDto(String descripcion, Long idRegimenFiscal, Long idTipoRegimenPersona, String codigo, String nombre) {
+  public TcManticRegimenesFiscalesDto(String descripcion, Long idRegimenFiscal, Long idTipoCliente, String codigo, String nombre) {
     setDescripcion(descripcion);
     setIdRegimenFiscal(idRegimenFiscal);
-    setIdTipoRegimenPersona(idTipoRegimenPersona);
+    setIdTipoCliente(idTipoCliente);
     setCodigo(codigo);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
@@ -76,12 +76,12 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
     return idRegimenFiscal;
   }
 
-  public void setIdTipoRegimenPersona(Long idTipoRegimenPersona) {
-    this.idTipoRegimenPersona = idTipoRegimenPersona;
+  public void setIdTipoCliente(Long idTipoCliente) {
+    this.idTipoCliente = idTipoCliente;
   }
 
-  public Long getIdTipoRegimenPersona() {
-    return idTipoRegimenPersona;
+  public Long getIdTipoCliente() {
+    return idTipoCliente;
   }
 
   public void setCodigo(String codigo) {
@@ -127,7 +127,7 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRegimenFiscal());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoRegimenPersona());
+		regresar.append(getIdTipoCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
@@ -143,7 +143,7 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("idRegimenFiscal", getIdRegimenFiscal());
-		regresar.put("idTipoRegimenPersona", getIdTipoRegimenPersona());
+		regresar.put("idTipoCliente", getIdTipoCliente());
 		regresar.put("codigo", getCodigo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
@@ -152,8 +152,8 @@ public class TcManticRegimenesFiscalesDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getDescripcion(), getIdRegimenFiscal(), getIdTipoRegimenPersona(), getCodigo(), getNombre(), getRegistro()
+    Object[] regresar = new Object[] {
+    getDescripcion(), getIdRegimenFiscal(), getIdTipoCliente(), getCodigo(), getNombre(), getRegistro()
     };
     return regresar;
   }
