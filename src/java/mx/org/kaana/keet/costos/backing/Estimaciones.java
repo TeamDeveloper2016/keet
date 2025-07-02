@@ -46,7 +46,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Estimaciones.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRA,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -71,8 +71,10 @@ public class Estimaciones extends IBaseFilter implements Serializable {
     String estimaciones= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("estimaciones"));
     String costos      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
     String total       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    String normal      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("normal"));
+    String extras      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("extras"));
     String pagos       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagos"));
-    return "Suma contratos: <strong>"+ costos+ "</strong>  |  estimaciones: <strong> "+ estimaciones+ "</strong>  |  total: <strong> "+ total+ "</strong>  |  pagos: <strong> "+ pagos+ "</strong>";  
+    return "Suma contratos: <strong>"+ costos+ "</strong>  |  estimaciones: <strong> "+ estimaciones+ "</strong>  |  normal: <strong> "+ normal+ "</strong>  |  extras: <strong> "+ extras+ "</strong>  |  pagos: <strong> "+ pagos+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -81,10 +83,10 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 		Map<String, Object>params= this.toPrepare();
 		String template          = "ESPECIAL";
 		try {
-      params.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion desc");
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
+      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "pagos", template), COLUMN_DATA_FILE_ESPECIAL);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -271,12 +273,14 @@ public class Estimaciones extends IBaseFilter implements Serializable {
     regresar.addField("estimaciones", 0D);
     regresar.addField("costos", 0D);
     regresar.addField("total", 0D);
+    regresar.addField("normal", 0D);
+    regresar.addField("extras", 0D);
     regresar.addField("pagos", 0D);
     return regresar;
   }
 
 	private void toLoadEstatus() {
-		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>params   = new HashMap<>();
 		List<UISelectEntity> estatus= null;		
 		try {
 			params.put(Constantes.SQL_CONDICION, "id_contrato_estatus in (5, 6, 7, 8, 9, 10)");
