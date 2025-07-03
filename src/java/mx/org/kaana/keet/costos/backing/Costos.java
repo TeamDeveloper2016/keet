@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.costos.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,20 +8,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -32,12 +39,20 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetCostosCostos")
 @ViewScoped
 public class Costos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  private static final Log LOG = LogFactory.getLog(Costos.class);
+  private static final String COLUMN_DATA_FILE_DESTAJOS  = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_MATERIALES= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
+  private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRAS,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
 
 	private Reporte reporte;
   private List<Entity> model;
@@ -45,6 +60,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private Entity totales;
   private List<Long> fraccionamientos;
   private StringBuilder seguimiento;
+  private Map<String, Object> exportar;
 
   public List<Entity> getModel() {
     return model;
@@ -58,16 +74,87 @@ public class Costos extends IBaseFilter implements Serializable {
     return totales;
   }
 
+  public StreamedContent getDestajos() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		String template          = "DESTAJOS";
+		try {
+      this.exportar.put("contratistas", Constantes.SQL_VERDADERO);
+      this.exportar.put("subContratistas", Constantes.SQL_VERDADERO);
+      this.exportar.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.exportar, "VistaCostosDto", "especial", template), COLUMN_DATA_FILE_DESTAJOS);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }
+  
+  public StreamedContent getMateriales() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		String template          = "MATERIALES";
+		try {
+      this.exportar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+      this.exportar.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.exportar, "VistaOrdenesComprasDto", "especial", template), COLUMN_DATA_FILE_MATERIALES);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }
+  
+  public StreamedContent getEstimados() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		String template          = "ESTIMADOS";
+		try {
+      this.exportar.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.exportar, "VistaCostosDto", "pagos", template), COLUMN_DATA_FILE_ESTIMADOS);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
       this.attrs.put("total", "$0.00");
+      this.attrs.put("titulo", "");
       this.fraccionamientos= new ArrayList<>();
       this.seguimiento     = new StringBuilder();
       this.toLoadEstatus();
 			this.toLoadEmpresas();
+      this.exportar= new HashMap();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -450,7 +537,10 @@ public class Costos extends IBaseFilter implements Serializable {
       this.lazyModel= new FormatCustomLazy("VistaCostosDto", "egresos", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("detalle", Boolean.TRUE);
-    }  
+      this.attrs.put("titulo", row.toString("contrato"));
+      this.exportar.clear();
+      this.exportar.putAll(params);
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
@@ -461,13 +551,14 @@ public class Costos extends IBaseFilter implements Serializable {
     } // finally
   }
   
-  public void doLoadDetalle(Long idDesarrollo) {
+  public void doLoadDetalle(Long idDesarrollo, String titulo) {
     List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= new HashMap<>();
 		StringBuilder sb         = new StringBuilder();
     try {
       params.put("idDesarrollo", idDesarrollo);
-      sb.append("tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(" and ");
+      sb.append("(tc_keet_desarrollos.id_desarrollo=").append(idDesarrollo).append(") and ");
+      sb.append("(tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(") and ");
   		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
         sb.append("tc_keet_contratos.id_contrato_estatus= ").append(((UISelectEntity)this.attrs.get("idEstatus")).getKey()).append(" and ");
       if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
@@ -487,7 +578,10 @@ public class Costos extends IBaseFilter implements Serializable {
       this.lazyModel= new FormatCustomLazy("VistaCostosDto", "salida", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("detalle", Boolean.TRUE);
-    }  
+      this.attrs.put("titulo", titulo);
+      this.exportar.clear();
+      this.exportar.putAll(params);
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
@@ -513,7 +607,10 @@ public class Costos extends IBaseFilter implements Serializable {
       this.lazyModel= new FormatCustomLazy("VistaCostosDto", "general", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("detalle", Boolean.TRUE);
-    }  
+      this.attrs.put("titulo", this.toLookOption(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), "nombre", (List<UISelectEntity>)this.attrs.get("empresas")));
+      this.exportar.clear();
+      this.exportar.putAll(params);
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
@@ -550,14 +647,14 @@ public class Costos extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
 		return regresar; 
-	} // toColor
+	} 
  
 	public void doReporte() throws Exception {
 		Parametros comunes           = null;
 		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = EReportes.ANALISIS_COSTOS;
-		try{		
+		try {		
       comunes     = new Parametros(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       parametros  = comunes.getComunes();
       this.reporte= JsfBase.toReporte();	
@@ -584,5 +681,74 @@ public class Costos extends IBaseFilter implements Serializable {
 			JsfBase.addMessage("Generar", "No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} 
+ 
+  private String toLookOption(Long idKey, String key, List<UISelectEntity> items) {
+    String regresar= "";
+    try {      
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+        int index= items.indexOf(new UISelectEntity(idKey));
+        if(index>= 0 && items.get(index).containsKey(key))
+          regresar= items.get(index).toString(key);
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+ 
+  public void doTotal(Entity row) {
+    try {      
+      this.exportar.clear();
+      this.exportar.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= "+ row.toLong("idContrato"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
+  
+  public void doTotal(Long idDesarrollo) {
+ 		Map<String, Object>params= this.toPrepare();
+    StringBuilder sb         = new StringBuilder();
+    try {      
+      sb.append("(tc_keet_desarrollos.id_desarrollo=").append(idDesarrollo).append(") and ");
+      sb.append("(tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(") and ");
+  		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
+        sb.append("tc_keet_contratos.id_contrato_estatus= ").append(((UISelectEntity)this.attrs.get("idEstatus")).getKey()).append(" and ");
+      if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
+        sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
+      if(sb.length()== 0)
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        params.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+      this.exportar.clear();
+      this.exportar.putAll(params);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void doTotal() {
+    LOG.info("doTotal");  
+ 		Map<String, Object>params= this.toPrepare();
+    try {      
+      this.exportar.clear();
+      this.exportar.putAll(params);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

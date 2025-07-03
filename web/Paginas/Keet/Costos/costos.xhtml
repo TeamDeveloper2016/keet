@@ -175,7 +175,10 @@
               <f:facet name="header">
                 <h:outputText value="Estimado"/>
               </f:facet>
-              <h:outputText value="#{row['estimado']}"/>
+              <p:commandLink actionListener="#{keetCostosCostos.doTotal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                <h:outputText value="#{row['estimado']}"/>
+                <p:fileDownload value="#{keetCostosCostos.estimados}"/>
+              </p:commandLink>  
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-5 janal-view-normal">
               <f:facet name="header">
@@ -256,7 +259,10 @@
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].costo}" styleClass="janal-text-white"/>
               </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive">
-                <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].estimado}" styleClass="janal-text-white"/>
+                <p:commandLink actionListener="#{keetCostosCostos.doTotal(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                  <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].estimado}" styleClass="janal-text-white"/>
+                  <p:fileDownload value="#{keetCostosCostos.estimados}"/>
+                </p:commandLink>  
               </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive janal-view-normal">
                 <h:outputText value="" styleClass="janal-text-white"/>
@@ -289,17 +295,24 @@
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].pagado}" styleClass="janal-text-white"/>
               </p:column>
               <p:column styleClass="janal-column-center MarAuto Responsive janal-col-40" exportable="false">
-                <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.detalle)" action="#{keetCostosCostos.doLoadDetalle(row.idDesarrollo.toLong())}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.detalle)" action="#{keetCostosCostos.doLoadDetalle(row.idDesarrollo.toLong(), row.desarrollo.toString())}" title="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </p:column>
             </p:summaryRow>      
             <p:columnGroup type="footer">
               <p:row>
                 <p:column colspan="#{kajoolUtilAplicacion.isMobile? 1: 2}" style="text-align:right" styleClass="MarAuto Responsive janal-font-bold" footerText="Total general:" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.costo}" />
-                <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.estimado}" />
+                <p:column styleClass="MarAuto Responsive janal-font-bold">
+                  <f:facet name="footer">
+                    <p:commandLink actionListener="#{keetCostosCostos.doTotal()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                      <h:outputText value="#{keetCostosCostos.totales.estimado}"/>
+                      <p:fileDownload value="#{keetCostosCostos.estimados}"/>
+                    </p:commandLink>  
+                  </f:facet>  
+                </p:column>   
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-display-none" footerText="#{keetCostosCostos.totales.retenciones}" />
-                <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.extras}" />
+                <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.extras}"/>
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.egresos}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="#{keetCostosCostos.totales.noViviendas}" />
@@ -318,7 +331,7 @@
           
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetCostosCostos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCostosCostos.lazyModel.rowCount gt keetCostosCostos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" style="display: #{keetCostosCostos.attrs.detalle? '': 'none'}">
 						<f:facet name="header">
-							<p:outputLabel value="Egresos [#{keetCostosCostos.attrs.seleccionado.contrato}]" styleClass="janal-text-white detalle" style="float: left; text-align: left;"/>
+							<p:outputLabel value="Egresos [#{keetCostosCostos.attrs.titulo}]" styleClass="janal-text-white detalle" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('datasPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datasXls', 'detalle')" oncomplete="janal.desbloquear()"/>
@@ -335,12 +348,26 @@
               </p:row>
               <p:row>
                 <p:column rowspan="2" headerText="Total" styleClass="MarAuto Responsive janal-wid-25"/>
-                <p:column rowspan="2" headerText="Materiales" styleClass="MarAuto Responsive janal-wid-25"/>
+                <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-25">
+                  <f:facet name="header">
+                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                      <h:outputText value="Materiales"/>
+                      <p:fileDownload value="#{keetCostosCostos.materiales}"/>
+                    </p:commandLink>  
+                  </f:facet>
+                </p:column>  
                 <p:column colspan="3" headerText="Mano de obra" styleClass="MarAuto Responsive janal-wid-50"/>
               </p:row>
               <p:row>
                 <p:column headerText="Total" styleClass="MarAuto Responsive janal-wid-33"/>
-                <p:column headerText="Destajos" styleClass="MarAuto Responsive janal-wid-34"/>
+                <p:column styleClass="MarAuto Responsive janal-wid-34">
+                  <f:facet name="header">
+                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                      <h:outputText value="Destajos"/>
+                      <p:fileDownload value="#{keetCostosCostos.destajos}"/>
+                    </p:commandLink>  
+                  </f:facet>
+                </p:column>  
                 <p:column headerText="Por el día" styleClass="MarAuto Responsive janal-wid-33"/>
               </p:row>
             </p:columnGroup> 

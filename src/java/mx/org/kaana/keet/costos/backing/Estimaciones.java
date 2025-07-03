@@ -46,7 +46,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Estimaciones.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRA,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRAS,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;

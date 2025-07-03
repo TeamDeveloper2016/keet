@@ -736,6 +736,8 @@ left join (
 			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 		union all   
@@ -748,6 +750,8 @@ left join (
 			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 	) as tt_keet_contratos_destajos
@@ -815,6 +819,8 @@ left join (
 			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 		union all   
@@ -827,6 +833,8 @@ left join (
 			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 	) as tt_keet_contratos_destajos
@@ -893,6 +901,8 @@ left join (
 			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 		union all   
@@ -905,6 +915,8 @@ left join (
 			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 	) as tt_keet_contratos_destajos
@@ -971,6 +983,8 @@ left join (
 			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 		union all   
@@ -983,6 +997,8 @@ left join (
 			tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 		inner join
 			tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+    where    
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0          
 		group by 
 			 tc_keet_contratos_lotes.id_contrato
 	) as tt_keet_contratos_destajos
@@ -1065,7 +1081,8 @@ left join (
     inner join 
       tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 		where
-      {contratistas}
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0  
+      and {contratistas}
     group by 
 			 tc_keet_contratos_lotes.id_contrato,
 			 tc_keet_contratos_lotes_contratistas.id_empresa_persona
@@ -1085,7 +1102,8 @@ left join (
     inner join 
       tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
 		where
-      {subContratistas}
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0  
+      and {subContratistas}
     group by 
 			 tc_keet_contratos_lotes.id_contrato,
 			 tc_keet_contratos_lotes_proveedores.id_proveedor
@@ -1257,7 +1275,8 @@ left join (
     inner join 
       tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 		where
-      {contratistas}
+      tc_keet_contratos_destajos_contratistas.costo&gt; 0  
+      and {contratistas}
 		group by 
 			 tc_keet_contratos_lotes.id_contrato,
 			 tc_keet_contratos_lotes_contratistas.id_empresa_persona
@@ -1277,7 +1296,8 @@ left join (
     inner join 
        tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
 		where
-      {subContratistas}
+      tc_keet_contratos_destajos_proveedores.costo&gt; 0  
+      and {subContratistas}
 		group by 
 			 tc_keet_contratos_lotes.id_contrato,
 			 tc_keet_contratos_lotes_proveedores.id_proveedor
