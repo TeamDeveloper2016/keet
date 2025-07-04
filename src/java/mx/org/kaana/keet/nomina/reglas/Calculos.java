@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.reglas;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,7 @@ public final class Calculos extends IBaseTnx {
 			switch(accion) {
 				case PROCESAR:
           LOG.error("LANZO EL PROCESO DE NOMINA <<<< ".concat(this.autentifica.getPersona().getNombreCompleto()).concat(" >>>>>"));
+          LOG.error("                           <<<<       "+ Arrays.toString(this.idNotificar)+ "      >>>>>");
   			  monitoreo.setTotal(this.tuplas);
           regresar= this.procesar(sesion, Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()));
           if(regresar && !monitoreo.isCancelo()) {

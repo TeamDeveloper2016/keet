@@ -1176,7 +1176,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     String control                  = Arrays.toString(this.notificar);
     String desarrollo               = "";
     Boolean particular              = Boolean.FALSE;
-    Monitoreo monitoreo             = this.autentifica.progreso("NOMINA");
+    Monitoreo monitoreo             = this.autentifica.progreso("RESUMEN");    
 		try {
       if(control.contains("2") || control.contains("3") || control.contains("4")) {
         columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
@@ -1184,6 +1184,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         params.put("idNomina", this.idNomina);
         List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
         if(items!= null && !items.isEmpty()) {
+          monitoreo.setTotal(new Long(items.size()));
           UIBackingUtilities.toFormatEntitySet(items, columns);
           Long idDesarrollo= -1L;
           jasper           = new Reporte();	
@@ -1244,6 +1245,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       Methods.clean(contratistas);
       Methods.clean(residentes);
       jasper= null;
+      monitoreo.terminar();
+      this.autentifica.clean("RESUMEN");
     } // finally
   }
   
