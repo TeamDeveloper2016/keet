@@ -52,7 +52,8 @@ public class Costos extends IBaseFilter implements Serializable {
   private static final Log LOG = LogFactory.getLog(Costos.class);
   private static final String COLUMN_DATA_FILE_DESTAJOS  = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
   private static final String COLUMN_DATA_FILE_MATERIALES= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
-  private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRAS,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,COBRADO,PORCENTAJE,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_COBRADO   = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,FOLIO,COBRADO,REGISTRO";  
 
 	private Reporte reporte;
   private List<Entity> model;
@@ -130,6 +131,28 @@ public class Costos extends IBaseFilter implements Serializable {
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(this.exportar, "VistaCostosDto", "pagos", template), COLUMN_DATA_FILE_ESTIMADOS);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }
+  
+  public StreamedContent getCobrado() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		String template          = "COBRADO";
+		try {
+      this.exportar.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion, tc_mantic_clientes_pagos.id_cliente_pago desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.exportar, "VistaCostosDto", "cobrado", template), COLUMN_DATA_FILE_COBRADO);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -736,7 +759,6 @@ public class Costos extends IBaseFilter implements Serializable {
   }
   
   public void doTotal() {
-    LOG.info("doTotal");  
  		Map<String, Object>params= this.toPrepare();
     try {      
       this.exportar.clear();
