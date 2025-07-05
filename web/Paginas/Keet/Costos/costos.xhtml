@@ -136,7 +136,7 @@
           <p:remoteCommand name="reloadContratos" process="@this" update="idContrato @(.contrato)"/>
           <p:remoteCommand name="reloadSemanas" process="@this" update="idSemana"/>
           
-          <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosCostos.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" sortBy="#{row.desarrollo}" expandableRowGroups="true" rowKey="#{row.idKey}"  rowStyleClass="#{keetCostosCostos.toColor(row)}">
+          <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosCostos.model}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" sortBy="#{row.desarrollo}" expandableRowGroups="true" rowKey="#{row.idKey}"  rowStyleClass="#{keetCostosCostos.doColor(row)}">
 						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -173,12 +173,12 @@
             </p:column>														
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
               <f:facet name="header">
-                <p:commandLink actionListener="#{keetCostosCostos.doTotal()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                <p:commandLink actionListener="#{keetCostosCostos.doTotal()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                   <h:outputText value="Estimado"/>
                   <p:fileDownload value="#{keetCostosCostos.estimados}"/>
                 </p:commandLink>  
               </f:facet>
-              <p:commandLink actionListener="#{keetCostosCostos.doTotal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+              <p:commandLink actionListener="#{keetCostosCostos.doTotal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                 <h:outputText value="#{row['estimado']}"/>
                 <p:fileDownload value="#{keetCostosCostos.estimados}"/>
               </p:commandLink>  
@@ -239,12 +239,12 @@
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
               <f:facet name="header">
-                <p:commandLink actionListener="#{keetCostosCostos.doTotal()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                <p:commandLink actionListener="#{keetCostosCostos.doTotal()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                   <h:outputText value="Pagado"/>
                   <p:fileDownload value="#{keetCostosCostos.cobrado}"/>
                 </p:commandLink>  
               </f:facet>
-              <p:commandLink actionListener="#{keetCostosCostos.doTotal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+              <p:commandLink actionListener="#{keetCostosCostos.doTotal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                 <h:outputText value="#{row['pagado']}" title="#{row['calculo']} %"/>
                 <p:fileDownload value="#{keetCostosCostos.cobrado}"/>
               </p:commandLink>  
@@ -262,13 +262,17 @@
             </p:column>
             <p:summaryRow>
               <p:column colspan="#{kajoolUtilAplicacion.isMobile? 1: 2}" styleClass="janal-column-right MarAuto Responsive">
+                <p:commandLink actionListener="#{keetCostosCostos.doCajaChica(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
+                  <h:outputText value="CH: #{keetCostosCostos.doValueCajaChica(row.idDesarrollo.toLong)}" styleClass="janal-color-yellow janal-float-left"/>
+                  <p:fileDownload value="#{keetCostosCostos.cajaChica}"/>
+                </p:commandLink>  
                 <h:outputText value="Total:" styleClass="janal-text-white"/>
               </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive"> 
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].costo}" styleClass="janal-text-white"/>
               </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive">
-                <p:commandLink actionListener="#{keetCostosCostos.doTotal(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                <p:commandLink actionListener="#{keetCostosCostos.doTotal(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                   <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].estimado}" styleClass="janal-text-white"/>
                   <p:fileDownload value="#{keetCostosCostos.estimados}"/>
                 </p:commandLink>  
@@ -301,7 +305,7 @@
                 <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].terminadas}" styleClass="janal-text-white"/>
               </p:column>
               <p:column styleClass="janal-column-right MarAuto Responsive janal-view-normal">
-                <p:commandLink actionListener="#{keetCostosCostos.doTotal(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                <p:commandLink actionListener="#{keetCostosCostos.doTotal(row.idDesarrollo.toLong)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                   <h:outputText value="#{keetCostosCostos.subTotales[keetCostosCostos.toIndex(row.idDesarrollo.toLong)].pagado}" styleClass="janal-text-white"/>
                   <p:fileDownload value="#{keetCostosCostos.cobrado}"/>
                 </p:commandLink>  
@@ -312,7 +316,15 @@
             </p:summaryRow>      
             <p:columnGroup type="footer">
               <p:row>
-                <p:column colspan="#{kajoolUtilAplicacion.isMobile? 1: 2}" style="text-align:right" styleClass="MarAuto Responsive janal-font-bold" footerText="Total general:" />
+                <p:column colspan="#{kajoolUtilAplicacion.isMobile? 1: 2}" style="text-align:right" styleClass="MarAuto Responsive janal-font-bold">
+                  <f:facet name="footer">
+                    <p:commandLink actionListener="#{keetCostosCostos.doCajaChica(-1)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
+                      <h:outputText value="CH: #{keetCostosCostos.doValueCajaChica(-1)}" styleClass="janal-color-black janal-float-left"/>
+                      <p:fileDownload value="#{keetCostosCostos.cajaChica}"/>
+                    </p:commandLink>  
+                    <h:outputText value="Total general:"/>
+                  </f:facet>
+                </p:column>  
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.costo}" />
                 <p:column styleClass="MarAuto Responsive janal-font-bold" footerText="#{keetCostosCostos.totales.estimado}"/>
                 <p:column styleClass="MarAuto Responsive janal-font-bold janal-view-normal" footerText="" />
@@ -355,7 +367,7 @@
                 <p:column rowspan="2" headerText="Total" styleClass="MarAuto Responsive janal-wid-25"/>
                 <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-25">
                   <f:facet name="header">
-                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                       <h:outputText value="Materiales"/>
                       <p:fileDownload value="#{keetCostosCostos.materiales}"/>
                     </p:commandLink>  
@@ -367,7 +379,7 @@
                 <p:column headerText="Total" styleClass="MarAuto Responsive janal-wid-33"/>
                 <p:column styleClass="MarAuto Responsive janal-wid-34">
                   <f:facet name="header">
-                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Exportar XLS">
+                    <p:commandLink onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="cursor: hand;" title="Clic exportar XLS">
                       <h:outputText value="Destajos"/>
                       <p:fileDownload value="#{keetCostosCostos.destajos}"/>
                     </p:commandLink>  

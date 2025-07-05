@@ -54,6 +54,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private static final String COLUMN_DATA_FILE_MATERIALES= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
   private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,COBRADO,PORCENTAJE,REGISTRO";  
   private static final String COLUMN_DATA_FILE_COBRADO   = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,FOLIO,COBRADO,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_CAJA_CHICA= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,IMPORTE,REGISTRO";  
 
 	private Reporte reporte;
   private List<Entity> model;
@@ -62,6 +63,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private List<Long> fraccionamientos;
   private StringBuilder seguimiento;
   private Map<String, Object> exportar;
+  private List<Entity> cajaChicas;
 
   public List<Entity> getModel() {
     return model;
@@ -166,6 +168,28 @@ public class Costos extends IBaseFilter implements Serializable {
     return regresar;
   }
   
+  public StreamedContent getCajaChica() {
+		StreamedContent regresar = null;
+		Xls xls                  = null;
+		String template          = "CAJACHICA";
+		try {
+      this.exportar.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_keet_desarrollos.nombres, tc_keet_gastos_detalles.importe desc");
+      String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+      String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.exportar, "VistaCostosDto", "desatado", template), COLUMN_DATA_FILE_CAJA_CHICA);	
+      if(xls.procesar()) {
+        String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+        regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -177,6 +201,7 @@ public class Costos extends IBaseFilter implements Serializable {
       this.seguimiento     = new StringBuilder();
       this.toLoadEstatus();
 			this.toLoadEmpresas();
+      this.toLoadCajaChica();
       this.exportar= new HashMap();
     } // try
     catch (Exception e) {
@@ -297,6 +322,51 @@ public class Costos extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		}	// finally	
 	} 
+  
+	private void toLoadCajaChica() {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ")");			
+      columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.cajaChicas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "cajaChica", params);
+      if(!Objects.equals(this.cajaChicas, null) && !this.cajaChicas.isEmpty()) {
+        Double importe= 0D;
+        for (Entity item: this.cajaChicas) {
+          importe+= item.toDouble("importe");
+        } // for
+        Entity total= this.cajaChicas.get(0).clone();
+        total.setKey(-1L);
+        total.get("desarrollo").setData("TOTAL");
+        total.get("idDesarrollo").setData(-1L);
+        total.get("importe").setData(importe);
+        this.cajaChicas.add(total);
+        UIBackingUtilities.toFormatEntitySet(this.cajaChicas, columns);
+      } // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {
+			Methods.clean(params);
+		}	// finally	
+	} 
+ 
+  public String doValueCajaChica(Long idDesarrollo) {
+    String regresar= "0.00";
+    try {      
+      int index= this.cajaChicas.indexOf(new Entity(idDesarrollo));
+      if(index>= 0) 
+        regresar= this.cajaChicas.get(index).toString("importe");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
   
 	public void doLoadClientes() {
 		UISelectEntity empresa   = null;
@@ -644,7 +714,7 @@ public class Costos extends IBaseFilter implements Serializable {
     } // finally
   }
   
-	public String toColor(Entity row) {
+	public String doColor(Entity row) {
     String regresar           = "";
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -659,7 +729,7 @@ public class Costos extends IBaseFilter implements Serializable {
                   !Objects.equals(entity.toDouble("destajos"), 0D) || 
                   !Objects.equals(entity.toDouble("materiales"), 0D) || 
                   !Objects.equals(entity.toDouble("porElDia"), 0D)
-                  ))? "janal-tr-error": "";
+                  ))? "janal-tr-nuevo": "";
       } // if  
     } // try
     catch (Exception e) {
@@ -733,9 +803,10 @@ public class Costos extends IBaseFilter implements Serializable {
   }  
   
   public void doTotal(Long idDesarrollo) {
- 		Map<String, Object>params= this.toPrepare();
-    StringBuilder sb         = new StringBuilder();
+    StringBuilder sb= new StringBuilder();
     try {      
+      this.exportar.clear();
+      this.exportar.putAll(this.toPrepare());
       sb.append("(tc_keet_desarrollos.id_desarrollo=").append(idDesarrollo).append(") and ");
       sb.append("(tc_keet_contratos.id_empresa=").append(this.attrs.get("idEmpresa")).append(") and ");
   		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
@@ -743,34 +814,39 @@ public class Costos extends IBaseFilter implements Serializable {
       if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
         sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
       if(sb.length()== 0)
-        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+        this.exportar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       else	
-        params.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-      this.exportar.clear();
-      this.exportar.putAll(params);
+        this.exportar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public void doTotal() {
- 		Map<String, Object>params= this.toPrepare();
     try {      
       this.exportar.clear();
-      this.exportar.putAll(params);
+      this.exportar.putAll(this.toPrepare());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
+  }
+ 
+  public void doCajaChica(Long idDesarrollo) {
+    try {      
+      this.exportar.clear();
+      if(Objects.equals(idDesarrollo, -1L))
+        this.exportar.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ")");
+      else
+        this.exportar.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ") and (tc_keet_desarrollos.id_desarrollo= "+ idDesarrollo+ ")");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

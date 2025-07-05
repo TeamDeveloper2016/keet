@@ -256,9 +256,10 @@ public class Accion extends IBaseFilter implements Serializable {
 			Value value= DaoFactory.getInstance().toField("VistaNominaDto", nomina.getIdTipoNomina()== 1L? "ordinaria": "complementaria", params, "tuplas");
 			if(value!= null && value.getData()!= null) {
 				tuplas= value.toLong();
-			  value= DaoFactory.getInstance().toField("VistaNominaDto", "notificaciones", params, "tuplas");
-			  if(value!= null && value.getData()!= null) 
-				  tuplas+= (value.toLong()* 2);
+        // ESTO YA NO SE OCUPA PORQUE SE QUITO EL AVANCE DE A QUIENES LES ENVIARA MENSAJE DE WS
+//			  value= DaoFactory.getInstance().toField("VistaNominaDto", "notificaciones", params, "tuplas");
+//			  if(value!= null && value.getData()!= null) 
+//				  tuplas+= (value.toLong()* 2);
       } // if  
   	  this.attrs.put("tuplas", tuplas);
     } // try

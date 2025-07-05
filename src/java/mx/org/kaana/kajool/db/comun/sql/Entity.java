@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -274,5 +275,26 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public void addField(String key, Object value) {
     this.put(Cadena.toBeanName(key), new Value(key, value));
   }
-  
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 29 * hash + Objects.hashCode(this.getKey());
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) 
+      return true;
+    if (obj == null) 
+      return false;
+    if (getClass() != obj.getClass()) 
+      return false;
+    final Entity other = (Entity) obj;
+    if (!Objects.equals(this.getKey(), other.getKey())) 
+      return false;
+    return true;
+  }
+    
 }

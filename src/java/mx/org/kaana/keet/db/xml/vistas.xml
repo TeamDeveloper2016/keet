@@ -362,6 +362,64 @@ order by
       </select>  
     </unit>  
     <unit id="VistaCostosDto">
+			<select id="cajaChica">
+select
+  tc_keet_desarrollos.id_desarrollo as id_key,
+  tc_mantic_empresas.id_empresa,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  sum(tc_keet_gastos_detalles.importe) as importe
+from
+  tc_keet_gastos
+inner join 
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+inner join   
+  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+inner join   
+  tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+inner join   
+  tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join   
+  tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
+where
+  {condicion}
+group by
+  tc_keet_desarrollos.id_desarrollo
+order by
+  tc_mantic_empresas.id_empresa,
+  tc_keet_desarrollos.nombres        
+      </select>  
+			<select id="desatado">
+select
+  tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+  tc_mantic_empresas.id_empresa,
+  tc_mantic_empresas.nombre as empresa,
+  tc_keet_desarrollos.id_desarrollo,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_keet_gastos.consecutivo,
+  tc_keet_gastos_detalles.nombre,
+  tc_keet_gastos_detalles.importe,
+  date_format(tc_keet_gastos.registro, '%d/%m/%Y %H:%i:%S') as registro
+from
+  tc_keet_gastos
+inner join 
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+inner join   
+  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+inner join   
+  tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+inner join   
+  tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join   
+  tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
+where
+  {condicion}  
+order by
+  tc_mantic_empresas.id_empresa,
+  tc_keet_desarrollos.nombres,
+  tc_keet_gastos_detalles.importe desc        
+      </select>  
 			<select id="cobrado">
 select
   tc_keet_contratos.id_contrato as id_key,
@@ -380,7 +438,7 @@ select
   ifnull(tc_keet_estimaciones.facturar, 0) as facturado,
   tc_mantic_clientes_pagos.consecutivo as folio,
   tc_mantic_clientes_pagos.pago as cobrado,
-  date_format(tc_mantic_clientes_pagos.registro, '%d/%m/%Y %H%i%S') as registro
+  date_format(tc_mantic_clientes_pagos.registro, '%d/%m/%Y %H:%i:%S') as registro
 from
   tc_keet_contratos
 inner join
@@ -436,7 +494,7 @@ select
   ifnull(sum(tc_keet_estimaciones.facturar), 0) as facturado,
   ifnull(sum(tt_keet_pagados.pagado), 0) as cobrado,
   (ifnull(sum(tt_keet_pagados.pagado), 0)* 100/ sum(ifnull(tc_keet_estimaciones.importe, 0))) as porcentaje,
-  date_format(tc_keet_estimaciones.registro, '%d/%m/%Y %H%i%S') as registro
+  date_format(tc_keet_estimaciones.registro, '%d/%m/%Y %H:%i:%S') as registro
 from
   tc_keet_contratos
 inner join
@@ -933,7 +991,7 @@ select
   sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)+ ifnull(tt_mantic_ordenes_compras.materiales, 0)) as egresos,
   sum(ifnull(tt_mantic_ordenes_compras.materiales, 0)) as materiales,
   sum(ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as mano_de_obra, 
-  sum(ifnull(tt_keet_destajos_realizados.destajos,0)) as destajos,
+  sum(ifnull(tt_keet_destajos_realizados.destajos, 0)) as destajos,
   sum(ifnull(tt_keet_nominas_contratos.por_el_dia, 0)) as por_el_dia  
 from
   tc_keet_contratos
@@ -1194,7 +1252,7 @@ select
   round(tt_keet_destajos_realizados.porcentaje, 2) as porcentaje,
   round(tt_keet_destajos_realizados.destajo, 2) as destajo,
   tt_keet_destajos_realizados.nomina,
-  tt_keet_destajos_realizados.registro
+  date_format(tt_keet_destajos_realizados.registro, '%d/%m/%Y %H:%i:%S') as registro
 from
   tc_keet_contratos
 inner join
@@ -9552,7 +9610,7 @@ where
           concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as empleado,
           date_format(tc_mantic_incidentes.inicio, '%d/%m/%Y') as fecha,
           tc_mantic_incidentes_estatus.nombre as estatus,
-          date_format(tc_mantic_incidentes.registro, '%d/%m/%Y %H%i%S') as registro
+          date_format(tc_mantic_incidentes.registro, '%d/%m/%Y %H:%i:%S') as registro
 				from 
 				  tc_mantic_incidentes
 				inner join
