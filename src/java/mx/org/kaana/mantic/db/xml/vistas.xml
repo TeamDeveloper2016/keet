@@ -6443,6 +6443,7 @@ left join
   tc_mantic_requisiciones on tc_mantic_requisiciones_detalles.id_requisicion= tc_mantic_requisiciones.id_requisicion
 where
   tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
+  and tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)
   and {condicion}
 group by
   tc_mantic_ordenes_detalles.id_orden_detalle

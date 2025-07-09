@@ -54,7 +54,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private static final String COLUMN_DATA_FILE_MATERIALES= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
   private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,COBRADO,PORCENTAJE,REGISTRO";  
   private static final String COLUMN_DATA_FILE_COBRADO   = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,FOLIO,COBRADO,REGISTRO";  
-  private static final String COLUMN_DATA_FILE_CAJA_CHICA= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,IMPORTE,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_CAJA_CHICA= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,CANTIDAD,COSTO,IMPORTE,REGISTRO";  
 
 	private Reporte reporte;
   private List<Entity> model;
@@ -632,6 +632,7 @@ public class Costos extends IBaseFilter implements Serializable {
       this.attrs.put("detalle", Boolean.TRUE);
       this.attrs.put("titulo", row.toString("contrato"));
       this.exportar.clear();
+      params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= "+ row.toLong("idContrato"));
       this.exportar.putAll(params);
     } // try 
     catch (Exception e) {

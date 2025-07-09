@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Consulta de los gastos de caja chica" />
+  <ui:param name="janalBackingPage" value="#{keetCostosCajas}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				idDesarrollo: {validaciones: 'libre', mascara: 'libre'},
+        idUsuario   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idGasto     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},        
+        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
+      };
+			
+      //<![CDATA[      
+			function start() {
+        janal.bloquear();
+      }
+ 
+      function stop() {
+        janal.desbloquear();
+      }
+      //]]>
+    </script>		
+		<style>
+      .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCostosCajas.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetCostosCajas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosCajas.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+								<f:selectItems value="#{keetCostosCajas.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetCostosCajas.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCostosCajas.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+							<p:outputLabel for="idGasto" value="Gasto:"/>
+							<p:selectOneMenu id="idGasto" value="#{keetCostosCajas.attrs.idGasto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCostosCajas.attrs.gastos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="Código">
+									<h:outputText value="#{item.codigo}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="nombre" value="Concepto:"/>							
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCostosCajas.attrs.nombre}" completeMethod="#{keetCostosCajas.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Gasto:" />
+										<h:outputText value="#{custom.gasto}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="Partida(s):" />
+										<h:outputText value="#{custom.partidas}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="idUsuario" value="Registro:"/>
+							<p:selectOneMenu id="idUsuario" value="#{keetCostosCajas.attrs.idUsuario}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCostosCajas.attrs.empleados}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosCajas.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosCajas.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" />
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosCajas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosCajas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+				<p:spacer/>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <div class="ui-grid-row janal-grid-row">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosCajas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCostosCajas.attrs.seleccionado}" selectionMode="single" paginator="#{keetCostosCajas.lazyModel.rowCount gt keetCostosCajas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{keetCostosCajas.toColor(row)}">
+              <f:facet name="header">
+                <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-code-o" value="Especial XLS" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{keetCostosCajas.especial}" />
+                  </p:menuitem>
+                </p:menuButton>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-code-o" title="Especial XLS"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{keetCostosCajas.especial}" />
+                </p:commandButton>
+              </f:facet>	            
+              <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+                <f:facet name="header">
+                  <h:outputText value="Sucursal"/>
+                </f:facet>
+                <h:outputText value="#{row['empresa']}"/>
+              </p:column>
+              <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.desarrollo}">
+                <f:facet name="header">
+                  <h:outputText value="Desarrollo"/>
+                </f:facet>
+                <h:outputText value="#{row['desarrollo']}" title="Cliente: #{row.cliente}"/>
+              </p:column>	
+              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+                <f:facet name="header">
+                  <h:outputText value="Consecutivo"/>
+                </f:facet>
+                <h:outputText value="#{row['consecutivo']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
+                <f:facet name="header">
+                  <h:outputText value="Nombre"/>
+                </f:facet>
+                <h:outputText value="#{row['nombre']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.cantidad}">
+                <f:facet name="header">
+                  <h:outputText value="Cantidad"/>
+                </f:facet>
+                <h:outputText value="#{row['cantidad']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.costo}">
+                <f:facet name="header">
+                  <h:outputText value="Costo"/>
+                </f:facet>
+                <h:outputText value="#{row['costo']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.importe}">
+                <f:facet name="header">
+                  <h:outputText value="Importe"/>
+                </f:facet>
+                <h:outputText value="#{row['importe']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.registro}">
+                <f:facet name="header">
+                  <h:outputText value="Registro"/>
+                </f:facet>
+                <h:outputText value="#{row['registro']}"/>
+              </p:column>		
+              <f:facet name="footer">
+                <p:outputLabel style="float: left;" value="#{keetCostosCajas.general}" styleClass="detalle" escape="false"/>
+                <p:outputLabel value="Total [#{keetCostosCajas.lazyModel== null? 0: keetCostosCajas.lazyModel.rowCount}] registros"/>
+              </f:facet>
+            </p:dataTable>
+          </div>
+        </div>	        
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="lineaSeparacion" value="false"/>	1
+</ui:composition>

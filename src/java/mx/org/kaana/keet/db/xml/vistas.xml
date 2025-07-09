@@ -383,12 +383,13 @@ inner join
 inner join   
   tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
 where
-  {condicion}
+  tc_keet_gastos.id_gasto_estatus= 4      
+  and {condicion}
 group by
   tc_keet_desarrollos.id_desarrollo
-order by
-  tc_mantic_empresas.id_empresa,
-  tc_keet_desarrollos.nombres        
+order by 
+  tc_mantic_empresas.id_empresa, 
+  tc_keet_desarrollos.nombres
       </select>  
 			<select id="desatado">
 select
@@ -399,6 +400,8 @@ select
   tc_keet_desarrollos.nombres as desarrollo,
   tc_keet_gastos.consecutivo,
   tc_keet_gastos_detalles.nombre,
+  tc_keet_gastos_detalles.cantidad,
+  tc_keet_gastos_detalles.costo,
   tc_keet_gastos_detalles.importe,
   date_format(tc_keet_gastos.registro, '%d/%m/%Y %H:%i:%S') as registro
 from
@@ -413,12 +416,39 @@ inner join
   tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 inner join   
   tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
+inner join   
+  tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 where
-  {condicion}  
-order by
-  tc_mantic_empresas.id_empresa,
-  tc_keet_desarrollos.nombres,
-  tc_keet_gastos_detalles.importe desc        
+  tc_keet_gastos.id_gasto_estatus= 4      
+  and {condicion}  
+{sortOrder}        
+      </select>  
+			<select id="acumulados">
+select
+  tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+  count(distinct(tc_keet_gastos.id_gasto)) as partidas,
+  sum(tc_keet_gastos_detalles.importe) as total
+from
+  tc_keet_gastos
+inner join 
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+inner join   
+  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+inner join   
+  tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+inner join   
+  tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join   
+  tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
+inner join   
+  tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+where
+  tc_keet_gastos.id_gasto_estatus= 4      
+  and {condicion}  
       </select>  
 			<select id="cobrado">
 select
@@ -1159,7 +1189,7 @@ select
   tt_keet_destajos_realizados.contratista,
   tt_keet_destajos_realizados.razon_social,
   ifnull(tt_keet_destajos_realizados.destajos, 0) as destajos,
-  tc_keet_contratos.registro
+  tt_keet_destajos_realizados.registro
 from
   tc_keet_contratos
 inner join
@@ -1174,14 +1204,16 @@ left join (
 		tt_keet_contratos_destajos.id_empleado,
 		tt_keet_contratos_destajos.contratista,
 		tt_keet_contratos_destajos.razon_social,
-		sum(tt_keet_contratos_destajos.destajos) as destajos
+		sum(tt_keet_contratos_destajos.destajos) as destajos,
+    tt_keet_contratos_destajos.registro
 	from (
 		select
 			tc_keet_contratos_lotes.id_contrato,
 			'CONTRATISTA' as contratista,
 			tc_keet_contratos_lotes_contratistas.id_empresa_persona as id_empleado,
 			ifnull(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')), '') as razon_social,
-			sum(tc_keet_contratos_destajos_contratistas.costo) as destajos
+			sum(tc_keet_contratos_destajos_contratistas.costo) as destajos,
+      max(tc_keet_contratos_destajos_contratistas.registro) as registro
 		from
 			tc_keet_contratos_destajos_contratistas
 		inner join
@@ -1204,7 +1236,8 @@ left join (
 			'SUBCONTRATISTA' as contratista,
 			tc_keet_contratos_lotes_proveedores.id_proveedor as id_empleado,
 			tc_mantic_proveedores.razon_social,
-			sum(tc_keet_contratos_destajos_proveedores.costo) as destajos
+			sum(tc_keet_contratos_destajos_proveedores.costo) as destajos,
+      max(tc_keet_contratos_destajos_proveedores.registro) as registro
 		from
 			tc_keet_contratos_destajos_proveedores
 		inner join
@@ -1248,7 +1281,7 @@ select
   tt_keet_destajos_realizados.trabajador,
   tt_keet_destajos_realizados.lote,
   tt_keet_destajos_realizados.codigo,
-  tt_keet_destajos_realizados.nombre,
+  tt_keet_destajos_realizados.nombre as concepto,
   round(tt_keet_destajos_realizados.porcentaje, 2) as porcentaje,
   round(tt_keet_destajos_realizados.destajo, 2) as destajo,
   tt_keet_destajos_realizados.nomina,
@@ -15246,6 +15279,48 @@ group by
 			</select>			
 		</unit>
 		<unit id="VistaGastosDto">
+			<select id="partidas">
+select
+  tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+  tc_mantic_articulos.nombre as gasto,
+  tc_keet_gastos_detalles.nombre,
+  count(*) as partidas
+from
+  tc_keet_gastos
+inner join 
+  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+inner join 
+  tc_mantic_articulos on tc_keet_gastos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+where
+  upper(tc_keet_gastos_detalles.nombre) like upper('{codigo}%')
+group by
+  tc_mantic_articulos.id_articulo,
+  tc_keet_gastos_detalles.nombre
+order by  
+  tc_mantic_articulos.id_articulo,
+  tc_keet_gastos_detalles.nombre        
+      </select>  
+			<select id="usuarios">
+select
+  tc_janal_usuarios.id_usuario as id_key,
+  tc_mantic_personas.rfc,        
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
+from
+  tc_keet_gastos
+inner join 
+  tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+inner join   
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+group by
+ tc_mantic_personas.id_persona
+order by  
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno        
+      </select>        
 			<select id="importados">
 				select
 					tc_keet_gastos_archivos.id_gasto_archivo id_key,

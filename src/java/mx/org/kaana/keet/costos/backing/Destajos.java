@@ -151,48 +151,49 @@ public class Destajos extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
+    StringBuilder co= new StringBuilder();
+    StringBuilder su= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
   		sb.append("(tc_keet_contratos.id_empresa=").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
   		sb.append("(tc_keet_desarrollos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && ((UISelectEntity)this.attrs.get("idContrato")).getKey()>= 1L)
   		sb.append("(tc_keet_contratos.id_contrato=").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");
-		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaInicio)) {
+		  co.append("(date_format(tc_keet_contratos_destajos_contratistas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  su.append("(date_format(tc_keet_contratos_destajos_proveedores.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+    } // if  
+		if(!Cadena.isVacio(this.fechaTermino)) {
+		  co.append("(date_format(tc_keet_contratos_destajos_contratistas.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  su.append("(date_format(tc_keet_contratos_destajos_proveedores.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+    } // if  
 		if(!Cadena.isVacio(this.attrs.get("idContratista")) && !this.attrs.get("idContratista").toString().equals("-1"))
       if(Objects.equals(((UISelectEntity)this.attrs.get("idContratista")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  regresar.put("contratistas", Constantes.SQL_FALSO);
+  		  co.append("(").append(Constantes.SQL_FALSO).append(") and ");
       else
-  		  regresar.put("contratistas", "tc_keet_contratos_lotes_contratistas.id_empresa_persona= "+ ((UISelectEntity)this.attrs.get("idContratista")).getKey());
+  		  co.append("(tc_keet_contratos_lotes_contratistas.id_empresa_persona= ").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(")");
     else
       if(!Cadena.isVacio(JsfBase.getParametro("idContratatista_input"))) {
         String codigo= (String)this.attrs.get("idContratatista_input");
         codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");
-        regresar.put("contratistas", "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*') and "));
+        co.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_personas.rfc) regexp '.*").append(codigo).append(".*') and ");
       } // if
-      else
-        regresar.put("contratistas", Constantes.SQL_VERDADERO);
     if(!Cadena.isVacio(this.attrs.get("idSubcontratista")) && !this.attrs.get("idSubcontratista").toString().equals("-1"))
       if(Objects.equals(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  regresar.put("subContratistas", Constantes.SQL_FALSO);
+  		  su.append("(").append(Constantes.SQL_FALSO).append(") and ");
       else
-  		regresar.put("subContratistas", "tc_keet_contratos_lotes_proveedores.id_proveedor="+ ((UISelectEntity)this.attrs.get("idSubcontratista")).getKey());
+  		  su.append("(tc_keet_contratos_lotes_proveedores.id_proveedor=").append(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey()).append(")");
     else
       if(!Cadena.isVacio(JsfBase.getParametro("idSubcontratatista_input"))) {
         String codigo= (String)this.attrs.get("idSubcontratatista_input");
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");
-		    regresar.put("subContratistas", "(tc_mantic_proveedores.razon_social regexp '.*".concat(codigo).concat(".*') and "));
+		    su.append("(tc_mantic_proveedores.razon_social regexp '.*").append(codigo).append(".*') and ");
       } // if
-      else
-  		  regresar.put("subContratistas", Constantes.SQL_VERDADERO);
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !this.attrs.get("idEstatus").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
-    if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    regresar.put("contratistas", co.length()== 0? Constantes.SQL_VERDADERO: co.substring(0, co.length()- 4));
+    regresar.put("subContratistas", su.length()== 0? Constantes.SQL_VERDADERO: su.substring(0, su.length()- 4));
+    regresar.put(Constantes.SQL_CONDICION, sb.length()== 0? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
 		return regresar;		
 	}
 	

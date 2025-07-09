@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +39,13 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@Named(value = "keetCostosMateriales")
+@Named(value = "keetCostosCajas")
 @ViewScoped 
-public class Materiales extends IBaseFilter implements Serializable {
+public class Cajas extends IBaseFilter implements Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Materiales.class);
+	private static final Log LOG              = LogFactory.getLog(Cajas.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,IMPORTE,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -73,10 +72,10 @@ public class Materiales extends IBaseFilter implements Serializable {
 		Map<String, Object>params= this.toPrepare();
 		String template          = "ESPECIAL";
 		try {
-      params.put("sortOrder", "order by tc_mantic_ordenes_compras.consecutivo desc");
+      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_keet_desarrollos.nombres, tc_keet_gastos_detalles.importe desc");
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaOrdenesComprasDto", "especial", template), COLUMN_DATA_FILE_ESPECIAL);	
+      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "desatado", template), COLUMN_DATA_FILE_ESPECIAL);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -123,17 +122,15 @@ public class Materiales extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_contratos.id_contrato, tc_mantic_ordenes_detalles.nombre");
+      params.put("sortOrder", "order by  tc_mantic_empresas.id_empresa,  tc_keet_desarrollos.nombres, tc_keet_gastos_detalles.registro desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("ordenes", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("partidas", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "materiales", params, columns);
-      this.attrs.put("general", this.toTotales("VistaOrdenesComprasDto", "totales", params));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "desatado", params, columns);
+      this.attrs.put("general", this.toTotales("VistaCostosDto", "acumulados", params));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -149,36 +146,33 @@ public class Materiales extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
+  		sb.append("(tc_keet_desarrollos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idGasto")) && ((UISelectEntity)this.attrs.get("idGasto")).getKey()>= 1L)
+  		sb.append("(tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("idGasto")).getKey()).append(") and ");
     if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-      sb.append("tc_mantic_ordenes_detalles.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");
+      sb.append("tc_keet_gastos_detalles.id_gasto_detalle=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");
     else 
       if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
         String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-        sb.append("(tc_mantic_ordenes_detalles.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_ordenes_detalles.nombre regexp '.*").append(nombre).append(".*') and ");
+        sb.append("(tc_keet_gastos_detalles.nombre regexp '.*").append(nombre).append(".*') and ");
       } // if	
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_gastos_detalles.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !this.attrs.get("idEstatus").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
-  		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
-  		sb.append("(tc_mantic_ordenes_compras.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idContrato")) && ((UISelectEntity)this.attrs.get("idContrato")).getKey()>= 1L)
-  		sb.append("(tc_mantic_ordenes_compras.id_contrato=").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");
-    sb.append("(tc_mantic_ordenes_compras.id_orden_estatus in (3, 4, 5, 6, 7)) and ");
+		  sb.append("(date_format(tc_keet_gastos_detalles.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idUsuario")) && !this.attrs.get("idUsuario").toString().equals("-1"))
+  		sb.append("(tc_keet_gastos.id_usuario= ").append(this.attrs.get("idUsuario")).append(") and ");
+    else
+      if(!Cadena.isVacio(JsfBase.getParametro("idUsuario_input")) && !Objects.equals(JsfBase.getParametro("idUsuario_input"), "-1")) { 
+        String nombre= JsfBase.getParametro("idUsuario_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+        sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(nombre).append(".*' or upper(tc_mantic_personas.rfc) regexp '.*").append(nombre).append(".*') and ");
+      } // if	
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+  		sb.append("(tc_mantic_empresas.id_empresa=").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+  		sb.append("(tc_mantic_empresas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+    regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
 	}
 	
@@ -196,12 +190,13 @@ public class Materiales extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.seleccione("VistaOrdenesComprasDto", "clientes", params, columns, "clave"));
-			this.attrs.put("idCliente", new UISelectEntity("-1"));
-      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.seleccione("VistaOrdenesComprasDto", "proveedores", params, columns, "clave", Constantes.SQL_TODOS_REGISTROS));
-			this.attrs.put("idProveedor", new UISelectEntity("-1"));
+      columns.remove(0);
+      params.put("idArticuloTipo", 3L);
+      this.attrs.put("gastos", (List<UISelectEntity>) UIEntity.seleccione("TcManticArticulosDto", "gastos", params, columns, "codigo"));
+			this.attrs.put("idGasto", new UISelectEntity("-1"));
+      this.attrs.put("empleados", (List<UISelectEntity>) UIEntity.seleccione("VistaGastosDto", "usuarios", params, columns, "rfc"));
+			this.attrs.put("idUsuario", new UISelectEntity("-1"));
 			this.doLoadDesarrollos();
-      this.toLoadEstatus();
     } // try
     finally {
       Methods.clean(columns);
@@ -220,7 +215,6 @@ public class Materiales extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
 			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
-      this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -241,24 +235,6 @@ public class Materiales extends IBaseFilter implements Serializable {
 //      UIBackingUtilities.execute("janal.warn('".concat(row.toString("consecutivo")).concat("', 'La orden de compra [").concat(row.toString("consecutivo")).concat(")] Esta incorrecta !');"));
 		return ""; // Objects.equals(row.toLong("partidas"), 0L)? "janal-tr-diferencias": "";
 	} // toColor
-
-	public void doLoadContratos() {
-		List<UISelectEntity> contratos= null;
-		Map<String, Object>params     = new HashMap<>();
-		try {
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			contratos= UIEntity.seleccione("VistaContratosDto", "desarrollos", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
-			this.attrs.put("contratos", contratos);
-			this.attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("contratos")));			
-		} // try
-		catch (Exception e) {			
-			JsfBase.addMessageError(e);
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	} 
 
   private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
     Entity regresar= null;
@@ -286,18 +262,15 @@ public class Materiales extends IBaseFilter implements Serializable {
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
     try {
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("gasto", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		params.put("idProveedor", -1L);
 			String search= query; 
 			if(!Cadena.isVacio(search)) 
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
-      params.put("idArticuloTipo", "1");	      
-      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaGastosDto", "partidas", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -311,29 +284,4 @@ public class Materiales extends IBaseFilter implements Serializable {
 		return articulos;
 	}	
 
-	private void toLoadEstatus() {
-		Map<String, Object>params   = new HashMap<>();
-		List<UISelectEntity> estatus= null;		
-		try {
-			params.put(Constantes.SQL_CONDICION, "id_contrato_estatus in (5, 6, 7, 8, 9, 10)");
-			estatus= (List<UISelectEntity>)UIEntity.build("TcKeetContratosEstatusDto", params);			
-			this.attrs.put("estatus", estatus);
-      if(!Objects.equals(estatus, null) && !estatus.isEmpty()) {
-        UISelectEntity item= new UISelectEntity(99L);
-        item.addField("nombre", "TODOS");
-        estatus.add(item);
-			  this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));		
-      } // if
-      else 
-        this.attrs.put("idEstatus", new UISelectEntity(-1L));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	} 
-  
 }

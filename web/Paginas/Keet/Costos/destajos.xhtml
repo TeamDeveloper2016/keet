@@ -141,31 +141,31 @@
                   <p:fileDownload value="#{keetCostosDestajos.especial}" />
                 </p:commandButton>
               </f:facet>	            
-              <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.empresa}">
+              <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
                 <f:facet name="header">
                   <h:outputText value="Sucursal"/>
                 </f:facet>
                 <h:outputText value="#{row['empresa']}"/>
               </p:column>
-              <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.desarrollo}">
+              <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
                 <f:facet name="header">
                   <h:outputText value="Desarrollo"/>
                 </f:facet>
                 <h:outputText value="#{row['desarrollo']}"/>
               </p:column>	
-              <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
+              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.contrato}">
                 <f:facet name="header">
                   <h:outputText value="Contrato"/>
                 </f:facet>
                 <h:outputText value="#{row['contrato']}"/>
               </p:column>	
-              <p:column styleClass="MarAuto Responsive janal-wid-4" sortBy="#{row.noViviendas}">
+              <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.noViviendas}">
                 <f:facet name="header">
                   <h:outputText value="Vivs"/>
                 </f:facet>
                 <h:outputText value="#{row['noViviendas']}"/>
               </p:column>	
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
                 <f:facet name="header">
                   <h:outputText value="Costo"/>
                 </f:facet>
@@ -189,7 +189,7 @@
                 </f:facet>
                 <h:outputText value="#{row['destajos']}"/>
               </p:column>		
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.registro}">
+              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
                 <f:facet name="header">
                   <h:outputText value="Fecha"/>
                 </f:facet>
