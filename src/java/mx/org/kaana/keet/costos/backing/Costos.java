@@ -657,6 +657,8 @@ public class Costos extends IBaseFilter implements Serializable {
       params.put(Constantes.SQL_CONDICION, row.toLong("idContrato"));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("egresos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));

@@ -816,7 +816,7 @@ select
   tt_keet_contratos_lotes.en_proceso,
   tt_keet_contratos_lotes.terminadas,
   tt_keet_contratos_lotes.otros,
-  ifnull(datediff(if(tc_keet_contratos.id_contrato_estatus> 9, tt_keet_contratos_lotes.entregada, now()), tc_keet_contratos.termino), 0) as dias,
+  ifnull(datediff(tc_keet_contratos.termino, if(tc_keet_contratos.id_contrato_estatus> 9, tt_keet_contratos_lotes.entregada, now())), 0) as dias,
   tc_keet_contratos.registro
 from
   tc_keet_contratos
@@ -938,6 +938,8 @@ select
   tc_keet_contratos.id_contrato,
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre,
+  tc_keet_contratos.inicio,
+  tc_keet_contratos.termino,
   tc_keet_contratos.no_viviendas,
   ifnull(tt_keet_destajos_realizados.destajos, 0)+ ifnull(tt_keet_nominas_contratos.por_el_dia,	0)+ ifnull(tt_mantic_ordenes_compras.materiales, 0) as egresos,
   ifnull(tt_mantic_ordenes_compras.materiales, 0) as materiales,
