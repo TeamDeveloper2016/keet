@@ -632,7 +632,7 @@ public class Costos extends IBaseFilter implements Serializable {
   
   private void remove(Entity row) {
     LOG.info("CONTRATO: "+ row.toString("contrato"));
-    if(row.toString("contrato").contains("GENERAL") || row.toString("contrato").contains("ADMINISTRATIVO"))
+    if(row.toString("contrato").contains("GENERAL") || row.toString("contrato").contains("ADMINISTRATIVO") || row.toString("contrato").contains("OBRA EXTRA"))
       for (String key: row.keySet()) {
         if("|noViviendas|iniciadas|enProceso|terminadas|otros|dias|".contains(key)) {
           Value value= row.get(key);
