@@ -45,7 +45,7 @@ public class Cajas extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Cajas.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,IMPORTE,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,CANTIDAD,COSTO,IMPORTE,REGISTRO,USUARIO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -149,7 +149,7 @@ public class Cajas extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
   		sb.append("(tc_keet_desarrollos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idGasto")) && ((UISelectEntity)this.attrs.get("idGasto")).getKey()>= 1L)
-  		sb.append("(tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("idGasto")).getKey()).append(") and ");
+  		sb.append("(tc_keet_gastos_detalles.id_articulo=").append(((UISelectEntity)this.attrs.get("idGasto")).getKey()).append(") and ");
     if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
       sb.append("tc_keet_gastos_detalles.id_gasto_detalle=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");
     else 

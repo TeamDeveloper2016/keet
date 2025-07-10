@@ -5023,7 +5023,7 @@ select
   tc_mantic_personas.nombres,
   tc_mantic_personas.paterno,
   tc_mantic_personas.materno,
-  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, null)) as nombre_completo,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   tc_janal_tipos_sexos.id_tipo_sexo,

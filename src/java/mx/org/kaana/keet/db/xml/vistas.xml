@@ -401,8 +401,9 @@ select
   tc_keet_gastos.consecutivo,
   tc_keet_gastos_detalles.nombre,
   tc_keet_gastos_detalles.cantidad,
-  tc_keet_gastos_detalles.costo,
-  tc_keet_gastos_detalles.importe,
+  round(tc_keet_gastos_detalles.costo, 2) as costo,
+  round(tc_keet_gastos_detalles.importe, 2) as importe,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, null)) as usuario,        
   date_format(tc_keet_gastos.registro, '%d/%m/%Y %H:%i:%S') as registro
 from
   tc_keet_gastos

@@ -7,7 +7,7 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Consulta de los gastos de caja chica" />
+  <ui:param name="titulo" value="Consulta de gastos de caja chica" />
   <ui:param name="janalBackingPage" value="#{keetCostosCajas}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
@@ -158,7 +158,14 @@
                 </f:facet>
                 <h:outputText value="#{row['nombre']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.cantidad}">
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.cantidad}" exportable="false">
+                <f:facet name="header">
+                  <h:outputText value="Cantidad"/>
+                </f:facet>
+                <h:outputText value="#{row['cantidad']}"/>
+                <span class="janal-float-left" title="#{row['usuario']}"><i class="fa fa-user janal-color-orange"></i></span>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
                 <f:facet name="header">
                   <h:outputText value="Cantidad"/>
                 </f:facet>
@@ -175,6 +182,12 @@
                   <h:outputText value="Importe"/>
                 </f:facet>
                 <h:outputText value="#{row['importe']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.usuario}">
+                <f:facet name="header">
+                  <h:outputText value="Usuario"/>
+                </f:facet>
+                <h:outputText value="#{row['usuario']}"/>
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.registro}">
                 <f:facet name="header">
