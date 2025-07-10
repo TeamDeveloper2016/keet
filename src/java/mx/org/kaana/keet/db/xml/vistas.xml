@@ -429,8 +429,8 @@ where
 			<select id="acumulados">
 select
   tc_keet_gastos_detalles.id_gasto_detalle as id_key,
-  count(distinct(tc_keet_gastos.id_gasto)) as partidas,
-  sum(tc_keet_gastos_detalles.importe) as total
+  ifnull(count(distinct(tc_keet_gastos.id_gasto)), 0) as partidas,
+  ifnull(sum(tc_keet_gastos_detalles.importe), 0) as total
 from
   tc_keet_gastos
 inner join 
