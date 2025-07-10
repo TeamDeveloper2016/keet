@@ -2,6 +2,8 @@ package mx.org.kaana.keet.costos.backing;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +66,9 @@ public class Costos extends IBaseFilter implements Serializable {
   private StringBuilder seguimiento;
   private Map<String, Object> exportar;
   private List<Entity> cajaChicas;
-
+	private LocalDate fechaInicio;
+	private LocalDate fechaTermino;
+  
   public List<Entity> getModel() {
     return model;
   }
@@ -77,6 +81,22 @@ public class Costos extends IBaseFilter implements Serializable {
     return totales;
   }
 
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
+  }
+
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
+  }  
+  
   public StreamedContent getDestajos() {
 		StreamedContent regresar = null;
 		Xls xls                  = null;
@@ -215,7 +235,6 @@ public class Costos extends IBaseFilter implements Serializable {
     List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= this.toPrepare();
     try {
-//      params.put(Constantes.SQL_CONDICION, this.seguimiento.toString());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -293,6 +312,10 @@ public class Costos extends IBaseFilter implements Serializable {
 		  sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
 		  sb.append("tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(" and ");
+		if(!Cadena.isVacio(this.fechaInicio)) 
+		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaTermino)) 
+		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -572,6 +595,8 @@ public class Costos extends IBaseFilter implements Serializable {
     Entity row       = null;
     try {  
       for (Entity item: this.model) {
+        // ESTO LIMPIA LOS CONTRATOS GENERALES
+        this.remove(item);
         if(Objects.equals(this.totales, null)) {
           this.totales= item.clone();
           this.clean(this.totales);
@@ -598,20 +623,31 @@ public class Costos extends IBaseFilter implements Serializable {
   
   private void clean(Entity row) {
 		for (String key: row.keySet()) {
-      if(!"|idKey|idDesarrollo|desarrollo|idContrato|clave|nombre|registro|".contains(key)) {
+      if(!"|idKey|empresa|idDesarrollo|desarrollo|idContrato|clave|contrato|registro|".contains(key)) {
   			Value value= row.get(key);
         value.setData(Numero.getDouble(Cadena.eliminar(value.toString(), ','), 0D));
       } // if
 		} // for
   }
   
+  private void remove(Entity row) {
+    LOG.info("CONTRATO: "+ row.toString("contrato"));
+    if(row.toString("contrato").contains("GENERAL") || row.toString("contrato").contains("ADMINISTRATIVO"))
+      for (String key: row.keySet()) {
+        if("|noViviendas|iniciadas|enProceso|terminadas|otros|dias|".contains(key)) {
+          Value value= row.get(key);
+          value.setData(0L);
+        } // if
+      } // for
+  }
+  
   private void acumular(Entity item, Entity value) {
-		for (String key: value.keySet()) {
-      if(!"|idKey|idDesarrollo|desarrollo|idContrato|clave|nombre|registro|".contains(key)) {
+    for (String key: value.keySet()) {
+      if(!"|idKey|empresa|idDesarrollo|desarrollo|idContrato|clave|contrato|registro|".contains(key)) {
         Double numero= Numero.getDouble(Cadena.eliminar(value.get(key).toString(), ','), 0D);
         item.get(key).setData(item.get(key).toDouble()+ numero);
       } // if
-		} // for
+    } // for
   }
  
   public void doLoadDetalle(Entity row) {
@@ -722,7 +758,7 @@ public class Costos extends IBaseFilter implements Serializable {
       params.put(Constantes.SQL_CONDICION, row.toLong("idDesarrollo"));      
       params.put("idNomina", ((UISelectEntity)this.attrs.get("idSemana")).toLong("idNomina"));
       if(Objects.equals(row.toString("estimado"), "0.00") && !Objects.equals(row.toString("egresos"), "0.00") && !row.toString("contrato").contains("EXTRA"))
-        regresar= "janal-tr-error";
+        regresar= "janal-tr-nuevo";
       else {
         Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaCostosDto", "estimaciones", params);
         if(!Objects.equals(entity, null) && !entity.isEmpty()) 
@@ -814,6 +850,10 @@ public class Costos extends IBaseFilter implements Serializable {
         sb.append("tc_keet_contratos.id_contrato_estatus= ").append(((UISelectEntity)this.attrs.get("idEstatus")).getKey()).append(" and ");
       if(!Cadena.isVacio(this.attrs.get("idContrato")) && !Objects.equals(((UISelectEntity)this.attrs.get("idContrato")).getKey(), -1L))
         sb.append("tc_keet_contratos.id_contrato= ").append(this.attrs.get("idContrato")).append(" and ");
+      if(!Cadena.isVacio(this.fechaInicio)) 
+        sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+      if(!Cadena.isVacio(this.fechaTermino)) 
+        sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
       if(sb.length()== 0)
         this.exportar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       else	

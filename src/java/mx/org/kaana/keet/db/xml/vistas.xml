@@ -816,6 +816,7 @@ select
   tt_keet_contratos_lotes.en_proceso,
   tt_keet_contratos_lotes.terminadas,
   tt_keet_contratos_lotes.otros,
+  ifnull(datediff(if(tc_keet_contratos.id_contrato_estatus> 9, tt_keet_contratos_lotes.entregada, now()), tc_keet_contratos.termino), 0) as dias,
   tc_keet_contratos.registro
 from
   tc_keet_contratos
@@ -857,13 +858,14 @@ left join (
 		sum(case when tc_keet_contratos_lotes.id_contrato_lote_estatus= 1 then 1 else 0 end) as iniciadas,
 		sum(case when tc_keet_contratos_lotes.id_contrato_lote_estatus= 2 then 1 else 0 end) as en_proceso,
 		sum(case when tc_keet_contratos_lotes.id_contrato_lote_estatus= 4 then 1 else 0 end) as terminadas,
-		sum(case when (tc_keet_contratos_lotes.id_contrato_lote_estatus= 3 or tc_keet_contratos_lotes.id_contrato_lote_estatus= 5 or tc_keet_contratos_lotes.id_contrato_lote_estatus= 6) then 1 else 0 end) as otros
+		sum(case when (tc_keet_contratos_lotes.id_contrato_lote_estatus= 3 or tc_keet_contratos_lotes.id_contrato_lote_estatus= 5 or tc_keet_contratos_lotes.id_contrato_lote_estatus= 6) then 1 else 0 end) as otros,
+		ifnull(max(tc_keet_contratos_lotes.entrega), now()) as entregada
   from  
     tc_keet_contratos_lotes 
   group by   
     tc_keet_contratos_lotes.id_contrato 
   order by  
-    tc_keet_contratos_lotes.id_contrato desc
+    tc_keet_contratos_lotes.id_contrato
 ) as tt_keet_contratos_lotes on tc_keet_contratos.id_contrato= tt_keet_contratos_lotes.id_contrato
 left join (
 	select
