@@ -152,11 +152,25 @@
                 </f:facet>
                 <h:outputText value="#{row['consecutivo']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
+              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
                 <f:facet name="header">
                   <h:outputText value="Nombre"/>
                 </f:facet>
                 <h:outputText value="#{row['nombre']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}" exportable="false">
+                <f:facet name="header">
+                  <h:outputText value="Nombre"/>
+                </f:facet>
+                <p:inplace editor="true">
+                  <p:ajax event="save" listener="#{keetCostosCajas.doChageLabel(row)}" update="@(.janal-imox-label)"/>
+                  <f:facet name="output">
+                    <p:outputLabel value="#{row['nombre']}" styleClass="janal-imox-label"/>
+                  </f:facet>
+                  <f:facet name="input">
+                    <p:inputText value="#{row['nombre'].data}" required="true" label="#{row['nombre']}" />
+                  </f:facet>  
+                </p:inplace>
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.cantidad}" exportable="false">
                 <f:facet name="header">

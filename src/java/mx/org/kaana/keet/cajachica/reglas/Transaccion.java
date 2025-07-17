@@ -347,8 +347,8 @@ public class Transaccion extends IBaseTnx {
 			if(this.ok) {
 				item.setIdGastoEstatus(EEstatusGastos.ACEPTADO.getKey());
 				if(DaoFactory.getInstance().update(sesion, item)>= 1L) {
-					if(registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey()))
-						regresar= this.afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte());
+					regresar= this.registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey());
+						// regresar= this.afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte());
 				} // if
 			} // if
       else {
@@ -375,7 +375,7 @@ public class Transaccion extends IBaseTnx {
 			caja.setDisponible(caja.getDisponible()- importe);			
 			caja.setIdCajaChicaCierreEstatus(EEstatusCajasChicas.PARCIALIZADO.getKey());
 			if(DaoFactory.getInstance().update(sesion, caja)>= 1L)
-				regresar= registrarBitacoraCaja(sesion, idCaja, EEstatusCajasChicas.PARCIALIZADO.getKey());
+				regresar= this.registrarBitacoraCaja(sesion, idCaja, EEstatusCajasChicas.PARCIALIZADO.getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;

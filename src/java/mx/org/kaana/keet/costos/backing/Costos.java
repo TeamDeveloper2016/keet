@@ -32,6 +32,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import static mx.org.kaana.libs.formato.Fecha.FECHA_ESTANDAR;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -56,7 +57,7 @@ public class Costos extends IBaseFilter implements Serializable {
   private static final String COLUMN_DATA_FILE_MATERIALES= "EMPRESA,DESARROLLO,CONSECUTIVO,CLAVE,CONTRATO,CLIENTE,USUARIO,TIPO,ESTATUS,PROVEEDOR,TOTAL,REQUISICION,CODIGO,NOMBRE,CANTIDAD,COSTO,IVA,SUB TOTAL,IMPUESTOS,IMPORTE,FECHA";  
   private static final String COLUMN_DATA_FILE_ESTIMADOS = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,COBRADO,PORCENTAJE,REGISTRO";  
   private static final String COLUMN_DATA_FILE_COBRADO   = "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,NORMAL,EXTRAS,RETENCIONES,FOLIO,COBRADO,REGISTRO";  
-  private static final String COLUMN_DATA_FILE_CAJA_CHICA= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,CANTIDAD,COSTO,IMPORTE,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_CAJA_CHICA= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,CANTIDAD,COSTO,IMPORTE,REGISTRO,USUARIO";  
 
 	private Reporte reporte;
   private List<Entity> model;
@@ -313,13 +314,10 @@ public class Costos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L) && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
 		  sb.append("tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(" and ");
 		if(!Cadena.isVacio(this.fechaInicio)) 
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino)) 
-		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		  sb.append("(date_format(tc_keet_contratos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaTermino)).append("') and ");	
+    regresar.put(Constantes.SQL_CONDICION, sb.length()== 0? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
 		return regresar;		
 	}
   
@@ -349,8 +347,14 @@ public class Costos extends IBaseFilter implements Serializable {
 	private void toLoadCajaChica() {
 		Map<String, Object>params= new HashMap<>();
 		List<Columna> columns    = new ArrayList<>();
+		StringBuilder sb         = new StringBuilder();
 		try {
-			params.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ")");			
+      sb.append("(tc_mantic_empresas.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");	
+      if(!Cadena.isVacio(this.fechaInicio)) 
+        sb.append("(date_format(tc_keet_gastos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("') and ");	
+      if(!Cadena.isVacio(this.fechaTermino)) 
+        sb.append("(date_format(tc_keet_gastos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaTermino)).append("') and ");	
+			params.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));			
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.cajaChicas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCostosDto", "cajaChica", params);
@@ -885,6 +889,17 @@ public class Costos extends IBaseFilter implements Serializable {
         this.exportar.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ")");
       else
         this.exportar.put(Constantes.SQL_CONDICION, "(tc_mantic_empresas.id_empresa= "+ this.attrs.get("idEmpresa")+ ") and (tc_keet_desarrollos.id_desarrollo= "+ idDesarrollo+ ")");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+ 
+  public void doProcesar() {
+    try {
+      this.doCalcular();
+      this.toLoadCajaChica();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

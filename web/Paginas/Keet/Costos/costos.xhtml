@@ -119,13 +119,13 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 contrato" value="#{keetCostosCostos.fechaInicio}" pattern="dd/MM/yyyy" locale="mx">
-                <p:ajax event="dateSelect" listener="#{keetCostosCostos.doCalcular}" process="@this @(.contrato)" update="tabla detalle @(.contrato)" onstart="janal.bloquear()" oncomplete="janal.desbloquear(); general()"/>
+                <p:ajax event="dateSelect" listener="#{keetCostosCostos.doProcesar}" process="@this @(.contrato)" update="tabla detalle @(.contrato)" onstart="janal.bloquear()" oncomplete="janal.desbloquear(); general()"/>
               </p:calendar>  
             </p:panelGrid>  
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 contrato" value="#{keetCostosCostos.fechaTermino}" pattern="dd/MM/yyyy" locale="mx">
-                <p:ajax event="dateSelect" listener="#{keetCostosCostos.doCalcular}" process="@this @(.contrato)" update="tabla detalle @(.contrato)" onstart="janal.bloquear()" oncomplete="janal.desbloquear(); general()"/>
+                <p:ajax event="dateSelect" listener="#{keetCostosCostos.doProcesar}" process="@this @(.contrato)" update="tabla detalle @(.contrato)" onstart="janal.bloquear()" oncomplete="janal.desbloquear(); general()"/>
               </p:calendar>  
             </p:panelGrid>  
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">

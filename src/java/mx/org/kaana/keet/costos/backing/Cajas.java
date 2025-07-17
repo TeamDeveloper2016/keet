@@ -16,6 +16,7 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -38,6 +39,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import mx.org.kaana.keet.costos.reglas.Transaccion;
 
 @Named(value = "keetCostosCajas")
 @ViewScoped 
@@ -283,5 +285,19 @@ public class Cajas extends IBaseFilter implements Serializable {
     } // finally
 		return articulos;
 	}	
+  
+  public void doChageLabel(Entity row) {
+    Transaccion transaccion= new Transaccion(row);
+    String value= (String)row.get("nombre").getData();
+    try {      
+      row.get("nombre").setData(Cadena.isVacio(value)? "": value.toUpperCase());
+      if(!transaccion.ejecutar(EAccion.MODIFICAR))
+        JsfBase.addMessage("Error", "No se pudo modificar la descripción !");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
 
 }
