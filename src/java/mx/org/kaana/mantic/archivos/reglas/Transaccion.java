@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
@@ -19,8 +22,8 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG              = LogFactory.getLog(Transaccion.class);
-	private static final Long FILE_DEPURACION= 2L;
-	private static final Long FILE_ELIMINADO = 3L;
+	private static final Long FILE_DEPURACION = 2L;
+	private static final Long FILE_ELIMINADO  = 3L;
 	private static final Long FILE_NO_ENCONTRAADO = 4L;
 	public List<TcManticArchivosDto> files;
 
@@ -46,23 +49,22 @@ public class Transaccion extends IBaseTnx {
 					if(!this.files.isEmpty())
 						this.depuracion(sesion);
 					break;
+        case MODIFICAR:
+          this.toCheckEstaciones(sesion);
+          break;
 			} // switch
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
 			throw e;
 		} // catch
-		finally {
-			
-		} // finally
 		return regresar;
 	} // ejecutar	
 	
 	private List<TcManticArchivosDto> toArchivos(Session sesion) throws Exception {
 		List<TcManticArchivosDto> regresar= null;
-		Map<String, Object>params         = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEliminado", FILE_DEPURACION);
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "eliminar", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -101,4 +103,37 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch		
 	} // depuracion
+  
+  private void toCheckEstaciones(Session sesion) throws Exception {
+    try {   
+      LOG.error("VERIFICANDO ESTACIONES DE LOS CONTRATISTAS");
+      this.toCheckEstaciones(sesion, "constratistas");
+      LOG.error("VERIFICANDO ESTACIONES DE LOS PROVEEDORES");
+      this.toCheckEstaciones(sesion, "proveedores");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+    
+  private void toCheckEstaciones(Session sesion, String idXml) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstacionesDto", idXml, params);
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+        for (Entity item: items) {
+          LOG.error("Check estacion: "+ item.getKey()+ " | "+ item.toDouble("porcentaje")+ " | "+ item.toTimestamp("registro"));
+          params.put("idEstacion", item.getKey());      
+          DaoFactory.getInstance().updateAll(sesion, TcKeetEstacionesDto.class, params, "estatus");
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+    
 }

@@ -4031,6 +4031,15 @@ where
   and cargo&gt;= costo
   and costo&gt; 0
 			</update>
+			<update id="estatus">
+update
+  tc_keet_estaciones
+set
+  id_estacion_estatus= 2
+where
+  id_estacion= {idEstacion}
+  and id_estacion_estatus= 3
+			</update>
     </unit>		
     <unit id="TcKeetEspecialidadesDto">
       <select id="row">

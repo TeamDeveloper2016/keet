@@ -171,7 +171,7 @@ public class Destajos extends IBaseFilter implements Serializable {
       if(Objects.equals(((UISelectEntity)this.attrs.get("idContratista")).getKey(), Constantes.TOP_OF_ITEMS))
   		  co.append("(").append(Constantes.SQL_FALSO).append(") and ");
       else
-  		  co.append("(tc_keet_contratos_lotes_contratistas.id_empresa_persona= ").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(")");
+  		  co.append("(tc_keet_contratos_lotes_contratistas.id_empresa_persona= ").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(") and ");
     else
       if(!Cadena.isVacio(JsfBase.getParametro("idContratatista_input"))) {
         String codigo= (String)this.attrs.get("idContratatista_input");
@@ -182,7 +182,7 @@ public class Destajos extends IBaseFilter implements Serializable {
       if(Objects.equals(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey(), Constantes.TOP_OF_ITEMS))
   		  su.append("(").append(Constantes.SQL_FALSO).append(") and ");
       else
-  		  su.append("(tc_keet_contratos_lotes_proveedores.id_proveedor=").append(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey()).append(")");
+  		  su.append("(tc_keet_contratos_lotes_proveedores.id_proveedor=").append(((UISelectEntity)this.attrs.get("idSubcontratista")).getKey()).append(") and ");
     else
       if(!Cadena.isVacio(JsfBase.getParametro("idSubcontratatista_input"))) {
         String codigo= (String)this.attrs.get("idSubcontratatista_input");

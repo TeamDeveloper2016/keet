@@ -19,16 +19,23 @@ public class Depuracion implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {		
 		Transaccion transaccion= null;
 		try {
-			LOG.info("Iniciando la depuración de archivos.");
+			LOG.error("INICIANDO DEPURACION DE ARCHIVOS TEMPORALES");
 			transaccion= new Transaccion();
-			if(transaccion.ejecutar(EAccion.DEPURAR))
-				LOG.info("Se finalizó la depuración de archivos de forma correcta.");
-			else
-				LOG.info("Ocurrio un error al realizar la depuración de archivos.");
+			transaccion.ejecutar(EAccion.DEPURAR);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);			
 			LOG.error("Ocurrio un error al realizar la depuracion de archivos.");
-		} // catch		
+		} // catch	
+    
+		try {
+			LOG.error("INICIANDO LA VERIFICACION DE ESTACIONES");
+			transaccion= new Transaccion();
+			transaccion.ejecutar(EAccion.MODIFICAR);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);			
+			LOG.error("Ocurrio un error en la verifiacion de estaciones");
+		} // catch	
 	} // execute		
 }
