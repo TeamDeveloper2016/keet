@@ -37,7 +37,7 @@ public class Transaccion extends IBaseTnx {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= true;
+		boolean regresar= Boolean.TRUE;
 		try {
 			switch(accion){
 				case DEPURAR:
@@ -55,6 +55,7 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
+      regresar= Boolean.FALSE;
 			Error.mensaje(e);
 			throw e;
 		} // catch
@@ -107,7 +108,7 @@ public class Transaccion extends IBaseTnx {
   private void toCheckEstaciones(Session sesion) throws Exception {
     try {   
       LOG.error("VERIFICANDO ESTACIONES DE LOS CONTRATISTAS");
-      this.toCheckEstaciones(sesion, "constratistas");
+      this.toCheckEstaciones(sesion, "contratistas");
       LOG.error("VERIFICANDO ESTACIONES DE LOS PROVEEDORES");
       this.toCheckEstaciones(sesion, "proveedores");
     } // try

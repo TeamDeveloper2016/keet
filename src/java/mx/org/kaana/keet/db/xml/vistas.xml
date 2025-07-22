@@ -11375,29 +11375,29 @@ group by
   tc_keet_estaciones.id_estacion  
 having
   sum(tc_keet_contratos_destajos_contratistas.porcentaje)&lt; 100
-  and sum(tc_keet_contratos_destajos_contratistas.porcentaje)!= 0
+  and sum(tc_keet_contratos_destajos_contratistas.porcentaje)&gt; 0
 order by
   tc_keet_estaciones.id_estacion 
       </select>
       <select id="proveedores">
-  select
-    tc_keet_estaciones.id_estacion as id_key,
-    sum(tc_keet_contratos_destajos_proveedores.porcentaje) as porcentaje,
-    tc_keet_estaciones.id_estacion_estatus
-  from
-    tc_keet_contratos_destajos_proveedores
-  inner join
-    tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion= tc_keet_estaciones.id_estacion
-  where
-    tc_keet_estaciones.id_estacion_estatus= 3
-    and date_format(tc_keet_estaciones.registro, '%Y%m%d')&gt;= '20250101'
-  group by
-    tc_keet_estaciones.id_estacion  
-  having
-    sum(tc_keet_contratos_destajos_proveedores.porcentaje)&lt; 100
-    and sum(tc_keet_contratos_destajos_proveedores.porcentaje)!= 0
-  order by
-    tc_keet_estaciones.id_estacion       
+select
+  tc_keet_estaciones.id_estacion as id_key,
+  sum(tc_keet_contratos_destajos_proveedores.porcentaje) as porcentaje,
+  tc_keet_estaciones.registro
+from
+  tc_keet_contratos_destajos_proveedores
+inner join
+  tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion= tc_keet_estaciones.id_estacion
+where
+  tc_keet_estaciones.id_estacion_estatus= 3
+  and date_format(tc_keet_estaciones.registro, '%Y%m%d')&gt;= '20250101'
+group by
+  tc_keet_estaciones.id_estacion  
+having
+  sum(tc_keet_contratos_destajos_proveedores.porcentaje)&lt; 100
+  and sum(tc_keet_contratos_destajos_proveedores.porcentaje)&gt; 0
+order by
+  tc_keet_estaciones.id_estacion       
       </select>  
 			<select id="costos">
         select

@@ -121,8 +121,8 @@ public class Accion extends Catalogos implements Serializable {
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("ticketLock", -1L);		
       this.toLoadTiposPagos();
-      this.toLoadContratos();
 			super.doLoad();
+      this.toLoadContratos();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -200,8 +200,8 @@ public class Accion extends Catalogos implements Serializable {
 	} 
 
  	private void toLoadContratos() {
-		List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> contratos= null;
     try {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -467,7 +467,7 @@ public class Accion extends Catalogos implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // loadResidentes
+	} 
  
 	@Override
   public void doFindArticulo(Integer index) {

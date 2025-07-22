@@ -177,7 +177,7 @@
                 <p:outputLabel for="idContrato" value="Contrato:" styleClass="janal-wid-100"/>
                 <p:selectOneMenu id="idContrato" value="#{keetCajaChicaAccion.adminOrden.orden.ikContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{keetCajaChicaAccion.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                  <p:column headerText="Clave">
+                  <p:column headerText="Clave" styleClass="janal-wid-30">
                     <h:outputText value="#{item.clave}"/>
                   </p:column> 
                   <p:column headerText="Nombre">
