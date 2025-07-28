@@ -18,9 +18,10 @@
 				idContrato      : {validaciones: 'libre', mascara: 'libre'},
         idContratista   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         idSubcontratista: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idDepartamento  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idEstatus       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        idEstatus       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
 			
       //<![CDATA[      
@@ -102,6 +103,13 @@
                   <h:outputText value="#{item.razonSocial}"/>
                 </p:column>   
               </p:selectOneMenu>	
+              <p:outputLabel for="idDepartamento" value="Departamento:" styleClass="janal-color-blue" />
+              <p:selectOneMenu id="idDepartamento" value="#{keetCostosDestajos.attrs.idDepartamento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-color-blue" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCostosDestajos.attrs.departamentos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}" styleClass="janal-color-blue"/>
+                </p:column>   
+              </p:selectOneMenu>  
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosDestajos.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
@@ -153,23 +161,23 @@
                 </f:facet>
                 <h:outputText value="#{row['desarrollo']}"/>
               </p:column>	
-              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.contrato}">
+              <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
                 <f:facet name="header">
                   <h:outputText value="Contrato"/>
                 </f:facet>
                 <h:outputText value="#{row['contrato']}"/>
               </p:column>	
-              <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.noViviendas}">
+              <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-right" sortBy="#{row.noViviendas}">
                 <f:facet name="header">
                   <h:outputText value="Vivs"/>
                 </f:facet>
                 <h:outputText value="#{row['noViviendas']}"/>
               </p:column>	
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.materiales}">
                 <f:facet name="header">
-                  <h:outputText value="Costo"/>
+                  <h:outputText value="Materiales"/>
                 </f:facet>
-                <h:outputText value="#{row['costo']}"/>
+                <h:outputText value="#{row['materiales']}"/>
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.contratista}">
                 <f:facet name="header">
@@ -183,17 +191,17 @@
                 </f:facet>
                 <h:outputText value="#{row['razonSocial']}"/>
               </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.departamento}">
+                <f:facet name="header">
+                  <h:outputText value="Departamento"/>
+                </f:facet>
+                <h:outputText value="#{row['departamento']}"/>
+              </p:column>	
               <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.destajos}">
                 <f:facet name="header">
                   <h:outputText value="Destajo"/>
                 </f:facet>
                 <h:outputText value="#{row['destajos']}"/>
-              </p:column>		
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
-                <f:facet name="header">
-                  <h:outputText value="Fecha"/>
-                </f:facet>
-                <h:outputText value="#{row['registro']}"/>
               </p:column>		
               <f:facet name="footer">
                 <p:outputLabel style="float: left;" value="#{keetCostosDestajos.general}" styleClass="detalle" escape="false"/>

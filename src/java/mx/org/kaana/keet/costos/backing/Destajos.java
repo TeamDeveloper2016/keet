@@ -47,7 +47,7 @@ public class Destajos extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Destajos.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,TIPO,TRABAJADOR,DEPARTAMENTO,NOMINA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,DESTAJO,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -72,7 +72,7 @@ public class Destajos extends IBaseFilter implements Serializable {
     String contratos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("contratos"));
     String costos   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
     String destajos = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("destajos"));
-    return "Suma contratos: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
+    return "Contratos: <strong>"+ contratos+"</strong>   |   materiales: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -125,13 +125,13 @@ public class Destajos extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave desc");
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave desc, tt_keet_destajos_realizados.id_empleado, tt_keet_destajos_realizados.id_departamento");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaCostosDto", "destajistas", params, columns);
@@ -191,6 +191,8 @@ public class Destajos extends IBaseFilter implements Serializable {
       } // if
 		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !this.attrs.get("idEstatus").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDepartamento")) && !this.attrs.get("idDepartamento").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
+  		sb.append("(tt_keet_destajos_realizados.id_departamento= ").append(this.attrs.get("idDepartamento")).append(") and ");
     regresar.put("contratistas", co.length()== 0? Constantes.SQL_VERDADERO: co.substring(0, co.length()- 4));
     regresar.put("subContratistas", su.length()== 0? Constantes.SQL_VERDADERO: su.substring(0, su.length()- 4));
     regresar.put(Constantes.SQL_CONDICION, sb.length()== 0? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
@@ -228,6 +230,7 @@ public class Destajos extends IBaseFilter implements Serializable {
         ((List<UISelectEntity>)this.attrs.get("subContratistas")).add(item);
       } // if
       this.toLoadEstatus();
+      this.toLoadDepartamentos();
     } // try
     catch (Exception e) {
       throw e;
@@ -287,28 +290,6 @@ public class Destajos extends IBaseFilter implements Serializable {
 		} // finally
 	} 
 
-  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
-    Entity regresar= null;
-    try {      
-      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
-      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
-        regresar= this.toEmptyTotales();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    return regresar;
-  }
-  
-  private Entity toEmptyTotales() {
-    Entity regresar= new Entity(-1L);
-    regresar.addField("contratos", 0D);
-    regresar.addField("costos", 0D);
-    regresar.addField("destajos", 0D);
-    return regresar;
-  }
-
 	private void toLoadEstatus() {
 		Map<String, Object>params    = new HashMap<>();
 		List<UISelectEntity> estatus= null;		
@@ -334,4 +315,46 @@ public class Destajos extends IBaseFilter implements Serializable {
 		} // finally
 	} 
   
+	private void toLoadDepartamentos() {
+		Map<String, Object>params         = new HashMap<>();
+		List<UISelectEntity> departamentos= null;		
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_especialidad= 1");
+			departamentos= (List<UISelectEntity>)UIEntity.seleccione("TcKeetDepartamentosDto", params, "nombre");			
+			this.attrs.put("departamentos", departamentos);
+      if(!Objects.equals(departamentos, null) && !departamentos.isEmpty()) 
+			  this.attrs.put("idDepartamento", UIBackingUtilities.toFirstKeySelectEntity(departamentos));		
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} 
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.addField("contratos", 0D);
+    regresar.addField("costos", 0D);
+    regresar.addField("destajos", 0D);
+    return regresar;
+  }
+
+
 }
