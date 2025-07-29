@@ -29,7 +29,7 @@ public class Estimacion extends TcKeetEstimacionesDto implements Serializable {
   private List<Retencion> retenciones;
 
   public Estimacion() {
-    super(null, 0D, 0D, 0D, new Long(Fecha.getAnioActual()), "", 1L, -1L, -1L, "", -1L, 1L, -1L, -1L, LocalDate.now(), LocalDate.now().plusDays(7), "", 2L);
+    super(null, 0D, 0D, 0D, new Long(Fecha.getAnioActual()), "", 1L, -1L, -1L, "", -1L, 1L, -1L, -1L, LocalDate.now(), LocalDate.now().plusDays(7), "", 2L, LocalDate.now());
   }
   
 	public UISelectEntity getIkEmpresa() {

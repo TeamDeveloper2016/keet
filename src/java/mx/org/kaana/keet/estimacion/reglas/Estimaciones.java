@@ -27,7 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 
 public class Estimaciones implements Serializable {
 
-  private static final long serialVersionUID = 498607016989851853L;
+  private static final long serialVersionUID= 498607016989851853L;
 
   protected Estimacion estimacion;
 

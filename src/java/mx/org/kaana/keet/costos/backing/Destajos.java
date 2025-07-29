@@ -72,7 +72,7 @@ public class Destajos extends IBaseFilter implements Serializable {
     String contratos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("contratos"));
     String costos   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("costos"));
     String destajos = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("destajos"));
-    return "Contratos: <strong>"+ contratos+"</strong>   |   materiales: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
+    return "Contratos: <strong>"+ contratos+"</strong>   |   destajos: <strong>"+ costos+ "</strong>  |  destajos: <strong> "+ destajos+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -131,7 +131,7 @@ public class Destajos extends IBaseFilter implements Serializable {
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("materiales", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("cotizado", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("destajos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaCostosDto", "destajistas", params, columns);

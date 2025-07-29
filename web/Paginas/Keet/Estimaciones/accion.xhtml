@@ -22,6 +22,7 @@
 				'contenedorGrupos\\:folio'          : {validaciones: 'texto', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:facturar'       : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
+				'contenedorGrupos\\:fechaEstimacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:pagado'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:idExtra'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
@@ -181,7 +182,11 @@
                   <p:inputNumber id="facturar" styleClass="janal-wid-100-txt calculos" value="#{keetEstimacionesAccion.estimaciones.estimacion.facturar}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," emptyValue="0" inputStyleClass="janal-wid-98 janal-column-center calculos janal-color-orange janal-font-bold" minValue="0" readonly="true"/>
                 </p:panelGrid>  
               </p:panelGrid>
-              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100"> 
+              <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100"> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel for="fechaEstimacion" value="Fecha de estimación:" styleClass="janal-icons-header"/>
+                  <p:calendar id="fechaEstimacion" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.fechaEstimacion}" pattern="dd/MM/yyyy" locale="mx"/>
+                </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="fechaPago" value="Fecha de pago:" styleClass="janal-icons-header"/>
                   <p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{keetEstimacionesAccion.estimaciones.estimacion.fechaPago}" pattern="dd/MM/yyyy" locale="mx"/>                    

@@ -106,7 +106,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -154,7 +154,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	

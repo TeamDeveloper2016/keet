@@ -401,7 +401,8 @@ public class Documento extends IBaseImportar implements IBaseStorage, Serializab
           this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
           this.doCheckFolio();
           this.toReadArticulos();
-          if(!Objects.equals(this.estimaciones.getEstimacion().getFacturar(), this.ingreso.getTotal()))
+          // ESTE FUE UN PARCHE PARA EL DESARROLLO DE ALMENA PARA QUE NO VALIDE LA FACTURA
+          if(!Objects.equals(this.estimaciones.getEstimacion().getIdDesarrollo(), 26L) && !Objects.equals(this.estimaciones.getEstimacion().getFacturar(), this.ingreso.getTotal()))
             UIBackingUtilities.execute("janal.warn('facturar', 'El importe por facturar [$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.estimaciones.getEstimacion().getFacturar())
                     + "] es diferente al importe de la factura [$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.ingreso.getTotal())+ "]');");
         } // if  

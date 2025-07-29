@@ -516,7 +516,7 @@ select
   tc_keet_contratos.id_contrato,
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
-  tc_keet_contratos.no_viviendas,
+  tc_keet_contratos.no_viviendas as viviendas,
   tc_keet_contratos.costo,
   tc_keet_estimaciones.consecutivo,
   ifnull(sum(if(tc_keet_estimaciones.id_extra= 2, tc_keet_estimaciones.importe, 0)), 0) as normal,
@@ -1189,7 +1189,7 @@ select
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.no_viviendas,
-  tc_keet_contratos.materiales,
+  round(tc_keet_contratos.destajos+ tc_keet_contratos.subcontratados, 2) as cotizado,
   tt_keet_destajos_realizados.id_empleado,
   tt_keet_destajos_realizados.contratista,
   tt_keet_destajos_realizados.razon_social,
@@ -1311,7 +1311,7 @@ select
   tc_keet_contratos.clave,
   tc_keet_contratos.nombre as contrato,
   tc_keet_contratos.no_viviendas as viviendas,
-  round(tc_keet_contratos.materiales, 2) as costo,
+  round(tc_keet_contratos.destajos+ tc_keet_contratos.subcontratados, 2) as costo,
   tt_keet_destajos_realizados.id_empleado,
   tt_keet_destajos_realizados.tipo,
   tt_keet_destajos_realizados.trabajador,
@@ -1446,7 +1446,7 @@ order by
 select
   tc_mantic_empresas.id_empresa as id_key, 
   count(distinct(tc_keet_contratos.id_contrato)) as contratos,
-  ifnull(sum(distinct(tc_keet_contratos.costo)), 0) as costos,
+  ifnull(sum(distinct(tc_keet_contratos.destajos+ tc_keet_contratos.subcontratados)), 0) as costos,
   ifnull(sum(tt_keet_destajos_realizados.destajos), 0) as destajos 
 from
   tc_keet_contratos
