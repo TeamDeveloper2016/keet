@@ -46,7 +46,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Estimaciones.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,ESTIMACIONES,TOTAL,NORMAL,EXTRAS,COBRADO,PORCENTAJE,RETENCIONES,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CLAVE,CONTRATO,VIVIENDAS,COSTO,CONSECUTIVO,TOTAL,NORMAL,EXTRAS,COBRADO,PORCENTAJE,RETENCIONES,POR COBRAR,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -73,8 +73,9 @@ public class Estimaciones extends IBaseFilter implements Serializable {
     String total       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
     String normal      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("normal"));
     String extras      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("extras"));
-    String pagos       = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagos"));
-    return "Suma contratos: <strong>"+ costos+ "</strong>  |  estimaciones: <strong> "+ estimaciones+ "</strong>  |  normal: <strong> "+ normal+ "</strong>  |  extras: <strong> "+ extras+ "</strong>  |  pagos: <strong> "+ pagos+ "</strong>";  
+    String pagado      = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagado"));
+    String porCobrar   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("porCobrar"));
+    return "Contratos: <strong>"+ costos+ "</strong>  |  estimaciones: <strong> "+ estimaciones+ "</strong>  |  normal: <strong> "+ normal+ "</strong>  |  extras: <strong> "+ extras+ "</strong>  |  cobrados: <strong> "+ pagado+ "</strong>  |  por cobrar: <strong> "+ porCobrar+ "</strong>";  
   }
  
   public StreamedContent getEspecial() {
@@ -83,7 +84,7 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 		Map<String, Object>params= this.toPrepare();
 		String template          = "ESPECIAL";
 		try {
-      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion desc");
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tt_keet_estimaciones.id_estimacion desc");
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
       xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "pagos", template), COLUMN_DATA_FILE_ESPECIAL);	
@@ -127,20 +128,21 @@ public class Estimaciones extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave, tc_keet_estimaciones.id_estimacion desc");
+      params.put("sortOrder", "order by tc_keet_desarrollos.id_desarrollo, tc_keet_contratos.clave desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("estimaciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("estimaciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("normal", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("extras", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("retenciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("facturado", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("calculo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porCobrar", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaCostosDto", "estimados", params, columns);
       this.attrs.put("general", this.toTotales("VistaCostosDto", "sumatoria", params));
@@ -159,22 +161,24 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		StringBuilder sc= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
   		sb.append("(tc_keet_contratos.id_empresa=").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
   		sb.append("(tc_keet_desarrollos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && ((UISelectEntity)this.attrs.get("idContrato")).getKey()>= 1L)
   		sb.append("(tc_keet_contratos.id_contrato=").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sc.append("(date_format(tc_keet_estimaciones.fecha_estimacion, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_estimaciones.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !this.attrs.get("idEstatus").toString().equals("-1") && ((UISelectEntity)this.attrs.get("idEstatus")).getKey()< 97L)
-  		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
-    if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		  sc.append("(date_format(tc_keet_estimaciones.fecha_estimacion, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), -1L))
+		  if(Objects.equals(((UISelectEntity)this.attrs.get("idEstatus")).getKey(), Constantes.TOP_OF_ITEMS))
+  		  sb.append("(tt_keet_estimaciones.total- tt_keet_pagados.pagado- tt_keet_estimaciones_detalles.retenciones> 0) and ");
+      else
+  		  sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idEstatus")).append(") and ");
+    regresar.put("limites", sc.length()== 0? Constantes.SQL_VERDADERO: sc.substring(0, sc.length()- 4));
+    regresar.put(Constantes.SQL_CONDICION, sb.length()== 0? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
 		return regresar;		
 	}
 	
@@ -275,7 +279,8 @@ public class Estimaciones extends IBaseFilter implements Serializable {
     regresar.addField("total", 0D);
     regresar.addField("normal", 0D);
     regresar.addField("extras", 0D);
-    regresar.addField("pagos", 0D);
+    regresar.addField("pagado", 0D);
+    regresar.addField("por_cobrar", 0D);
     return regresar;
   }
 
@@ -284,12 +289,12 @@ public class Estimaciones extends IBaseFilter implements Serializable {
 		List<UISelectEntity> estatus= null;		
 		try {
 			params.put(Constantes.SQL_CONDICION, "id_contrato_estatus in (5, 6, 7, 8, 9, 10)");
-			estatus= (List<UISelectEntity>)UIEntity.build("TcKeetContratosEstatusDto", params);			
+			estatus= (List<UISelectEntity>)UIEntity.todos("TcKeetContratosEstatusDto", params, "nombre");			
 			this.attrs.put("estatus", estatus);
       if(!Objects.equals(estatus, null) && !estatus.isEmpty()) {
-        UISelectEntity item= new UISelectEntity(99L);
-        item.addField("nombre", "TODOS");
-        estatus.add(item);
+        UISelectEntity item= new UISelectEntity(Constantes.TOP_OF_ITEMS);
+        item.addField("nombre", "POR COBRAR");
+        estatus.add(0, item);
 			  this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));		
       } // if
       else 

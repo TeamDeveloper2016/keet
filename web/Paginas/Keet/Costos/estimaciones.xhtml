@@ -149,9 +149,9 @@
                 </f:facet>
                 <h:outputText value="#{row['costo']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" sortBy="#{row.estimaciones}">
+              <p:column styleClass="MarAuto Responsive janal-wid-5 janal-column-right" sortBy="#{row.estimaciones}">
                 <f:facet name="header">
-                  <h:outputText value="Estimaciones"/>
+                  <h:outputText value="Est"/>
                 </f:facet>
                 <h:outputText value="#{row['estimaciones']}"/>
               </p:column>		
@@ -161,7 +161,7 @@
                 </f:facet>
                 <h:outputText value="#{row['total']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.normal}">
+              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.normal}">
                 <f:facet name="header">
                   <h:outputText value="Normal"/>
                 </f:facet>
@@ -179,7 +179,7 @@
                 </f:facet>
                 <h:outputText value="#{row['facturado']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.pagado}">
+              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.pagado}">
                 <f:facet name="header">
                   <h:outputText value="Cobrado"/>
                 </f:facet>
@@ -191,11 +191,17 @@
                 </f:facet>
                 <h:outputText value="#{row['calculo']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.retenciones}">
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.retenciones}">
                 <f:facet name="header">
-                  <h:outputText value="Retenciones"/>
+                  <h:outputText value="Retencion"/>
                 </f:facet>
                 <h:outputText value="#{row['retenciones']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.porCobrar}">
+                <f:facet name="header">
+                  <h:outputText value="Por cobrar"/>
+                </f:facet>
+                <h:outputText value="#{row['porCobrar']}"/>
               </p:column>		
               <f:facet name="footer">
                 <p:outputLabel style="float: left;" value="#{keetCostosEstimaciones.general}" styleClass="detalle" escape="false"/>
