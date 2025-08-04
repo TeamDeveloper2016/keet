@@ -61,6 +61,10 @@ public class Accion extends Catalogos implements Serializable {
 		this.documentos = documentos;
 	}	
   
+  public Boolean getMaquinaria() {
+    return Objects.equals((Long)this.attrs.get("idDesarrollo"), 29L);
+  }
+  
   @PostConstruct
   @Override
   protected void init() {		
@@ -122,6 +126,7 @@ public class Accion extends Catalogos implements Serializable {
 			this.attrs.put("ticketLock", -1L);		
       this.toLoadTiposPagos();
 			super.doLoad();
+      this.toLoadDesarrollos();
       this.toLoadContratos();
 		} // try
 		catch (Exception e) {			
@@ -174,8 +179,12 @@ public class Accion extends Catalogos implements Serializable {
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(new UISelectEntity(gasto.getIdTipoMedioPago()));
         if(Objects.equals(gasto.getIdContrato(), null)) 
           ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(-1L));
-        else  
+        else 
           ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(gasto.getIdContrato()));
+        if(Objects.equals(gasto.getIdDesarrollo(), null)) 
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(-1L));
+        else 
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(gasto.getIdDesarrollo()));
       } // if
 		} // try
 		catch (Exception e) {			
@@ -199,6 +208,27 @@ public class Accion extends Catalogos implements Serializable {
 		} // catch		
 	} 
 
+	private void toLoadDesarrollos() {
+		List<Columna> columns          = new ArrayList<>();
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = new HashMap<>();
+    try {
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("desarrollos", desarrollos);
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
  	private void toLoadContratos() {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
@@ -286,6 +316,10 @@ public class Accion extends Catalogos implements Serializable {
           regresar.setIdContrato(null);
         else
           regresar.setIdContrato(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdContrato());
+        if(Objects.equals(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdDesarrollo(), -1L))
+          regresar.setIdDesarrollo(null);
+        else
+          regresar.setIdDesarrollo(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdDesarrollo());
         regresar.setArticulos(this.getAdminOrden().getArticulos());			
         if(!Cadena.isVacio(this.attrs.get("idGasto"))) 
           regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
@@ -295,12 +329,12 @@ public class Accion extends Catalogos implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // toLoadGasto
+	} 
 	
 	private void toSetFlash() {		
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));											
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));											
-	} // toSetFlash
+	} 
 	
 	@Override
 	public String doCancelar() {

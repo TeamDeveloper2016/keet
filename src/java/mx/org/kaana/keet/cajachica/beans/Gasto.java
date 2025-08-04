@@ -11,6 +11,7 @@ public class Gasto implements Serializable {
 	private Long idGasto;
 	private Long idCajaChicaCierre;	
 	private Long idTipoMedioPago;	
+	private Long idDesarrollo;	
 	private Long idContrato;	
 	private List<Articulo> articulos;
 
@@ -72,5 +73,13 @@ public class Gasto implements Serializable {
   public void setIdContrato(Long idContrato) {
     this.idContrato = idContrato;
   }
-  
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+ 
 }

@@ -59,6 +59,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   private Long idTipoMedioPago;
   @Column (name="id_contrato")
   private Long idContrato;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -67,11 +69,11 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetGastosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, 2L, 1L, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, 2L, 1L, null, null);
     setKey(key);
   }
 
-  public TcKeetGastosDto(Long idGasto, String consecutivo, Long articulos, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio, Long idGastoEstatus, Long revisado, Long idTipoMedioPago, Long idContrato) {
+  public TcKeetGastosDto(Long idGasto, String consecutivo, Long articulos, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio, Long idGastoEstatus, Long revisado, Long idTipoMedioPago, Long idContrato, Long idDesarrollo) {
     setIdGasto(idGasto);
     setConsecutivo(consecutivo);
     setArticulos(articulos);
@@ -88,6 +90,7 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		setRevisado(revisado);
     this.idTipoMedioPago= idTipoMedioPago;
     this.idContrato= idContrato;
+    this.idDesarrollo= idDesarrollo;
   }
 	
   public void setIdGasto(Long idGasto) {
@@ -217,6 +220,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   public void setIdContrato(Long idContrato) {
     this.idContrato = idContrato;
   }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
 	
   @Transient
   @Override
@@ -262,6 +273,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		regresar.append(getRevisado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -284,13 +297,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		regresar.put("idGastoEstatus", getIdGastoEstatus());
 		regresar.put("revisado", getRevisado());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idDesarrollo", getIdDesarrollo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdGasto(), getConsecutivo(), getArticulos(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro(), getIdGastoEstatus(), getRevisado(), getIdTipoMedioPago()
+			getIdGasto(), getConsecutivo(), getArticulos(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro(), getIdGastoEstatus(), getRevisado(), getIdTipoMedioPago(), getIdDesarrollo()
     };
     return regresar;
   }
@@ -348,4 +362,5 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdGasto() != null ? getIdGasto().hashCode() : 0);
     return hash;
   }
+  
 }

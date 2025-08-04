@@ -1011,6 +1011,7 @@ public class Accion extends IBaseAttribute implements Serializable {
             this.contrato.getContrato().getPorElDia()+
             this.contrato.getContrato().getAdministrativos()+
             this.contrato.getContrato().getMaquinaria()+ 
+            this.contrato.getContrato().getEquipo()+ 
             this.contrato.getContrato().getIndirecto()+ 
             this.contrato.getContrato().getUtilidad();
     this.attrs.put("total", total);
