@@ -1484,7 +1484,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   private void toMovePersonalDesarrollo(Session sesion) throws Exception {
     Map<String, Object> params= new HashMap<>();
     Map<Long, Double> valores = new HashMap<>();
-    Double total= 0D;
+    Double total              = 0D;
     try {      
 			params.put("idNomina", this.idNomina);
       DaoFactory.getInstance().deleteAll(sesion, TcKeetNominasDesarrollosDto.class, params);

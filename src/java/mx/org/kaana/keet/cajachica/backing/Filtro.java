@@ -226,7 +226,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally	
-	} // toLoadEjercicios
+	} 
   
 	public void doLoadSemanas() {		
 		List<UISelectItem> semanas= null;
@@ -247,7 +247,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally	
-	} // doLoadSemanas
+	} 
   
   @Override
   public void doLoad() {

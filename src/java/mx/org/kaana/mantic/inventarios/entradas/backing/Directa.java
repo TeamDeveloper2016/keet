@@ -960,7 +960,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoadEmpleadoDisponible
+  } 
 
   public List<UISelectEntity> doCompleteEmpleado(String text) {
     List<Columna> campos      = null;
@@ -984,7 +984,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       Methods.clean(params);
     }// finally
     return (List<UISelectEntity>)this.attrs.get("empleados");
-  }	// doCompleteEmpleado
+  }	
       
   public void doUpadateInfo() {
     ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDeuda(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getOriginal());   

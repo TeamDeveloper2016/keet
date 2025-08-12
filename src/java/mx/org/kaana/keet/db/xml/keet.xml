@@ -2726,13 +2726,13 @@ where
 				  ejercicio = {ejercicio}			
 			</select>
 			<select id="ejercicios">
-				select 
-				  ejercicio as id_key, 
-          ejercicio 
-				from 
-				  tc_keet_gastos 
-				order by 
-				  ejercicio desc
+select 
+  ejercicio as id_key, 
+  ejercicio 
+from 
+  tc_keet_gastos 
+order by 
+  ejercicio desc
 			</select>
 			<select id="importe">
         select 
@@ -4391,6 +4391,37 @@ order by
           tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
         where      
           tc_keet_nominas.id_nomina= {idNomina}
+      </select>
+			<select id="ejercicios">
+select 
+  tc_keet_nominas_periodos.ejercicio as id_key, 
+  tc_keet_nominas_periodos.ejercicio 
+from 
+  tc_keet_nominas
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+group by
+  tc_keet_nominas_periodos.ejercicio  
+order by 
+  tc_keet_nominas_periodos.ejercicio desc
+      </select>
+      <select id="semanas">
+select
+  tc_keet_nominas.id_nomina_periodo as id_key,
+  tc_keet_nominas_periodos.ejercicio,
+  tc_keet_nominas_periodos.orden,
+  tc_keet_nominas_periodos.inicio,
+  tc_keet_nominas_periodos.termino
+from
+  tc_keet_nominas
+inner join
+  tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+where
+  tc_keet_nominas_periodos.ejercicio= {ejercicio}
+group by
+  tc_keet_nominas.id_nomina_periodo	   
+order by
+  tc_keet_nominas.id_nomina_periodo desc         
       </select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">

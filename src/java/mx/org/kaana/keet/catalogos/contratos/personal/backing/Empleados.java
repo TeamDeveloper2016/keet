@@ -94,9 +94,8 @@ public class Empleados extends IBaseFilter implements Serializable {
 	
 	private void loadPuestos() {
 		List<UISelectItem> puestos= null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       // params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.attrs.get("idEmpresa"));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
