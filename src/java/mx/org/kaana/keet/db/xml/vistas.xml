@@ -364,7 +364,8 @@ order by
     <unit id="VistaCostosDto">
 			<select id="personal">
 select
-  tc_keet_nominas_desarrollos.id_nomina_desarrollo as id_key,
+  tc_keet_nominas_personas.id_nomina_persona as id_key,
+  tc_keet_nominas_personas.id_nomina_persona,
   tc_keet_nominas.id_nomina,
   tc_mantic_empresas.nombre as empresa,
   concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
@@ -374,7 +375,8 @@ select
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, 'POR EL DIA', 
   if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, 'POR OBRA', '')) as tipo,
-  sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as total
+  sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as nomina,
+  tc_keet_nominas.registro
 from
   tc_keet_nominas_desarrollos
 inner join  
@@ -396,7 +398,8 @@ inner join
 where
   tr_mantic_empresa_personal.id_contratista is null
   and tc_mantic_personas.id_tipo_persona!= 1        
-  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')&gt; 0 
+  and tc_keet_nominas_personas.neto&gt; 0
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '({puestosPorObra}{puestosPorDia}')&gt; 0 
   and {condicion}
 group by
   tc_keet_nominas_desarrollos.id_desarrollo,
@@ -429,8 +432,51 @@ inner join
 where
   tr_mantic_empresa_personal.id_contratista is null
   and tc_mantic_personas.id_tipo_persona!= 1        
-  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in ('{puestosPorObra}{puestosPorDia}')&gt; 0 
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in ('{puestosPorObra}{puestosPorDia}'))&gt; 0 
   and {condicion}
+      </select>  
+			<select id="detalles">
+select
+  tc_keet_nominas_personas.id_nomina_persona as id_key,
+  tc_mantic_empresas.nombre as empresa,
+  concat(tc_keet_nominas_periodos.ejercicio, '-',  tc_keet_nominas_periodos.orden) as semana,
+  tc_keet_desarrollos.nombres as desarrollo,
+  tc_mantic_puestos.nombre as puesto,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+  if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}')> 0 and tr_mantic_empresa_personal.id_contratista is null, 'POR EL DIA', 
+  if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, 'POR OBRA', '')) as tipo,
+  sum(if(position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')> 0 and tr_mantic_empresa_personal.id_contratista is null, tc_keet_nominas_personas.neto, 0)) as nomina,
+  date_format(tc_keet_nominas.registro, '%d/%m/%Y') as registro
+from
+  tc_keet_nominas_desarrollos
+inner join  
+  tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+inner join  
+  tc_keet_nominas on tc_keet_nominas.id_nomina= tc_keet_nominas_desarrollos.id_nomina
+inner join 
+  tc_keet_nominas_periodos on tc_keet_nominas_periodos.id_nomina_periodo= tc_keet_nominas.id_nomina_periodo
+inner join
+  tr_mantic_empresa_personal on tc_keet_nominas_desarrollos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_keet_nominas_personas on tc_keet_nominas_desarrollos.id_nomina= tc_keet_nominas_personas.id_nomina and tc_keet_nominas_desarrollos.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
+inner join 
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join	
+  tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+where
+  tr_mantic_empresa_personal.id_contratista is null
+  and tc_mantic_personas.id_tipo_persona!= 1        
+  and tc_keet_nominas_personas.neto&gt; 0
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '({puestosPorObra}{puestosPorDia}')&gt; 0 
+  and {condicion}
+group by
+  tc_keet_nominas_personas.id_nomina_persona
+order by
+  tc_keet_nominas_desarrollos.id_desarrollo,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_keet_nominas_desarrollos.id_nomina
       </select>  
 			<select id="cajaChica">
 select

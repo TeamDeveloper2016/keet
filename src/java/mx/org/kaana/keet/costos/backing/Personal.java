@@ -54,7 +54,7 @@ public class Personal extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Personal.class);
   private static final long serialVersionUID= 8793667741599428332L;
-  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,CONSECUTIVO,NOMBRE,CANTIDAD,COSTO,IMPORTE,REGISTRO,USUARIO";  
+  private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,SEMANA,PUESTO,TIPO,NOMBRE,NOMINA,REGISTRO";  
   
 	private LocalDate fechaInicio;
 	private LocalDate fechaTermino;
@@ -81,10 +81,9 @@ public class Personal extends IBaseFilter implements Serializable {
 		Map<String, Object>params= this.toPrepare();
 		String template          = "ESPECIAL";
 		try {
-      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_keet_desarrollos.nombres, tc_keet_gastos_detalles.importe desc");
       String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
       String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "desatado", template), COLUMN_DATA_FILE_ESPECIAL);	
+      xls= new Xls(fileName, new Modelo(params, "VistaCostosDto", "detalles", template), COLUMN_DATA_FILE_ESPECIAL);	
       if(xls.procesar()) {
         String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -135,7 +134,7 @@ public class Personal extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("nomina", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel= new FormatCustomLazy("VistaCostosDto", "personal", params, columns);
       this.attrs.put("general", this.toTotales("VistaCostosDto", "resumen", params));
       UIBackingUtilities.resetDataTable();
@@ -155,9 +154,9 @@ public class Personal extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
       sb.append("(tc_keet_desarrollos.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && !this.attrs.get("ejercicio").equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && !Objects.equals((Long)this.attrs.get("ejercicio"), -1L))
 		  sb.append("(tc_keet_nominas_periodos.ejercicio= '").append(this.attrs.get("ejercicio")).append("') and ");		
-		if(!Cadena.isVacio(this.attrs.get("semana")) && !this.attrs.get("semana").equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("semana")) && !Objects.equals((Long)this.attrs.get("semana"), -1L))
 		  sb.append("(tc_keet_nominas_periodos.id_nomina_periodo= ").append(this.attrs.get("semana")).append(") and ");		
 		if(!Cadena.isVacio(this.attrs.get("idPuesto")) && ((UISelectEntity)this.attrs.get("idPuesto")).getKey()>= 1L)
       sb.append("(tc_mantic_puestos.id_puesto=").append(((UISelectEntity)this.attrs.get("idPuesto")).getKey()).append(") and ");
@@ -169,9 +168,9 @@ public class Personal extends IBaseFilter implements Serializable {
         sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(nombre).append(".*' or upper(tc_mantic_personas.rfc) regexp '.*").append(nombre).append(".*') and ");
       } // if	
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_nominas_periodos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_nominas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_nominas_periodos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_keet_nominas.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
   		sb.append("(tc_mantic_empresas.id_empresa=").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 		else
@@ -253,7 +252,7 @@ public class Personal extends IBaseFilter implements Serializable {
 		List<UISelectItem> ejercicios= null;
 		Map<String, Object>params    = new HashMap<>();
 		try {						
-			ejercicios= UISelect.build("TcKeetNominasDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
+			ejercicios= UISelect.seleccione("TcKeetNominasDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("ejercicios", ejercicios);
 			this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectItem(ejercicios));
       this.doLoadSemanas();
@@ -272,7 +271,7 @@ public class Personal extends IBaseFilter implements Serializable {
 		Map<String, Object>params = new HashMap<>();
 		try {						
       params.put("ejercicio", this.attrs.get("ejercicio"));
-			semanas= UISelect.build("TcKeetNominasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
+			semanas= UISelect.seleccione("TcKeetNominasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
       if(semanas== null)
 			  semanas= new ArrayList<>();
 			this.attrs.put("semanas", semanas);

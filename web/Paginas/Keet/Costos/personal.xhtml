@@ -71,12 +71,12 @@
                 </p:column>                   
               </p:selectOneMenu>
 							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
-              <p:selectOneMenu id="ejercicio" value="#{keetCostosPersonal.attrs.ejercicio}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+              <p:selectOneMenu id="ejercicio" value="#{keetCostosPersonal.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
                 <p:ajax event="change" process="@this" update="semana fechaInicio" listener="#{keetCostosPersonal.doLoadSemanas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{keetCostosPersonal.attrs.ejercicios}"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="semana" value="Semana:"/>
-              <p:selectOneMenu id="semana" value="#{keetCostosPersonal.attrs.semana}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="semana" value="#{keetCostosPersonal.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
                 <f:selectItems value="#{keetCostosPersonal.attrs.semanas}"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="idTipo" value="Tipo personal:"/>
@@ -157,54 +157,29 @@
                 </f:facet>
                 <h:outputText value="#{row['desarrollo']}" title="Cliente: #{row.cliente}"/>
               </p:column>	
-              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+              <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-left" sortBy="#{row.puesto}">
                 <f:facet name="header">
-                  <h:outputText value="Consecutivo"/>
+                  <h:outputText value="Puesto"/>
                 </f:facet>
-                <h:outputText value="#{row['consecutivo']}"/>
+                <h:outputText value="#{row['puesto']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
-                <f:facet name="header">
-                  <h:outputText value="Nombre"/>
-                </f:facet>
-                <h:outputText value="#{row['nombre']}"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}" exportable="false">
+              <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
                 <f:facet name="header">
                   <h:outputText value="Nombre"/>
                 </f:facet>
                 <p:outputLabel value="#{row['nombre']}" styleClass="janal-imox-label"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.cantidad}" exportable="false">
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-left" sortBy="#{row.tipo}">
                 <f:facet name="header">
-                  <h:outputText value="Cantidad"/>
+                  <h:outputText value="Tipo"/>
                 </f:facet>
-                <h:outputText value="#{row['cantidad']}"/>
-                <span class="janal-float-left" title="#{row['usuario']}"><i class="fa fa-user janal-color-orange"></i></span>
+                <h:outputText value="#{row['tipo']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.nomina}">
                 <f:facet name="header">
-                  <h:outputText value="Cantidad"/>
+                  <h:outputText value="Nómina"/>
                 </f:facet>
-                <h:outputText value="#{row['cantidad']}"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.costo}">
-                <f:facet name="header">
-                  <h:outputText value="Costo"/>
-                </f:facet>
-                <h:outputText value="#{row['costo']}"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.importe}">
-                <f:facet name="header">
-                  <h:outputText value="Importe"/>
-                </f:facet>
-                <h:outputText value="#{row['importe']}"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.usuario}">
-                <f:facet name="header">
-                  <h:outputText value="Usuario"/>
-                </f:facet>
-                <h:outputText value="#{row['usuario']}"/>
+                <h:outputText value="#{row['nomina']}"/>
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.registro}">
                 <f:facet name="header">
