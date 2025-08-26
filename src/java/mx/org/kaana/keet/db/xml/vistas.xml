@@ -399,7 +399,7 @@ where
   tr_mantic_empresa_personal.id_contratista is null
   and tc_mantic_personas.id_tipo_persona!= 1        
   and tc_keet_nominas_personas.neto&gt; 0
-  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '({puestosPorObra}{puestosPorDia}')&gt; 0 
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')&gt; 0 
   and {condicion}
 group by
   tc_keet_nominas_desarrollos.id_desarrollo,
@@ -432,7 +432,7 @@ inner join
 where
   tr_mantic_empresa_personal.id_contratista is null
   and tc_mantic_personas.id_tipo_persona!= 1        
-  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in ('{puestosPorObra}{puestosPorDia}'))&gt; 0 
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')&gt; 0 
   and {condicion}
       </select>  
 			<select id="detalles">
@@ -469,7 +469,7 @@ where
   tr_mantic_empresa_personal.id_contratista is null
   and tc_mantic_personas.id_tipo_persona!= 1        
   and tc_keet_nominas_personas.neto&gt; 0
-  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '({puestosPorObra}{puestosPorDia}')&gt; 0 
+  and position(concat('|', tr_mantic_empresa_personal.id_puesto, '|') in '{puestosPorObra}{puestosPorDia}')&gt; 0 
   and {condicion}
 group by
   tc_keet_nominas_personas.id_nomina_persona

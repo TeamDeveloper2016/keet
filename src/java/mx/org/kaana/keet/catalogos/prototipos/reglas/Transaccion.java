@@ -16,6 +16,11 @@ import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetErroresEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposHabilesDto;
@@ -326,10 +331,19 @@ public class Transaccion extends IBaseTnx {
         item.setCosto(0D);
         item.setAnticipo(0D);
         TcKeetEstacionesDto estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, item.getIdEstacion());
-        this.toUpdateFathers(sesion, estaciones, estacion, item);
+        Long idFhater= this.toUpdateFathers(sesion, estaciones, estacion, item);
         params.put("idEstacion", item.getIdEstacion());
+        params.put("idArranque", idFhater);
+        DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetErroresEstacionesDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosRechazosContratistasDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosPuntosContratistasDto.class, params);
         DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosContratistasDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosRechazosProveedoresDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosPuntosProveedoresDto.class, params);
         DaoFactory.getInstance().deleteAll(sesion, TcKeetContratosDestajosProveedoresDto.class, params);
+        // NO SE ELIMINA LA BITACORA PARA SABER QUIEN ELIMINO EL CONCEPTO
+        // DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesBitacoraDto.class, params);
         DaoFactory.getInstance().delete(sesion, estacion);
       } // for
       regresar= Boolean.TRUE;
@@ -343,12 +357,15 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }
   
-  private void toUpdateFathers(Session sesion, Estaciones estaciones, TcKeetEstacionesDto origen, Partida estacion) throws Exception {
+  private Long toUpdateFathers(Session sesion, Estaciones estaciones, TcKeetEstacionesDto origen, Partida estacion) throws Exception {
+    Long regresar= estacion.getIdEstacion();
     try {      
       Double diferencia= Numero.toRedondearSat(estacion.getCosto()- origen.getCosto());
       Double disparidad= Numero.toRedondearSat(estacion.getAnticipo()- origen.getAnticipo());
       List<TcKeetEstacionesDto> items= estaciones.toFather(estacion.getClave());
       if(items!= null && !items.isEmpty()) {
+        // ESTE ES EL ID_ESTACION DE LA ESTACION PADRE ESTA EN LA POSICION CERO DEL ARREGLO
+        regresar= items.get(0).getIdEstacion();
         items.remove(items.size()- 1);
         for (TcKeetEstacionesDto item: items) {
           item.setCosto(Numero.toRedondearSat(item.getCosto()+ diferencia));
@@ -363,6 +380,7 @@ public class Transaccion extends IBaseTnx {
     finally {
       estaciones= null;
     } // finally
+    return regresar;
   }
   
   private Boolean toCheckConcepto(Session sesion, Partida partida, String clave) throws Exception {
