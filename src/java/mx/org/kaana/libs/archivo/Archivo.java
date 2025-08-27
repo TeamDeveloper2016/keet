@@ -223,7 +223,8 @@ public final class Archivo {
 			writer.setOutput(ios);
 			ImageWriteParam param = writer.getDefaultWriteParam();
 			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			param.setCompressionQuality(1F);
+      // CALIDAD CON LA QUE SE ALMACENA LA FOTOGRAFIA QUE ES IMPORTADA AL SERVIDOR 1F es FULL
+			param.setCompressionQuality(0.4F);
 			writer.write(null, new IIOImage(ImageIO.read(is), null, null), param);
 			os.close();
 			ios.close();
