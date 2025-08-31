@@ -28,7 +28,6 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 	private static final long serialVersionUID=4190795152468978106L;
 	private static final Log LOG=LogFactory.getLog(IBaseAttachment.class);
 
-  private ECorreos type;
 	private Map<String, Object> params;
 
 	public IBaseAttachment(ECorreos type, String subject, Map<String, Object> params) {
@@ -48,8 +47,7 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 	}
 	
 	public IBaseAttachment(ECorreos type, String from, String to, String copies, String subject, Map<String, Object> params, List<Attachment> files, String alias) {
-		super(from, to, copies, subject, files, alias);
-		this.type=type;
+		super(type, from, to, copies, subject, files, alias);
 		this.params=params;
 	}
 

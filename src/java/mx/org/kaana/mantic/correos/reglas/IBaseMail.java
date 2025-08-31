@@ -32,6 +32,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,6 +49,7 @@ public class IBaseMail implements Serializable {
 	private static final Log LOG=LogFactory.getLog(IBaseMail.class);
 	private static final long serialVersionUID=2578645644776553114L;
 
+  protected ECorreos type;  
 	private String from;
 	private String to;
 	private String copies;
@@ -69,12 +71,20 @@ public class IBaseMail implements Serializable {
 	}
 	
 	public IBaseMail(String from, String to, String copies, String subject, List<Attachment> files, String alias) {
-    this(from, to, copies, subject, files, new SMTPAuthenticator());
+    this(ECorreos.ADMINISTRACION.getEmail(), to, copies, subject, files, new SMTPAuthenticator());
+		this.type = ECorreos.ADMINISTRACION;
+		this.alias= alias;
+	}
+	
+	public IBaseMail(ECorreos type, String from, String to, String copies, String subject, List<Attachment> files, String alias) {
+    this(type.getEmail(), to, copies, subject, files, new SMTPAuthenticator());
+		this.type = type;
 		this.alias= alias;
 	}
 	
 	public IBaseMail(String from, String to, String copies, String subject, Authenticator authenticator) {
-    this(from, to, copies, subject, Collections.EMPTY_LIST, authenticator);
+    this(ECorreos.ADMINISTRACION.getEmail(), to, copies, subject, Collections.EMPTY_LIST, authenticator);
+		this.type = ECorreos.ADMINISTRACION;
 	}
 	
 	public IBaseMail(String from, String to, String copies, String subject, List<Attachment> files, Authenticator authenticator) {
@@ -210,8 +220,8 @@ public class IBaseMail implements Serializable {
       Transport transport= session.getTransport("smtp");
       transport.connect(
         Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"), 
-        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"), 
-        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass")
+        this.type.getUser(), 
+        this.type.getPassword()
       );
       transport.sendMessage(message, message.getAllRecipients());
       transport.close();      

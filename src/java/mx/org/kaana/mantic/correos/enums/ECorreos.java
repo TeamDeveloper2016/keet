@@ -17,16 +17,16 @@ import org.apache.commons.logging.LogFactory;
 
 public enum ECorreos { 
   
-  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Facturas"), 
-	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Compras"),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
+  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "/resources/janal/img/sistema/", "correo.ventas.user", "correo.ventas.pass", "Facturas"), 
+	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "/resources/janal/img/sistema/", "correo.ventas.user", "correo.ventas.pass", "Ventas"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "/resources/janal/img/sistema/", "correo.compras.user", "correo.compras.pass", "Compras"),
+	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "/resources/janal/img/sistema/", "correo.ventas.user", "correo.ventas.pass", "Ventas"),
 	ORDENES_CANCEL("/mx/org/kaana/mantic/correos/templates/cancelar.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Compras"),
 	//cafu
 	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "/resources/janal/img/sistema/", "correo.ventas.user", "correo.ventas.pass", "Ventas"),
 	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "/resources/janal/img/sistema/", "correo.compras.user", "correo.compras.pass", "Compras"),
 	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
-	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
+	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "/resources/janal/img/sistema/", "correo.ventas.user", "correo.admin.pass", "Administración"),
   DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
   PAGOS         ("/mx/org/kaana/keet/correos/templates/pagos.html", "/resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración");
 	
