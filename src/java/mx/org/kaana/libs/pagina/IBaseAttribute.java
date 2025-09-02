@@ -172,6 +172,10 @@ public abstract class IBaseAttribute implements Serializable {
 		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 
+  public String doFecha(LocalDateTime fecha) {
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+	}
+  
   public String doFecha(Value fecha) {
 		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha.toDate());
 	}

@@ -76,11 +76,10 @@ public class Adicionales extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Keet/Catalogos/Contratos/filtro": JsfBase.getFlashAttribute("retorno"));
-     if(JsfBase.getFlashAttribute("idContrato")== null)
+      if(JsfBase.getFlashAttribute("idContrato")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
-//      this.attrs.put("idContrato", 75L);
       this.contrato= (TcKeetContratosDto)DaoFactory.getInstance().findById(TcKeetContratosDto.class, (Long)this.attrs.get("idContrato"));
       this.toLoadEtapas();
 			this.doLoad();
