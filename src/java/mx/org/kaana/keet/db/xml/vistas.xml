@@ -362,7 +362,7 @@ order by
       </select>  
     </unit>  
     <unit id="VistaCostosDto">
-			<select id="detalle">
+			<select id="retenciones">
 select
   tc_keet_estimaciones.consecutivo,
   tc_keet_estimaciones.importe as estimado,

@@ -338,7 +338,7 @@ public class Retenciones extends IBaseFilter implements Serializable {
       columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("vence", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyDetalle= new FormatCustomLazy("VistaCostosDto", "detalle", params, columns);
+      this.lazyDetalle= new FormatCustomLazy("VistaCostosDto", "retenciones", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("seleccionado", row);
     } // try
