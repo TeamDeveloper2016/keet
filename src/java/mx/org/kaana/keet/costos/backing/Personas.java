@@ -48,11 +48,11 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 
-@Named(value = "keetCostosPersonal")
+@Named(value = "keetCostosPersonas")
 @ViewScoped 
-public class Personal extends IBaseFilter implements Serializable {
+public class Personas extends IBaseFilter implements Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Personal.class);
+	private static final Log LOG              = LogFactory.getLog(Personas.class);
   private static final long serialVersionUID= 8793667741599428332L;
   private static final String COLUMN_DATA_FILE_ESPECIAL= "EMPRESA,DESARROLLO,SEMANA,PUESTO,TIPO,NOMBRE,NOMINA,REGISTRO";  
   
@@ -135,7 +135,8 @@ public class Personal extends IBaseFilter implements Serializable {
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nomina", EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "personal", params, columns);
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyModel= new FormatCustomLazy("VistaCostosDto", "personas", params, columns);
       this.attrs.put("general", this.toTotales("VistaCostosDto", "resumen", params));
       UIBackingUtilities.resetDataTable();
     } // try

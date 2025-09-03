@@ -8,7 +8,7 @@
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Consulta de personal por el día" />
-  <ui:param name="janalBackingPage" value="#{keetCostosPersonal}"/>
+  <ui:param name="janalBackingPage" value="#{keetCostosPersonas}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -49,10 +49,10 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCostosPersonal.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetCostosPersonal.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetCostosPersonal.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
-								<f:selectItems value="#{keetCostosPersonal.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCostosPersonas.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetCostosPersonas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetCostosPersonas.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+								<f:selectItems value="#{keetCostosPersonas.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -61,8 +61,8 @@
                 </p:column>   
               </p:selectOneMenu>
 							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
-              <p:selectOneMenu id="idDesarrollo" value="#{keetCostosPersonal.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCostosPersonal.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetCostosPersonas.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCostosPersonas.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -71,23 +71,23 @@
                 </p:column>                   
               </p:selectOneMenu>
 							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
-              <p:selectOneMenu id="ejercicio" value="#{keetCostosPersonal.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
-                <p:ajax event="change" process="@this" update="semana fechaInicio" listener="#{keetCostosPersonal.doLoadSemanas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <f:selectItems value="#{keetCostosPersonal.attrs.ejercicios}"/>                
+              <p:selectOneMenu id="ejercicio" value="#{keetCostosPersonas.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                <p:ajax event="change" process="@this" update="semana fechaInicio" listener="#{keetCostosPersonas.doLoadSemanas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <f:selectItems value="#{keetCostosPersonas.attrs.ejercicios}"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="semana" value="Semana:"/>
-              <p:selectOneMenu id="semana" value="#{keetCostosPersonal.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
-                <f:selectItems value="#{keetCostosPersonal.attrs.semanas}"/>                
+              <p:selectOneMenu id="semana" value="#{keetCostosPersonas.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                <f:selectItems value="#{keetCostosPersonas.attrs.semanas}"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="idTipo" value="Tipo personal:"/>
-              <p:selectOneMenu id="idTipo" styleClass="janal-wid-100-txt contacto" value="#{keetCostosPersonal.attrs.idTipo}" converter="javax.faces.Long">
+              <p:selectOneMenu id="idTipo" styleClass="janal-wid-100-txt contacto" value="#{keetCostosPersonas.attrs.idTipo}" converter="javax.faces.Long">
                 <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItem itemLabel="POR EL DIA" itemValue="1"/>
                 <f:selectItem itemLabel="POR OBRA" itemValue="2"/>
               </p:selectOneMenu>
 							<p:outputLabel for="idPuesto" value="Puesto:"/>
-              <p:selectOneMenu id="idPuesto" value="#{keetCostosPersonal.attrs.idPuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCostosPersonal.attrs.puestos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:selectOneMenu id="idPuesto" value="#{keetCostosPersonas.attrs.idPuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCostosPersonas.attrs.puestos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -96,7 +96,7 @@
                 </p:column>                   
               </p:selectOneMenu>
 							<p:outputLabel for="idPersona" value="Empleado:"/>
-              <p:autoComplete id="idPersona" var="item" placeholder="TECLAR NOMBRE EMPLEADO" itemLabel="#{item.nombreCompleto}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{keetCostosPersonal.attrs.idPersona}" completeMethod="#{keetCostosPersonal.doCompleteEmpleado}" maxResults="12" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:autoComplete id="idPersona" var="item" placeholder="TECLAR NOMBRE EMPLEADO" itemLabel="#{item.nombreCompleto}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{keetCostosPersonas.attrs.idPersona}" completeMethod="#{keetCostosPersonas.doCompleteEmpleado}" maxResults="12" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
                 <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{keetValesAccion.doSolicita}" oncomplete="janal.desbloquear();"/>
                 <p:column headerText="Nombre(s)">
                   <h:outputText value="#{item.nombres}"/>
@@ -115,34 +115,34 @@
                 </p:column>                
               </p:autoComplete>  
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosPersonal.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosPersonas.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" />
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosPersonal.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" />
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetCostosPersonas.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" />
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosPersonal.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosPersonal.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{keetCostosPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
           <div class="ui-grid-row janal-grid-row">
-            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosPersonal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCostosPersonal.attrs.seleccionado}" selectionMode="single" paginator="#{keetCostosPersonal.lazyModel.rowCount gt keetCostosPersonal.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{keetCostosPersonal.toColor(row)}">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCostosPersonas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCostosPersonas.attrs.seleccionado}" selectionMode="single" paginator="#{keetCostosPersonas.lazyModel.rowCount gt keetCostosPersonas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{keetCostosPersonas.toColor(row)}">
               <f:facet name="header">
                 <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-code-o" value="Especial XLS" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                    <p:fileDownload value="#{keetCostosPersonal.especial}" />
+                    <p:fileDownload value="#{keetCostosPersonas.especial}" />
                   </p:menuitem>
                 </p:menuButton>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-code-o" title="Especial XLS"  process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-                  <p:fileDownload value="#{keetCostosPersonal.especial}" />
+                  <p:fileDownload value="#{keetCostosPersonas.especial}" />
                 </p:commandButton>
               </f:facet>	            
               <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
@@ -188,8 +188,8 @@
                 <h:outputText value="#{row['registro']}"/>
               </p:column>		
               <f:facet name="footer">
-                <p:outputLabel style="float: left;" value="#{keetCostosPersonal.general}" styleClass="detalle" escape="false"/>
-                <p:outputLabel value="Total [#{keetCostosPersonal.lazyModel== null? 0: keetCostosPersonal.lazyModel.rowCount}] registros"/>
+                <p:outputLabel style="float: left;" value="#{keetCostosPersonas.general}" styleClass="detalle" escape="false"/>
+                <p:outputLabel value="Total [#{keetCostosPersonas.lazyModel== null? 0: keetCostosPersonas.lazyModel.rowCount}] registros"/>
               </f:facet>
             </p:dataTable>
           </div>
